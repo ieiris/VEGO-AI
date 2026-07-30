@@ -1,6 +1,6 @@
 # Experiment Materials for the paper: Not All Differences Matter: Variability Exploration of Domain Models via Agentic AI
 
-**Authors:** <Name 1> (<Affiliation 1>, <email 1>); <Name 2> (<Affiliation 2>, <email 2>); <Name 3> (<Affiliation 3>, <email 3>)
+**Authors:** Iris Reinhartz-Berger (University of Haifa); Maxim Bragilovski (Ben-Gurion University); Arnon Sturm (Ben-Gurion University)
 
 **Venue:** MODELS 2026 — ACM/IEEE 28th International Conference on Model Driven Engineering Languages and Systems, October 2026, Málaga, Spain
 
