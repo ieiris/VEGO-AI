@@ -1,0 +1,399 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68148",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The class diagram includes a central 'System' class which aggregates entities related to Wine Ha'Emek's operations, such as Order, Wine, Manufacturer, and Person.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The model shows an association between orders and sales employees, indicating that each order is assigned to a specific employee.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order attributes such as order number, order date, status, shipment date, and assigned employee's information are represented in the 'Order' and 'UrgentOrder' classes with appropriate attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not explicitly mention or model an external delivery company such as 'GalGalim'.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The model shows 'CustomerRegularOrder' and associations to track wine quantities by each customer, aligning with joint order tracking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The 'Customer' class includes attributes for ID, name, phone number, email, delivery address, and the date of first contact.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employees derived from 'Person', and 'Customer' inherits from 'Person', suggesting employees can also be customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The model contains a specific class for 'UrgentOrder' which outlines that these orders are processed with priority, indicating processing rules.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Attributes for 'PriorityLevel' and 'ExpectedDeliveryTime' are present in the 'UrgentOrder' class, indicating how urgent orders are augmented.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The class model shows 'RegularOrder' and its relationships, signifying multiple customer participation in single orders to minimize costs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The 'CustomerRegularOrder' associates with 'Customer' and 'Wine' with quantities, detailing main customer's responsibility.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Similar to G6, attributes recorded for customers also suggest applicability to both regular and urgent orders with their presence in the 'Order' structure.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The model includes a relationship where only 'MarketingEmployee' updates 'Wine', supporting restricted access to wine updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The role of 'SalesEmployee' with operation 'generaWinesListSuitableForCustomer' implies browsing wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Attributes like 'SerialNumber' and 'Name' in 'WineType' identify wine types distinctly.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The 'Food' class with attributes for dish name and multiple recipe URLs corresponds to described wine-type features.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Attributes related to occasion and location in 'WineType' class reflect recommendation support by 'MarketingEmployee'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "System interface operations 'importFromGefenSystem' and 'exportToGefenSystem' indicate data synchronization with 'Gefen'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The 'Manufacturer' class has attributes for a unique identifier, name, phone number, address, and email.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "The 'Wine' class includes details like name, description, production year, price, sweetness level, and image path.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Distinctive attributes like 'ManufacturerNumber' and 'CatalogNumber' within 'Wine' class align with wine differentiation.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "The 'MarketingEmployee' has an association to update 'Wine', aligning with guideline's intention for price and image updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Storage location uniqueness is shown by 'LocationNumber' and 'Name' in 'StorageLocation'. However, it lacks explicit mentioning of an aggregation link.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No explicit aggregation relationships are defined; unique identifiers for storage locations are present."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The 'StoredIn' association class records quantities of wines linked to 'Wine' and 'StorageLocation', matching inventory tracking requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "No specific operation in the provided diagram indicates inventory update after sales.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Reports related operations in 'SalesEmployee' suggest mechanisms for generating unproductive employee reports.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Does not encompass all three report types outlined."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model contains operations 'importFromGefenSystem()' and 'exportToGefenSystem()' within the 'System' class, indicating data interactions with external systems, but no direct reference to 'GalGalim'.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is no mention or modeling of any delivery company akin to 'GalGalim'."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Looking at the 'StorageLocation' class, each wine is associated with 'StorageLocation' and tracked with quantities using 'StoredIn', suggesting a weak aggregation between 'Wine' and 'StorageLocation'.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the 'StoredIn' class hints at aggregation, it does not clearly depict a whole-part relationship; therefore, does not fully satisfy aggregation semantics."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "None of the classes or operations in the case model explicitly mention or imply an inventory update process after sales.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No evidence or class operation directly supports inventory updates post-sale."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "In 'SalesEmployee', operations for generating a report for unproductive employees and recommendations for wines are present. However, there is no specific mention of generating a current inventory report.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Partially satisfied as only two out of the three required reports are accounted for."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The abstract 'Employee' class which is incomplete as it lacks attributes inherited by SalesEmployee and MarketingEmployee, which are required for compliance.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The abstract class is not used effectively to represent shared attributes for its subclasses. This may lead to duplicated or inconsistent data handling."
+    },
+    {
+      "fragment": "WinesInCustomerRegularOrder and its association with CustomerRegularOrder and Wine without clear tracking features for inventory or customer orders.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "This association lacks clarity on its role and connection to the wider system, potentially leading to confusion over inventory and order management."
+    },
+    {
+      "fragment": "The 'generateUnproductiveEmployeeReport' and 'generaWinesListSuitableForCustomer' operations in 'SalesEmployee', suggesting report generation capabilities yet lacking a defined procedure or parameters.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These operations enhance the existing system by providing potential analytical insights, albeit not explicitly required by guidelines."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Weak aggregation representation"
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Only two of three report types covered"
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The abstract 'Employee' class which is incomplete as it lacks attributes inherited by SalesEmployee and MarketingEmployee, which are required for compliance.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "WinesInCustomerRegularOrder and its association with CustomerRegularOrder and Wine without clear tracking features for inventory or customer orders.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The 'generateUnproductiveEmployeeReport' and 'generaWinesListSuitableForCustomer' operations in 'SalesEmployee', suggesting report generation capabilities yet lacking a defined procedure or parameters.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 22.0,
+  "max_score": 26.0,
+  "score_pct": 84.6,
+  "overall_assessment": "The case model satisfies most of the guidelines, with some areas for improvement in representing external dependencies and abstract class structures."
+}

@@ -1,0 +1,60 @@
+\@startuml 
+left to right direction
+skinparam rectangle { 
+} 
+
+actor Admin 
+actor Client 
+actor "Gate sensor" as GS 
+actor "Conveyor Controller" as CC 
+actor IRS 
+actor "Payment Gate" as PG 
+
+rectangle ParkwiseSystem { 
+
+  ' ------------ ROW 1 ------------
+  usecase "Parking Lot Mangment " as PLM 
+  usecase "Annual Summary Reports" as ASR 
+  usecase "Customer Club Growth Report" as CCGR
+
+  ' ------------ ROW 2 ------------
+  usecase "Register " as RUD 
+  usecase "Register to Club Membership" as RCM  
+  usecase "End Parking" as EP 
+  usecase "select prefferd Parking Lot" as SPPL 
+
+  ' ------------ ROW 3 ------------
+  usecase "Payment Managment" as PM 
+  usecase "Generate a Recepit" as GP 
+  usecase "Identify Vehicle" as IV 
+  usecase "Update Vehicle Info" as UVI 
+  usecase "Open Gate" as OG
+
+  ' ------------ ROW 4 ------------
+  usecase "Load Prices" as LP 
+  usecase "Vehicle Parking Management" as VPM 
+
+  ' ------------ RELATIONSHIPS ------------
+  RCM <-- SPPL : <<extend>> 
+  EP --> PM : <<include>> 
+  PM <-- GP : <<extend>> 
+  IV <-- UVI : <<extend>> 
+  OG <-- PM : <<include>> 
+}
+
+' ------------ ACTOR LINKS ------------
+Admin --> PLM 
+Admin --> ASR
+Admin --> CCGR
+
+Client --> RUD 
+Client --> RCM 
+Client --> EP
+
+PG --> PM 
+GS --> IV 
+GS --> OG 
+CC --> VPM 
+IRS --> LP
+
+@enduml

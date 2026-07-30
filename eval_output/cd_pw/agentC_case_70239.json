@@ -1,0 +1,333 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70239",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class contains `lotId`, `name`, `address`, and `city` attributes, which maintain unique identification and location details for each parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class includes an `availableSpaces` attribute, which indicates the count of available parking spaces, and is aligned with guideline requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between Client and Vehicle classes, ensuring each vehicle is linked to one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class records `startTime`, aligning with the requirement to store session start time and related vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class includes a `size` attribute utilizing the VehicleSize enumeration, which specifies the spacing types available.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class includes a `maxWeightKg` attribute, specifying the maximum weight capacity it can handle.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The diagram indicates through its design that conveyors are not stored or linked with vehicle handling per session by using only an optional relationship.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The ParkingLot class has a relationship with PriceList, allowing different pricing models for each lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The ClubMember class derived from Client reflects the management of a client's club and membership details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "While no direct association for discounts is shown, the presence of ClubMember implies discount functionality in line with club membership.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "ClubMember presence implies potential for discounts, but no explicit mechanism is detailed."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "While PreferredLotSelection exists, there’s no explicit mention of free sessions for new club members, although this could be inferred.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Related class exists but lacks explicit detail on the free session application."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The AnnualSummaryReport class can generate reports based on financial data and vehicle summaries, covering income review needs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Operations in AnnualSummaryReport such as `calculateTotalAmount` and color vehicle count meet the contents requirements of the report.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "AnnualSummaryReport class has a sorting function `sortLotsByCityAndAmount`, complying with ordering requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "AnnualSummaryReport has methods `exportAsPDF` and `exportAsXML`, meeting the format requirement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The CustomerClubGrowthReport class designates a report system about new and total club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "While the class exists, specific operations and attributes to detail the exact contents are not visibly modeled.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Report class exists, lacks granular operation or attribute detail in the model."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The report's name, CustomerClubGrowthReport, inherently implies an ordered list by month.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Inherent order is implied through the report's nature but lacks explicit operational evidence."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G10",
+      "evidence": "The presence of a ClubMember class implies that this class could maintain additional attributes or methods related to member discounts, even if not explicitly shown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The ClubMember class inherently implies the potential for additional functionality, such as discounts, though its exact mechanism or attributes are not fully detailed in the model."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "PreferredLotSelection class links to ParkingLots, suggesting selected lots could be tracked to determine the free introductory parking sessions, but not explicitly modeled.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While PreferredLotSelection suggests connections with available lots, the model does not explicitly represent the free session for new club members, leaving it partially implied."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The CustomerClubGrowthReport class captures annual growth of club members, suggesting it could track new members per month, though missing explicit details on calculations/methods.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the class name indicates tracking growth, the absence of explicit operations and attributes regarding growth calculations leads to partial satisfaction."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Implicit ordering by month could be derived from the basic existence of the CustomerClubGrowthReport, but explicit ordering mechanisms aren't defined.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The inherent temporal nature of monthly reports suggests some form of order, although this is not explicitly defined in the model operations or attributes."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The ParkingSpace class has attributes floor, x, y, and isOccupied indicating its location and occupation status within a parking lot.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While not explicitly covered by the guidelines, detailing the location and status of parking spaces is relevant for system operations and enhances model detail."
+    },
+    {
+      "fragment": "The Conveyor class includes attributes floor, x, y, and isVacant referring to its position and availability in the parking structure.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Although not specifically requested in the guidelines, providing location and vacancy details for conveyors is useful and enhances the detail provided within the model."
+    },
+    {
+      "fragment": "Conveyor linked with ParkingLot using an aggregation relationship.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This indicates that conveyors are part of the parking lot's infrastructure, a reasonable modeling choice even if not explicitly covered by the guidelines."
+    },
+    {
+      "fragment": "Receipt class with attributes receiptId and issueDate connected to Payment.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Though not specified as required, having a Receipt class to record payment issue details is a logical addition, enhancing payment processing transparency."
+    },
+    {
+      "fragment": "The ParkWise Lots Domain package groups all core classes related to the domain",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Organizing domain components into a package is a standard UML practice that enhances clarity and manageability, even if not explicitly required."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The ParkingSpace class has attributes floor, x, y, and isOccupied indicating its location and occupation status within a parking lot.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Conveyor class includes attributes floor, x, y, and isVacant referring to its position and availability in the parking structure.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Conveyor linked with ParkingLot using an aggregation relationship.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Receipt class with attributes receiptId and issueDate connected to Payment.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The ParkWise Lots Domain package groups all core classes related to the domain",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 17.0,
+  "max_score": 18.0,
+  "score_pct": 94.4,
+  "overall_assessment": "The case model effectively complies with most guidelines, with strong mapping and valid alternatives contributing to a high score."
+}

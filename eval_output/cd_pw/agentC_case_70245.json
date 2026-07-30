@@ -1,0 +1,330 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70245",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes attributes for lotNumber, name, address, and city which aligns with the requirement to store a unique number, name, address, and city for each parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class has an attribute availableSpaces which reflects the number of available spaces in each parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between Client and Vehicle classes indicating that each vehicle is assigned to exactly one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class contains attributes for startTime and records associations with vehicles, satisfying the guideline for storing parking session information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class has an attribute size which shows what size of vehicle it can accommodate.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class includes a maxWeight attribute indicating its capacity to transport vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The relationship between ParkingSession and Conveyor indicates that Conveyors transporting a vehicle do not need to be stored permanently.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The PriceList class associated with ParkingLot allows for different pricing which includes hourly and daily prices.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The ClubMembership class represents membership management, aligning with the guideline for a client club.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Although not explicitly stated, ClubMembership implies benefits like discounts for members, aligning with the guideline.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model lacks explicit attributes for discounts, but ClubMembership suggests potential benefits."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The ClubMembership class includes a freeSessionUsed attribute, indicating the option for the first free session.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The Administrator class has an operation for generating an annual summary report, which aligns with the guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Report generation and details are not explicitly captured, but ParkingLot and Payment amount presumably inform elements of reports.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model does not explicitly define report contents, especially the count of vehicles by color."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Ordering specifications for reports by city and amount are more procedural and not directly represented at the class diagram level.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "These guidelines pertain to report sorting logic which is beyond class attributes or operations."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Formats such as PDF and XML for reports are not represented in the current class diagram.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Report format is not represented in the class model."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The model contains a ClubMembership class and involves reporting, but the Customer Club Growth specific report aspects are not clear.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The specifics of growth reporting are not explicitly found, despite membership being present."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Although ClubMembership exists, specific growth report details such as new members and growth rates are missing.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Details on new members and growth rates are not apparent in the class model."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Ordering reports by months as specified is a procedural aspect not captured in the static class diagram.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Guideline pertains to report generation logic, not represented in the class diagram."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G13",
+      "evidence": "The PriceList class is associated with ParkingLot, and there is an Administrator class able to generate annual reports. Although the specific count of vehicles by color is not captured in detail, VehicleColor enumeration and association of ParkingLot with ParkingSession are indicative of data being present, though not explicitly modeled.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The association and classes hint at potential data availability, but the lack of explicit report content definitions prevents full satisfaction."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "ParkingLot includes 'city' as an attribute, allowing sorting by city. Report generation by Administrator implies some processing ability, although not explicitly modeled or detailed at report level.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model includes necessary data attributes (like city) for sorting, but lacks explicit modeling of sorting logic."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Receipt class exists, possibly being included in reports, however, there is no explicit mention of PDF or XML formatting within class operations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Formatting of reports as PDF or XML is not apparent in the class model; evidence relating to report content encapsulation not found."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The inclusion of a ClubMembership class with attributes for managing members can support generation of some membership data but lacks specific growth trends required in the guideline.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The class covers membership but not detailed growth metrics or trend analytics explicitly outlined in the guideline."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The model contains elements like ClubMembership but lacks detailed reporting elements capturing new member counts and growth rates.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Growth metrics are not explicit, therefore no evidence found for satisfaction of guideline."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There is no explicit indication in the class model related to ordering by month within the Customer Club Growth Report.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Ordering by month is not captured within the static model elements; remains unmet in the class representation."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The GateSensor class provides an operation to manage barriers.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Lacks clear connection to guidelines requiring real-time data transmission functionality; no operations for vehicle detection or data relay."
+    },
+    {
+      "fragment": "Administrator class has an operation to update parking lot details.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "The operation is misaligned with the reference guideline, as the updating process itself is not distinctively operationalized in relation to other aspects."
+    },
+    {
+      "fragment": "ConveyorController includes operations for scanning vehicles, assigning conveyors, running optimizations, and updating vehicle completion.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Provides additional detailed operations that align with optimization and task delegation, even though not explicitly outlined in the guidelines."
+    },
+    {
+      "fragment": "The operation to register clients and update client-vehicle associations in ParkWiseSystem.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Represents logical administrative functions central to system operation; derived from role requirements."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Partially satisfied as per both existing and potential findings."
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Improvement from not-satisfied to partially satisfied based on potential evidence."
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": "Not satisfied due to lack of evidence for report formats as per guidelines."
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The GateSensor class provides an operation to manage barriers.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Administrator class has an operation to update parking lot details.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": ""
+    },
+    {
+      "fragment": "ConveyorController includes operations for scanning vehicles, assigning conveyors, running optimizations, and updating vehicle completion.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The operation to register clients and update client-vehicle associations in ParkWiseSystem.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 11.25,
+  "max_score": 18.0,
+  "score_pct": 62.5,
+  "overall_assessment": "The case model demonstrates a good level of compliance, but several areas still require enhancement, especially regarding report generation logic and explicit modeling."
+}

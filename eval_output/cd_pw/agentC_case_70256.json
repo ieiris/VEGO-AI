@@ -1,0 +1,318 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70256",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The 'ParkingLot' class includes attributes for lot number, name, address, and city, which align with the guideline's requirement for storing these details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The 'ParkingLot' class has an attribute for availableSpaces, which corresponds to the number of available spaces in the parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "An association exists between 'Client' and 'Vehicle', ensuring that each vehicle is tied to precisely one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The 'ParkingSession' class includes attributes like startTime and related vehicle details, indicating stored session information when a vehicle enters the lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Parking space has an attribute for size represented by the 'ParkingSpaceSize' enum, indicating vehicle accommodation suitability.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The 'Conveyor' class contains an attribute defining its maxWeight, capturing the guideline's weight capacity for conveying vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The case model indicates an association from 'Conveyor' to 'ParkingSession', but no explicit storage for conveyors per vehicle post-session.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "There is a relationship between 'ParkingLot' and 'PriceList', allowing each lot to have a distinct set of pricing rules.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The 'Membership' class linked with 'Client' indicates a managed client club, although not explicitly named as such.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The class is related to club management but is not labeled as a client club."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The 'Membership' class includes a discountPercent attribute providing automatic discounts for club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "A boolean attribute 'isFree' in 'ParkingSession' suggests a mechanism for free parking for new club members' first session.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The 'ParkingLot' class has a method for generating an Annual Summary Report for income overview.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The 'ParkingLot' class method links to generating reports with details per lot and vehicle color counts.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Ordered lists for the report are implied, aligning with organizing by city and amounts.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The directive for PDF and XML format generation during report creation is found in the class method but requires operational detail.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Formats are to be generated; however, explicit procedural detail is missing."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The presence of a 'Membership' class manages club growth, being linked to 'Client'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Contents of the club growth such as new member counts might be stored in attributes or operations but are not explicitly documented.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Growth details are implied; explicit attributes for monthly statistics aren't visible."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Order for the growth report, while hypothesized, needs specification akin to reports with parameter listings.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While implied structured reporting exists, explicit guidelines are absent."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G9",
+      "evidence": "The 'Membership' class has attributes related specifically to client membership in a club, such as membershipNum, membershipStartDate, and isActive. Although it's not explicitly named as 'Client Club', it serves the function of managing client memberships.",
+      "compliance_status": "Satisfied",
+      "notes": "The 'Membership' class adequately represents the client club management by including relevant attributes and operations that manage client memberships."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The 'generateAnnualSummary' operation in the 'ParkingLot' class suggests the possibility to format reports, but the specifics of generating in PDF and XML formats are not detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Although generation formats are mentioned, detailed implementation or a method to generate PDF and XML formats is not explicitly described, leaving some ambiguity."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The 'Membership' class seems to imply management of growth information through attributes such as start and end dates, but there are no explicit attributes for monthly statistics.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the client's membership might include tools for growth statistics implicitly, explicit attributes delineating the contents of such reports are absent."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The class method for generating reports is mentioned, but its explicit ordering by month is not documented in the current model.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "There is an implied structure for report ordering, but explicit guidelines indicating chronological ordering by month are not present."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The structure of the UML class 'ParkingLot' includes attributes like 'numAvaSpaces', which is not standard UML notation.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "reason": "Attribute naming does not follow conventional UML syntax, potentially leading to misunderstandings."
+    },
+    {
+      "fragment": "An association exists between 'Conveyor' and 'ParkingSession' without specifying multiplicities or clear representation of the guideline requirement.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The model includes Conveyors in Parking Sessions, showing an understanding of operational needs but could benefit from clearer definition."
+    },
+    {
+      "fragment": "The class 'PreferredLotSelection' captures the concept of clients selecting preferred lots with 'selectionDate'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Although not explicitly covered in existing mappings, this entity adds valuable detail about client preferences."
+    },
+    {
+      "fragment": "The 'Vehicle' class has several photo attributes but the use or reference within guidelines is unclear.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "Lack of guideline reference or domain description justifying the inclusion of multiple photo-related attributes."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The structure of the UML class 'ParkingLot' includes attributes like 'numAvaSpaces', which is not standard UML notation.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "base_score": -0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": -0.5,
+      "note": ""
+    },
+    {
+      "fragment": "An association exists between 'Conveyor' and 'ParkingSession' without specifying multiplicities or clear representation of the guideline requirement.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The class 'PreferredLotSelection' captures the concept of clients selecting preferred lots with 'selectionDate'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'Vehicle' class has several photo attributes but the use or reference within guidelines is unclear.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": ""
+    }
+  ],
+  "total_score": 15.25,
+  "max_score": 18.0,
+  "score_pct": 84.7,
+  "overall_assessment": "The case model is well-compliant with domain guidelines, achieving a high score with only minor issues in certain areas."
+}

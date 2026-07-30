@@ -1,0 +1,156 @@
+@startuml
+
+' Enumerations
+enum Location {
+    indoor
+    outdoor
+}
+
+enum SweetnessLevel {
+    dry
+    semi_dry
+    semi_sweet
+    sweet
+}
+
+enum OrderStatus {
+    in_process
+    dispatched
+    delivered
+    paid
+    suspended
+    canceled
+}
+
+class Person {
+    - ID: Integer
+    - name: String
+    - phoneNumber: String
+    - email: String
+}
+
+class Employee {
+    - officeAddress: String
+    - employmentStartDate: Date
+    - department: String
+    + placeOrder()
+}
+
+class SalesStaff {
+    + generateWineRecommendationReport()
+}
+
+class MarketingStaff {
+    + updateWineDetails()
+    + addWineType()
+    + manageFoodPairings()
+}
+
+Person <|-- Employee
+Person <|-- Customer
+
+Employee <|-- SalesStaff
+Employee <|-- MarketingStaff
+
+class Order {
+    - orderNumber: Integer
+    - orderDate: Date
+    - status: String
+    - shipmentDate: Date
+    + addCustomerOrderDetails()
+    + removeCustomerOrderDetails()
+    + updateStatus()
+}
+
+Order <|-- RegularOrder
+Order <|-- UrgentOrder
+
+class RegularOrder {
+    - mainCustomer: Customer
+    + setMainCustomer()
+    + addJointCustomer()
+}
+
+class UrgentOrder {
+    - priorityLevel: Integer
+    - expectedDeliveryTime: Date
+    + setPriority()
+    + setExpectedDeliveryTime()
+}
+
+class Wine {
+    - serialNumber: Integer
+    - catalogNumber: Integer
+    - name: String
+    - description: String
+    - productionYear: Integer
+    - pricePerBottle: Double
+    - sweetnessLevel: String
+    - productImage: String
+    + getQuantityInStock()
+}
+
+class Inventory {
+    - storageLocation: StorageLocation
+    - quantityInStock: Integer
+    + updateWeekly()
+}
+
+class Customer {
+    - deliveryAddress: String
+    - firstContactDate: Date
+}
+
+class WineType {
+    - name: String
+    - description: String
+    - suitableOccasions: String
+}
+
+class FoodPairing {
+    - dishName: String
+    - recipeURLs: String
+}
+
+class CurrentInventoryReportByWine {
+    + generateReport()
+}
+
+class GeffenSystemAdapter {
+    + importManufacturerData()
+    + exportInventoryJSON()
+}
+
+class Manufacturer {
+    - idManufacturer: Integer
+    - name: String
+    - email: String
+    - phoneNumber: String
+    - address: String
+}
+
+class StorageLocation {
+    - locationName: String
+    - uniqueNumber: Integer
+}
+
+class Occasions {
+    - description: String
+    - location: String
+    - season: String
+    + linkToWine(Wine wine)
+}
+
+Order "1" -- "0..*" Wine
+Order "1" -- "0..*" Customer
+Order "1" *-- "1" Employee
+Wine "1" *-- "1" Manufacturer
+Wine "1..*" *-- "1" WineType
+Wine "0..*" *-- "1" StorageLocation
+WineType "1" -- "0..*" FoodPairing
+Inventory "1" -- "0..*" Wine
+GeffenSystemAdapter "1" -- "1" CurrentInventoryReportByWine
+Wine "1" -- "0..*" Occasions
+GeffenSystemAdapter "1" -- "1..*" Manufacturer
+
+@enduml

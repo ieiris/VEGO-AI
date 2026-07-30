@@ -1,0 +1,26 @@
+# Scoring schema for case model evaluation
+# -----------------------------------------
+# Format per line:  <issue_type> | <score> | <rationale>
+#
+# issue_type is matched case-insensitively against:
+#   - compliance_status values in compliance_vectors.json (from Agent 3 skills 3-1 / 3-2)
+#   - label values in uncovered_fragments.json (from Agent 3 skill 3-3)
+#
+# Edit any score value and re-run evaluator.py to apply new scoring.
+# Lines starting with # and blank lines are ignored.
+
+# ── Compliance statuses (from compliance_vectors) ────────────────────────────
+Satisfied            | +1.0 | Guideline fully met by the case model
+Partially-Satisfied  | +0.5 | Guideline partially met — some evidence present
+Not-Satisfied        |  0.0 | Guideline not met — no evidence found
+
+# ── Uncovered fragment labels (from uncovered_fragments) ─────────────────────
+Alternative          | +0.5 | Valid alternative modelling choice, not in guidelines
+Domain Mistake       | -1.0 | Fragment contradicts or misrepresents the domain
+Language Mistake     | -0.5 | Fragment uses the modelling language incorrectly
+
+# ── Severity modifiers (stacked on top of Domain/Language Mistake base score) ─
+# Applied only to Domain Mistake and Language Mistake entries.
+Severity-High        | -0.5 | Extra penalty for high-severity mistakes
+Severity-Medium      |  0.0 | No additional modifier for medium-severity mistakes
+Severity-Low         | +0.25| Partial credit recovery for low-severity mistakes

@@ -1,0 +1,64 @@
+ ex1_UCD_FINAL_2025_nar.txt
+@startuml
+actor "Employee" as E
+actor "Sales Employee" as SE
+actor "Marketing Employee" as ME
+actor "Gefen System" as GS
+
+E <|-- SE
+E <|-- ME
+
+' Shared Use Case
+usecase "Place Order" as U12
+
+' Sales Employee Use Cases
+usecase "Place Regular Order" as U1
+usecase "Place Joint Order" as U2
+usecase "Place Urgent Order" as U3
+usecase "Specify Delivery Time" as UC3
+usecase "Specify Priority Levels" as UC4
+usecase "Generate Unproductive Employee Report" as U4
+usecase "Generate Wine Recommendation Report" as U5
+usecase "View Wine Data" as U6
+
+E --> U6
+
+' Marketing Employee Use Cases
+usecase "Update Wine Information" as U13
+usecase "Update Wine Type" as U14
+usecase "Link Wines to Types" as UC6
+usecase "Modify Product Images" as UC7
+usecase "Modify Price" as UC8
+usecase "Recommend Wine for Occasions" as UC5
+
+' Gefen System Use Cases
+usecase "Receive Inventory Report" as U9
+usecase "Send XML Data Monthly" as U10
+usecase "Provide Weekly Quantity Update" as U11
+
+' Relationships for Sales Employee
+SE --> U12
+U12 --> U1 : <<extend>>
+U1 --> U2 : <<extend>>
+U12 --> U3 : <<extend>>
+U3 --> UC3 : <<include>>
+U3 --> UC4 : <<include>>
+SE --> U4
+SE --> U5
+
+' Relationships for Marketing Employee
+ME --> U13
+ME --> U14
+ME --> UC6
+U13 --> UC8 : <<extend>>
+U13 --> UC7 : <<extend>>
+U14 --> UC5 : <<extend>>
+
+' Relationships for Gefen System
+GS --> U9
+GS --> U10
+GS --> U11
+
+' Arrange layout for better appearance
+left to right direction
+@enduml

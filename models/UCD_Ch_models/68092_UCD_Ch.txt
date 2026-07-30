@@ -1,0 +1,75 @@
+@startuml
+
+left to right direction
+
+actor Customer
+actor SalesEmployee
+actor MarketingEmployee
+actor "Gefen System" as Gefen
+actor "GalGalim" as GalGalim
+
+rectangle "Cheers System" {
+
+    usecase "Place Order" as Order
+    usecase "Regular Order" as RegularOrder
+    usecase "Manage Joint Order" as ManageJoint
+    usecase "Urgent Order" as UrgentOrder
+    usecase "Prioritize Urgent Orders" as PrioritizeUrgent
+    usecase "Specify the Time of Delivery" as SpecifyTime
+    usecase "View Wine Information" as ViewWine
+    usecase "Update Wine Information and Types" as UpdateWineTypes
+    usecase "Manage Wine Occasions" as ManageOccasions
+    usecase "Generate Unproductive Employees Report" as UnproductiveReport
+    usecase "Generate Wine Recommendation Report" as WineRecommendationReport
+    usecase "Generate Current Inventory Report by Wine" as InventoryReport
+    usecase "Receive Wine Producer Data" as WineProducerData
+    usecase "Update Inventory After Sale" as InventoryUpdate
+    usecase "Arrange Delivery" as ArrangeDelivery
+}
+
+' Extension point notes
+note right of RegularOrder
+**Extension Point: Joint Order Management**
+Triggered when multiple customers place a combined 
+order to reduce delivery costs. The system tracks 
+wine selections for each customer and designates 
+a main customer for the order.
+end note
+
+note right of Order
+**Extension Point:**
+Urgent Order Handling: Triggered when an order is marked as urgent, 
+requiring prioritization and urgency level. 
+Regular Order: Triggered when the order is not urgent, 
+allowing multiple customers to combine their orders to reduce delivery costs.
+end note
+
+' Adjusted relationships
+RegularOrder .> Order : <<extend>>
+UrgentOrder .> Order : <<extend>>
+ManageJoint .> RegularOrder : <<extend>>
+
+
+UrgentOrder .down.> PrioritizeUrgent : <<include>>
+UrgentOrder .down.> SpecifyTime : <<include>>
+
+Order .down.> InventoryUpdate : <<include>>
+Order .down.> ArrangeDelivery : <<include>>
+
+Customer --> SalesEmployee : "Request Order"
+SalesEmployee --> Order : "Place Order"
+
+SalesEmployee --> ViewWine
+SalesEmployee --> UnproductiveReport
+SalesEmployee --> WineRecommendationReport
+
+MarketingEmployee --> Order
+MarketingEmployee --> UpdateWineTypes
+MarketingEmployee --> ManageOccasions
+
+Gefen --> WineProducerData
+InventoryReport --> Gefen
+
+ArrangeDelivery --> GalGalim : "Send Delivery Details"
+
+@enduml

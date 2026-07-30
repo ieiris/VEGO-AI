@@ -1,0 +1,323 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70240",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes attributes for a unique number, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class possesses an attribute for available spaces to indicate if the parking lot is full.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between Client and Vehicle classes ensuring ownership of vehicles by a client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "ParkingSession class includes attributes for start time and vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class has a size attribute that provides the size category the space falls into.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class includes a maxWeightKg attribute indicating the maximum weight it can handle.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The end of the parking session indicates there is no ongoing tracking needed for conveyors handling vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "ParkingLot class is associated with PriceList which details prices per hour and for a full day.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "ClubMembership class exists representing a membership system managing clients' club data.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "ParkingSession and ClubMembership classes interact to apply discounts, affirming fixed discounts for members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "ClubMembership class has logic to check if the parking session is the first in the registration month for determining free status.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "AnnualSummaryReport class contains a yearly overview capability.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "AnnualSummaryReport class aggregates information such as income and vehicle count for each parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "AnnualSummaryReport class contains a method to sort results by city and total amount received.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "AnnualSummaryReport supports export to both PDF and XML formats.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "CustomerClubGrowthReport offers a monthly overview of new and total club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "CustomerClubGrowthReport includes data for new members each month, cumulative totals, and growth percentages.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "CustomerClubGrowthReport can order the report by month in ascending order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [],
+  "uncovered_fragments": [
+    {
+      "fragment": "An administrator responsible for updating parking lot details is not operationalized in the UML model.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The guideline mentions administrative functions, which should be represented to reflect the responsibilities within the system."
+    },
+    {
+      "fragment": "Gate sensor installation for real-time vehicle data transmission to the system.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The model should include interactions for real-time data transmission which is crucial for system accuracy but is currently missing."
+    },
+    {
+      "fragment": "Conveyors’ Controller assigns a conveyor and runs an optimization algorithm.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The model captures the CC's role which can be interpreted as part of optimization, not explicitly mentioned but adds operational detail."
+    },
+    {
+      "fragment": "Sending SMS messages with parking details to clients.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "The system's interaction method with clients, such as SMS, should be depicted if it impacts operational processes."
+    },
+    {
+      "fragment": "External Payment Gateway interaction for payment requests and responses.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Critical system operations involving external entities should be explicitly modeled to ensure clarity in payment processing."
+    },
+    {
+      "fragment": "Client's ability to select and store preferred parking lots.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "Storing client preferences is mentioned in guidelines but not operationalized in the UML which may affect client data management."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "An administrator responsible for updating parking lot details is not operationalized in the UML model.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Gate sensor installation for real-time vehicle data transmission to the system.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Conveyors’ Controller assigns a conveyor and runs an optimization algorithm.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Sending SMS messages with parking details to clients.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": ""
+    },
+    {
+      "fragment": "External Payment Gateway interaction for payment requests and responses.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Client's ability to select and store preferred parking lots.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": ""
+    }
+  ],
+  "total_score": 13.5,
+  "max_score": 18.0,
+  "score_pct": 75.0,
+  "overall_assessment": "The case model satisfies many of the guidelines, although several critical domain processes are not fully operationalized."
+}

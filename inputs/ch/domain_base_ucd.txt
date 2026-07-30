@@ -1,0 +1,21 @@
+# Domain base list — Use Case Diagram - Cheers
+# One ground-truth domain requirement per line. Used by Agent B to measure
+# guideline completeness. Lines starting with # and blank lines are ignored.
+#
+# Element type codes:
+#   UC   = Use Case
+#   Actor = Actor
+#   Incl = Include relationship   (format: Incl: UC-UC)
+#   Ext  = Extend relationship    (format: Ext: UC-UC)
+#
+# Each line describes one use case and its associated actor(s) and relationships.
+
+UC: Place Order, Actor: Sales
+UC: Update Wine Information, Actor: Marketing
+UC: View Wine Information, Actor: Employee, Ext: Place Order-View Wine Information
+UC: Recommend Occasions, Actor: Marketing
+UC: Import Producers and Wines, Actor: Gefen
+UC: Import Wine Quantities, Actor: Gefen
+UC: Generate Unproductive Employees Report, Actor: Sales
+UC: Generate Current Inventory Report, Actor: Gefen
+UC: Generate Wine Recommendation Report, Actor: Sales

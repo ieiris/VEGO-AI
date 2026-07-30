@@ -1,0 +1,363 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70234",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class has attributes for a unique identifier, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class contains an attribute for available spaces, which can be zero if full.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between the Vehicle and Client classes; each vehicle is connected to exactly one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "ParkingSession class stores the start time and associated vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class includes an attribute representing its size, indicating the type of vehicles it can accommodate.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class has an attribute for the maximum weight capacity it can transport.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "While the model includes associations between ParkingSession and Conveyor classes, the details of conveyors handling each vehicle are not stored beyond the session's end.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "PriceList class is associated with ParkingLot, allowing different lots to have varying price lists, including first hour, additional hour, and full day prices.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Client is related to ClubMembership, indicating the management of a client's club.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The model suggests club memberships as a separate entity, but specifics about discounts are not detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The existence of fixed discount is implied but not explicitly represented in the attributes or operations."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "ParkingSession attributes include indications of a 'free' status, which could relate to the free session for club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "ParkWiseCompany has a method to generate an Annual Summary Report, aligning with the guideline's reporting requirement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The structure of the AnnualSummaryReport and AnnualLotSummaryRow covers the contents of the summary report, including total payments and vehicle counts.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The ordering requirements are generally contained within the method logic and not directly observable in class diagrams.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "AnnualSummaryReport has export methods for PDF and XML formats, satisfying the format guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The presence of a report on club membership growth aligns with having a report overview on monthly growth.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Club membership report elements are implied but specifics like month-by-month data are not directly outlined in the class.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Detailed contents like specific growth percentages and cumulative totals are not explicitly shown."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Ordering by month is typically a feature of report generation logic, which is not explicit in class diagrams.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G10",
+      "evidence": "The class `ClubMembership` might imply an association with discounts, but there are no attributes or methods explicitly showing discount application for parking sessions.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The existence of a club membership class suggests there could be some benefit, such as discounts, but without explicit operations or attributes, it remains inferred rather than clearly defined."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Ordering logic must be embedded in the `generateAnnualSummary` method's logic within the `ParkWiseCompany` class, but this is not expressible in the class diagram.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While we can infer sorting logic as typically part of report generation, it isn't directly observable in UML class diagrams."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The `ClubMembership` class does not explicitly show monthly growth calculations or cumulative totals, merely maintaining a historical record via associations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The presence of `ClubMembership` allows the historical recording of memberships, though not explicitly detailing monthly growth and cumulative total features."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "By nature, class diagrams do not express temporal ordering like ascending month order, only overall structure, implying that logic would appear elsewhere.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Temporal ordering is not depicted in UML class diagrams, meaning an absence of direct evidence."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The GateSensor class has attributes for sensor ID and status.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The definition of a gate sensor, including its ID and status, contributes additional detailed information about its state and identification, which can be useful even if not explicitly required by the guidelines."
+    },
+    {
+      "fragment": "The Client class contains attributes relating to contact information such as first name, last name, and mobile phone.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Having contact information attributes in the Client class, while not specified by the guidelines, enriches the model by possibly allowing communication with clients, which could complement system operations like notifications."
+    },
+    {
+      "fragment": "The Vehicle class includes properties like vehicle number, type, color, size, and weight.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This detailed representation of vehicle characteristics such as color, type, and size complements domain needs, especially for operations like verifying vehicle compatibility with parking space sizes and conveyor capacities."
+    },
+    {
+      "fragment": "The definition of a VehiclePhoto class with attributes for photo ID and type, and its association with the Vehicle class.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Including the VehiclePhoto class adds granularity to the system by associating visual data with vehicles, which could be beneficial for verification or inventory purposes."
+    },
+    {
+      "fragment": "The Receipt class with attributes receiptId and issueTime.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Though generating a receipt was not specified as a necessity, having a receipt class with unique identifier and timing adds depth for financial tracking and customer transaction records."
+    },
+    {
+      "fragment": "Presence of the LotPriceHistory class to manage historical price data associated with PriceList.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Maintaining a history of price changes is practical for administrative auditing and retrospective analysis, even though it's not explicitly outlined by guidelines."
+    },
+    {
+      "fragment": "The PreferredParkingLotSelection class, representing client selections of preferred parking lots.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While client preferences were mentioned, the detailed implementation provides extra value by offering the ability to track changes in customer preferences over time."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Indications of discounts but not explicitly documented."
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Ordering logic inferred but not explicit in diagrams."
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Historical recording indicated but not detailed."
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": "Temporal ordering is not depicted."
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The GateSensor class has attributes for sensor ID and status.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Client class contains attributes relating to contact information such as first name, last name, and mobile phone.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Vehicle class includes properties like vehicle number, type, color, size, and weight.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The definition of a VehiclePhoto class with attributes for photo ID and type, and its association with the Vehicle class.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Receipt class with attributes receiptId and issueTime.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Presence of the LotPriceHistory class to manage historical price data associated with PriceList.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The PreferredParkingLotSelection class, representing client selections of preferred parking lots.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 15.5,
+  "max_score": 18.0,
+  "score_pct": 86.1,
+  "overall_assessment": "The case model demonstrates high compliance with domain guidelines, though some areas are partially satisfied."
+}

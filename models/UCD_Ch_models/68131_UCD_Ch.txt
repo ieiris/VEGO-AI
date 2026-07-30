@@ -1,0 +1,55 @@
+@startuml
+title "Cheers System Use Case Diagram"
+
+' General Employee Actor
+actor "Employee" as Employee
+actor "Sales Employee" as SalesEmployee
+actor "Marketing Employee" as MarketingEmployee
+actor "Gefen System" as Gefen
+actor "Customer" as Customer
+
+' Employee can also act as Customer
+Employee <|-- Customer : "can act as"
+
+' Inheritance Relationships
+Employee <|-- SalesEmployee
+Employee <|-- MarketingEmployee
+
+' Employee Operations
+Employee --> (View System Data)
+
+' Customer Operations
+Customer --> (Place Joint Order)
+Customer --> (Make Order)
+
+' Sales Employee Operations
+SalesEmployee --> (Place Customer Order)
+(Place Customer Order) <|-- (Place Urgent Order) : extends
+(Place Customer Order) <|-- (Place Regular Order) : includes
+(Place Regular Order) <|-- (Place Joint Order) : extends
+
+SalesEmployee --> (Browse Available Wines)
+
+SalesEmployee --> (Generate Reports)
+(Generate Reports) <|-- (Generate Unproductive Employees Report) : extends
+(Generate Reports) <|-- (Generate Wine Recommendation Report) : extends
+
+' Marketing Employee Operations
+MarketingEmployee --> (Record Customer Details)
+MarketingEmployee --> (Recommend Occasions and Provide Description)
+
+MarketingEmployee --> (Link Wines to Types)
+(Link Wines to Types) <|-- (Modify Price Details and Product Images) : extends
+
+MarketingEmployee --> (Update Wine Information and Types)
+
+' Gefen System Operations
+Gefen --> (Send Monthly XML Data)
+(Send Monthly XML Data) <|-- (Include Wine Producers and Wines) : includes
+
+Gefen --> (Send Weekly Quantity Updates)
+
+' Notes for clarity
+note right of (Place Urgent Order) : Urgent orders have priority\nand require a single customer.
+note right of (Place Joint Order) : Joint orders optimize delivery costs.\nPlaced by customers or employees acting as customers.
+@enduml

@@ -1,0 +1,84 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Client" as Client
+actor "Administrator" as Admin
+actor "Gate Sensor" as GS
+actor "Conveyors' Controller" as CC
+actor "Integrated Rate Service" as IRS
+actor "Payment Gateway" as PG
+
+rectangle "ParkWise System" {
+
+  ' --- Core parking flow ---
+  usecase "Handle vehicle arrival" as UC_Entry
+  usecase "Register client and vehicle (details + 3 photos)" as UC_ProvideDetails
+  usecase "Update available spaces" as UC_UpdateSpaces
+  usecase "Manage parking session\n----------------------\nextension points:\n- free session for club member\n- conveyor problem" as UC_StartSession
+  usecase "Assign conveyor and parking space" as UC_AssignSpace
+  usecase "End parking & charge client\n----------------------\nextension points:\n- payment declined" as UC_EndSession
+  usecase "Calculate parking fee" as UC_CalcFee
+  usecase "Process payment" as UC_Payment
+  usecase "Issue receipt" as UC_Receipt
+
+  ' --- Client club / preferences ---
+  usecase "Register to Client Club" as UC_RegisterClub
+  usecase "Manage Preferred Parking Lots" as UC_ManagePreferred
+
+  ' --- Admin / configuration / reports ---
+  usecase "Update parking lot data" as UC_MaintainLots
+  usecase "Receive yearly price lists (JSON) from IRS" as UC_ManagePrices
+  usecase "Adopt price list for parking lots" as UC_AdoptPrices
+  usecase "Generate annual summary report" as UC_AnnualReport
+  usecase "Generate customer club growth report" as UC_ClubReport
+}
+
+' --- Actors to use cases ---
+
+' Client
+Client -- UC_Entry
+Client -- UC_RegisterClub
+Client -- UC_ManagePreferred
+Client -- UC_EndSession
+Client -- UC_StartSession
+
+' Administrator
+Admin -- UC_MaintainLots
+Admin -- UC_AnnualReport
+Admin -- UC_ClubReport
+Admin -- UC_AdoptPrices
+
+' Integrated Rate Service
+IRS -- UC_ManagePrices
+
+' Payment Gateway
+PG -- UC_Payment
+
+' Conveyors' Controller
+CC -- UC_AssignSpace
+
+' Gate Sensor
+GS -- UC_Entry
+GS -- UC_UpdateSpaces
+
+' --- Includes / Extends relationships ---
+
+' Registration related
+UC_Entry ..> UC_ProvideDetails : <<extend>>
+
+' Update available spaces when handling arrival
+UC_Entry ..> UC_UpdateSpaces : <<include>>
+
+' Parking session management and conveyor assignment
+UC_StartSession ..> UC_AssignSpace : <<include>>
+
+' End parking, fee calculation, session close, payment, receipt
+UC_EndSession ..> UC_CalcFee      : <<include>>
+UC_EndSession ..> UC_StartSession : <<include>>
+UC_CalcFee    ..> UC_Payment      : <<include>>
+UC_Payment    ..> UC_Receipt      : <<include>>
+
+' Price list adoption
+UC_ManagePrices ..> UC_AdoptPrices : <<include>>
+@enduml

@@ -1,0 +1,183 @@
+@startuml
+scale 0.75
+skinparam classAttributeIconSize 0
+top to bottom direction
+
+' =======================
+' Parking-related
+' =======================
+class ParkingLot {
+    -lotNumber : int <<PK>>
+    -name : String
+    -address : String
+    -city : String
+    -availableSpaces : int
+    -priceList : PriceList
+}
+
+class ParkingSpace {
+    -spaceID : int <<PK>>
+    -floor : int
+    -x : int
+    -y : int
+    -size : Size
+}
+
+class Conveyor {
+    -conveyorID : int <<PK>>
+    -floor : int
+    -x : int
+    -y : int
+    -maxWeight : float
+}
+
+class PriceList {
+    -priceListID : int <<PK>>
+    -firstHourPrice : float
+    -additionalHourPrice : float
+    -fullDayPrice : float
+}
+
+class ParkingSession {
+    -sessionID : int <<PK>>
+    -startTime : DateTime
+    -endTime : DateTime
+    -vehicle : Vehicle
+    -parkingLot : ParkingLot
+}
+
+' =======================
+' Vehicle-related
+' =======================
+class Vehicle {
+    -vehicleNumber : String <<PK>>
+    -type : String
+    -size : Size
+    -color : VehicleColor
+    -weight : float
+}
+
+class VehiclePhoto {
+    -photoID : int <<PK>>
+    -view : PhotoView
+}
+
+class Client {
+    -clientID : int <<PK>>
+    -firstName : String
+    -lastName : String
+    -phoneNumber : String
+}
+
+' =======================
+' Membership & Preferred Parking
+' =======================
+class Membership {
+    -clientID : int <<PK>>
+    -membershipStartDate : Date
+}
+
+class PreferredParkingLot {
+    -clientID : int
+    -membershipStartDate : Date
+    -lotNumber : int
+}
+
+class Receipt {
+    -receiptID : int <<PK>>
+    -client : Client
+    -vehicle : Vehicle
+    -parkingSession : ParkingSession
+    -hoursParked : float
+    -rate : float
+    -totalAmount : float
+}
+
+' =======================
+' Admin
+' =======================
+class Admin {
+    -adminID : int <<PK>>
+    +updateParkingLotDetails(lot: ParkingLot)
+    +generateAnnualSummaryReport()
+    +generateClubGrowthReport()
+}
+
+' =======================
+' System
+' =======================
+class System {
+    +updateParkingLotDetails(lot: ParkingLot)
+    +saveClient(client: Client)
+    +saveVehicle(vehicle: Vehicle)
+    +associateVehicleToClient(vehicle: Vehicle, client: Client)
+    +startParkingSession(session: ParkingSession)
+    +endParkingSession(session: ParkingSession)
+    +savePriceList(priceList: PriceList)
+    +getActivePriceList(lot: ParkingLot)
+    +calculatePayment(vehicle: Vehicle, client: Client)
+    +generateAnnualSummaryReport()
+    +generateClubGrowthReport()
+    +issueReceipt(vehicle: Vehicle, client: Client)
+}
+
+' =======================
+' Enums
+' =======================
+enum Size {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+enum VehicleColor {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+enum PhotoView {
+    FRONT
+    REAR
+    SIDE
+}
+
+' =======================
+' Relationships
+' =======================
+Admin "1" --> "*" ParkingLot : manages / updates details
+Admin "1" --> "*" ParkingSession : monitors / generates reports
+
+ParkingLot "1" o-- "*" ParkingSpace : contains
+ParkingLot "1" --> "*" Conveyor : has
+ParkingLot "1" --> PriceList : uses
+
+Client "1" --> "*" Vehicle : owns
+
+Membership -|> Client
+
+Membership "1" --> "*" PreferredParkingLot : preferences
+PreferredParkingLot "*" --> "1" ParkingLot : refers to
+
+Vehicle "1" *-- "*" VehiclePhoto : has
+
+Vehicle "1" --> "1..*" ParkingSession : participates in
+ParkingSession --> Vehicle : for
+ParkingSession --> ParkingLot : in
+
+Vehicle "1" --> "1" Receipt : generates / has
+Receipt --> Client
+Receipt --> ParkingSession
+
+' =======================
+' System Relationships
+' =======================
+System "1" o-- "*" ParkingLot : manages
+System "1" o-- "*" PriceList : maintains history
+System "1" o-- "*" ParkingSession : optimizes parking
+System "1" *-- "*" Receipt : creates
+System "1" --> "*" Vehicle : extracts details
+System "1" --> "*" Client : updates associations
+@enduml

@@ -1,0 +1,81 @@
+@startuml
+
+left to right direction
+skinparam packageStyle rectangle
+
+title ParkWise Lot System - Use Case Diagram
+
+actor "Client" as Client
+actor "Administrator" as Admin
+actor "Gate Sensor" as GS
+actor "Conveyors Controller" as CC
+actor "Integrated Rate Service" as IRS
+actor "Payment Gateway" as PG
+
+rectangle "ParkWise System" {
+
+    usecase "Enter Parking Lot" as UC1
+    usecase "Register New Client" as UC2
+    usecase "Upload Vehicle Photos" as UC3
+    usecase "Extract Vehicle Details" as UC4
+    usecase "Open Barrier" as UC5
+
+    usecase "Park Vehicle" as UC6
+    usecase "Find Optimal Parking Space" as UC7
+    usecase "Update Parking Completion" as UC8
+    usecase "Send SMS Notification" as UC9
+
+    usecase "View Parking Details" as UC10
+    usecase "Join Client Club" as UC11
+    usecase "Select Preferred Lots" as UC12
+
+    usecase "End Parking" as UC13
+    usecase "Calculate Parking Fee" as UC14
+    usecase "Apply Club Discount" as UC15
+    usecase "Process Payment" as UC16
+    usecase "Issue Receipt" as UC17
+
+    usecase "Manage Parking Lot Details" as UC18
+    usecase "Generate Annual Summary Report" as UC19
+    usecase "Generate Club Growth Report" as UC20
+
+    usecase "Receive Price Lists" as UC21
+    usecase "Send Payment Request" as UC22
+    usecase "Receive Payment Confirmation" as UC23
+}
+
+Client --> UC2
+Client --> UC10
+Client --> UC13
+Client --> UC16
+Client --> UC17
+Client --> UC11
+Client --> UC12
+
+Admin --> UC18
+Admin --> UC19
+Admin --> UC20
+
+GS --> UC1
+GS --> UC5
+
+CC --> UC6
+CC --> UC8
+
+IRS --> UC21
+PG --> UC23
+
+UC2 ..> UC3 : <<include>>
+UC3 ..> UC4 : <<include>>
+UC6 ..> UC7 : <<include>>
+UC8 ..> UC9 : <<include>>
+UC13 ..> UC14 : <<include>>
+UC16 ..> UC22 : <<include>>
+
+UC1 <.. UC2 : <<extend>>
+UC14 <.. UC15 : <<extend>>
+UC16 <.. UC17 : <<extend>>
+UC1 <.. UC5 : <<extend>>
+UC23 <.. UC5 : <<extend>>
+
+@enduml

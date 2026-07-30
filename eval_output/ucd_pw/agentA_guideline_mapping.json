@@ -1,0 +1,123 @@
+{
+  "skill_version": "1.0.0",
+  "language_name": "UML Use Case Diagram",
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "canonical_description": "An Actor represents a role played by a user or any other system interacting with the subject.",
+      "run1_guideline_id": "T1",
+      "run1_short_name": "Actor",
+      "run2_guideline_id": "T1",
+      "run2_short_name": "Actor",
+      "run3_guideline_id": "T1",
+      "run3_short_name": "Actor",
+      "similarity_score": 1.0,
+      "base_assignment": "actors",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C2",
+      "canonical_description": "A Use Case represents a specific way of using a system or distinct functionality by an actor.",
+      "run1_guideline_id": "T2",
+      "run1_short_name": "UseCase",
+      "run2_guideline_id": "T2",
+      "run2_short_name": "UseCase",
+      "run3_guideline_id": "T2",
+      "run3_short_name": "UseCase",
+      "similarity_score": 0.95,
+      "base_assignment": "use cases",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C3",
+      "canonical_description": "A System Boundary defines the scope of a system and represents it as a separate entity.",
+      "run1_guideline_id": "T3",
+      "run1_short_name": "SystemBoundary",
+      "run2_guideline_id": null,
+      "run2_short_name": null,
+      "run3_guideline_id": "T6",
+      "run3_short_name": "SystemBoundary",
+      "similarity_score": 0.8,
+      "base_assignment": "system boundaries",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C4",
+      "canonical_description": "An association between an Actor and a Use Case represents the participation of the actor in the use case.",
+      "run1_guideline_id": "T4",
+      "run1_short_name": "UseCase-Association-Actor",
+      "run2_guideline_id": "T3",
+      "run2_short_name": "Actor-Association-UseCase",
+      "run3_guideline_id": "T3",
+      "run3_short_name": "Actor-Association-UseCase",
+      "similarity_score": 0.9,
+      "base_assignment": "associations use cases - actors",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C5",
+      "canonical_description": "An Include relationship represents the inclusion of behaviors described by another use case.",
+      "run1_guideline_id": "T5",
+      "run1_short_name": "UseCase-Include-UseCase",
+      "run2_guideline_id": "T4",
+      "run2_short_name": "UseCase-Includes-UseCase",
+      "run3_guideline_id": "T5",
+      "run3_short_name": "UseCase-Include-UseCase",
+      "similarity_score": 0.9,
+      "base_assignment": "<<include>> dependencies",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C6",
+      "canonical_description": "An Extend relationship specifies optional extension of a use case's behavior.",
+      "run1_guideline_id": "T6",
+      "run1_short_name": "UseCase-Extend-UseCase",
+      "run2_guideline_id": "T5",
+      "run2_short_name": "UseCase-Extends-UseCase",
+      "run3_guideline_id": "T4",
+      "run3_short_name": "UseCase-Extend-UseCase",
+      "similarity_score": 0.9,
+      "base_assignment": "<<extends>> dependencies",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C7",
+      "canonical_description": "Generalization shows that one use case is a specialization or inherits behavior from another.",
+      "run1_guideline_id": "T7",
+      "run1_short_name": "UseCase-Generalization-UseCase",
+      "run2_guideline_id": "T6",
+      "run2_short_name": "UseCase-Generalization-UseCase",
+      "run3_guideline_id": null,
+      "run3_short_name": null,
+      "similarity_score": 0.8,
+      "base_assignment": "inheritance between use cases",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C8",
+      "canonical_description": "A Subsystem acts as a grouping mechanism for use cases, representing a module or collection.",
+      "run1_guideline_id": null,
+      "run1_short_name": null,
+      "run2_guideline_id": "T7",
+      "run2_short_name": "Subsystem",
+      "run3_guideline_id": null,
+      "run3_short_name": null,
+      "similarity_score": 0.5,
+      "base_assignment": null,
+      "match_confidence": "None"
+    },
+    {
+      "cluster_id": "C9",
+      "canonical_description": "A Containment relationship groups use cases within a subsystem, indicating which are part of it.",
+      "run1_guideline_id": null,
+      "run1_short_name": null,
+      "run2_guideline_id": "T8",
+      "run2_short_name": "Subsystem-Containment-UseCase",
+      "run3_guideline_id": null,
+      "run3_short_name": null,
+      "similarity_score": 0.5,
+      "base_assignment": null,
+      "match_confidence": "None"
+    }
+  ]
+}

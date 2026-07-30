@@ -1,0 +1,72 @@
+@startuml
+scale 1
+left to right direction
+
+
+usecase "Place Order" as (Place Order)
+usecase "Place Urgent Order" as (Place Urgent Order)
+usecase "Place Regular Order" as (Place Regular Order)
+usecase "Manage Wine Information" as (Manage Wine Information)
+usecase "Update Wine Types" as (Update Wine Types)
+usecase "Update Wine Details" as (Update Wine Details)
+usecase "Modify Price Details" as (Modify Price Details)
+usecase "Modify Product Image" as (Modify Product Image)
+usecase "Link Wines to Types" as (Link Wines to Types)
+usecase "Generate Unproductive Employees Report" as (Generate Unproductive Employees Report)
+usecase "Generate Wine Recommendation Report for Customers" as (Generate Wine Recommendation Report for Customers)
+usecase "Receive JSON Data" as (Receive JSON Data)
+usecase "View" as (View)
+usecase "View Wine Information" as (View Wine Information)
+usecase "View Customer Information" as (View Customer Information)
+usecase "View Order Status" as (View Order Status)
+usecase "Recommend Occasions" as (Recommend Occasions)
+usecase "Provide Season and Location" as (Provide Location)
+usecase "Provide General Description of Occasion" as (Provide General Description of Occasion)
+usecase "joint order" as (joint order)
+usecase "Manage Deliveries" as (Manage Deliveries)
+usecase "Brows availble wines" as (Brows availble wines)
+usecase "Provide Name Of Dish" as (Provide Name Of Dish)
+
+actor "Employee" as Employee
+actor "Sales Staff" as SalesStaff
+actor "Marketing Staff" as MarketingStaff
+actor "Customer" as Customer
+actor "Gefen System" as GefenSystem
+actor "Gal Galim" as GalGalim
+
+GalGalim -- (Manage Deliveries)
+SalesStaff -- (Place Order)
+MarketingStaff -- (Manage Wine Information)
+MarketingStaff -- (Link Wines to Types)
+SalesStaff -- (Generate Unproductive Employees Report)
+SalesStaff -- (Generate Wine Recommendation Report for Customers)
+GefenSystem -- (Send XML Data)
+GefenSystem -- (Receive JSON Data)
+Customer -- (Place Order)
+Employee -- (View)
+MarketingStaff -- (Recommend Occasions)
+MarketingStaff -- (Provide Name Of Dish)
+
+(Recommend Occasions) ..> (Provide Location) : <<Include>>
+(Recommend Occasions) ..> (Provide General Description of Occasion) : <<Include>>
+(Provide Name Of Dish) ..> (provide food recipes) : <<Include>>
+
+ 
+(joint order) ..> (Place Regular Order) : <<Extend>>
+(Brows availble wines) ..> (Place Order) : <<Extend>>
+ 
+(Update Wine Types) --|> (Manage Wine Information) 
+(Update Wine Details) --|> (Manage Wine Information) 
+(Modify Price Details)  --|> (Manage Wine Information) 
+(Modify Product Image) --|> (Manage Wine Information)
+
+(View Wine Information) --|> (View) 
+(View Customer Information) --|> (View) 
+(View Order Status) --|> (View) 
+
+(Place Urgent Order) --|> (Place Order) 
+(Place Regular Order) --|> (Place Order) 
+
+SalesStaff --|> Employee 
+MarketingStaff --|> Employee
+@enduml

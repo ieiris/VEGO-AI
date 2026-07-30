@@ -1,0 +1,217 @@
+
+@startuml
+class Order {
+  - orderNumber: String
+  - orderDate: Date
+  - currentStatus: OrderStatus
+  - shipmentDate: Date
+  - orderEmployee:SalesEmployee
+  + calculateTotalPrice(): Float
+}
+
+class UrgentOrder {
+  - priorityLevel: Integer
+  - expectedDeliveryTime: Date
+  - customerID:String
+}
+
+class RegularOrder {
+  - mainCustomer: Customer
+  - ListCustomers: Customer
+  + addJointCustomer(customer: Customer)
+}
+
+class Wine {
+  - catalogNumber: String
+  - manufactureNumber: String
+  - name: String
+  - description: String
+  - productionYear: Integer
+  - pricePerBottle: Float
+  - sweetnessLevel: SweetnessLevel
+  - productImage: String
+  - wineTypeId: String
+  + addFoodPairing(food: String, recipes: List<String>)
+}
+
+class Customer {
+  - ID: String
+  - FirstName: String
+  - LastName: String
+  - phoneNumber: String
+  - deliveryAddressStreer: String
+  - deliveryAddressCity: String
+  - deliveryAddressBillding: Integer
+  - email: String
+  - dateOfFirstContact: Date
+  + makeOrder()
+}
+
+class Employee {
+  - ID: String
+  - FirstName: String
+  - LastName: String
+  - phoneNumber: String
+  - officeAddressStreer: String
+  - officeAddressCity: String
+  - officeAddressBillding: Integer
+  - email: String
+  - employmentStartDate: Date
+  + viewWines(): List<Wine>
+  + makeOrder()
+}
+
+class SalesEmployee {
+  + placeOrder(order: Order)
+  + generateUnproductiveEmployeesReport(startDate: Date, endDate: Date): Report
+  + generateWineRecommendationReport(customerPreferences: Map): List<Wine>
+}
+
+class MarketingEmployee {
+  + updateWineInfo(wine: Wine, newInfo: Map)
+  + recommendWineOccasions(wineType: WineType, occasion: Occasion)
+  + modifyPriceDetails(wine: Wine, newPrice: Float)
+  + modifyProductImages(wine: Wine, newImage: String)
+}
+
+class Manufacture {
+  - manufactureNumber: String
+  - fullName: String
+  - contactPhoneNumber: String
+  - AddressStreer: String
+  - AddressCity: String
+  - AddressBillding: Integer
+  - email: String
+}
+
+class StorageLocation {
+  - storageNumber: String
+  - name: String
+  - bottleCount: Integer
+}
+
+class CheersSystem {
+  + exportInventoryReportInJasonToGefen(f: File): Boolean
+  + importInfoFromGefenInXML(f: File): Boolean
+  + updateBottleCountWine (newCount:Integer)
+  
+}
+
+class Gefen {
+  + generateMonthlyReport(wine: Wine, manufacturer: Manufacturer)
+}
+
+enum Occasion {
+  marriage proposal
+  nature hike
+  cheese hight
+}
+
+WineType ..> Occasion : uses
+enum WineTypeName {
+  red
+white
+sparkling
+fortified
+rose
+dessert
+}
+
+WineType ..> WineTypeName: uses
+enum Location {
+  inside
+  outside
+}
+
+WineType ..> Location : uses 
+
+enum Season {
+    autum
+    summer
+    winter
+    spring
+}
+WineType ..> Season : uses
+
+enum PriorityLevel {
+  1
+  2
+  3
+  4
+  5
+}
+UrgentOrder ..> PriorityLevel : uses
+
+class Report {
+  + generate(): String
+}
+
+enum OrderStatus {
+  InProcess
+  Dispatched
+  Delivered
+  Paid
+  Suspended
+  Canceled
+}
+Order ..> OrderStatus : uses
+
+enum SweetnessLevel {
+  Dry
+  SemiDry
+  SemiSweet
+  Sweet
+}
+Wine ..> SweetnessLevel : uses
+
+class WineType {
+  - serialNumber: String
+  - name: String
+  - foodPairings: Map<String, List<String>>
+  - occasionRecommendations: List<Occasion>
+  - season: Season
+  - location:Location
+}
+
+
+
+' מחלקת קשר (Association Class)
+class CustomerDoRegularOrder {
+    - orderNumber: String
+    - customerId: String
+    - quantity: Integer
+    - wineType:wineType:String
+}
+RegularOrder "1" -- "*" CustomerDoRegularOrder
+Customer "1"-- "*" CustomerDoRegularOrder
+
+' מחלקת קשר (Association Class)
+class WineStorageLocation {
+    - catalogNumber: String
+    - manufactureNumber: String
+    - storageNumber: String
+    - bootleCount:Integer
+    + updateBottleCountInLocation (newCount:Integer)
+}
+Wine "1" -- "*" WineStorageLocation
+StorageLocation "1"-- "*" WineStorageLocation
+
+
+UrgentOrder "1" -- "1" Customer
+Wine "1" -- "1" Manufacture
+Wine "M" -- "1" WineType
+SalesEmployee "1" -- "0..*" Order
+UrgentOrder --|> Order
+RegularOrder --|> Order
+SalesEmployee --|> Employee
+MarketingEmployee --|> Employee
+CheersSystem *-- Employee : Composition
+CheersSystem *-- StorageLocation : Composition
+CheersSystem *-- Customer : Composition
+CheersSystem *-- Order : Composition
+CheersSystem *-- Wine : Composition
+CheersSystem *-- Manufacture : Composition
+CheersSystem *-- Gefen : Composition
+
+
+@enduml

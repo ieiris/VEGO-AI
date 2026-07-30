@@ -1,0 +1,194 @@
+@startuml
+
+skinparam linetype polyline
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam handwritten false
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #333333
+    BorderColor #333333
+    FontSize 12
+    AttributeFontSize 11
+    OperationFontSize 11
+}
+
+skinparam note {
+    BackgroundColor #FFFFAA
+    BorderColor #999900
+    FontSize 11
+}
+
+' --- System Controller ---
+class "System" as ParkWiseSystem << (C,#ABF5D1) >> {
+    +generateAnnualSummaryReport(year: int): AnnualSummaryReport
+    +generateCustomerClubGrowthReport(year: int): ClubGrowthReport
+    +updatePriceListsFromIRS(json: String): void
+}
+
+' --- Core Entities ---
+
+class ParkingLot << (C,#ABF5D1) >> {
+    -lotNumber: int
+    -name: String
+    -address: String
+    -city: String
+    --
+    +getDailyIncome(date: Date): float
+    +countOtherColorVehicles(year: int): int
+}
+
+class Client << (C,#ABF5D1) >> {
+    -clientID: int
+    -firstName: String
+    -lastName: String
+    -mobilePhone: String
+}
+
+class ClubMember << (C,#ABF5D1) >> {
+    -membershipID: int
+    -membershipDate: Date
+    --
+    +applyClubDiscount(amount: float): float
+}
+
+class Vehicle << (C,#ABF5D1) >> {
+    -licensePlate: String
+    -type: String
+    -weight: float
+    -color: VehicleColor
+    -size: VehicleSize
+}
+
+class VehiclePhoto << (C,#ABF5D1) >> {
+    -photoID: int
+    -licensePlate: String
+    -viewType: ViewType
+    -image: Image
+}
+
+class ParkingSpace << (C,#ABF5D1) >> {
+    -spaceID: int
+    -lotNumber: int
+    -floor: int
+    -xCoord: int
+    -yCoord: int
+    -size: VehicleSize
+}
+
+class Conveyor << (C,#ABF5D1) >> {
+    -conveyorID: int
+    -lotNumber: int
+    -maxWeight: float
+    -floor: int
+    -xCoord: int
+    -yCoord: int
+}
+
+class ParkingSession << (C,#ABF5D1) >> {
+    -sessionID: Long
+    -licensePlate: String
+    -startTime: DateTime
+    -endTime: DateTime
+    -chargedAmount: float
+    -status: SessionStatus
+}
+
+class PriceList << (C,#ABF5D1) >> {
+    -priceListID: int
+    -year: int
+    -priceFirstHour: float
+    -priceAdditionalHour: float
+    -priceFullDay: float
+}
+
+' --- Association Classes ---
+
+class LotPriceHistory << (C,#ABF5D1) >> {
+    -historyID: int
+    -lotNumber: int
+    -priceListID: int
+    -effectiveDate: Date
+}
+
+class PreferredLotSelection << (C,#ABF5D1) >> {
+    -selectionID: int
+    -clientID: int
+    -lotNumber: int
+    -selectionDate: DateTime
+}
+
+' --- Enums ---
+
+class "VehicleColor" as E_Color << (E,#FFCC99) >> {
+    White
+    Black
+    Silver
+    Blue
+    Other
+}
+
+class "VehicleSize" as E_Size << (E,#FFCC99) >> {
+    Small
+    Medium
+    Large
+}
+
+class "ViewType" as E_View << (E,#FFCC99) >> {
+    Front
+    Rear
+    Side
+}
+
+class "SessionStatus" as E_Status << (E,#FFCC99) >> {
+    Active
+    Paid
+    Retrieving
+    Completed
+}
+
+' --- Relationships ---
+
+' 1. Inheritance
+Client <|-- ClubMember
+note on link
+{Disjoint, Incomplete}
+end note
+
+' 2. System Dependencies
+ParkWiseSystem .down.> ParkingLot
+ParkWiseSystem .down.> Client
+
+' 3. Composition
+ParkingLot "1" *-down- "0..*" ParkingSpace
+ParkingLot "1" *-right- "0..*" Conveyor
+
+' 4. Vehicle Ownership
+Client "1" -down- "0..*" Vehicle : owns >
+' UPDATED: Multiplicity changed to 0..3
+Vehicle "1" *-right- "0..3" VehiclePhoto : described by >
+
+' 5. Enum Links
+Vehicle ..> E_Color
+Vehicle ..> E_Size
+VehiclePhoto ..> E_View
+ParkingSpace ..> E_Size
+ParkingSession ..> E_Status
+
+' 6. Association Classes
+Client "1" -right- "0..*" ParkingLot
+(Client, ParkingLot) .. PreferredLotSelection
+
+ParkingLot "1" -left- "0..*" PriceList
+(ParkingLot, PriceList) .. LotPriceHistory
+
+' 7. Operational Transaction
+ParkingLot "1" -- "0..*" ParkingSession : hosts >
+Vehicle "1" -- "0..*" ParkingSession : parks in >
+ParkingSpace "1" -- "0..*" ParkingSession : occupied by >
+
+' UPDATED: Added relation to Conveyor
+ParkingSession "0..*" -- "0..1" Conveyor : handled by >
+
+@enduml

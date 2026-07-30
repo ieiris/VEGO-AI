@@ -1,0 +1,125 @@
+Final:
+@startuml
+skinparam classAttributeIconSize 0
+left to right direction
+
+enum VehicleSize {
+SMALL
+MEDIUM
+LARGE
+}
+
+enum VehicleColor {
+WHITE
+BLACK
+SILVER
+BLUE
+OTHER
+}
+
+enum ParkingSpaceSize {
+SMALL
+MEDIUM
+LARGE
+}
+
+class System {
++runOptimizationAlgorithm(vehicleNumber: String, conveyorId: int): ParkingSpace
++generateAnnualSummaryReport(year: int, format: ReportFormat): Report
++generateCustomerClubGrowthReport(year: int): Report
+}
+
+class ParkingLot {
+-lotId: int
+-name: String
+-address: String
+-city: String
+-availableSpaces: int
+}
+
+class ParkingSpace {
+-id: int
+-floorNumber: int
+-x: int
+-y: int
+-size: ParkingSpaceSize
+}
+
+class Conveyor {
+-id: int
+-floorNumber: int
+-x: int
+-y: int
+-maxVehicleWeightKg: double
+}
+
+class PriceList {
+-id: int
+-firstHourPrice: double
+-additionalHourPrice: double
+-fullDayPrice: double
+}
+
+class Client {
+-clientId: int
+-firstName: String
+-lastName: String
+-mobilePhone: String
+}
+
+class ClientClubMembership {
+-membershipId: int
+-registrationDate: Date
+-discountRate: double
+}
+
+class PreferredParkingLotSelection {
+-id: int
+-selectionDate: Date
+}
+
+class Vehicle {
+-vehicleNumber: String
+-type: String
+-color: VehicleColor
+-size: VehicleSize
+-weightKg: double
+-frontPhoto: Image
+-rearPhoto: Image
+-sidePhoto: Image
+}
+
+class ParkingSession {
+-sessionId: int
+-startTime: DateTime
+}
+
+class Receipt {
+-receiptId: int
+-totalHours: double
+-priceRate: double
+-finalAmount: double
+}
+
+ParkingLot "1" o-- "0..*" ParkingSpace : spaces
+ParkingLot "1" -- "0..*" Conveyor : conveyors
+ParkingLot "1" -- "0..*" ParkingSession : sessions
+ParkingLot "1" -- "1..*" PriceList : priceLists
+
+Client "1" -- "0..*" Vehicle : owns
+Client "1" -- "0..*" ParkingSession
+
+Vehicle "1" -- "0..*" ParkingSession
+
+ParkingSession "1" -- "0..1" Receipt : receipt
+ParkingSession "0..*" --> "1" ParkingSpace
+
+Client "1" -- "0..1" ClientClubMembership
+ClientClubMembership "1" -- "0..*" PreferredParkingLotSelection
+PreferredParkingLotSelection "0..*" -- "1" ParkingLot : preferredParkingLot
+
+Vehicle ..> VehicleColor
+Vehicle ..> VehicleSize
+ParkingSpace ..> ParkingSpaceSize
+
+@enduml

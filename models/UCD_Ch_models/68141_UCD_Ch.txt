@@ -1,0 +1,71 @@
+@startuml
+
+left to right direction
+
+actor Customer
+actor SalesStaff
+actor "Marketing Employee" as MarketingEmployee
+actor "External System: GalGalim" as GalGalim
+actor "External System: Gefen" as Gefen
+
+usecase "Initiate Order" as U0
+usecase "Place Order" as U1
+usecase "Select Wine" as U1A
+usecase "Assign Order" as U1B
+usecase "Specify Urgent/Regular" as U1C
+usecase "Enter Customer Details" as U1D
+usecase "Browse Available Wines" as U1F
+usecase "Joint Order Management" as U1E
+
+usecase "Update Wine Information" as U2
+usecase "Edit Wine Details" as U2A
+usecase "Link Wines to Types" as U2B
+usecase "Modify Prices & Images" as U2C
+
+usecase "View Wine Information" as U3
+
+usecase "Manage Inventory" as U5
+usecase "Receive Monthly XML from Gefen" as U5A
+usecase "Receive Weekly Updates for quantity" as U5D
+usecase "Update Inventory" as U5B
+usecase "Track Stock Locations" as U5C
+
+
+usecase "Generate Unproductive Employees Report" as U6
+usecase "Generate Current Inventory Report" as U7
+usecase "Generate Wine Recommendation Report" as U8
+
+usecase "Recommend Wine occasions" as U9
+
+' Order Process
+Customer --> U0
+Customer --> U3
+U0 -u-> U1 : <<include>>
+SalesStaff --> U1
+U1 --> U1A : <<include>>
+U1 --> U1B : <<include>>
+U1 --> U1C : <<include>>
+U1 --> U1D : <<include>>
+U1 --> U1F : <<include>>
+U1 -u-|> U1E : <<extend>>
+U1 -->  U5B  : <<include>>
+
+MarketingEmployee --> U9
+' Information and Inventory Management
+MarketingEmployee --> U2
+U2 --> U2A : <<include>>
+U2 --> U2B : <<include>>
+U2 --> U2C : <<include>>
+SalesStaff --> U3
+"GalGalim" -u-|> U1 : <<outside scope>>
+Gefen --> U5A : <<provide Monthly XML  to system>> 
+Gefen --> U5D : <<provide Weekly Updates>>
+U5 -->U7 : <<include>>
+U5 -->U5C : <<include>>
+
+' Report Generation
+SalesStaff --> U6
+SalesStaff --> U8
+U7 -u-> Gefen : <<output as JSON>>
+
+@enduml

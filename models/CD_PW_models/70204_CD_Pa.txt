@@ -1,0 +1,193 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 100
+skinparam ranksep 100
+
+title ParkWise Lot System - Class Diagram
+
+' ========================
+' ENUMS
+' ========================
+
+enum VehicleColor {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+enum Size {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+enum ConveyorStatus {
+    FREE
+    MAINTENANCE
+    PARKING
+    RETRIEVING
+}
+
+enum PayOptionsStatus{
+    OPEN
+    PENDING
+    APPROVED
+    DECLINED
+}
+
+enum SessionStatus {
+    Arrival
+    OnConveyor
+    Parked
+    WaitPayment
+    Exiting
+    Completed
+}
+
+enum ReportFormat {
+    PDF
+    XML
+}
+
+' ========================
+' CLASSES
+' ========================
+
+class System {
+    + generateAnnualSummaryReport(year: int, format: ReportFormat): File
+    + generateClubGrowthReport(year: int): File
+    + importPriceList(jsonFile: File): void
+}
+
+class SystemParameters {
+    - paramID: int
+    - paramName: String
+    - paramValue: String
+}
+
+class Client {
+    - clientID: int
+    - phoneNumber: String
+    - firstName: String
+    - lastName: String
+    - clubJoinDate: DateTime
+}
+
+class ClubPreferredLot {
+    - selectionDate: DateTime
+}
+
+class Vehicle {
+    - vehicleNumber: String
+    - vehicleType: String
+    - weight: float
+    - color: VehicleColor
+    - sizeCategory: Size
+    - photoFront: String
+    - photoRear: String
+    - photoSide: String
+}
+
+class ParkingSession {
+    - sessionID: int
+    - startTime: DateTime
+    - endTime: DateTime
+    - paymentAmount: Decimal
+    - currentStatus: SessionStatus
+    - paymentStatus: PayOptionsStatus
+}
+
+class SessionConveyorLog {
+    - logID: int
+}
+
+class ParkingLot {
+    - lotID: int
+    - lotName: String
+    - address: String
+    - city: String
+}
+
+class ParkingSpace {
+    - spaceID: int
+    - floorNumber: int
+    - xCoordinate: int
+    - yCoordinate: int
+    - spaceSize: Size
+}
+
+class Conveyor {
+    - conveyorID: int
+    - maxWeightCapacity: float
+    - floorNumber: int
+    - xCoordinate: int
+    - yCoordinate: int
+    - status: ConveyorStatus
+}
+
+class LotPriceHistory {
+    - historyID: int
+    - effectiveDate: DateTime
+}
+
+class PriceList {
+    - priceListID: int
+    - publicationDate: DateTime
+    - priceFirstHour: Decimal
+    - additionalHourPrice: Decimal
+    - fullDayPrice: Decimal
+}
+
+' ========================
+' ASSOCIATIONS
+' ========================
+
+'--- System Composition ---
+System "1" *-d- "1..*" ParkingLot : contains
+System "1" *-d- "0..*" ParkingSession : contains
+System "1" *-d- "0..*" Client : contains
+System "1" *-d- "0..*" Vehicle : contains
+System "1" *-d- "1..*" PriceList : contains
+System "1" *-d- "1..*" SystemParameters : contains
+
+'--- Client & Club ---
+Client "1" -d-> "0..*" ClubPreferredLot : logs
+ClubPreferredLot "0..*" -r-> "1" ParkingLot : selects
+
+'--- Vehicle & Session ---
+Client "1" -r-> "1..*" Vehicle : owns
+Vehicle "1" -r-> "0..*" ParkingSession : for
+
+'--- Infrastructure ---
+ParkingLot "1" *-- "1..*" ParkingSpace : contains
+ParkingLot "1" *-- "1..*" Conveyor : contains
+
+'--- Session to Infrastructure ---
+ParkingSession "0..*" -u-> "1" ParkingLot : occurs at
+ParkingSession "0..1" -r-> "0..1" ParkingSpace : occupies
+
+'--- Conveyor History ---
+ParkingSession "1" -r-> "0..*" SessionConveyorLog : tracks
+Conveyor "1" -u-> "0..*" SessionConveyorLog : utilized in
+
+'--- Pricing History ---
+ParkingLot "1" -r-> "1..*" LotPriceHistory : maintains history
+LotPriceHistory "0..*" -r-> "1" PriceList : adopts
+
+' ========================
+' ENUM CONNECTIONS
+' ========================
+
+Vehicle ..> VehicleColor
+Vehicle ..> Size
+ParkingSpace ..> Size
+Conveyor ..> ConveyorStatus
+ParkingSession ..> SessionStatus
+System ..> ReportFormat
+ParkingSession  ..> PayOptionsStatus
+
+@enduml

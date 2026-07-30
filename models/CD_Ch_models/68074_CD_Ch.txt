@@ -1,0 +1,201 @@
+@startuml
+' Enums
+enum OrderStatus {
+    IN_PROCESS
+    DISPATCHED
+    DELIVERED
+    PAID
+    SUSPENDED
+    CANCELED
+}
+
+enum Seasons {
+    SPRING
+    SUMMER
+    FALL
+    WINTER
+}
+
+enum SweetnessLevel {
+    DRY
+    SEMI_DRY
+    SEMI_SWEET
+    SWEET
+}
+
+enum Location {
+    INDOOR
+    OUTDOOR
+}
+
+' Abstract Classes/Interfaces
+abstract class Person {
+    -ID: Int
+    -firstName: String
+    -lastName: String
+    -phone: Int
+    -email: String
+}
+
+class Employee {
+    -officeCity: String
+    -officeStreet: String
+    -officeHouseNumber: String
+    -employmentStartDate: Date
+    +viewSystemDetails()
+}
+
+class SaleEmployee {
+    +placeOrder()
+    +generateUnproductiveEmployeesReport(startDate: Date, endDate: Date)
+    +generateWineRecommendationReport(customerID: String)
+    +generateInventoryReport(): String
+}
+
+class Customer {
+    -deliveryCity: String
+    -deliveryStreet: String
+    -deliveryHouseNumber: String
+    -firstContactDate: Date
+}
+
+class MarketingEmployee {
+    +updateWineInformation(wine: Wine)
+    +updateWineTypeInformation(wineType: WineType)
+    +addFoodPairing(wineType: WineType, foodPairing: FoodPairing)
+    +addDrinkingOccasion(wineType: WineType, occasion: DrinkingOccasion)
+    +recommendDrinkingOccasions(wineType: WineType)
+    +importGefenData(xmlData: String)
+}
+
+abstract class Order {
+    -orderNumber: Int
+    -orderDate: Date
+    -status: OrderStatus
+    -shipmentDate: Date
+    +updateOrderStatus(status: OrderStatus)
+    +setAssignedEmployee(employee: SaleEmployee)
+    +setShipmentDate(date: Date)
+}
+
+class CustomerOrder {
+    -customer: Customer
+    -orderItems: List<OrderItem>
+}
+
+class RegularOrder {
+    -mainCustomer: Customer
+    -customerOrders: List<CustomerOrder>
+    +addCustomerToOrder(customer: Customer, items: List<OrderItem>)
+    +setMainCustomer(customer: Customer)
+}
+
+class UrgentOrder {
+    -priorityLevel: Int {priorityLevel >= 1 && priorityLevel <= 5}
+    -expectedDeliveryTime: DateTime
+    -customerOrder: CustomerOrder
+    +setPriorityLevel(level: Int)
+    +setExpectedDeliveryTime(time: DateTime)
+}
+
+class OrderItem {
+    -quantity: Int
+    -wine: Wine
+    +updateQuantity(newQuantity: Int)
+}
+
+class Wine {
+    -catalogNumber: Int
+    -name: String
+    -description: String
+    -productionYear: Int
+    -pricePerBottle: Float
+    -sweetnessLevel: SweetnessLevel
+    -productImage: String
+    +setPrice(price: Float)
+    +setProductImage(image: String)
+}
+
+class WineType {
+    -serialNumber: Int
+    -name: String
+    +addFoodPairing(foodPairing: FoodPairing)
+    +addDrinkingOccasion(occasion: DrinkingOccasion)
+}
+
+class WineStorage {
+    -wineType: WineType
+    -quantity: Int
+    -location: StorageLocation
+    +updateQuantity(newQuantity: Int)
+}
+
+class FoodPairing {
+    -dishName: String
+    -recipeURLs: List<String> {recipeURLs.size() >= 0 && recipeURLs.size() <= 5}
+}
+
+class DrinkingOccasion {
+    -description: String
+    -season: Seasons
+    -location: Location
+}
+
+class Manufacturer {
+    -manufacturerID: String
+    -manufacturerName: String
+    -manufacturerPhone: Int
+    -manufacturerCity: String
+    -manufacturerStreet: String
+    -manufacturerHouseNumber: String
+    -email: String
+}
+
+class StorageLocation {
+    -locationNumber: Int
+    -name: String
+}
+
+
+
+' Inheritance relationships
+Person <|-- Employee
+Person <|-- Customer
+Employee <|-- MarketingEmployee
+Employee <|-- SaleEmployee
+Order <|-- RegularOrder
+Order <|-- UrgentOrder
+
+' Employee can be a Customer
+Employee "*" -- "1" Customer : isAlso >
+
+' Enums relationships
+Order -- OrderStatus
+Wine -- SweetnessLevel
+DrinkingOccasion -- Location
+DrinkingOccasion -- Seasons
+
+' Associations with multiplicities and labels
+Order "*" -- "1" SaleEmployee : assignedTo >
+RegularOrder "1" *-- "*" CustomerOrder : contains >
+UrgentOrder "1" *-- "1" CustomerOrder : contains >
+CustomerOrder "1" *-- "1" Customer : for >
+CustomerOrder "1" *-- "*" OrderItem : contains >
+Manufacturer "1" *-- "*" Wine : produces >
+
+' Composition relationships
+WineType "1" *-- "*" FoodPairing : has >
+WineType "1" *-- "*" DrinkingOccasion : has >
+
+
+
+' Regular associations
+OrderItem "*" -- "1" Wine : references >
+Wine "*" -- "1" WineType : categorizedAs >
+MarketingEmployee "*" -- "*" Wine : manages >
+MarketingEmployee "*" -- "*" WineType : manages >
+
+' Simplified storage tracking
+StorageLocation "1" -- "*" WineStorage
+WineType "1" -- "*" WineStorage
+@enduml

@@ -1,0 +1,281 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "parkwise",
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "canonical_citation": "For each parking lot, the system will store a unique number, name, address, and city.",
+      "run1_guideline_id": "G1",
+      "run1_guideline_name": "Store Parking Lot Information",
+      "run1_guideline": {
+        "description": "The system stores details about each parking lot, including unique identifier information.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "For each parking lot, the system will store a unique number, name, address, and city."
+      },
+      "run2_guideline_id": "G1",
+      "run2_guideline_name": "Store Parking Lot Details",
+      "run2_guideline": {
+        "description": "This use case involves storing unique identifiers and location details for each parking lot.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.95,
+        "citation": "For each parking lot, the system will store a unique number, name, address, and city."
+      },
+      "run3_guideline_id": "G1",
+      "run3_guideline_name": "Store Parking Lot Details",
+      "run3_guideline": {
+        "description": "Represents the use case of storing each parking lot's unique attributes like number, name, address, and city.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "For each parking lot, the system will store a unique number, name, address, and city."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Manage Lots Details, Actor: Administrator",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C2",
+      "canonical_citation": "The system will hold the number of available spaces in each parking lot (0 if full).",
+      "run1_guideline_id": "G3",
+      "run1_guideline_name": "Store Available Spaces",
+      "run1_guideline": {
+        "description": "The system keeps track of the available spaces in each parking lot.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+      },
+      "run2_guideline_id": "G3",
+      "run2_guideline_name": "Track Available Parking Spaces",
+      "run2_guideline": {
+        "description": "This use case monitors the number of available parking spaces in each parking lot.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+      },
+      "run3_guideline_id": "G3",
+      "run3_guideline_name": "Track Available Spaces",
+      "run3_guideline": {
+        "description": "Represents the use case of tracking the number of available parking spaces.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.85,
+        "citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": null,
+      "match_confidence": "None",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C3",
+      "canonical_citation": "A gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time.",
+      "run1_guideline_id": "G4",
+      "run1_guideline_name": "Gate Sensor Installation",
+      "run1_guideline": {
+        "description": "Gate sensors collect vehicle data upon entry and exit.",
+        "related_template_id": "T4",
+        "mapping_certainty": 0.7,
+        "citation": "A gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time."
+      },
+      "run2_guideline_id": "G4",
+      "run2_guideline_name": "Gate Sensor Interaction",
+      "run2_guideline": {
+        "description": "The gate sensor interacts with the system to provide real-time data on vehicle movements.",
+        "related_template_id": "T4",
+        "mapping_certainty": 0.8,
+        "citation": "A gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time."
+      },
+      "run3_guideline_id": "G4",
+      "run3_guideline_name": "Install Gate Sensor",
+      "run3_guideline": {
+        "description": "Represents the system component 'Gate Sensor', interacting with the system for vehicle arrival and departure data.",
+        "related_template_id": "T1",
+        "mapping_certainty": 0.7,
+        "citation": "To this end, a gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Send Vehicle Arrival/Departure Data, Actor: Gate Sensor",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C4",
+      "canonical_citation": "When a vehicle arrives, the system will get its data (from the gate sensor) and search the database for the corresponding vehicle number.",
+      "run1_guideline_id": "G5",
+      "run1_guideline_name": "Vehicle Arrival Processing",
+      "run1_guideline": {
+        "description": "The system uses gate sensor data to verify vehicle records.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "When a vehicle arrives, the system will get its data (from the gate sensor) and search the database for the corresponding vehicle number."
+      },
+      "run2_guideline_id": "G5",
+      "run2_guideline_name": "Vehicle Data Retrieval Upon Arrival",
+      "run2_guideline": {
+        "description": "The system retrieves vehicle details using data from the gate sensor to match with the database.",
+        "related_template_id": "T5",
+        "mapping_certainty": 0.75,
+        "citation": "When a vehicle arrives, the system will get its data (from the gate sensor) and search the database for the corresponding vehicle number."
+      },
+      "run3_guideline_id": "G5",
+      "run3_guideline_name": "Process Vehicle Arrival",
+      "run3_guideline": {
+        "description": "Represents the use case of processing vehicle arrival data to check if the vehicle is registered in the database.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "When a vehicle arrives, the system will get its data (from the gate sensor) and search the database for the corresponding vehicle number."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Search Database for Vehicle, Actor: Gate Sensor",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C5",
+      "canonical_citation": "If the vehicle is found, the system will instruct the gate sensor to open the barrier.",
+      "run1_guideline_id": "G6",
+      "run1_guideline_name": "Gate Sensor Barrier Control",
+      "run1_guideline": {
+        "description": "The system instructs the gate sensor to open barriers for recognized vehicles.",
+        "related_template_id": "T4",
+        "mapping_certainty": 0.7,
+        "citation": "If the vehicle is found, the system will instruct the gate sensor to open the barrier."
+      },
+      "run2_guideline_id": "G6",
+      "run2_guideline_name": "Instruct Gate Sensor to Open Barrier When Vehicle Found",
+      "run2_guideline": {
+        "description": "The system instructs the gate sensor to allow entry if the vehicle is recognized in the database.",
+        "related_template_id": "T5",
+        "mapping_certainty": 0.7,
+        "citation": "If the vehicle is found, the system will instruct the gate sensor to open the barrier."
+      },
+      "run3_guideline_id": "G6",
+      "run3_guideline_name": "Open Barrier for Registered Vehicles",
+      "run3_guideline": {
+        "description": "Represents the use case of opening the barrier when the vehicle is found in the system.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.85,
+        "citation": "If the vehicle is found, the system will instruct the gate sensor to open the barrier."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Send Instructions to Open Barriers, Actor: Gate Sensor",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C6",
+      "canonical_citation": "If the barrier does not open, the client will have to follow the instructions displayed at the parking lot entrance.",
+      "run1_guideline_id": "G7",
+      "run1_guideline_name": "Client Instructions for Vehicle Entry",
+      "run1_guideline": {
+        "description": "Instructions are displayed to clients if the vehicle entry is not granted automatically.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "If the barrier does not open, the client will have to follow the instructions displayed at the parking lot entrance."
+      },
+      "run2_guideline_id": "G7",
+      "run2_guideline_name": "Instructions for Clients When Barrier Does Not Open",
+      "run2_guideline": {
+        "description": "This use case provides instructions for clients if the barrier fails to open.",
+        "related_template_id": "T6",
+        "mapping_certainty": 0.85,
+        "citation": "If the barrier does not open, the client will have to follow the instructions displayed at the parking lot entrance."
+      },
+      "run3_guideline_id": "G7",
+      "run3_guideline_name": "Manage Barrier Failure",
+      "run3_guideline": {
+        "description": "Represents the use case for handling situations when the barrier does not open and the client must follow instructions.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.65,
+        "citation": "If the barrier does not open, the client with have to follow the instructions displayed at the parking lot entrance."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Provide Client Details, Actor: Client",
+      "match_confidence": "Medium",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C7",
+      "canonical_citation": "These instructions guide the client to access the system and provide the required details, including first name, last name, mobile phone number, and three photos of the vehicle (front, rear, and side views).",
+      "run1_guideline_id": "G8",
+      "run1_guideline_name": "Client Data Entry for Vehicle Verification",
+      "run1_guideline": {
+        "description": "The system requires client input including personal and vehicle data for entry approval.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "These instructions guide the client to access the system and provide the required details, including first name, last name, mobile phone number, and three photos of the vehicle (front, rear, and side views)."
+      },
+      "run2_guideline_id": "G8",
+      "run2_guideline_name": "Guide Clients to Provide Required Details",
+      "run2_guideline": {
+        "description": "This use case guides clients to submit personal and vehicle details through the system.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "These instructions guide the client to access the system and provide the required details, including first name, last name, mobile phone number, and three photos of the vehicle (front, rear, and side views)."
+      },
+      "run3_guideline_id": "G8",
+      "run3_guideline_name": "Provide Client Details",
+      "run3_guideline": {
+        "description": "Represents the use case of clients providing additional required details and uploading vehicle images.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "These instructions guide the client to access the system and provide the required details, including first name, last name, mobile phone number, and three photos of the vehicle (front, rear, and side views)."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Provide Client Details, Actor: Client",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C8",
+      "canonical_citation": "Based on the uploaded photos, the system automatically extracts the vehicle’s details: number, type (as text), color, size (small, medium, or large), and weight (in kg).",
+      "run1_guideline_id": "G9",
+      "run1_guideline_name": "Automatic Vehicle Detail Extraction",
+      "run1_guideline": {
+        "description": "The system extracts and utilizes vehicle data from client-uploaded photos.",
+        "related_template_id": "T5",
+        "mapping_certainty": 0.6,
+        "citation": "Based on the uploaded photos, the system automatically extracts the vehicle’s details: number, type (as text), color, size (small, medium, or large), and weight (in kg)."
+      },
+      "run2_guideline_id": "G9",
+      "run2_guideline_name": "Automatic Extraction of Vehicle Details",
+      "run2_guideline": {
+        "description": "The system uses uploaded photos to automatically derive key vehicle specifications.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "Based on the uploaded photos, the system automatically extracts the vehicle’s details: number, type (as text), color, size (small, medium, or large), and weight (in kg)."
+      },
+      "run3_guideline_id": "G9",
+      "run3_guideline_name": "Extract Vehicle Details from Photos",
+      "run3_guideline": {
+        "description": "Represents the use case for automatically extracting vehicle details based on uploaded photos.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "Based on the uploaded photos, the system automatically extracts the vehicle’s details: number, type (as text), color, size (small, medium, or large), and weight (in kg)."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Extract Vehicle Details, Incl: Provide Client Details-Extract Vehicle Details",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    }
+  ],
+  "unassigned_base_guidelines": [
+    "UC: Manage Parking Session, Actor: Gate Sensor",
+    "UC: Request to Move Vehicle, Actor: Conveyors Controller",
+    "UC: Update Conveyor Final Location, Actor: Conveyors Controller",
+    "UC: Get SMS with Parking Details, Actor: Client",
+    "UC: View Parking Details, Actor: Client",
+    "UC: Request Parking End, Actor: Client",
+    "UC: Request Payment, Actor: Client",
+    "UC: Import Price Lists, Actor: IRS",
+    "UC: Request to Handle Payment, Actor: Payment Gateway",
+    "UC: Get Payment Approval, Actor: Payment Gateway",
+    "UC: Issue a Receipt, Actor: Client",
+    "UC: Join to the Club, Actor: Client",
+    "I: Client-Member",
+    "UC: Choose Parking Lots, Actor: Member, Incl: Choose Parking Lots-Join to the Club",
+    "UC: Get Benefits, Actor: Member, Ext: Request to Handle Payment-Get Benefits",
+    "UC: Generate Annual Summary Report, Actor: Administrator",
+    "UC: Generate Customer Club Growth Report, Actor: Administrator"
+  ]
+}

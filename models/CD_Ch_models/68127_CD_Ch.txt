@@ -1,0 +1,111 @@
+@startuml
+enum orderType{
+    regular, urgent
+}
+
+enum currentDeliveryStatus {
+    in_process, dispatched, delivered, paid, suspended, canceled
+}
+
+enum orderPriorityLevel {
+    1, 2, 3, 4, 5
+}
+
+enum wineSweetnessLevel {
+    dry, semi-dry, semi-sweet, sweet
+}
+
+enum wineType {
+    red, white, sparkling, fortified, rose, dessert
+}
+
+enum season {
+    summer, winter, spring, fall
+}
+
+enum location {
+    indoor, outdoor
+}
+
+class Address {
+    -country: String
+    -city: String
+    -streetNumber: String
+}
+
+class Order {
+    -orderNumber: String
+    -orderDate: Date
+    -orderType: orderType
+    -currentStatus: currentDeliveryStatus
+    -shipmentDate: Date
+    -priorityLevel: orderPriorityLevel
+    -employeeInformation: Employee
+}
+
+class Employee {
+    -employeeID: String
+    -name: String
+    -phoneNumber: String
+    -officeAddress: Address
+    -email: String
+    -employmentStartDate: Date
+
+    +generateUnproductiveEmoployeeReport (timePeriod: Time) : List <Employee>
+}
+
+class Customer {
+    -customerID: String
+    -name: String
+    -phoneNumber: String
+    -deliveryAddress: Address
+    -email: String
+    -dateOfFirstContact: Date
+}
+
+class Wine {
+    -wineName: String
+    -description: String
+    -productionYear: Integer
+    -pricePerBottle: Double
+    -sweetnessLevel: wineSweetnessLevel
+    -productImage: Image
+    -manufacturerNumber: String
+    -catalogNumber: String
+}
+
+class WineType {
+    -serialNumber: String
+    -name: String
+    -type: wineType
+    -foodPairings: String
+    -recipes: List <String>[5]
+    -occasionRecommendation: String
+    -season: season
+    -location: location
+}
+
+class Manufacturer {
+    -manufacturerID: String
+    -firstName: String
+    -lastName: String
+    -contactPhoneNumber: String
+    -address: Address
+    -email: String
+}
+
+class StorageLocation {
+    -storageLocationID: String
+    -locationName: String
+    -winesStored: Map <Wine, Integer>
+}
+
+Order "1" *-- "1..*" Customer : includes
+Order "1" *-- "1..*" Wine : consists of
+Order "1" -- "1" Employee : assigned to
+
+Wine "1" -- "1" WineType : has type
+Wine "1" -- "1" Manufacturer : produced by
+
+Wine "*" -- "*" StorageLocation : stored in
+@enduml

@@ -1,0 +1,33 @@
+# Domain base list — Class Diagram - ParkWise
+# One ground-truth domain requirement per line. Used by Agent B to measure
+# guideline completeness. Lines starting with # and blank lines are ignored.
+#
+# Element type codes:
+#   C    = Class
+#   E    = Enumeration
+#   Attr = Attribute
+#   A    = Association          (format: A: ClassName-ClassName or A (mult): ClassName-ClassName)
+#   AC   = Association Class    (format: AC: ClassName-ClassName)
+#   I    = Inheritance          (format: I: Parent-Child)
+#   Comp = Composition          (format: Comp: Whole-Part)
+
+C: Parking Lot
+Attr: Available Spaces of Parking Lot
+C: Client
+C: Vehicle
+Attr: Photos of Vehicle
+E: Color
+E: Size
+A (1:m): Client-Vehicle
+C: Parking Session
+A: Parking Session-Vehicle
+C: Location
+I: Location-Space
+I: Location-Conveyor
+C: Space
+C: Conveyor
+A (m:2): Parking Session-Conveyor
+Comp: Parking Lot-Space
+C: Price List
+A: Parking Lot-Price List
+AC: Client-Parking Lot

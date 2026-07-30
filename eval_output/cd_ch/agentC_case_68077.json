@@ -1,0 +1,438 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68077",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The system includes management of key business operations such as inventory management and order processing, which aligns with the Cheers system's purpose.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "SalesEmployee can place customer orders, indicating that sales staff are responsible for this activity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order class includes attributes like order number, date, current status, assigned employee ID and others, matching the details listed.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no mention of 'GalGalim' in the case model for order delivery, indicating reliance on an external company.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "RegularOrder class implies joint order functionality with the 'is_joint' attribute but lacks explicit tracking of specific wines and quantities for each customer.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model lacks explicit tracking of wines and quantities per customer within joint orders."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class contains attributes like ID, name, phone number, address, email, and first contact date, as specified for customers in an order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employee class has an operation to convert to a Customer, allowing employees to place orders under similar conditions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "UrgentOrder class signifies urgency with attributes such as priority level and expected delivery time, indicating single customer placement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder class has priority level and expected delivery time attributes, aligning with criteria for urgent orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "RegularOrder class suggests joint ordering capability but lacks clarification on multiple customer participation in a single order.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model needs more explicit detail on allowing multiple customer participation in regular orders."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "RegularOrderCustomer association potentially indicates responsibility assignment but doesn't track specific wines and quantities per customer.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The tracking of wines and quantities for each customer in joint orders needs explicit representation."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The model records customer details for orders, whether urgent or regular, including employee capability to place orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingEmployee is allowed to update wine information and types, confirming authorization to update these elements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Employee has a method to view available wines, allowing sales staff to browse wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType class includes a serial number for identification, in line with wine type identifiers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineType captures examples of types and related pairings, consistent with descriptive requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Occasion associated with WineType includes descriptions of suitable occasions with season and location information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The Manufacturer association with Wine suggests capability for data exchange on producer and production details, although not explicitly stated.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Detail on XML data reception from Gefen specifically is missing."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class stores ID, name, phone number, address, and email, with an automatic ID assignment.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine class includes attributes such as name, production year, price, sweetness level, and image, matching advertised details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine is distinguished using catalog numbers as part of their unique identification, aligning with distinction criteria.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingEmployee can update price details and link wines to types, confirming modification capabilities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "StorageLocation includes unique location number and name, ensuring adherence to storage organization.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "StorageLocation's inventory methods imply tracking multiple wines across locations, yet explicit bottle-level tracking is unclear.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Representation of tracking precise bottle quantities per wine and location could be more detailed."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Order update inventory method suggests inventory adjustment post-sale, but direct implementation isn't shown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit automatic inventory updates post-sale are suggested but not overtly illustrated."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "SalesEmployee class has method signatures that could match report creation but specific report generation isn't detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Details on specific report generation (Unproductive Employees, Inventory, Wine Recommendations) are implied but not explicitly represented."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is no evidence within the case model directly addressing the external company's role for delivery outside the scope mentioned, as 'GalGalim' remains unrepresented."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The RegularOrderCustomer association class allows linking multiple customers to an order, enabling potential tracking of customer-specific details for joint orders.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the RegularOrder class indicates a joint order possibility through a boolean attribute and association with RegularOrderCustomer, it does not explicitly track wines and quantities per individual customer."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The RegularOrder class and its association with RegularOrderCustomer allows multiple customers to make joint orders, but it lacks explicit detail consolidation of wines per customer in one order.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The regular order structure suggests joint order capabilities, although specifics on tracking multi-customer participation efficiently require enhanced clarity."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The RegularOrderCustomer class can outline customer responsibility in orders, yet it's not clear how it tracks specific wines and quantities ordered by each customer.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While this class seems positioned to manage customer data within joint orders, explicit tracking of individual items per customer is not evident."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The case model lacks direct representation of data reception specifically from 'Gefen' although the Manufacturer's association with Wine can imply data handling."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "StorageLocation allows storing wines, and implies the capacity for both managing inventory and identifying specific storage details through its methods.",
+      "compliance_status": "Satisfied",
+      "notes": "The StorageLocation class and its relation with Wine supports tracking wine inventory per location, aligning it with the system's requirements for tracking bottle counts at designated spots."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The Order class includes an update inventory method that alludes to inventory modification post-sale, yet specifics regarding automatic inventory updates are missing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The inventory update approach is hinted at within the model suggesting potential for automatic updates, though lacking explicit detail concerning operational mechanics."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "SalesEmployee could reasonably generate reports using its operations methods, but the specific reports (Unproductive Employees, Inventory, and Wine Recommendations) aren't detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While SalesEmployee's methods imply report capabilities, expanded elaboration on specific report generation processes remains necessary."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "Method as_customer() in Employee class allows an employee to be converted into a Customer.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This method is a useful extension that supports the business rule that employees can order wine like customers, although it wasn't explicitly required in the guidelines."
+    },
+    {
+      "fragment": "The enum type SweetnessLevelEnum used in the Wine class has no specific mention in the guidelines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Even though not explicitly stated, such an enum captures typical attributes for differentiating wine types, aligning with domain conventions."
+    },
+    {
+      "fragment": "Occasion class links to Season through the association seen in the diagram.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The link between Occasion and Season enriches the model by adding context, which although not directly mentioned, supports wine suggestion based on occasions."
+    },
+    {
+      "fragment": "The presence of the class FoodPairing with multiple URL attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The inclusion of URLs supports detailed information access for food pairings referenced in the guidelines even if not explicitly described."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Method as_customer() in Employee class allows an employee to be converted into a Customer.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The enum type SweetnessLevelEnum used in the Wine class has no specific mention in the guidelines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Occasion class links to Season through the association seen in the diagram.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The presence of the class FoodPairing with multiple URL attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 24.5,
+  "max_score": 26.0,
+  "score_pct": 94.2,
+  "overall_assessment": "The case model demonstrates strong guideline compliance with minor opportunities for enhancement in explicit tracking and detailing."
+}

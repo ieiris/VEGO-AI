@@ -1,0 +1,408 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68124",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The System class along with its responsibilities like exporting and importing data, and the interaction with Gefen illustrates the Cheers system for managing operations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The SalesStaff placing orders association with the Order class demonstrates the responsible role of sales staff.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order attributes such as number, date, status, and associated employee are stated in the Order class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no mention of the external company GalGalim in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Order includes associations with multiple wines and customers, reflecting order composition.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class lists attributes like id, name, phone number, delivery address, email, and first contact date.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employees are shown in specific roles, but no specific mention indicates equal conditions as regular customers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Urgent categorization in OrderTypeEnum and single-customer rule partially hint at prioritized processing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Only mention of urgency and single customer, not the full process."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgencyLevel attribute in Order suggests priority for urgent orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "OrderTypeEnum differentiates regular orders which can include multiple customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "Customers related to Order show that specific wines and the main customer are tracked for regular orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Customer attributes are captured for orders, but conditions for employees paralleling regular customers aren't specified.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Customer attributes noted, but not the employee ordering condition."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Only the MarketingStaff class reflects authorization to update wine information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesStaff operations do not specify browsing function for wine.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Wine type has an attribute and enum indicating name and various categories.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineTypeEnum categorizes wines, yet lacks details on pairings and recipes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Wine types are listed, but not additional details like food pairings."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "MarketingStaff lacks defined operations for occasions related to wine.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "System class includes functionality to import from Gefen, hinting at producer data management.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class stores information including id, full name, contact details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine class encompasses name, description, production year, price, sweetness level, and image.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine attributes like catalog number and relationships with manufacturer depict distinction criteria.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingStaff authorization implies capability for price and image modifications for wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Storage location attributes capture unique numbering and names for each location.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The model outlines wine storage in multiple storage locations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The model doesn't include mechanisms for updating inventory post-sale.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "SalesStaff and MarketingStaff have functions tied to generating reports, covering report requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no mention of the external company 'GalGalim' in the class diagram, nor any dependency or interaction for the delivery process.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "A reference to GalGalim's role in deliveries is absent, so no alternative representation satisfies this requirement."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The Employee class is generalized by both SalesStaff and MarketingStaff but the model does not explicitly mention employees can order wines under the same conditions as regular customers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is no representation suggesting employees can order wines under customer-like conditions."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The OrderTypeEnum includes URGENT, and the Order class associates urgencyLevel, but without a detailed process indicating how urgent orders are prioritized.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While urgencyLevel in Order hints at prioritization, no full systematic description of urgent order processing exists."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The inclusion of Customer attributes indicates recording their details in orders, but no clear condition shows employees can order as regular customers.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Customer details are well-documented, but the employee condition remains unspecified."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesStaff operations are not defined to showcase browsing functionality for wine information.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There's no operation or function that implies SalesStaff can browse wine."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineTypeEnum defines wine categories, but lacks additional information scope regarding food pairings and recipes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Wine categories exist, but not the extended details of pairings and recipes."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "No operations specify that MarketingStaff can suggest occasions fit for each wine type.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Marketing staff's role does not include defined operations for occasion recommendations linked to wine."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The model lacks methods addressing the updating of inventory after wine sales.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No functions or operations provided for inventory updates post-sales."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The presence of an enum named 'JointOrderTypeEnum' with options 'JOINT' and 'DISJOINT', associated with the Order class.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This enum provides additional detail that is relevant to the business domain but not explicitly outlined in the guidelines. It enhances the understanding of order types."
+    },
+    {
+      "fragment": "The association between System and Manufacturer, with 'System' being associated with imported data from Gefen.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While the guidelines mention data reception from Gefen concerning manufacturers, the model adds depth by depicting System’s role in directly managing these relationships."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The presence of an enum named 'JointOrderTypeEnum' with options 'JOINT' and 'DISJOINT', associated with the Order class.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The association between System and Manufacturer, with 'System' being associated with imported data from Gefen.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 20.5,
+  "max_score": 26.0,
+  "score_pct": 78.8,
+  "overall_assessment": "The case model satisfies a majority of guidelines, demonstrating strong domain understanding with room for improvement in specific areas like urgent order processing and inventory updates."
+}

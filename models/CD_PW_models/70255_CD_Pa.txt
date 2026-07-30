@@ -1,0 +1,174 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 100
+skinparam ranksep 80
+
+' ==========================================
+'          1. USERS (LEFT SIDE)
+' ==========================================
+class Client {
+    - clientID: String
+    - firstName: String
+    - lastName: String
+    - mobilePhone: String {unique}
+}
+
+class ClubMember {
+    - isLifetimeActive: Boolean
+    - registrationDate: Date 
+}
+
+class Vehicle {
+    - vehicleNumber: String {unique}
+    - type: String
+    - weight: Double
+    - color: Color
+    - size: Size
+    - photoFront: Image
+    - photoRear: Image
+    - photoSide: Image
+}
+
+' ==========================================
+'       2. MANAGEMENT & HUB (CENTER)
+' ==========================================
+
+' [ADDED] Abstract System Class
+abstract class System {
+    - systemVersion: String
+    + login(userID: String, pass: String): Boolean
+}
+
+class Administrator {
+    - adminID: String
+    - name: String
+    + updateParkingLotDetails()
+    + requestAnnualReport()
+}
+
+class ParkWiseSystem {
+    + generateAnnualSummaryReport(year): File
+    + generateCustomerClubGrowthReport(year): File
+}
+
+class ParkingLot {
+    - uniqueNumber: String
+    - name: String
+    - address: String
+    - city: String
+    - availableSpaces: Integer
+    + calculateTotalPaidAmount(year): Double
+    + countVehiclesByColor(year, color): Integer
+}
+
+class LotSelectionAudit {
+    - selectionDate: Date
+}
+
+' ==========================================
+'      3. LOT ASSETS (RIGHT/BOTTOM)
+' ==========================================
+class PriceList {
+    - priceListID: String
+    - validYear: Integer
+    - priceFirstHour: Double
+    - priceAdditionalHour: Double
+    - priceFullDay: Double
+}
+
+class ParkingSpace {
+    - floor: Integer
+    - x_coordinate: Integer
+    - y_coordinate: Integer
+    - size: Size
+}
+
+class Conveyor {
+    - id: String
+    - maxWeight: Double
+    - floor: Integer
+    - x_coordinate: Integer
+    - y_coordinate: Integer
+}
+
+' ==========================================
+'      4. TRANSACTIONS (BOTTOM CENTER)
+' ==========================================
+class ParkingSession {
+    - sessionID: String
+    - startTime: DateTime
+    - endTime: DateTime
+    - finalAmount: Double
+    - parkingLocationCoords: String
+}
+
+class Receipt {
+    - receiptID: String
+    - issueDate: DateTime
+    - clientNameSnapshot: String
+    - vehicleNumberSnapshot: String
+    - parkingLotDetailsSnapshot: String
+    - priceRateSnapshot: Double
+    - totalHours: Double
+    - finalAmount: Double
+}
+
+' ==========================================
+'           5. ENUMS (BOTTOM LEFT)
+' ==========================================
+package "Enumerations" {
+    enum Color {
+        WHITE
+        BLACK
+        SILVER
+        BLUE
+        OTHER
+    }
+
+    enum Size {
+        SMALL
+        MEDIUM
+        LARGE
+    }
+}
+
+' ==========================================
+'              RELATIONSHIPS
+' ==========================================
+
+' --- Top Layer: Management ---
+' [ADDED] Inheritance: ParkWiseSystem IS-A System
+System <|-- ParkWiseSystem
+
+Administrator -right-> ParkWiseSystem : triggers reports >
+Administrator "1" -- "*" ParkingLot : updates details >
+ParkWiseSystem "1" -- "*" ParkingLot : manages >
+
+' --- Left Column: Users ---
+Client <|-- ClubMember
+Client "1" -- "1..*" Vehicle : owns >
+
+' --- Cross-Column: Member selects Lot ---
+' This connects the Left Column to the Center Column
+ClubMember "0..*" -right-> "0..*" ParkingLot : selects preferred >
+(ClubMember, ParkingLot) .. LotSelectionAudit
+
+' --- Center Column: Lot Composition ---
+ParkingLot "1" *-right- "*" PriceList : maintains history
+ParkingLot "1" *-- "*" Conveyor : owns
+ParkingLot "1" *-- "*" ParkingSpace : contains
+
+' --- Bottom Layer: Operations ---
+' Vehicle (Left) connects to Session (Center)
+Vehicle "1" -right-> "*" ParkingSession : parks in >
+' Lot (Center) connects to Session (Center)
+ParkingLot "1" -- "*" ParkingSession : hosts >
+' Session connects to Receipt
+ParkingSession "1" -- "0..1" Receipt : generates >
+
+' --- Enum Usage ---
+Vehicle .down.> Color : <<uses>>
+Vehicle .down.> Size : <<uses>>
+ParkingSpace .left.> Size : <<uses>>
+@enduml

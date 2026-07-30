@@ -1,0 +1,190 @@
+@startuml
+'========================= CUSTOMER & EMPLOYEE =========================
+class Customer {
+  + ID : int (PK)
+  + firstName : string
+  + lastName : string
+  + phone : string
+  + address : string
+  + email : string
+  + firstContactDate : date
+}
+
+class Department {
+  + departmentID : int (PK)
+  + departmentName : enum {Marketing, Sales, ...}
+}
+
+class Employee {
+  + ID : int (PK, FK -> Customer.ID)
+  + officeAddress : string
+  + startDate : date
+  + departmentID : int (FK -> Department.departmentID)
+  --
+  + createEmployee(...)
+  + updateEmployeeInfo(...)
+  + getEmployeesByDepartment(departmentID:int)
+}
+
+Department "1" -- "0..*" Employee
+Customer "1" <|-- Employee
+
+'========================= ORDER STATUS & SWEETNESS LEVEL =============
+class OrderStatus {
+  + statusID : int (PK)
+  + statusName : enum {in process, dispatched, delivered, paid, suspended, canceled}
+}
+
+class SweetnessLevel {
+  + sweetnessLevelID : int (PK)
+  + sweetnessLevelName : enum {dry, semi-dry, semi-sweet, sweet}
+}
+
+class Order_Type {
+  + TypeID : int (PK)
+  + type : enum {Urgent, Regular}
+}
+
+'========================= ORDER, URGENT & REGULAR =====================
+class Order {
+  + orderNumber : int (PK)
+  + orderDate : date
+  + status : int (FK -> OrderStatus.statusID)
+  + shipmentDate : date
+  + type : int (FK -> Order_Type.TypeID)
+  + assignedEmployeeID : int (FK -> Customer.ID)
+  --
+  + createOrder(...)
+  + updateOrderStatus(...)
+  + calculateTotalOrderCost(...)
+}
+
+Order_Type "1" -- "1..*" Order
+
+class UrgentOrder {
+  + orderNumber : int (PK, FK -> Order.orderNumber)
+  + priorityLevel : int (1-5)
+  + expectedDeliveryTime : datetime
+}
+
+class RegularOrder {
+  + orderNumber : int (PK, FK -> Order.orderNumber)
+}
+
+Order "1" -- "0..1" UrgentOrder
+Order "1" -- "0..1" RegularOrder
+
+'========================= ORDER_CUSTOMER ==============================
+class Order_Customer {
+  + orderNumber : int (FK -> Order.orderNumber)
+  + customerID : int (FK -> Customer.ID)
+  + isMainCustomer : boolean
+  * PK: (orderNumber, customerID)
+}
+
+Order "1" -- "1..*" Order_Customer
+Customer "1" -- "1..*" Order_Customer
+
+'========================= ORDER_WINE =================================
+class Order_Wine {
+  + orderNumber : int (FK -> Order_Customer.orderNumber)
+  + customerID : int (FK -> Order_Customer.customerID)
+  + wineSN : int (FK -> Wine.wineSN)
+  + quantity : int
+  --
+  + updateInventory(orderNumber:int, wineSN:int, quantity:int) : boolean
+  + checkAvailability(wineSN:int, quantity:int) : boolean
+}
+
+Order_Customer "1" -- "1..*" Order_Wine
+
+'========================= MANUFACTURER & WINE =========================
+class Manufacturer {
+  + manufacturerID : int (PK)
+  + manufacturerName : string
+  + phone : string
+  + address : string
+  + email : string
+}
+
+class WineType {
+  + wineTypeID : int (PK)
+  + wineTypeName : string
+  + serialNumber : int
+}
+
+class Wine {
+  + wineSN : int (PK)
+  + manufacturerID : int (FK -> Manufacturer.manufacturerID)
+  + catalogNumber : int
+  + wineName : string
+  + description : string
+  + productionYear : int
+  + pricePerBottle : decimal
+  + sweetnessLevel : int (FK -> SweetnessLevel.sweetnessLevelID)
+  + productImage : string (URL)
+  + wineTypeID : int (FK -> WineType.wineTypeID)
+  --
+  + updateWineInformation(wineSN:int, wineTypeID:int, newPrice:decimal, newImage:string) : boolean
+  + viewWineInformation(wineSN:int) : Wine
+}
+
+Manufacturer "1" -- "1..*" Wine
+WineType "1" -- "1..*" Wine
+SweetnessLevel "1" -- "1..*" Wine
+
+'========================= FOOD PAIRINGS & OCCASIONS ===================
+class FoodPairing {
+  + foodPairingID : int (PK)
+  + wineTypeID : int (FK -> WineType.wineTypeID)
+  + dishName : string
+}
+
+class FoodPairingRecipe {
+  + foodPairingID : int (FK -> FoodPairing.foodPairingID)
+  + recipeURL : string
+}
+
+WineType "1" -- "0..*" FoodPairing
+FoodPairing "1" -- "0..5" FoodPairingRecipe
+
+class Occasion {
+  + occasionID : int (PK)
+  + wineTypeID : int (FK -> WineType.wineTypeID)
+  + description : string
+  + season : string
+  + location : enum {indoor, outdoor}
+}
+
+WineType "1" -- "0..*" Occasion
+
+'========================= STORAGE & INVENTORY =========================
+class StorageLocation {
+  + locationID : int (PK)
+  + locationName : string
+}
+
+class Inventory {
+  + wineSN : int (FK -> Wine.wineSN)
+  + locationID : int (FK -> StorageLocation.locationID)
+  + quantity : int
+  * PK: (wineSN, locationID)
+}
+
+StorageLocation "1" -- "0..*" Inventory
+Wine "1" -- "0..*" Inventory
+
+'========================= REPORTS & SYSTEM IMPORT/EXPORT ==============
+class Reports {
+  --
+  + generateUnproductiveEmployeeReport(startDate:date, endDate:date)
+  + generateInventoryReportJSON()
+  + generateWineRecommendationReport(customerID:int, preferences:map)
+}
+
+class GefenSystem {
+  --
+  + importMonthlyProducerInfo(XMLData:string)
+  + importWeeklyUpdates(XMLData:string)
+}
+@enduml

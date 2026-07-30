@@ -1,0 +1,79 @@
+{
+  "skill_version": "1.0.0",
+  "per_cluster_agreement": [
+    {
+      "cluster_id": "C1",
+      "agreement": 1.0,
+      "canonical_citation": "For each parking lot, the system will store a unique number, name, address, and city."
+    },
+    {
+      "cluster_id": "C2",
+      "agreement": 1.0,
+      "canonical_citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+    },
+    {
+      "cluster_id": "C3",
+      "agreement": 1.0,
+      "canonical_citation": "If either the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client."
+    },
+    {
+      "cluster_id": "C4",
+      "agreement": 1.0,
+      "canonical_citation": "After passing the barrier, the system will store the parking session information, including start time and vehicle details."
+    }
+  ],
+  "overall_agreement": 1.0,
+  "true_positives": 4,
+  "false_positives": 0,
+  "false_negatives": 16,
+  "precision": 1.0,
+  "recall": 0.2,
+  "f1": 0.3333,
+  "per_run_metrics": [
+    {
+      "run": 1,
+      "true_positives": 4,
+      "false_positives": 0,
+      "false_negatives": 16,
+      "precision": 1.0,
+      "recall": 0.2,
+      "f1": 0.3333
+    },
+    {
+      "run": 2,
+      "true_positives": 4,
+      "false_positives": 0,
+      "false_negatives": 16,
+      "precision": 1.0,
+      "recall": 0.2,
+      "f1": 0.3333
+    },
+    {
+      "run": 3,
+      "true_positives": 4,
+      "false_positives": 0,
+      "false_negatives": 16,
+      "precision": 1.0,
+      "recall": 0.2,
+      "f1": 0.3333
+    }
+  ],
+  "unassigned_base_guidelines": [
+    "C: Client",
+    "C: Vehicle",
+    "Attr: Photos of Vehicle",
+    "E: Color",
+    "E: Size",
+    "C: Parking Session",
+    "C: Location",
+    "I: Location-Space",
+    "I: Location-Conveyor",
+    "C: Space",
+    "C: Conveyor",
+    "A (m:2): Parking Session-Conveyor",
+    "Comp: Parking Lot-Space",
+    "C: Price List",
+    "A: Parking Lot-Price List",
+    "AC: Client-Parking Lot"
+  ]
+}

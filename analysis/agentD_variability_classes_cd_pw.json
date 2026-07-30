@@ -1,0 +1,71 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "parkwise",
+  "variability_classifications": [
+    {
+      "pattern_id": "P1",
+      "classification": "Occasional Variability",
+      "justification": "The recurring absence or lack of operationalization of the administrator role responsible for updating parking lot details indicates a deviation that is neither covered by the guidelines nor described as optional. This is a fundamental aspect of the system management, and its consistent omission is an unintended omission or error.",
+      "evidence": "EXACT: 'An administrator will be responsible for updating these details in the system.'",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P2",
+      "classification": "Occasional Variability",
+      "justification": "The omission of the function of the gate sensor for real-time vehicle data transmission affects the foundational functionality of the system as per guidelines, indicating a repeated error or oversight rather than a substantial alternative.",
+      "evidence": "EXACT: 'A gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time.'",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P3",
+      "classification": "Occasional Variability",
+      "justification": "The external payment process via a payment gateway is a key part of the domain's functionality, and its omission is not aligned with domain logic nor indicated as an optional step, indicating an error or unintentional omission.",
+      "evidence": "EXACT: 'Payment is handled outside the system: the system will send a request to the external Payment Gateway (PG) with the client details and the payment amount;'",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P4",
+      "classification": "Occasional Variability",
+      "justification": "The absence of SMS functionality for sending parking details contradicts the domain description, indicating it's an error or oversight, as the guidelines specify that this feature should be present.",
+      "evidence": "EXACT: 'An SMS message with the parking details will be sent to the client's phone.'",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P5",
+      "classification": "Occasional Variability",
+      "justification": "The inadequacies in representing the assignment of conveyors and optimization algorithm processes are not specified as optional; they are necessary for system operations as per descriptions, thus classifying it as an error.",
+      "evidence": "EXACT: 'The Conveyors’ Controller (CC) will scan the vehicle number, assign a conveyor and ask the system to run an optimization algorithm.'",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P6",
+      "classification": "Occasional Variability",
+      "justification": "Client's ability to select and store preferred parking lots is explicitly described in the domain as a critical feature, making its frequent omission a deviation from required functionality.",
+      "evidence": "EXACT: 'During registration, and at any time afterwards, the client can select preferred parking lots (the selection dates are stored for audit purposes).'",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P7",
+      "classification": "Occasional Variability",
+      "justification": "Generating receipts at the client's request is a specified function, and frequent omissions indicate errors in following the domain requirements.",
+      "evidence": "EXACT: 'The system will further issue a receipt at the client’s request.'",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    }
+  ],
+  "questions_to_language_advisor": [],
+  "questions_to_domain_advisor": []
+}

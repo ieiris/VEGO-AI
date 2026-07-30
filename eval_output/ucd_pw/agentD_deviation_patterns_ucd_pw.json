@@ -1,0 +1,133 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "parkwise",
+  "total_cases": 30,
+  "min_recurrence_threshold": 1,
+  "recurring_guideline_patterns": [
+    {
+      "pattern_id": "P1",
+      "guideline_id": "G10",
+      "description": "Guideline related to vehicle color categorization is often partially or not satisfied, indicating a consistent oversight or difficulty in implementing predefined color categorization.",
+      "affected_cases": [
+        "70229",
+        "70238",
+        "70234",
+        "70291",
+        "70250",
+        "70200"
+      ],
+      "pattern_strength": "20%",
+      "label_distribution": {
+        "Satisfied": 24,
+        "Partially-Satisfied": 5,
+        "Not-Satisfied": 1
+      }
+    },
+    {
+      "pattern_id": "P2",
+      "guideline_id": "G16",
+      "description": "Guideline on representation of parking space and conveyor locations by specific coordinates is often partially satisfied, suggesting challenges in adequately mapping or documenting these spatial aspects.",
+      "affected_cases": [
+        "70291",
+        "70205",
+        "70238",
+        "70277",
+        "70200"
+      ],
+      "pattern_strength": "16.67%",
+      "label_distribution": {
+        "Satisfied": 25,
+        "Partially-Satisfied": 5,
+        "Not-Satisfied": 0
+      }
+    },
+    {
+      "pattern_id": "P3",
+      "guideline_id": "G22",
+      "description": "The guideline concerning the use of SMS notifications to send parking details to clients is frequently found not satisfied, indicating a consistent issue with implementing SMS notifications.",
+      "affected_cases": [
+        "70213",
+        "70223",
+        "70250",
+        "70200"
+      ],
+      "pattern_strength": "13.33%",
+      "label_distribution": {
+        "Satisfied": 26,
+        "Partially-Satisfied": 1,
+        "Not-Satisfied": 3
+      }
+    }
+  ],
+  "recurring_fragment_patterns": [
+    {
+      "pattern_id": "P4",
+      "description": "The integration and use of the Integrated Rate Service (IRS) actor with price list management is often described as an alternative fragment, reflecting a common modeling detail across case models.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "70236",
+        "70240",
+        "70229",
+        "70216",
+        "70250",
+        "70234"
+      ],
+      "pattern_strength": "20%"
+    },
+    {
+      "pattern_id": "P5",
+      "description": "Conveyors' Controller involvement is consistently classified as an alternative, suggesting that use case models frequently expand the role of this actor beyond explicit guidelines.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "70298",
+        "70249",
+        "70251",
+        "70279",
+        "70213",
+        "70245"
+      ],
+      "pattern_strength": "20%"
+    },
+    {
+      "pattern_id": "P6",
+      "description": "The provision of vehicle parking details via UI or SMS is often introduced as an alternative fragment, indicating a recurrent enhancement not directly specified in guidelines.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "70204",
+        "70229",
+        "70240",
+        "70251",
+        "70278",
+        "70216"
+      ],
+      "pattern_strength": "20%"
+    },
+    {
+      "pattern_id": "P7",
+      "description": "The generate annual summary report use case, with its various detailed representations, appears frequently as an alternative, showing a trend towards adding functionality beyond what is mandated by the guidelines.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "70236",
+        "70255",
+        "70291",
+        "70213",
+        "70233",
+        "70240"
+      ],
+      "pattern_strength": "20%"
+    },
+    {
+      "pattern_id": "P8",
+      "description": "The use of generalization to model client and club member relationships is commonly noted as an alternative, reflecting a frequent modeling choice that provides clarity and structure.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "70205",
+        "70213",
+        "70229",
+        "70248",
+        "70245"
+      ],
+      "pattern_strength": "16.67%"
+    }
+  ]
+}

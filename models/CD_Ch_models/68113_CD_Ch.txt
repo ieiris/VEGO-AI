@@ -1,0 +1,171 @@
+@startuml
+
+' Define classes with attributes and relationships
+class Employee {
+    - employeeID: int
+    - name: string
+    - phone: string
+    - officeAddress: string
+    - email: string
+    - employmentStartDate: Date
+}
+
+class SalesStaff {
+    + generateReports(): void
+    + placeOrder(): void
+    + placeRegularOrder(): void
+    + placeUrgentOrder(): void
+    + placeJointOrder(): void
+    + specifyDeliveryTime(): void
+    + specifyPriorityLevels(): void
+    + unproductiveEmployeesReport(): void
+    + wineRecommendationReportForCustomers(): void
+    + viewWineData(): void
+}
+
+Employee <|-- SalesStaff : "extend to"
+
+class MarketingStaff {
+    + updateWineInformation(): void
+    + updateWineType(): void
+    + linkWineToType(): void
+    + modifyProductImages(): void
+    + modifyPrice(): void
+    + viewWineData(): void
+    + associateWineWithType(): void
+    + recommendWineForOccasions(): void
+}
+
+Employee <|-- MarketingStaff : "extend to"
+
+class Order {
+    - orderID: int
+    - orderDate: Date
+    - shipmentDate: Date
+    - employeeID: int
+    - status : status
+}
+
+class RegularOrder {
+    - mainCustomerID: int
+    - joinCustomers: List<Customer>
+}
+
+Order <|-- RegularOrder : "extend"
+
+class UrgentOrder {
+    - deliveryTime: Date
+    - priorityLevels: int
+    - singleCustomerID: int
+}
+
+Order <|-- UrgentOrder : "extend"
+
+class Customer {
+    - customerID: int
+    - name: string
+    - phone: string
+    - deliveryAddress: string
+    - email: string
+    - firstContactDate: Date
+}
+
+class Wine {
+    - wineID: int
+    - name: string
+    - description: string
+    - productionYear: int
+    - pricePerBottle: double
+    - productImage: image
+    - serialNumber: string
+    - SweetnessLevel: SweetnessLevel
+    - wineTypeID: int
+    - manufacturerID: int
+    - Season: Season
+}
+
+class WineType {
+    - serialNumber: int
+    - name: string
+    - foodPairings: List<string>
+    - recipeLinks: List<URL>
+    - occasionDescription: string
+}
+
+class Manufacturer {
+    - manufacturerID: int
+    - fullName: string
+    - phone: string
+    - address: string
+    - email: string
+}
+
+class StorageLocation {
+    - locationID: int
+    - name: string
+}
+
+class Inventory {
+    - wine: Wine
+    - location: StorageLocation
+    - quantity: int
+}
+
+class GefenSystem {
+    + importWineData(xmlData: string): void
+    + exportInventoryReport(): string
+}
+
+class OrderDetails {
+    - orderID: int
+    - wineID: int
+    - quantity: int
+}
+
+OrderDetails --> Order : "Details of"
+OrderDetails --> Wine : "includes"
+
+enum OrderStatus {
+  IN_PROCESS
+  DISPATCHED
+  DELIVERED
+  PAID
+  SUSPENDED
+  CANCELED
+}
+
+Order --> OrderStatus : "status"
+
+enum SweetnessLevel {
+  DRY
+  SEMI_DRY
+  SEMI_SWEET
+  SWEET
+}
+
+Wine --> SweetnessLevel : "sweet"
+
+enum Season {
+  WINTER
+  SPRING
+  SUMMER
+  AUTUMN
+}
+
+Wine --> Season : "for what season"
+
+' Define relationships
+Order --> Customer : "placed by"
+UrgentOrder --> Customer : "single Customer"
+RegularOrder --> Customer : "main Customer"
+RegularOrder --> Customer : "join Customers"
+Wine --> WineType : "wine type"
+Wine --> Manufacturer : "made by"
+Inventory --> Wine : "tracks stock"
+Inventory --> StorageLocation : "stored in"
+GefenSystem --> Manufacturer : "send data"
+GefenSystem --> Inventory : "update inventory after sale"
+GefenSystem --> Wine : "update quantities"
+Order --> Employee: "Managed by"
+
+@enduml

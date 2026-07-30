@@ -1,0 +1,164 @@
+@startuml
+' הגדרות עיצוב נקיות ומקצועיות
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' ==========================================
+' 1. Enums (טיפוסים קבועים)
+' ==========================================
+
+enum Color {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+enum Size {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+' ==========================================
+' 2. מחלקת המערכת (The System Class)
+' ==========================================
+class ParkWiseSystem {
+    ' המערכת היא ה-Singleton שמחזיק את הכל.
+    ' היא אחראית להפיק את הדוחות הגלובליים.
+    --
+    + generateAnnualSummaryReport(year: int) : File
+    + generateCustomerClubGrowthReport(year: int) : File
+}
+
+' ==========================================
+' 3. מחלקת האב (הורשה למיקום)
+' ==========================================
+abstract class Location {
+    - floor : int
+    - xCoordinate : int
+    - yCoordinate : int
+}
+
+' ==========================================
+' 4. מחלקות הנתונים (Data Classes)
+' ==========================================
+
+class ParkingLot {
+    - uniqueNumber : int
+    - name : String
+    - address : String
+    - city : String
+    - floors : int
+    - availableSpaces : int
+    --
+    ' פעולות חישוב פנימיות (המערכת קוראת להן)
+    + calculateTotalIncome(year: int) : double
+    + countOtherColorVehicles(year: int) : int
+    + getParkingSessionsCount(year: int) : int
+}
+
+' יורש מ-Location (מקבל אוטומטית floor, x, y)
+class ParkingSpace {
+    - spotID : int
+    - size : Size
+    - isOccupied : boolean
+}
+
+' יורש מ-Location (מקבל אוטומטית floor, x, y)
+class Conveyor {
+    - conveyorID : int
+    - maxWeight : double
+}
+
+class Client {
+    - firstName : String
+    - lastName : String
+    - mobilePhone : String
+    - isClubMember : boolean
+    - clubJoinDate : Date
+}
+
+class Vehicle {
+    - licenseNumber : String
+    - type : String
+    - weight : double
+    - color : Color
+    - size : Size
+}
+
+class ParkingSession {
+    - startTime : DateTime
+    - endTime : DateTime
+    - finalAmount : double
+    - isPaid : boolean
+}
+
+class PriceList {
+    - year : int
+    - firstHourPrice : double
+    - additionalHourPrice : double
+    - fullDayPrice : double
+}
+
+' מחלקה לתיעוד הבחירה של חניון מועדף (Audit)
+class PreferredLotSelection {
+    - selectionDate : DateTime
+}
+
+' ==========================================
+' 5. Relationships (קשרים)
+' ==========================================
+
+' --- קשרי המערכת ---
+' המערכת מכילה את כל החניונים (Composition - חלק בלתי נפרד)
+ParkWiseSystem "1" *-- "*" ParkingLot : contains >
+
+' המערכת מנהלת את כל הלקוחות (Aggregation/Association - מאגר לקוחות)
+ParkWiseSystem "1" o-- "*" Client : manages registry >
+
+
+' --- קשרי הורשה (Inheritance) ---
+Location <|-- ParkingSpace
+Location <|-- Conveyor
+
+
+' --- קשרי חניון ---
+' 1. קומפוזיציה: החניון כולל את המקום (1:*)
+ParkingLot "1" *-- "0..*" ParkingSpace : contains >
+
+' 2. קומפוזיציה: החניון מורכב ממסועים (1:*)
+ParkingLot "1" *-- "0..*" Conveyor : contains >
+
+' 3. אסוציאציה: מושבי חניה שהתרחשו בחניון (1:*)
+ParkingLot "1" -- "0..*" ParkingSession : hosts >
+
+' 4. אסוציאציה: חניון מחזיק היסטוריית מחירונים (1:*)
+ParkingLot "1" -- "0..*" PriceList : has history >
+
+
+' --- קשרי לקוח ---
+' 1. אסוציאציה: לקוח אחד מחזיק רכבים רבים (1:*)
+Client "1" o-- "*" Vehicle : owns >
+
+' 2. אסוציאציה: לקוח מבצע בחירות של חניונים (דרך טבלת קשר) (1:*)
+Client "1" -- "*" PreferredLotSelection : makes >
+PreferredLotSelection "*" -- "1" ParkingLot : selects >
+
+
+' --- קשרי מושב חניה (ParkingSession) ---
+' 1. אסוציאציה: רכב אחד צובר היסטוריה של חניות רבות (1:*)
+ParkingSession "*" -- "1" Vehicle : involves >
+
+' 2. אסוציאציה: מושב החניה תופס את המקום בזמן החניה (אופציונלי 0..1)
+ParkingSession "0..1" -- "0..1" ParkingSpace : occupies >
+
+' 3. אסוציאציה: החניה נמצאת "עליו" בזמן תנועה (אופציונלי 0..1)
+ParkingSession "0..1" -- "0..1" Conveyor : on >
+
+@enduml

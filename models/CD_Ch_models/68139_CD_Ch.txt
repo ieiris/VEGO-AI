@@ -1,0 +1,205 @@
+@startuml
+' Enums
+enum SweetnessLevelEnum {
+    Dry
+    SemiDry
+    SemiSweet
+    Sweet
+}
+
+enum OrderStatusEnum {
+    InProcess
+    Dispatched
+    Delivered
+    Paid
+    Suspended
+    Canceled
+}
+
+enum LocationTypeEnum {
+    Indoor
+    Outdoor
+}
+
+' Abstract Classes
+abstract class Person {
+    +personID: String
+    +name: String
+    +phoneNumber: String
+    +email: String
+}
+
+abstract class Order {
+    +orderNumber: String
+    +orderDate: Date
+    +status: OrderStatusEnum
+    +shipmentDate: Date
+    +assignedEmployee: SalesEmployee
+}
+
+' Main Classes
+class Employee {
+    +officeAddress: String
+    +employmentStartDate: Date
+}
+
+class Customer {
+    +deliveryAddress: String
+    +dateOfFirstContact: Date
+}
+
+class SalesEmployee {
+    +placeOrder(order: Order): void
+    +generateUnproductiveEmployeesReport(timePeriod: String): String
+    +generateInventoryReport(): String
+}
+
+class MarketingEmployee {
+    +updateWineInfo(wine: Wine): void
+    +recommendWine(criteria: String): void
+    +modifyWinePrice(wine: Wine, newPrice: Float): void
+    +modifyWineImage(wine: Wine, newImage: Image): void
+}
+
+class RegularOrder {
+    +orderNumber: String
+    +orderDate: Date
+}
+
+class UrgentOrder {
+    +priorityLevel: String
+    +expectedDeliveryTime: Date
+    +assignedEmployee: SalesEmployee
+}
+
+class JointOrder {
+}
+
+class Wine {
+    +catalogNumber: String
+    +name: String
+    +description: String
+    +productionYear: Integer
+    +pricePerBottle: String
+    +sweetnessLevel: SweetnessLevelEnum
+    +productImage: Image
+}
+
+class WineType {
+    +serialNumber: String
+    +name: String
+    +foodPairings: String
+    +recipeLinks: String
+}
+
+class Occasion {
+    +occasionID: String
+    +description: String
+    +season: String
+    +location: LocationTypeEnum
+}
+
+class StorageLocation {
+    +locationNumber: String
+    +name: String
+}
+
+class Manufacturer {
+    +manufacturerID: String
+    +name: String
+    +phoneNumber: String
+    +address: String
+    +email: String
+}
+
+class Gefen {
+    +sendXML(data: String): void
+    +receiveJSON(): String
+}
+
+' Association Classes for Many-to-Many Relationships
+class WineStorage {
+    +catalogNumber: String
+    +storedQuantity: Integer
+    +locationNumber: String
+}
+
+class JointOrderCustomer {
+    +orderNumber: String
+    +personID: String
+}
+
+class OrderWine {
+    +orderNumber: String
+    +catalogNumber: String
+    +quantity: Integer
+}
+
+' RegularOrderCustomer Class (Updated to Many-to-Many)
+class RegularOrderCustomer {
+    +orderNumber: String
+    +personID: String
+}
+
+' Inheritance Relationships
+Person <|-- Employee
+note right of Employee : Adds office address and employment start date.
+
+Person <|-- Customer
+note left of Customer : Adds delivery address and date of first contact.
+
+note bottom of Person : A Person can act as both a Customer and an Employee\n(i.e., complete overlap between roles).
+
+Employee <|-- SalesEmployee
+Employee <|-- MarketingEmployee
+note right of Employee : Specialized roles for sales and marketing employees.
+
+Order <|-- RegularOrder
+Order <|-- UrgentOrder
+RegularOrder <|-- JointOrder
+note bottom of Order : Incomplete disjoint. JointOrder extends RegularOrder.
+
+' Associations and Relationships
+SalesEmployee "1" <-- "0..*" Order : "places"
+
+' Many-to-Many Relationship between Customer and RegularOrder
+Customer "1.." --> "1.." RegularOrderCustomer : "linkedOrders"
+RegularOrder "1.." --> "1.." RegularOrderCustomer : "linkedCustomers"
+
+UrgentOrder "0..*" --> "1" Customer : "priorityCustomer"
+note right of UrgentOrder : Extends Order to prioritize urgent deliveries.
+
+' Many-to-Many with Association Classes
+JointOrder "1.." --> "1.." JointOrderCustomer : "linkedCustomers"
+Customer "1.." --> "1.." JointOrderCustomer
+note right of JointOrder : Enables multiple customers to\ncollaborate on a single order.
+
+' Order-Wine Many-to-Many Relationship
+Order "1.." --> "1.." OrderWine : "contains"
+Wine "1.." --> "1.." OrderWine
+note right of OrderWine : Represents the many-to-many\nrelationship between Order and Wine.
+
+' Wine Storage Relationships
+Wine "0.." --> "0.." StorageLocation : "storedAt"
+StorageLocation "0.." -- "0.." WineStorage : "managesStorage"
+
+' WineType and Occasion Relationships
+WineType "1" --> "0..*" Occasion : "pairedWith"
+
+' Manufacturer Relationships
+Wine "1" --> "0..*" Manufacturer : "produces"    ' One manufacturer produces many wines.
+Wine "1..*" --> "1" WineType   
+
+' Gefen Relationships
+Gefen "1" --> "0..*" Manufacturer : "importsManufacturers"
+Gefen "1" --> "0..*" Wine : "distributes"
+
+' Enum Associations
+Wine --> SweetnessLevelEnum : "sweetnessLevel"
+Order --> OrderStatusEnum : "status"
+Occasion --> LocationTypeEnum : "location"
+
+' Aggregation Relationships
+WineType "1" o-- "0..*" Wine : "aggregates"
+StorageLocation "1" o-- "0..*" WineStorage : "manages"
+@enduml

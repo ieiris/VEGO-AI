@@ -1,0 +1,219 @@
+@startuml
+!theme vibrant
+
+enum CurrentStatus {
+   in process
+   dispatched
+   delivered
+   paid
+   suspended
+   canceled
+}
+
+enum Role {
+    - Main: String
+    - Additional: String
+}
+
+enum PriorityLevel {
+   {1,2,3,4,5}
+}
+
+enum LocationForOccasion <<enumeration>> {
+    indoor
+    outdoor
+}
+
+enum Season {
+    spring
+    winter
+    summer
+    autumn
+}
+
+enum SweetnessLevel {
+    dry
+    semi-dry
+    semi-sweet
+    sweet
+}
+
+class Order {
+    - orderNumber: int
+    - orderDate: Date
+    - currentStatus: String
+    - shipmentDate: Date
+    - employeeID: int
+    - CurrentStatus: CurrentStatus
+    
+}
+
+class UrgentOrder {
+    - priorityLevel: PriorityLevel 
+    - expectedDeliveryTime: Time 
+    - CustomerID: int
+}
+
+class RegularOrder {
+    - mainCustomerID: int 
+    - additionalCustomerID: int 
+    + JointOrders()
+    
+}
+
+class Customer {
+    - ID: int
+    - name: String
+    - phoneNumber: String
+    - deliveryAddress: String
+    - email: String
+    - dateOfFirstContact: Date
+    
+}
+
+class WineType {
+    - WineTypeID: int
+    - name: String
+    - serialNumber: int
+    
+}
+
+class Link {
+    - FoodID: int
+    - RecipeLink: String
+}
+
+class FoodPairing {
+    -ID: int
+    -DishName: String
+    
+}
+
+class Wine {
+    - WineID: int
+    - manufacturerNumber: int
+    - catalogNumber: int
+    - name: String
+    - description: String
+    - productionYear: int
+    - pricePerBottle: double
+    - sweetnessLevel: SweetnessLevel
+    - productImage: Image
+    - wineTypeID: int
+    - SweetnessLevel: SweetnessLevel
+    
+    
+}
+
+class CustomerPreferences {
+    - DateAdded: Date
+}
+
+
+class Manufacturer {
+    - fullName: String
+    - phoneNumber: String
+    - address: String
+    - email: String
+    - uniqueAutomaticNumber: int
+    
+}
+
+class Location {
+    - uniqueNumber: int
+    - name: String
+   
+}
+
+
+class Employee {
+    - ID: int
+    - name: String
+    - phoneNumber: String
+    - officeAddress: String
+    - email: String
+    - employmentStartDate: Date
+    
+}
+
+
+class Occasion {
+    - occasionID: int 
+    - description: String
+    - season: Season
+    - location: LocationForOccasion
+    - Season: Season
+    - LocationForOccasion: LocationForOccasion
+    
+}
+
+class SalesEmployee {
+    + generateUnproductiveEmployee(timePeriod: TimePeriod): List<Employee>
+    + generateWineRecommendationsReport(customer : Customer): void}
+} 
+
+class MarketingEmployee {
+
+}
+
+class RegularOrderD {
+    - Role: Role
+}
+
+class RegularOrderDetails{
+    - Quantity: int
+    - Price: int
+}
+
+class UrgentOrderD {
+    - Quantity:int
+    - Price: int
+}
+
+class WineTypeOccasion {
+- Quantity: int
+}
+
+class Gefen {
+     + importManufacturerData (xmlData:XML) : void
+     + importWineData (xmlData: XML): void
+}
+
+class RegularOrder
+
+note right of RegularOrder #lightyellow
+  can be either Regular or Joint Order (based on the number of customers)
+end note
+
+
+
+
+Employee <|-- SalesEmployee : {disjoint, incomplete}   
+MarketingEmployee --|> Employee : {disjoin, incomplete}
+UrgentOrder --|> Order: {disjoint, complete}
+RegularOrder --|> Order:{disjoint, complete}
+CurrentStatus <.. Order
+LocationForOccasion <.. Occasion
+PriorityLevel <.. UrgentOrder
+Season <.. Occasion
+SweetnessLevel <.. Wine
+WineType "*" -- "*" Occasion: Recommended For 
+(WineType, Occasion) .. WineTypeOccasion
+Order "*" -- "*" Wine: Includes
+(Order,Wine) .. UrgentOrderD
+Wine "*" --* "1" WineType: {non shared composition}\nDefines
+Order "*" <-- "1" Employee : Assigned 
+Gefen-[hidden]- RegularOrder
+FoodPairing "*" -- "*" WineType: Paired With
+CustomerPreferences .. (FoodPairing ,  WineType)
+Order "*" -- "*" Customer : Placed By
+(Order, Customer) ..  RegularOrderD
+(Customer, Occasion) .. CustomerPreferences
+RegularOrderD "*" -- "*" Wine
+(RegularOrderD, Wine) .. RegularOrderDetails
+RegularOrderD .. Role
+Manufacturer "1" o-- "*" Wine : {logical aggregation}\nProduced By
+Location "*" -- "*" Wine: Stored In
+Link "1.." --* "1" FoodPairing: {non shared composition}\nProvides Recipe Links For
+@enduml
+

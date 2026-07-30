@@ -1,0 +1,164 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide methods
+
+' =========================
+' Enums
+' =========================
+enum VehicleSize {
+SMALL
+MEDIUM
+LARGE
+}
+
+enum Color {
+WHITE
+BLACK
+SILVER
+BLUE
+OTHER
+}
+
+enum SessionStatus {
+ACTIVE
+COMPLETED
+}
+
+enum PaymentStatus {
+PENDING
+APPROVED
+DECLINED
+}
+
+' =========================
+' Abstract Class
+' =========================
+abstract class AbstractParkingLocation {
+floor : int
+x : int
+y : int
+}
+
+' =========================
+' Classes
+' =========================
+class Client {
+clientId : int
+firstName : String
+lastName : String
+mobilePhone : String
+isClubMember : boolean
+registrationDate : Date
+}
+
+class Vehicle {
+vehicleId : int
+plateNumber : String
+type : String
+color : Color
+size : VehicleSize
+weightKg : double
+}
+
+class VehiclePhoto {
+photoId : int
+type : String
+uri : String
+}
+
+class ParkingLot {
+lotId : int
+name : String
+address : String
+city : String
+}
+
+class PriceList {
+priceListId : int
+firstHourPrice : double
+additionalHourPrice : double
+fullDayPrice : double
+}
+
+class PriceListAssignment {
+effectiveFrom : Date
+effectiveTo : Date
+}
+
+class PreferredLotSelection {
+selectionDate : Date
+}
+
+class Conveyor {
+conveyorId : int
+maxWeightKg : double
+isAvailable : boolean
+}
+
+class ParkingSpace {
+spaceId : int
+size : VehicleSize
+isOccupied : boolean
+}
+
+class ParkingSession {
+sessionId : int
+startTime : DateTime
+endTime : DateTime
+status : SessionStatus
+totalHours : double
+chargedAmount : double
+isFirstFreeInMonth : boolean
+}
+
+class Payment {
+paymentId : int
+amount : double
+paymentTime : DateTime
+status : PaymentStatus
+externalTransactionId : String
+}
+
+class Receipt {
+receiptId : int
+issueDate : DateTime
+}
+
+' =========================
+' Relationships
+' =========================
+
+' Inheritance
+Conveyor -|> AbstractParkingLocation
+ParkingSpace -|> AbstractParkingLocation
+
+' Client & Vehicle
+Client "1" -- "1..*" Vehicle
+Vehicle "1" -- "3" VehiclePhoto
+
+' Club logic
+Client "1" -- "0.." PreferredLotSelection
+ParkingLot "1" -- "0.." PreferredLotSelection
+
+' Price history
+ParkingLot "1" -- "0.." PriceListAssignment
+PriceList "1" -- "0.." PriceListAssignment
+
+' Lot hardware
+ParkingLot "1" -- "0.." Conveyor
+ParkingLot "1" -- "0.." ParkingSpace
+
+' Session hub
+Client "1" -- "0.." ParkingSession
+Vehicle "1" -- "0.." ParkingSession
+ParkingLot "1" -- "0..*" ParkingSession
+
+' Tracking
+ParkingSession "0..1" -- "1" Conveyor : currentConveyor
+ParkingSession "0..1" -- "1" ParkingSpace : currentSpace
+
+' Payment & receipt
+ParkingSession "1" -- "0..1" Payment
+Payment "1" -- "0..1" Receipt
+@enduml

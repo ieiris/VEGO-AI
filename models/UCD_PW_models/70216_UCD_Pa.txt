@@ -1,0 +1,102 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Customer
+actor ClubMember
+actor "Payment Provider" as PaymentProvider
+actor "Gate Sensor" as GateSensor
+actor Conveyor
+actor Administrator
+actor "Integrated Rate Service" as IRS
+
+Customer <|-- ClubMember
+
+rectangle "ParkWise System" {
+
+  ' ==== MAIN USE CASES ====
+  usecase "Make Payment" as UC_Payment
+  usecase "Register Membership" as UC_RegisterMembership
+  usecase "Choose Preferred Parking Lot" as UC_ChooseLot
+  usecase "Bring Vehicle to Parking" as UC_BringVehicle
+  usecase "Send Parking Details SMS" as UC_SMS
+  usecase "Start Parking Operation" as UC_StartParking
+  usecase "Scan Vehicle" as UC_ScanVehicle
+  usecase "Check Vehicle Details" as UC_CheckDetails
+  
+ 
+  usecase "Register Vehicle & Photos" as UC_RegVehiclePhotos
+  
+  usecase "Register New Customer" as UC_RegCustomer
+  usecase "Move Vehicle to Parking Spot" as UC_MoveToSpot
+  usecase "Return Vehicle to Customer" as UC_ReturnVehicle
+  usecase "End Parking Operation" as UC_EndParking
+  usecase "Generate Receipt" as UC_Receipt
+
+  ' ==== ADMIN USE CASES ====
+  usecase "Annual Summary Report" as UC_AnnualReport
+  usecase "Customer Club Growth Report" as UC_GrowthReport
+
+  ' ==== IRS USE CASE ====
+  usecase "Update Price List" as UC_UpdatePrice
+}
+
+' ============================
+'          CUSTOMER LINKS
+' ============================
+
+Customer --> UC_Payment
+Customer --> UC_RegisterMembership
+Customer --> UC_BringVehicle
+Customer --> UC_SMS
+
+UC_Payment --> UC_Receipt : <<extend>> [customer wants receipt]
+UC_RegisterMembership --> UC_ChooseLot : <<include>>
+UC_BringVehicle --> UC_ScanVehicle : <<include>>
+UC_SMS --> UC_StartParking : <<include>>
+
+' ============================
+'       CLUB MEMBER LINKS
+' ============================
+
+ClubMember --> UC_ChooseLot
+
+' ============================
+'    PAYMENT PROVIDER LINKS
+' ============================
+
+PaymentProvider --> UC_Payment
+
+' ============================
+'       SENSOR LINKS
+' ============================
+
+GateSensor --> UC_ScanVehicle
+UC_ScanVehicle --> UC_CheckDetails : <<include>>
+
+UC_CheckDetails --> UC_RegCustomer : <<extend>> [customer not found]
+UC_CheckDetails --> UC_RegVehiclePhotos : <<extend>> [vehicle not found]
+
+' ============================
+'    CONVEYOR LINKS
+' ============================
+
+Conveyor --> UC_MoveToSpot
+Conveyor --> UC_ReturnVehicle
+
+UC_ReturnVehicle --> UC_EndParking : <<include>>
+
+' ============================
+'       ADMIN LINKS
+' ============================
+
+Administrator --> UC_AnnualReport
+Administrator --> UC_GrowthReport
+
+' ============================
+'       IRS LINKS
+' ============================
+
+IRS --> UC_UpdatePrice
+
+@enduml

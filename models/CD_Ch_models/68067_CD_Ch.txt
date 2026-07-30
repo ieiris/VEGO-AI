@@ -1,0 +1,199 @@
+@startuml
+class Person {
+    + ID : int
+    + name : String
+    + phoneNum : String
+    + email : String
+}
+class Employee extends Person {
+    + address : String
+    + employmentStartDate : Date
+    + viewWineInformation()
+}
+
+class MarketingEmployee extends Employee {
+    + updateWineInformation()
+    + updateWineTypes()
+    + recommendOccasions()
+    + linkWineToType()
+}
+
+class SalesEmployee extends Employee {
+    + generateUnproductiveEmployeesReport()
+    + placeUrgentOrder()
+    + placeJoinedOrder()
+    + generateWineRecommendationReport()
+}
+
+class Customer extends Person {
+    + deliveryAddress : String
+    + firstContactWithTheCompany : Date
+}
+
+class Order {
+    + orderNumber : int
+    + orderDate : Date
+    + currentStatus : OrderStatus
+    + shipmentDate : Date
+    + trackCustomerOrder()
+}
+
+class UrgentOrder extends Order {
+    + priorityLevel : PriorityLevel
+    + expectedDeliveryTime : Date
+    + processUrgentOrder()
+}
+
+class JoinedOrder extends Order {
+    + assignMainCustomer()
+    + splitOrderByCustomer()
+}
+
+class OrderWine {
+    + Amount : int
+    + trackWine()
+}
+
+class Wine {
+    + name : String
+    + description : String
+    + productionYear : int
+    + price : float
+    + sweetnessLevel : SweetnessLevel
+    + productImage : Image
+    + catalogNumber : int
+    + manufacturerID : int
+    + getManufacturerID()
+}
+
+class WineType {
+    + typeName : TypeName
+    + getFoodPairings()
+    + getOccasions()
+}
+
+class FoodPairings {
+    + dishName : String
+    + getRecipes()
+}
+
+class Recipe {
+    + url : String
+}
+
+class Occasion {
+    + generalDescription : String
+    + season : Season
+    + location : Location
+}
+
+class Storage {
+    + StorageID : int
+    + Storage name : String
+    + storageLocation : String
+}
+
+class WineStorage {
+    + quantity : int
+    + updateStock()
+    + getAvailableStock()
+}
+
+class Manufacturer {
+    + ManufacturerCode : int
+    + FullName: String
+    + contactPhoneNumber : int
+    + address : String
+    + email : String
+}
+
+class CheersSystem {
+    + processOrder()
+    + updateInventory()
+    + importDataFromGefen()
+    + exportInventoryReportToGefen()
+}
+
+class GefenSystem {
+    + sendManufacturerData()
+    + receiveInventoryReport()
+}
+
+enum OrderStatus {
+    IN_PROCESS
+    DISPATCHED
+    DELIVERED
+    PAID
+    SUSPENDED
+    CANCELED
+}
+
+enum PriorityLevel {
+    one
+    two
+    three
+    four
+    five
+}
+
+enum SweetnessLevel {
+    dry
+    semi_dry
+    semi_sweet
+    sweet
+}
+
+enum TypeName {
+    red
+    white
+    sparkling
+    fortified
+    rose
+    dessert
+}
+
+enum Season {
+    winter
+    spring
+    summer
+    autumn
+}
+
+enum Location {
+    indoor
+    outdoor
+}
+
+Order "1" -- "0..*" OrderWine : contains
+Order --> OrderStatus
+Order"0..*" --> "1" CheersSystem : process
+OrderWine "0..*" -- "1" Wine
+
+CheersSystem "1" --> "1" GefenSystem : communicates with
+Employee "0..*" --> "1" CheersSystem : communicates with
+
+UrgentOrder --> PriorityLevel
+UrgentOrder "0..*" --> "1" Customer : has
+JoinedOrder "0..*"-->"0..*"  Customer : has
+
+Wine --> SweetnessLevel
+Wine "1..*" --> "1" Manufacturer : created by
+Wine "1..*" --> "1" WineType : has
+Wine "0..*" -- "1" WineStorage : stored in
+WineType "0..*" -- "0..*" FoodPairings : associated with
+WineType "0..*" -- "0..*" Occasion : suggested for
+WineType --> TypeName
+FoodPairings "1" --> "1..5" Recipe : linked to
+Occasion --> Season
+Occasion --> Location
+
+Storage "0..*" -- "1" WineStorage
+Storage "0..*" --> "1" CheersSystem : updated by
+
+Manufacturer "0..*" --> "1" GefenSystem : informs
+
+
+SalesEmployee "1" --> "0..*" Order : assigned
+MarketingEmployee "0..*" --> "0..*" WineType : update
+MarketingEmployee "0..*" --> "0..*" Wine : update
+@enduml

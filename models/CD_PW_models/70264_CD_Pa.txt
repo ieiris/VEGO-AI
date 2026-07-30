@@ -1,0 +1,212 @@
+@startuml
+' Configuration
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 60
+skinparam ranksep 60
+
+' ---------------------------------------------
+' 1. CLASS DEFINITIONS
+' ---------------------------------------------
+
+class Administrator {
+    + updateParkingLotDetails(lotId: String)
+    + generateAnnualSummaryReport(year: int, format: String)
+    + generateClubGrowthReport(year: int)
+}
+note left of Administrator
+  Report formats: PDF, XML.
+  Growth report covers monthly
+  breakdown for the specific year.
+end note
+
+class ParkWise {
+    - companyName: String
+    - companyTaxId: String
+    + registerClient(c: Client)
+    + addParkingLot(pl: ParkingLot)
+    + calculateCost(session: ParkingSession): double
+    + compileReportData(type: String, year: int)
+}
+
+class Client {
+    - clientID: int
+    - firstName: String
+    - lastName: String
+    - phoneNumber: String
+    + requestMembership()
+    + addVehicle(v: Vehicle)
+    + endParking()
+    + pay()
+}
+
+class ClubMembership {
+    - membershipId: String
+    - registrationDate: Date
+    - discount: double
+    + isEligibleForFreeParking(date: Date): boolean
+}
+
+class Vehicle {
+    - vehicleNumber: String
+    - clientID: String
+    - type: String
+    - size: Size
+    - color: Color
+    - weight: double
+    - photos: List<image>
+}
+
+class ParkingLot {
+    - uniqueNumber: String
+    - name: String
+    - street: String
+    - streetNumber: int
+    - city: String
+    - availableSpaces: int
+    + updateDetails()
+    + getCurrentPriceList(): PriceList
+}
+
+class PriceList {
+    - effectiveDate: Date
+    - firstHourPrice: double
+    - additionalHourPrice: double
+    - fullDayPrice: double
+    + parseFromJSON(json: String)
+}
+
+' ASSOCIATION CLASS: PreferredSelection
+class PreferredSelection {
+    - selectionDate: Date
+}
+note right of PreferredSelection
+  Stores the date the member
+  selected this lot
+end note
+
+' ASSOCIATION CLASS: ParkingSession
+class ParkingSession {
+    - sessionId: String
+    - clientID: String
+    - vehicleNumber: String
+    - uniqueNumber: String
+    - SpaceID: int
+    - startTime: DateTime
+    - endTime: DateTime
+    - finalAmount: double
+    - isPayed: boolean
+    + endSession()
+    + generateReceipt()
+}
+
+' RECEIPT
+class Receipt {
+    - clientID: String
+    - vehicleNumber: String
+    - lotName: String
+    - entryTime: DateTime
+    - exitTime: DateTime
+    - totalHours: double
+    - appliedRate: String
+    - finalAmount: double
+}
+
+class ParkingSpace {
+    - SpaceID: int
+    - size: Size
+    - floorNumber: int
+    - x: int
+    - y: int
+    + isVacant(): boolean
+}
+
+class Conveyor {
+    - ConveyorID: int
+    - floorNumber: int
+    - x: int
+    - y: int
+    - maxWeightCapacity: double
+}
+
+enum Size {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+enum Color {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+' ---------------------------------------------
+' 2. INTERFACES
+' ---------------------------------------------
+
+interface IGateSensor {
+    + identifyVehicle()
+    + openBarrier()
+    + displayInstructions()
+}
+
+interface IConveyorController {
+    + scanVehicle()
+    + assignConveyor()
+    + moveVehicle(v: Vehicle, dest: Location)
+}
+
+interface IPaymentGateway {
+    + processPayment(amount: double)
+}
+
+interface IIntegratedRateService {
+    + fetchYearlyRates()
+}
+
+' ---------------------------------------------
+' 3. RELATIONSHIPS
+' ---------------------------------------------
+
+' System & Admin
+ParkWise "1" *-- "*" ParkingLot : owns >
+ParkWise "1" o-- "*" Client : manages >
+Administrator ..> ParkWise : generates reports from >
+Administrator ..> ParkingLot : updates details >
+
+' Price List
+ParkingLot "1" *-- "*" PriceList : maintains history >
+
+' Membership
+Client "1" *-- "0..1" ClubMembership : has >
+ClubMembership "*" -- "*" ParkingLot
+(ClubMembership, ParkingLot) .. PreferredSelection
+
+' Parking Session
+Vehicle "1" -- "*" ParkingLot
+(Vehicle, ParkingLot) .. ParkingSession
+ParkingSession "*" --> "1" Client : billed to
+
+' Receipt
+ParkingSession "1" *-- "0..1" Receipt : generates >
+
+' Enum Connections
+Vehicle ..> Color : has >
+Vehicle ..> Size : has >
+ParkingSpace ..> Size : restricted by >
+
+
+' Composition & Dependencies
+ParkingLot "1" *-- "*" ParkingSpace : contains >
+ParkingSession "0..1" --> "1" ParkingSpace : occupies
+ParkingSession "0..1" --> "1" Conveyor : transported by
+
+' Interface Usage
+ParkingLot ..> IGateSensor
+ParkingLot ..> IIntegratedRateService
+ParkingSession ..> IPaymentGateway
+ParkWise ..> IConveyorController
+@enduml

@@ -1,0 +1,489 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68099",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The Cheers system encompasses managing orders, inventory, and customer inquiries, illustrated by use cases like Place Order, Track Inventory Levels, etc., in a system boundary labeled CheersSystem.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "Sales Staff actor directly linked to the Place Orders use case, indicating their role in placing orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The Urgent Order and Joint Order use cases are extensions of the Place Order, reflecting categories. However, order details like order number, shipment date, etc., are not explicitly represented.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Order categorization is shown, but specific details are not visible in use cases."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "GalGalim is mentioned as handling order delivery outside the Cheers system scope, thus not visualized.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Place Joint Order extends Place Order, serving customers with joint orders. However, tracking details for multiple wines and customer specifics are not depicted.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The mechanism for tracking orders from multiple customers in a joint order is not shown."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The diagram includes Customer actor linked with Place Order, indicating order initiation, but storage of personal details beyond order placement is unseen.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Actor association implies interaction but lacks explicit depiction of customer detail recording."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Place Employee Order extends Place Order as a use case, indicating allowance for employee orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The Urgent Order use case extends Place Order, implying priority handling but lacks specifics like expected delivery time or priority levels.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Urgent order overhead is addressed, but specific priority inputs aren't visible."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Regular orders are suggested through the Place Joint Order use case extensions, but responsible customer and specific combination details are not demonstrated.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Joint orders partially mirror regular order compositions but miss key assignment details."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Customer actor involved in order-related use cases without explicit representation of their detailed records for different order types.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Order involvement is clear, but detailed personal information storage is not explicit."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The model includes an Employee Order as an extension of Place Order, accommodating employee's order rights.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Marketing Staff actor connected to Update Wine Information and Link Wines to Types use cases, indicating exclusive privilege.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Marketing and Sales Staff have distinct roles, noting privilege in wine updates and general viewing capabilities across roles.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Role distinctions partially noted; details on access levels are abstractly inferable."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Link Wines to Types as a use case under Marketing Staff suggests wine characterization but lacks depth on specifics like serial numbers or pairings.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Wine type taxonomies are encompassed schematically, missing specific classification criteria."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Occasion recommendations for wines mentioned in Generate Wine Recommendation Report for Customers use case extension.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Functional depiction of occasion-based wine suggestions exists but lacks descriptive mechanism."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Gefen actor linked with information provision for Wine Producer and General Wine, indicating data input, aligning with monthly updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The depicted tracking and processing of wine orders indirectly imply weekly purchase updates; however, explicit updates aren’t clearly shown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Weekly inventory update recognition is inferred, not explicitly visualized."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "While Gefen provides wine information, managing specific manufacturer data within the system isn't visualized.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Provide Wine Information partially aligns with the system’s need to capture wine details like production year, but lacks explicit depiction of additional attributes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Wine details encompass production elements, yet they omit comprehensive attribute capture."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "No specific use case addressing wine differentiation by manufacturer number and catalog number.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Link Wines to Types linked with Marketing Staff hints at such tasks but omits focal details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Categorization is initiated without detailed representation of linking processes."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Track Inventory Levels includes visual sales processing but lacks direct storage location tracking.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Encoded inventory tracking is partial—specific location data absent."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Track Inventory Levels acknowledges overall inventory monitoring without specific focus on wine storage detail.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Global inventory overview exists without thorough location indication."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Update Inventory after each sale is included as a part of the process, reflecting necessary updates upon transaction completion.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Generate Unproductive Employees Report extends Process Orders, recognizing performance-based employee assessment.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Although the Current Inventory Report by Wine is noted to track inventory levels, no specification indicates JSON format outputs or Gefen's reception.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While reporting mechanisms are hinted, format specifics remain vague."
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "The Generate Wine Recommendation Report for Customers correlates with generating tailored customer suggestions based on set criteria.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G3",
+      "evidence": "The diagram contains 'Track Order Status' and 'Place Order' use cases which could imply order detail handling through extensions and inclusions. However, explicit representation for details like order number or shipment date is lacking.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The structural framework of interactions suggests handling of order categories and status, but does not extensively cover the intricate order specifics required by this guideline."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The 'Place Joint Order' use case extends 'Place Order' and involves 'Track Order Status', potentially suggesting addressing joint order tracking implicitly.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Though the joint ordering feature is depicted, the mechanism detailing specific customer and wine order information isn't clearly defined."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "While customer interaction with order placement is evident, explicit depiction of personal detail recording outside the ordering process isn't visible.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Emphasis on the role interaction exists, but without clarity on how customer details are stored beyond order engagement."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "There is an 'extend' relationship from 'Place Urgent Order' to 'Place Order', minimally suggesting priority arrangements in order handling.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The urgent order use case implies prioritization but lacks specifics like priority levels or expected delivery times."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The 'Place Joint Order' use case implicitly supports the guideline, though it does not detail individual customer responsibilities.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While joint orders are showcased, nuances about main customer responsibilities and combinations are missing."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Use cases involve customer engagement without clear depictions of comprehensive customer detail capture linked to order types.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Participation in order actions is apparent, but storage specifics of customer information are unclear."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Distinct interaction paths for marketing and sales roles are visible, aligning partly with access level permissions.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Though role distinction is observed, specific access levels are not detailed within the model."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Marketing Staff can link wines to types which partially underscores the classification role—lacking in-depth attribute criteria.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Demonstrative of category assignment but absent explicit descriptors like serial numbers or pairings."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Wine recommendations are part of the model, yet there is no explicit depiction for describing the recommendation process.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The report generation suggests involvement but omits operational details regarding occasion matching."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Though 'Track Inventory Levels' demonstrates broad tracking functionality, connection to weekly purchase updates isn't distinctly outlined.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The update process's frequency and specifics remain inconspicuous yet potentially inferred."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No visual representation found evidencing management of manufacturer information within the system model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "This significant manufacturer data handling component is completely absent in the provided model."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The only partial alignment with wine detail capture is seen, missing critical elements like additional attributes in the system.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Basic information encapsulation is latent, yet finer details about wine attributes are missing."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "No distilled use case or structural arrangement supporting wine categorization by defined identifiers is present.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Essential system feature pertaining to wine differentiation using identifiers isn't explored within this model."
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Marketing Staff can link wine types, offering minimal compliance without full depiction of the associated processes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the linkage activity is indicated, descriptions lack depth to cover complete guideline expectations."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "The model does not depict use cases directly addressing wine storage location tracking.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Despite some inventory tracking, the specifics on where wines are stored are not visualized in the current setup."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The 'Track Inventory Levels' use case represents inventory monitoring, but particulars on specific storage tracking are not shown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While overarching tracking is understood, physical allocation assessment is incomplete."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Current Inventory Report by Wine exists but lacks confirmation on JSON formatting or integration with the 'Gefen' system deliveries.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Inventory details extended but formatting and communication specificity for restocking isn't illuminated."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The relationship between 'Process Orders' and 'Update Inventory after each sale' indicating inventory updates as part of order processing.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The relationship showcases a detailed understanding that inventory should be updated as part of the order processing flow, despite not being explicitly required by the guidelines."
+    },
+    {
+      "fragment": "The inclusion of 'View Order History' as an extension of 'Track Order Status'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Adding the capability to view order history enriches the system's functionalities and provides users with more comprehensive information, though it is not a specified requirement."
+    },
+    {
+      "fragment": "The relationship indicating 'Generate Unproductive Employees Report' extends 'Process Orders'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This captures a value-added functionality reflecting performance assessments for employees, logically linking it with order processing activities."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Existing and potential both Partially-Satisfied"
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Existing and potential both Partially-Satisfied"
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "No improvement in potential"
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The relationship between 'Process Orders' and 'Update Inventory after each sale'",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The inclusion of 'View Order History' as an extension of 'Track Order Status'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The relationship indicating 'Generate Unproductive Employees Report' extends 'Process Orders'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 17.5,
+  "max_score": 27.0,
+  "score_pct": 64.8,
+  "overall_assessment": "The case model demonstrates a moderate level of compliance with several guidelines fully satisfied but many partially met or unmet, indicating areas for improvement."
+}

@@ -1,0 +1,191 @@
+@startuml
+title ParkWise System – UML Class Diagram (Data Model)
+
+'==========================
+' ACTORS / EXTERNAL SYSTEMS
+'==========================
+class GateSensor
+class ConveyorsController
+class PaymentGateway
+class IntegratedRateService
+
+'==========================
+' CORE DOMAIN ENTITIES
+'==========================
+
+class ParkingLot {
+  +lotId : String
+  +name : String
+  +address : String
+  +city : String
+  +availableSpaces : int
+  --
+  +updateDetails()
+  +updateAvailability()
+  +getAnnualIncome(year)
+  +countVehiclesByColor(year, color)
+}
+
+class ParkingSpace {
+  +spaceId : String
+  +floor : int
+  +x : int
+  +y : int
+  +size : SizeType
+  +isOccupied : boolean
+}
+
+enum SizeType {
+  small
+  medium
+  large
+}
+
+class Conveyor {
+  +conveyorId : String
+  +floor : int
+  +x : int
+  +y : int
+  +maxWeight : int
+  +isVacant : boolean
+}
+
+class Client {
+  +clientId : String
+  +firstName : String
+  +lastName : String
+  +phone : String
+  --
+  +updateDetails()
+}
+
+class Vehicle {
+  +vehicleId : String
+  +licenseNumber : String
+  +type : String
+  +color : ColorType
+  +size : SizeType
+  +weight : int
+}
+
+enum ColorType {
+  white
+  black
+  silver
+  blue
+  other
+}
+
+class VehiclePhoto {
+  +photoId : String
+  +url : String
+  +viewType : ViewType
+}
+
+enum ViewType {
+  front
+  rear
+  side
+}
+
+class ParkingSession {
+  +sessionId : String
+  +startTime : DateTime
+  +endTime : DateTime
+  +finalAmount : double
+  --
+  +calculateDuration()
+  +calculatePrice()
+}
+
+class PriceList {
+  +priceListId : String
+  +year : int
+  +firstHourPrice : double
+  +additionalHourPrice : double
+  +fullDayPrice : double
+}
+
+class LotPriceHistory {
+  +id : String
+  +effectiveFrom : Date
+  +effectiveTo : Date
+}
+
+class Payment {
+  +paymentId : String
+  +amount : double
+  +timestamp : DateTime
+  +status : PaymentStatus
+}
+
+enum PaymentStatus {
+  Pending
+  Approved
+  Declined
+}
+
+class Receipt {
+  +receiptId : String
+  +generatedAt : DateTime
+}
+
+class ClubMembership {
+  +membershipId : String
+  +registrationDate : Date
+  +isActive : boolean
+}
+
+class PreferredLotSelection {
+  +selectionId : String
+  +selectionDate : Date
+}
+
+'==========================
+' RELATIONSHIPS
+'==========================
+
+ParkingLot "1" o-- "*" ParkingSpace
+ParkingLot "1" o-- "*" Conveyor
+ParkingLot "1" o-- "*" LotPriceHistory
+LotPriceHistory "1" --> "1" PriceList
+
+Client "1" -- "*" Vehicle : "owns"
+Vehicle "1" o-- "*" VehiclePhoto
+
+Client "1" o-- "0..1" ClubMembership
+ClubMembership "1" o-- "*" PreferredLotSelection
+PreferredLotSelection "*" --> "1" ParkingLot
+
+Vehicle "1" o-- "*" ParkingSession
+ParkingSession "*" --> "1" ParkingLot
+ParkingSession "*" --> "1" ParkingSpace
+ParkingSession "*" --> "0..1" Conveyor
+ParkingSession "1" o-- "0..1" Payment
+Payment "1" --> "0..1" Receipt
+
+GateSensor --> ParkingLot : updates availability
+GateSensor --> Vehicle : identifies
+
+ConveyorsController --> ParkingSession : assign conveyor
+PaymentGateway --> Payment : approve
+
+IntegratedRateService --> PriceList : provides JSON pricing
+
+'==========================
+' OPERATIONS SUGGESTED
+'==========================
+
+ParkingLot : +getAnnualIncome(year) : double
+ParkingLot : +countVehiclesByColor(year, color) : int
+
+ParkingSession : +calculateDuration() : int
+ParkingSession : +calculatePrice() : double
+
+Vehicle : +getColorCategory()
+
+Client : +getClubStatus()
+
+ClubMembership : +isFirstSessionFree(month, lot)
+
+@enduml

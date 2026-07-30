@@ -1,0 +1,46 @@
+@startuml
+actor SalesStaff as "Sales Staff"
+actor MarketingStaff as "Marketing Staff"
+actor GefenSystem as "Gefen System"
+
+usecase PlaceOrder as "Place Order"
+usecase PlaceUrgentOrder as "Place Urgent Order"
+usecase PlaceRegularOrder as "Place Regular Order"
+usecase PlaceJointOrder as "Place Joint Order"
+usecase UpdateWineInfo as "Update Wine Info"
+usecase ViewWineInfo as "View Wine Info"
+usecase GenerateReports as "Generate Reports"
+usecase GenerateUnproductiveEmployeesReport as "Generate Unproductive Employees Report"
+usecase GenerateWineRecommendationReport as "Generate Wine Recommendation Report"
+usecase UpdateInventory as "Update Inventory"
+usecase ReceiveXMLData as "Receive XML Data"
+usecase SendInventoryReport as "Send Inventory Report"
+usecase ManageWineInfo as "Manage Wine Information"
+usecase LinkWineToType as "Link Wine to Type"
+usecase RecommendOccasion as "Recommend Occasion"
+
+SalesStaff --* PlaceOrder
+SalesStaff --* ViewWineInfo
+SalesStaff --* GenerateReports
+
+MarketingStaff --* ManageWineInfo
+MarketingStaff --* UpdateWineInfo
+
+GefenSystem --* ReceiveXMLData
+GefenSystem --* SendInventoryReport
+
+PlaceUrgentOrder ..> UpdateInventory : "includes"
+PlaceRegularOrder ..> UpdateInventory : "includes"
+PlaceJointOrder ..> UpdateInventory : "includes"
+PlaceOrder ..> ViewWineInfo : "includes"
+PlaceOrder ..> PlaceUrgentOrder : "extends"
+PlaceOrder ..> PlaceRegularOrder : "extends"
+PlaceOrder ..> PlaceJointOrder : "extends"
+ManageWineInfo ..> ViewWineInfo : "includes"
+ManageWineInfo ..> UpdateWineInfo : "includes"
+ManageWineInfo ..> LinkWineToType : "includes"
+LinkWineToType ..> RecommendOccasion : "extends"
+GenerateReports ..> GenerateUnproductiveEmployeesReport : "extends"
+GenerateReports ..> GenerateWineRecommendationReport : "extends"
+
+@enduml

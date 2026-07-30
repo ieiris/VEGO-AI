@@ -1,0 +1,152 @@
+@startuml
+!theme toy
+skinparam backgroundColor white
+
+' ENUMS
+enum VehicleSize {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+enum VehicleColor {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+
+' CLASSES with lighter pink color
+class ParkingLot #FFDDEE {
+    - lotNumber: int
+    - name: String
+    - address: String
+    - city: String
+    - availableSpaces: int
+}
+
+class GateSensor #FFDDEE {
+    + manageBarrier()
+}
+
+class FinancialService #FFDDEE {
+    + calculateFee(session: ParkingSession): float
+    + requestPayment(client: Client, amount: float)
+}
+
+class Vehicle #FFDDEE {
+    - vehicleNumber: String
+    - type: String
+    - color: VehicleColor
+    - size: VehicleSize
+    - weight: float
+}
+
+class Client #FFDDEE {
+    - ClientId: String
+    - firstName: String
+    - lastName: String
+    - mobilePhone: String
+}
+
+class ClubMembership #FFDDEE {
+    - registrationDate: Date
+    - freeSessionUsed: boolean 
+}
+
+class ClubPreferredLot #FFDDEE {
+    - selectionDate: Date
+}
+
+class ParkingSession #FFDDEE {
+    - sessionId: int
+    - startTime: DateTime
+    - endTime: DateTime
+    - totalHours: float
+    - price: float
+}
+
+class ParkingSpace #FFDDEE {
+    - floor: int
+    - x: float
+    - y: float
+    - size: VehicleSize
+    - isOccupied: boolean
+}
+
+class Conveyor #FFDDEE {
+    - conveyorId: int
+    - maxWeight: float
+    - floor: int
+    - x: float
+    - y: float
+}
+
+class ConveyorController #FFDDEE {
+    + scanVehicle(vehicle: Vehicle)
+    + assignConveyor(vehicle: Vehicle)
+    + optimizeParking(vehicle: Vehicle): ParkingSpace
+    + updateParkingCompletion(vehicle: Vehicle, space: ParkingSpace)
+}
+
+class PriceList #FFDDEE {
+    - firstHourPrice: float
+    - additionalHourPrice: float
+    - fullDayPrice: float
+    - effectiveDate: Date
+}
+
+class Receipt #FFDDEE {
+    - totalAmount: float
+    - rate: float
+}
+
+class Administrator #FFDDEE {
+    + updateParkingLotDetails(lot: ParkingLot)
+    + generateAnnualSummaryReport(year: int)
+}
+
+class ParkWiseSystem #FFDDEE {
+    + registerClient(client: Client)
+    + updateClientVehicleAssociation(vehicle: Vehicle, client: Client)
+}
+
+
+
+' RELATIONSHIPS WITH MULTIPLICITY
+ParkingLot "1" *-- "1" GateSensor
+ParkingLot "1" *-- "0..*" ParkingSpace
+ConveyorController "1" o-- "0..*" Conveyor : controls
+Client "0..1" -- "0..*" Vehicle : isAssignedTo
+
+Vehicle "1" -- "0..*" ParkingSession : records
+ParkingSession "1" *-- "0..1" Receipt
+Client "1" -- "0..*" ParkingSession : attends
+ParkingLot "1" -- "0..*" ParkingSession : hosts
+ParkingSession "1" -- "0..1" ParkingSpace : parkedAt
+ParkingSession "1" -- "0..1" Conveyor : transportedBy
+ParkingLot "1" -- "0..*" PriceList : priceHistory
+Client "1" *-- "0..1" ClubMembership : has_membership
+ClubMembership "0..*" -- "0..*" ParkingLot : selects_preferred_lot
+(ClubMembership, ParkingLot) .. ClubPreferredLot
+
+FinancialService "1" --> "0..*" ParkingSession : calculates_fee_for
+FinancialService "1" --> "0..*" PriceList : retrieves_rates_from
+
+Administrator "1" --o "1" ParkWiseSystem
+' ORIGINAL RELATIONSHIPS:
+' ParkWiseSystem "1" -- "1" FinancialService : delegates_tasks
+' ParkWiseSystem "1" -- "0..*" GateSensor
+' ParkWiseSystem "1" o-- "0..*" ConveyorController
+
+' MODIFIED RELATIONSHIPS using Composition (*--):
+
+ParkWiseSystem "1" -- "1" FinancialService : delegates_tasks
+ParkWiseSystem "1" *-- "0..*" GateSensor
+ParkWiseSystem "1" o-- "1" ConveyorController
+' DEPENDENCIES TO ENUMS
+Vehicle ..> VehicleColor 
+Vehicle ..> VehicleSize 
+@enduml

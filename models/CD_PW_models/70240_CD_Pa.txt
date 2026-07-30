@@ -1,0 +1,271 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =====================
+'        ENUMS
+' =====================
+enum PhotoType {
+  FRONT
+  REAR
+  SIDE
+}
+
+enum VehicleColor {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+enum VehicleSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum SpaceSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum ConveyorStatus {
+  IDLE
+  BUSY
+}
+
+enum PaymentStatus {
+  APPROVED
+  DECLINED
+  PENDING
+}
+
+' =====================
+'       CORE CLASSES
+' =====================
+class System {
+  +handleVehicleAtEntrance(vehicleNumber : string) : void
+  +startParkingForNewClient(firstName : string, lastName : string, mobilePhone : string,
+                            vehicleNumber : string, photos : List<VehiclePhoto>,
+                            lot : ParkingLot) : ParkingSession
+  +startParkingForKnownClient(vehicle : Vehicle, lot : ParkingLot) : ParkingSession
+
+  +findNearestAvailableSpace(conveyor : Conveyor, lot : ParkingLot) : ParkingSpace
+  +updateVehicleLocation(session : ParkingSession, conveyor : Conveyor, space : ParkingSpace) : void
+  +updateAvailableSpaces(lot : ParkingLot) : void
+
+  +endParking(vehicleNumber : string, clientPhone : string) : ParkingSession
+  +calculateSessionPrice(session : ParkingSession) : Payment
+  +generateReceipt(session : ParkingSession) : string
+
+  +getClientParkingHistory(client : Client) : List<ParkingSession>
+
+  +generateAnnualSummaryReport(year : int) : AnnualSummaryReport
+  +generateCustomerClubGrowthReport(year : int) : CustomerClubGrowthReport
+}
+
+class ParkingLot {
+  -uniqueNumber : int
+  -name : string
+  -address : string
+  -city : string
+  -availableSpaces : int        ' 0 if full
+}
+
+class ParkingSpace {
+  -spaceId : int
+  -floor : int
+  -x : int
+  -y : int
+  -size : SpaceSize
+  -isOccupied : boolean
+
+  +markOccupied() : void
+  +markFree() : void
+  +canFit(vehicle : Vehicle) : boolean
+}
+
+class Conveyor {
+  -conveyorId : int
+  -floor : int
+  -x : int
+  -y : int
+  -maxWeightKg : double
+  -status : ConveyorStatus
+
+  +scanTransport(vehicle : Vehicle) : boolean
+  +setStatus(status : ConveyorStatus) : void
+}
+
+class ConveyorController {
+  +scanVehicleNumber() : string
+  +assignConveyor(vehicle : Vehicle, lot : ParkingLot) : Conveyor
+  +requestOptimization(system : System, conveyor : Conveyor, lot : ParkingLot) : ParkingSpace
+  +notifyParkingCompletion(system : System, session : ParkingSession) : void
+}
+
+class GateSensor {
+  -sensorId : int
+  -location : string            ' e.g. Entrance
+
+  +readVehicleNumber() : string
+  +sendDataToSystem(vehicleNumber : string) : void
+  +openBarrier() : void
+  +closeBarrier() : void
+}
+
+class Client {
+  -firstName : string
+  -lastName : string
+  -mobilePhone : string         ' unique
+}
+
+class ClubMembership {
+ -membershipId : int
+  -joinDate : Date              ' registration date; lifetime membership
+
+  +isFirstFreeSession(sessionDate : Date, lot : ParkingLot) : boolean
+  +calculateDiscount(baseAmount : decimal, isFirstFree : boolean) : decimal
+}
+
+class PreferredParkingLot {
+ -selectedDate : Date          ' date the lot was marked as preferred
+}
+
+class Vehicle {
+ -vehicleNumber : string       ' license plate, unique
+  -type : string
+  -color : VehicleColor
+  -size : VehicleSize
+  -weightKg : double
+}
+
+class VehiclePhoto {
+  -photoId : int
+  -type : PhotoType
+  -imagePath : string
+  -uploadTime : DateTime
+}
+
+class PriceList {
+  -priceListId : int
+  -year : int
+  -effectiveDate : Date
+  -firstHourPrice : decimal
+  -additionalHourPrice : decimal
+  -fullDayPrice : decimal
+
+  +calculatePrice(totalHours : double) : decimal
+}
+
+class ParkingSession {
+  -sessionId : int
+  -startTime : DateTime
+  -endTime : DateTime
+  -totalHours : double
+  -isFreeByClubRule : boolean   ' true if free due to club first-session-in-month rule
+  -discountAmount : decimal     ' total discount amount
+  -finalAmount : decimal        ' amount actually paid (0 if fully free)
+  -clientPhoneAtEntry : string
+
+  +calculateTotalHours() : double
+  +applyPricing(priceList : PriceList, membership : ClubMembership) : void
+  +generateReceipt() : string
+  +getDetails() : string
+}
+
+class Payment {
+  -paymentId : int
+  -amount : decimal
+  -status : PaymentStatus
+  -paymentTime : DateTime
+  -externalTransactionId : string
+
+  +markApproved(externalTransactionId : string) : void
+  +markDeclined() : void
+}
+
+' =====================
+'   REPORT ENTITIES
+' =====================
+
+class AnnualSummaryReport {
+  -year : int
+  -generatedAt : DateTime
+  -lotSummaries : List<ParkingLotAnnualSummary>
+
+  +sortByCityAndAmount() : void
+  +exportToPdf() : string
+  +exportToXml() : string
+}
+
+class ParkingLotAnnualSummary {
+  -lotName : string
+  -lotCity : string
+  -totalAmountPaid : decimal
+  -otherColorVehiclesCount : int
+}
+
+class CustomerClubGrowthReport {
+  -year : int
+  -generatedAt : DateTime
+  -monthlySummaries : List<CustomerClubMonthlySummary>
+
+  +sortByMonthAscending() : void
+  +exportToPdf() : string
+  +exportToXml() : string
+}
+
+class CustomerClubMonthlySummary {
+  -month : int
+  -newMembersCount : int
+  -totalActiveMembers : int
+  -growthPercentage : double
+}
+
+' =====================
+'    RELATIONSHIPS
+' =====================
+
+' --- Parking lot infrastructure ---
+ParkingLot "1" -- "1" GateSensor : has
+ParkingLot "1" -- "1..*" ParkingSpace : contains
+ParkingLot "1" -- "0..*" Conveyor : includes
+ParkingLot "1" -- "1..*" PriceList : uses
+ParkingLot "1" -- "0..*" ParkingSession : hosts
+
+' --- Client, membership, preferences ---
+Client "1" -- "1..*" Vehicle : owns
+Client "1" -- "0..1" ClubMembership : has
+Client "1" -- "0..*" ParkingSession : performs
+Client "1" -- "0..*" PreferredParkingLot : prefers
+ParkingLot "1" -- "0..*" PreferredParkingLot : preferredBy
+
+' --- Vehicles & photos & sessions ---
+Vehicle "1" -- "3" VehiclePhoto : hasPhotos
+Vehicle "1" -- "0..*" ParkingSession : usedIn
+
+' --- Location of vehicle during session ---
+ParkingSession "1" -- "0..1" ParkingSpace : occupies
+ParkingSession "1" -- "0..1" Conveyor : onConveyor
+
+' --- Pricing & payment ---
+ConveyorController ..> Conveyor : controls
+System ..> ParkingLot  
+System ..> ConveyorController  
+System ..> GateSensor
+
+ParkingSession "1" -- "0..1" Payment : paidBy
+
+' --- Reports associations ---
+AnnualSummaryReport "1" -- "1..*" ParkingLotAnnualSummary : includes
+ParkingLot "1" -- "0..*" ParkingLotAnnualSummary : summarizedIn
+
+CustomerClubGrowthReport "1" -- "1..*" CustomerClubMonthlySummary : includes
+
+' דוחות מסתמכים על דאטה היסטורי:
+AnnualSummaryReport ..> ParkingSession : basedOn
+CustomerClubGrowthReport ..> ClubMembership : basedOn
+
+@enduml

@@ -1,0 +1,87 @@
+@startuml
+left to right direction
+
+' Color only for use cases
+skinparam usecaseBackgroundColor #FFDDEE
+skinparam usecaseBorderColor #FFB6C1
+
+' Actors outside the system
+actor GateSensor
+actor Client
+actor Admin
+actor "Conveyors' Controller" as CC
+actor "Payment Gateway" as PG
+actor "Integrated Rate Service" as IRS
+
+actor "Club Member" as CM
+CM -|> Client
+
+' System boundary
+package "ParkWise Lots System" {
+
+  ' Arrival & Verification Phase
+  usecase "Identify Departure of Vehicle" as IDV
+  usecase "Identify Arrival of Vehicle" as IAV
+  usecase "Handle Failed Verification" as HFV
+  usecase "Client Provides Data" as CPD
+  usecase "Open Barrier" as OB
+  usecase "Update Parking Details" as UPD
+
+  ' Parking Session Phase
+  usecase "Start Parking Session" as SPS
+  usecase "Move Vehicle to Parking Space" as MVPS
+  usecase "View Parking Info via UI" as VPI
+
+  ' End Parking Session Phase
+  usecase "End Parking Session" as EPS
+  usecase "payment" as HP
+  usecase "Request Payment" as RP
+  usecase "Retrieve Vehicle to Gate" as RVG
+  usecase "Issue Receipt" as IR
+
+  ' IRS use case
+  usecase "Provide Price List" as PPL
+
+  ' Client Club
+  usecase "Register to Club" as RTC
+  usecase "Select Preferred Parking Lots" as SPPL
+
+  ' Admin Reports
+  usecase "Generate Annual Summary Report" as GASR
+  usecase "Generate Customer Club Growth Report" as GCCR
+
+  ' Include relationships (label on top)
+  HFV -u-> CPD : <<include>>
+ HP -u-> RP : <<include>>
+  SPS -u-> MVPS : <<include>>
+  EPS -u-> HP : <<include>>
+  EPS -u-> RVG : <<extend>>
+  RTC -u-> SPPL : <<extend>> 
+  ' Extend relationships (conditions)
+  IAV ..> SPS : <<extend>>
+  IAV ..> HFV : <<extend>>
+IAV ..> OB : <<extend>>  
+  EPS ..> IR : <<extend>> 
+IDV ..> OB : <<extend>>  
+  
+}
+
+' Actor associations
+GateSensor --> IDV
+GateSensor --> IAV
+GateSensor --> OB
+
+Client --> CPD
+Client --> VPI
+Client --> EPS
+Client --> RTC
+CM --> SPPL
+PG --> RP
+CC --> MVPS
+CC --> RVG
+Admin --> UPD
+Admin --> GASR
+Admin --> GCCR
+IRS --> PPL
+
+@enduml

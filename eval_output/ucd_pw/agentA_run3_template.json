@@ -1,0 +1,49 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Use Case Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Actor",
+      "fragment_description": "Represents a user or another system that interacts with the subject (system) in the use case diagram.",
+      "involved_constructs": "Actor"
+    },
+    {
+      "id": "T2",
+      "short_name": "UseCase",
+      "fragment_description": "Represents a distinct functionality or interaction scenario in the system.",
+      "involved_constructs": "UseCase"
+    },
+    {
+      "id": "T3",
+      "short_name": "Actor-Association-UseCase",
+      "fragment_description": "Defines the interaction between an actor and a use case in the use case diagram.",
+      "involved_constructs": "Actor | Association | UseCase"
+    },
+    {
+      "id": "T4",
+      "short_name": "UseCase-Extend-UseCase",
+      "fragment_description": "Defines an optional extension of a use case's functionality by another use case.",
+      "involved_constructs": "UseCase | Extend | UseCase"
+    },
+    {
+      "id": "T5",
+      "short_name": "UseCase-Include-UseCase",
+      "fragment_description": "Indicates that a use case includes the behavior of another use case.",
+      "involved_constructs": "UseCase | Include | UseCase"
+    },
+    {
+      "id": "T6",
+      "short_name": "SystemBoundary",
+      "fragment_description": "Encapsulates use cases, representing the boundary of the system.",
+      "involved_constructs": "SystemBoundary"
+    }
+  ],
+  "agent1_capabilities": [
+    "What constructs can appear in a UML Use Case Diagram?",
+    "How does an actor interact with a use case in UML Use Case Diagrams?",
+    "What is the difference between 'extend' and 'include' relationships in UML Use Case Diagrams?",
+    "Can a single use case be associated with multiple actors?",
+    "How are system boundaries represented in UML Use Case Diagrams?"
+  ]
+}

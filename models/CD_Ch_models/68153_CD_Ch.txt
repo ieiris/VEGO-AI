@@ -1,0 +1,152 @@
+@startuml
+class Order {
+  - order_number: string
+  - order_date: date
+  - current_status: OrderStatus
+  - shipment_date: date
+  - assigned_employee: SalesStaff
+  - customer: Customer
+  - Wines : Wine[]
+}
+
+class UrgentOrder extends Order {
+  - priority_level: PriorityLevel
+  - expected_delivery_time: date
+}
+
+class JointOrder  {
+- main_customer: Customer
+-orders: Order[]
+}
+
+class Wine {
+  - WineSerial_number: int
+  - Name: string
+  - type: WineType
+  - manufacturer: Manufacturer
+  - catalog_number: string
+  - production_year: integer
+  - price_per_bottle: decimal
+  - sweetness_level: SweetnessLevel
+  - product_image: string
+}
+
+class WineType {
+  - name: string
+  - description: string
+  - occasions: string[]
+  - food_pairings: string[]
+  - recommended_dishes: string[]
+  - recipe_urls: string[]
+}
+
+class Manufacturer {
+  - manufacturer_id: string
+  - name: string
+  - contact_phone_number: string
+  - address: string
+  - email: string
+}
+
+abstract class Employee {
+  - id: string
+  - name: string
+  - phone_number: string
+  - office_address: string
+  - email: string
+  - employment_start_date: date
+}
+
+class SalesStaff extends Employee {
+  - orders: Order[]
+  - reports: Report[]
+  + generateCurrentInventoryReport(): CurrentInventoryReport
+  + generateWineRecommendationReport(customer: Customer, food: string, occasion: string, wine_type: WineType): Wine[]
+  + generateUnproductiveEmployeesReport(time_period: date): Employees[]
+}
+
+class MarketingStaff extends Employee {
+  - updated_wines: Wine[]
+  + recommendOccasion(String Description): Wine
+  +ModifyAttachedPic(WineSerial_number: int, image :string) 
+  +changePrice (WineSerial_number : int , price : double)
+}
+
+class Customer {
+  - id: string
+  - name: string
+  - phone_number: string
+  - delivery_address: string
+  - email: string
+  - date_of_first_contact: date
+}
+
+class Inventory {
+  - wine: Wine
+  - storage_location: StorageLocation
+  - quantity: integer
+  +GenerateInventoryReport(string)
+}
+
+class StorageLocation {
+  - id: string
+  - name: string
+  - location_type: LocationType
+}
+
+class GefenSystem {
+  + ImportManufacturerAndWineData(): void
+  + importXMLData(String xmlFile): void
+  + GetInventoryReport(): InventoryReport
+}
+
+class Report {
+  + generateUnproductiveEmployeesReport(time_period: date): UnproductiveEmployeesReport
+  + generateWineRecommendationReport(customer: Customer, food: string, occasion: string, wine_type: WineType): WineRecommendationReport
+}
+
+enum OrderStatus {
+  IN_PROCESS
+  DISPATCHED
+  DELIVERED
+  PAID
+  SUSPENDED
+  CANCELED
+}
+
+enum PriorityLevel {
+  LEVEL_1
+  LEVEL_2
+  LEVEL_3
+  LEVEL_4
+  LEVEL_5
+}
+
+enum SweetnessLevel {
+  DRY
+  SEMI_DRY
+  SEMI_SWEET
+  SWEET
+}
+
+Order "1" -- "0..*" Wine : "contains"
+Wine "1" -- "1" WineType : "is a type of"
+Wine "1" -- "1" Manufacturer : "is produced by"
+Wine "0..*" -- "1" StorageLocation : "is stored in"
+StorageLocation "1" -- "0..*" Inventory : "has"
+
+SalesStaff "1" -- "0..*" Order : "places"
+SalesStaff "1" -- "0..*" JointOrder : "places"
+
+SalesStaff "1" -- "0..*" Wine : "browses"
+SalesStaff "1" -- "0..*" Report : "generates"
+
+Wine "1" -- "1" SweetnessLevel
+Order "1" -- "1" OrderStatus
+UrgentOrder "1" -- "1" PriorityLevel
+Customer "0.." -- "1.." JointOrder : "can place"
+
+GefenSystem "1" -- "0..*" Manufacturer : "imports"
+GefenSystem "1" -- "0..*" Inventory : "gets report"
+
+@enduml

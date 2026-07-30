@@ -1,0 +1,214 @@
+@startuml
+
+' settings
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam handwritten false
+
+package "ParkWise System" {
+
+    enum Color {
+        WHITE
+        BLACK
+        SILVER
+        BLUE
+        OTHER
+    }
+
+    enum Size {
+        SMALL
+        MEDIUM
+        LARGE
+    }
+
+    enum ReportFormat {
+        PDF
+        XML
+    }
+
+    class Administrator {
+        + updateLotDetails(lot : ParkingLot)
+        + generateAnnualReport(year : int) : File
+        + generateGrowthReport(year : int) : File
+    }
+
+    class Report {
+        - ReportID : int
+        - title : String
+        - generationDate : Date
+        - content : String
+        - format : ReportFormat
+        + export()
+    }
+
+    class ParkWiseSystem {
+        + processEntry(vehicleNum : String)
+        + handleUnknownVehicle(photos : List<Image>, clientDetails : Client)
+        + extractVehicleDetails(photos : List<Image>) : Vehicle
+        + runOptimizationAlgorithm(lot : ParkingLot, v : Vehicle) : ParkingSpace
+        + endParking(vehicleNum : String, phone : String)
+        + paymentRequest(session : ParkingSession)
+        + isFirstParking()
+        + sendSMS(phone : String, msg : String)
+    }
+
+    class ParkingLot {
+        - ParkingLotID : int
+        - name : String
+        - address : String
+        - city : String
+        - availableSpaces : int
+        + addPriceList(pl : PriceList)
+        + getPriceList(date : Date) : PriceList
+    }
+
+    class Location {
+        - LocationID : int
+        - floorNumber : int
+        - xPosition : int
+        - yPosition : int
+    }
+
+    class ParkingSpace {
+        - ParkingSpaceID : int
+        - size : Size
+        - isOccupied : boolean
+        + occupy()
+        + vacate()
+    }
+
+    class Conveyor {
+        - ConveyorID : int
+        - maxWeightCapacity : double
+        - status : String
+        + transport(v : Vehicle, dest : Location)
+    }
+
+    class ConveyorController {
+        + scanVehicle(v : Vehicle)
+        + assignConveyor() : Conveyor
+        + updateCompletion(v : Vehicle, finalLoc : Location)
+    }
+
+    class Client {
+        - ClientID : int
+        - firstName : String
+        - lastName : String
+        - mobilePhone : String
+        + provideDetails()
+        + registerForClub()
+        + requestReceipt() : Receipt
+        + pay(amount : double)
+        + viewData()
+    }
+
+    class ClubMember {
+        - ClubMemberID : int
+        - membershipDate : Date
+        - isActive : boolean
+        + selectPreferredLots(lots : List<ParkingLot>)
+    }
+
+    class PreferredSelection {
+        - PreferredSelectionID : int
+        - selectionDate : Date
+    }
+
+    class Vehicle {
+        - vehicleNumber : int
+        - type : String
+        - color : Color
+        - size : Size
+        - weight : double
+        - photoFront : String
+        - photoRear : String
+        - photoSide : String
+    }
+
+    class ParkingSession {
+        - sessionID : int
+        - startTime : DateTime
+        - endTime : DateTime
+        - finalAmount : double
+        - status : String
+        + calculateDuration() : double
+        + calculatePrice() : double
+    }
+
+    class PriceList {
+        - PriceListID : int
+        - year : int
+        - firstHourPrice : double
+        - additionalHourPrice : double
+        - fullDayPrice : double
+    }
+
+    class Receipt {
+        - ReceiptID : int
+        - issueDate : DateTime
+        - overallHours : double
+        - appliedRate : String
+        - finalAmount : double
+        + generate()
+    }
+
+    ' External Systems / Gateways
+    class GateSensor {
+        + identifyArrival()
+        + identifyDeparture()
+        + openBarrier()
+    }
+
+    class IRS {
+        + fetchPriceList(year : int) : JSON
+    }
+
+    class PaymentGateway {
+        + processPayment(details : Client, amount : double)
+        + applyClubMemberDiscount()
+        + notifyApproval()
+    }
+
+    ' Relationships
+
+    ' Inheritance
+    Location <|-- ParkingSpace
+    Location <|-- Conveyor
+    Client <|-- ClubMember
+
+    ' Associations
+    Administrator "1" --> "1" ParkWiseSystem : manages
+    Administrator "1" --> "*" Report : generates
+    
+    ParkWiseSystem "1" --> "*" ParkingLot : controls
+    ParkWiseSystem "1" --> "*" GateSensor : instructs
+    ParkWiseSystem "1" --> "1" PaymentGateway : uses
+    ParkWiseSystem "1" --> "1" IRS : imports data
+    ParkWiseSystem "1" --> "1" ConveyorController : coordinates
+
+    ParkingLot "1" *-- "*" ParkingSpace : contains
+    ParkingLot "1" *-- "*" Conveyor : contains
+    ParkingLot "1" o-- "*" PriceList : maintains history
+
+    ConveyorController "1" --> "*" Conveyor : controls
+
+    Client "1" -- "1..*" Vehicle : owns
+    
+    ' ClubMember - PreferredSelection - ParkingLot (Many-to-Many via Join Class)
+    ClubMember "1" -- "*" PreferredSelection
+    ParkingLot "1" -- "*" PreferredSelection
+
+    ' Vehicle - ParkingSession (1 to Many)
+    Vehicle "1" -- "*" ParkingSession : tracks
+
+    ' ParkingLot - ParkingSession (1 to Many)
+    ParkingSession "*" -- "1" ParkingLot : occurs in
+    
+    ParkingSession "1" -- "0..1" Receipt : generates
+
+    ' Using association to track current location as per text
+    Vehicle "0..1" --> "1" Location : located at
+
+}
+@enduml

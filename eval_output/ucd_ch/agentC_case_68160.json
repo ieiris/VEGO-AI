@@ -1,0 +1,492 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68160",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The diagram does not explicitly define a system boundary around 'Cheers' to emphasize key operations such as inventory management, customer management, and order processing.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The 'Sales Employee' actor represents sales staff responsible for placing customer orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Use case 'Place Regular Order' and 'Place Urgent Order' suggest categorization of orders and imply the capture of order details but do not explicitly cover all mentioned attributes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Details such as order number, order date, etc., are not explicitly represented."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not represent the role of 'GalGalim' as an external company in the UML Use Case Diagram related to delivery.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Use case 'Place Joint Order' allows customers to combine wines for joint ordering, aligning with this requirement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The diagram does not detail a specific use case capturing comprehensive customer information related to orders.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The diagram shows that general 'Employee' can place orders too, indicating employees can order wines similar to regular customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Use case 'Place Urgent Order' represents urgent order processing with inclusion of specifying delivery time and priority levels.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Use case 'Place Joint Order' suggests regular orders with multiple customers, but specifics of how responsibilities are tracked aren't detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No explicit detail on tracking wines and quantities for each customer."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "There is no specific use case in the diagram focusing on recording detailed customer information for each order.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "General 'Employee' can place orders under the same conditions as customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Only 'Marketing Employee' can perform use cases related to updating wine information and types, indicating their exclusive authorization.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Sales staff have access to 'View Wine Data' indicating view-only access.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The diagram lacks a specific use case for comprehensive wine type classification and detailing additional attributes like food pairings.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "'Recommend Wine for Occasions' reflects recommendation for wine occasions managed by marketing employees.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Use case 'Receive Inventory Report' involving Gefen System roughly parallels monthly XML data reception.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Specific reception frequency and data details aren't depicted."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Use case 'Provide Weekly Quantity Update' aligns with weekly purchase updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There is no specific use case illustrating storage of manufacturer information.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The use case 'Update Wine Information' could imply modifying wine details but lacks explicit reference to all attributes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Lacks details such as production year, sweetness level, etc."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Diagram does not detail a use case specifically distinguishing wines with mentioned identifiers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Use cases 'Update Wine Type' and 'Link Wines to Types' reflect linking wines to their types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Diagram lacks function for tracking storage location specific to each wine.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "No specific representation of system tracking inventory levels across various storage locations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "No specific use case shows inventory update post-sale.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Use case 'Generate Unproductive Employee Report' covers generating such reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Use case 'Receive Inventory Report' for the Gefen System suggests inventory reporting but lacks JSON format specificity.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Format details and periodicity not explicitly marked."
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "Use case 'Generate Wine Recommendation Report' covers the generation of such reports by sales employees.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model does not explicitly show a system boundary to define the scope of the 'Cheers' system and its key operations like inventory management, customer management, and order processing.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No alternative representation exists for a system boundary."
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Use cases for 'Place Regular Order' and 'Place Urgent Order' imply order processing. However, these use cases do not detail attributes such as order number, status, shipment date, or employee information.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Attributes listed in the guideline are not explicitly depicted determining only partial compliance."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "GalGalim is an external company managing delivery outside of the system's scope. This is not represented in the current model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "External entities are not depicted due to absence of use case support."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "There is no use case detailing how comprehensive customer information is captured as described in the guidelines.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The case model does not demonstrate recording customer details."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The 'Place Joint Order' use case allows for combining customer orders but does not specify roles, wines, and quantities that each customer has ordered.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Specific responsibility and order tracking for each participating customer are not detailed."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "No evidence of use case specific to the recording of customer's information for orders is available.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The diagram lacks clear use case for such a function."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The diagram has use cases related to wine information but does not cite comprehensive wine type classification as per guidelines.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No specific use case for detailed wine type data classification exists."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Use case 'Receive Inventory Report' involving Gefen implies monthly XML data reception but does not specify these details precisely as per the guideline.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "It needs more detail regarding frequency and type of data received."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There is no specific use case illustrating storage of manufacturer information which should be part of the system features.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Recording manufacturer details is not evident in the model."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The use case 'Update Wine Information' implies modification but lacks specifics on attributes like production year, sweetness level, etc.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While wine information update suggests some applicability, it lacks comprehensive details."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "There are no use cases representing the distinction by wine catalog or manufacturer number.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Distinction features are not represented by any use case."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "The model lacks any specific use case for tracking storage locations of the wines.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Specific location tracking isn't shown in any existing use case."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The UML Use Case Diagram does not visibly display inventory levels tracking across storage locations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "This is not covered or suggested by current use cases."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "No specific use case within the case model shows the process of inventory updates after sales.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The required functionality of inventory update is missing."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "The 'Receive Inventory Report' use case hints at sending reports but lacks detail about JSON format usage.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Specifics regarding format and report frequency need clarity."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The use case 'Modify Product Images' associated with Marketing Employee",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While not explicitly mentioned in the guidelines, the modification of product images can be considered part of updating wine information, which could be relevant to the marketing domain."
+    },
+    {
+      "fragment": "'Generate Wine Recommendation Report' for sales employees",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Although the guidelines do not specify every possible report, generating recommendation reports aligns with the need for sales tools, providing value in customer interactions."
+    },
+    {
+      "fragment": "Actor generalization for Employee to Sales Employee and Marketing Employee",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This structure makes sense to differentiate responsibilities and access levels for different employee types, which is a valid design choice."
+    },
+    {
+      "fragment": "The 'Actor' called 'Gefen System'",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Including 'Gefen System' as an Actor is a valid depiction to show system interaction despite external data integration not being detailed in guidelines."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The use case 'Modify Product Images' associated with Marketing Employee",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "'Generate Wine Recommendation Report' for sales employees",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Actor generalization for Employee to Sales Employee and Marketing Employee",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'Actor' called 'Gefen System'",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 15.0,
+  "max_score": 27.0,
+  "score_pct": 55.6,
+  "overall_assessment": "The case model satisfies many guidelines with several partially satisfied or not addressed, and valid alternatives provide some additional value."
+}

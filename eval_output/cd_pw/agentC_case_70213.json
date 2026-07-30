@@ -1,0 +1,353 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70213",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes attributes for lotId, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class has an attribute for available spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between ParkingSession and Client, ensuring each session is linked to exactly one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class contains attributes for the start time and vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class has an attribute for size listing SMALL, MEDIUM, and LARGE.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class includes an attribute for max weight capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Descriptions indicate that it is unnecessary to store conveyors handling each vehicle post-parking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The ParkingLot includes a method to get a PriceList, which has attributes for prices for different durations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The ClubMember class indicates the management of a client's club membership.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The ClubMember class details automatic discounts for parking sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The ClubMember class has a method checking for eligibility for free parking, suggesting first session discounts.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The ReportingService class can generate an annual summary report.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Instructions in the reporting mechanisms suggest inclusions of parking lot details and payments for vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Report descriptions include considerations for city order and total amount sequencing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The reporting function details offering PDF and XML formats.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The ReportingService can generate a Club Growth report showing monthly membership details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The report includes new member numbers, cumulative totals, and monthly growth percentages.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Guidelines specify that club growth reports are ordered monthly.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [],
+  "uncovered_fragments": [
+    {
+      "fragment": "Administrator class has methods for triggering annual and growth reports.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Although not explicitly mentioned in the guidelines, having these methods adds usability for the administrator role."
+    },
+    {
+      "fragment": "Vehicle class has a method to update vehicle details.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The ability to update vehicle attributes supports dynamic data management which can be beneficial."
+    },
+    {
+      "fragment": "Client class has methods for registering and requesting end of parking.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These operations provide necessary interactions for the Client, which are implied in the guidelines by the need for parking management."
+    },
+    {
+      "fragment": "ConveyorsController class contains methods for vehicle scanning and conveyor assigning.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These methods detail the operation of conveyor assignment and vehicle scanning which are relevant to the system's functionality."
+    },
+    {
+      "fragment": "PhotoToTextModule class extracts vehicle details from images.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Using image data is a practical approach to gather vehicle information, providing a comprehensive system utility."
+    },
+    {
+      "fragment": "PaymentService class contains methods for financial transactions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These methods support critical financial operations required for parking service management."
+    },
+    {
+      "fragment": "GateSensor class with methods to detect vehicle arrival and open barriers.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These operations align with the needs of managing vehicle entry and exit at the parking facility."
+    },
+    {
+      "fragment": "PreferredLotSelection class stores dates of client preferences for parking lots.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Storing selection preferences supports feature extension for client services, aligning with a holistic service approach."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Administrator class has methods for triggering annual and growth reports.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Vehicle class has a method to update vehicle details.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Client class has methods for registering and requesting end of parking.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "ConveyorsController class contains methods for vehicle scanning and conveyor assigning.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "PhotoToTextModule class extracts vehicle details from images.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "PaymentService class contains methods for financial transactions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "GateSensor class with methods to detect vehicle arrival and open barriers.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "PreferredLotSelection class stores dates of client preferences for parking lots.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 22.0,
+  "max_score": 18.0,
+  "score_pct": 122.2,
+  "overall_assessment": "The case model exceeds guideline compliance by incorporating several valid alternatives not explicitly outlined in the guidelines."
+}

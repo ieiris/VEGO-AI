@@ -1,0 +1,75 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Class Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Class",
+      "fragment_description": "A Class represents a blueprint of objects containing attributes and operations specific to the object type it models.",
+      "involved_constructs": "Class"
+    },
+    {
+      "id": "T2",
+      "short_name": "Class-Association-Class",
+      "fragment_description": "An Association represents a relationship between two classes, indicating that objects of one class can be related to objects of the other class through a defined link.",
+      "involved_constructs": "Class | Association | Class"
+    },
+    {
+      "id": "T3",
+      "short_name": "Class-Aggregation-Class",
+      "fragment_description": "An Aggregation represents a whole-part relationship between two classes where one class is a container and the other class is a part.",
+      "involved_constructs": "Class | Aggregation | Class"
+    },
+    {
+      "id": "T4",
+      "short_name": "Class-Composition-Class",
+      "fragment_description": "A Composition represents a strong whole-part relationship between two classes, indicating that the part cannot exist independently of the whole.",
+      "involved_constructs": "Class | Composition | Class"
+    },
+    {
+      "id": "T5",
+      "short_name": "Class-Generalization-Class",
+      "fragment_description": "A Generalization represents an inheritance relationship between a more general superclass and more specific subclasses.",
+      "involved_constructs": "Class | Generalization | Class"
+    },
+    {
+      "id": "T6",
+      "short_name": "Class-Realization-Interface",
+      "fragment_description": "A Realization defines a relationship where a class implements the behavior specified by an interface.",
+      "involved_constructs": "Class | Realization | Interface"
+    },
+    {
+      "id": "T7",
+      "short_name": "Class-Dependency-Class",
+      "fragment_description": "A Dependency indicates that a change in one class (supplier) may require changes to the other class (client).",
+      "involved_constructs": "Class | Dependency | Class"
+    },
+    {
+      "id": "T8",
+      "short_name": "Interface",
+      "fragment_description": "An Interface defines a set of operations that specify a contract for implementing classes but contains no implementation itself.",
+      "involved_constructs": "Interface"
+    },
+    {
+      "id": "T9",
+      "short_name": "Class-Attribute",
+      "fragment_description": "An Attribute is a stored property or data value of a class, representing characteristics shared by all instances of the class.",
+      "involved_constructs": "Class | Attribute"
+    },
+    {
+      "id": "T10",
+      "short_name": "Class-Operation",
+      "fragment_description": "An Operation is a function or service that a class can provide, representing behavior of the objects within the class.",
+      "involved_constructs": "Class | Operation"
+    }
+  ],
+  "agent1_capabilities": [
+    "What are the core components of a UML class?",
+    "How are classes associated with one another in UML?",
+    "What differentiates aggregation from composition in UML diagrams?",
+    "How does generalization work in UML class diagrams?",
+    "Can you explain the relationship between a class and an interface in UML?",
+    "What role does an attribute play in defining a class in UML?",
+    "How does UML depict operations within classes?"
+  ]
+}

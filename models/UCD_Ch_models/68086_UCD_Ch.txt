@@ -1,0 +1,76 @@
+@startuml
+left to right direction
+
+' Define actors
+actor "Sales Staff" as Sales
+actor "Marketing Staff" as Marketing
+actor "Customer" as Customer
+actor "Employee" as Employee
+actor "GalGalim" as GalGalim
+actor "System" as System
+
+' Define the Cheers system package
+package "Cheers System" {
+  
+  ' Define sub-packages for different functional areas
+  package "Order Management" {
+    (Place Order)
+    (Urgent Order) 
+    (Regular Order)
+    (Assign Employee)
+    (Track Delivery)
+    (Order Details)
+    (Customer Information)
+  }
+
+  package "Wine Management" {
+    (Browse Wines)
+    (Update Wine Information)
+    (View Wine Inventory)
+    (Recommend Occasions)
+  }
+
+  package "Reporting" {
+    (Generate Unproductive Employees Report)
+    (Generate Wine Recommendation Report)
+    (Match Wine Preferences)
+  }
+
+  package "Inventory Management" {
+    (Send Weekly Inventory Report)
+    (Track Inventory Levels)
+  }
+
+}
+
+' Actor to Use Case Relationships
+Sales --> (Place Order)
+Sales --> (Generate Unproductive Employees Report)
+Sales --> (Generate Wine Recommendation Report)
+Sales --> (Browse Wines)
+
+Marketing --> (Update Wine Information)
+Marketing --> (Recommend Occasions)
+
+Customer --> (Place Order)
+Customer --> (Browse Wines)
+
+Employee --> (Browse Wines)
+Employee --> (Place Order)
+
+GalGalim --> (Track Delivery)
+
+System --> (Send Weekly Inventory Report)
+
+' Include and Extend Relationships between Use Cases
+(Place Order) --> (Urgent Order) : <<include>>
+(Place Order) --> (Regular Order) : <<include>>
+(Generate Unproductive Employees Report) --> (Order Statistics) : <<include>>
+(Generate Wine Recommendation Report) --> (Match Wine Preferences) : <<include>>
+(Generate Wine Recommendation Report) --> (Recommend Occasions) : <<extend>>
+(Place Order) --> (Customer Information) : <<include>>
+(Place Order) --> (Order Details) : <<include>>
+(Place Order) --> (Assign Employee) : <<include>>
+(Place Order) --> (Track Delivery) : <<extend>>
+
+@enduml 

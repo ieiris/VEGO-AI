@@ -1,0 +1,711 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70216",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The system maintains information related to parking sessions, which suggests there is a structure for storing parking lot data, although specifics like unique number, name, address, and city are not explicitly mentioned.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Parking lot details like unique number, name, address, and city are not directly listed."
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The administrator interacts with the system to generate reports but there is no direct reference to updating parking lot details.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The system is described to handle parking operations, which implies tracking of available spaces, but this detail is not made explicit.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No explicit mention of storing available spaces per lot."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "A 'Gate Sensor' actor is linked to the 'Scan Vehicle' use case, providing real-time vehicle data detection at the parking lot entrance.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The 'Scan Vehicle' use case includes checking vehicle details, using gate sensor data to find vehicle information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The 'Check Vehicle Details' use case leads to customer registration if the vehicle is not found, indicating barrier control is not directly shown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "There is no explicit mention of opening barriers upon vehicle recognition."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Instructions for client data provision are shown when the 'Check Vehicle Details' use case extends to registration use cases.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Instructions regarding barrier failure not explicitly discussed."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The 'Register Vehicle & Photos' use case suggests clients provide personal and vehicle data following entry denial.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The use case for 'Register Vehicle & Photos' implies automatic use of provided photos for documentation but lacks detail on automatic extraction.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No detail about automatic extraction of vehicle features from photos."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "While categorization of vehicle colors is related, there's no specific case addressing color processing.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "Associations between clients and vehicles are managed as registration processes extend from vehicle and customer status checks.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Finalizations in the registration process do not explicitly mention barrier opening, but it's implied through parking operations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit gate operation post-registration is not stated."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The system logs start times as part of 'Start Parking Operation', indicating session tracking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Client actions after entry are described in 'Bring Vehicle to Parking'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The 'Conveyor' actor interacts in moving the vehicle to a spot, implying an optimization for placement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Coordination of parking and conveyors suggests position tracking but is not clearly detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Complex coordinate representation isn't clear in the model."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Represented indirectly by moving vehicles to designated spots without explicit size specifications.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Space size indication is not explicitly portrayed."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Conveyor actions imply weight capacity considerations during vehicle movement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Optimization during vehicle movement is associated with conveyor and lot capabilities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "System updates and completion of parking operations suggest final positions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Tracking during operations implies real-time location management of vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "'Send Parking Details SMS' use case suggests SMS communication of parking info to clients.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "UI accessibility for client information indirectly described under SMS message activities.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Specific UI detail access is not described."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Conveyor interaction is implied during the session without post-usage retention specifics.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Client input for ending sessions and retrieval post-parking is indicated with responsible actions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Vehicles are moved to the exit by conveyors upon session end requests, showing usage during retrieval.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "Inside 'Make Payment', UI usage for order completion indicates payment interactions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G28",
+      "evidence": "The use case 'Update Price List' shows price handling via IRS but not JSON details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No explicit mention of JSON data or rate calculations."
+    },
+    {
+      "guideline_id": "G29",
+      "evidence": "Price adaptation per lot is implied by the 'Update Price List' interaction with IRS.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G30",
+      "evidence": "Historical price maintenance is not directly shown but suggested through price updates.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit history maintenance details are missing."
+    },
+    {
+      "guideline_id": "G31",
+      "evidence": "'Make Payment' views payments as external via Payment Provider actor involvement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G32",
+      "evidence": "Barrier control occurs post-payment interactions as shown by session actions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G33",
+      "evidence": "Extension of the payment process includes generating receipts upon client requests.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G34",
+      "evidence": "Receipt generation describes detailed transaction information available for clients.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G35",
+      "evidence": "'Register Membership' implies managing a client's club through interactions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G36",
+      "evidence": "Automatic discounts for club members' sessions are shown within the membership narrative.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G37",
+      "evidence": "Club registration processes are indicated through UI accessibility for clients.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G38",
+      "evidence": "Functional lifetime membership is indicated by the free membership noted.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G39",
+      "evidence": "Preferred lot selection is part of the membership management use cases.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G40",
+      "evidence": "Club member benefits include free initial sessions as indicated in club regulations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G41",
+      "evidence": "The administrator role in generating reports is confirmed through specified use cases.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G42",
+      "evidence": "Annual Summary Report is part of the administrators' capabilities illustrating total incomes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G43",
+      "evidence": "The report details make up part of the administrator's reporting function.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G44",
+      "evidence": "Sorting criteria for reports are incorporated in the administrator's tasks.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G45",
+      "evidence": "Export capabilities in both PDF and XML are indirectly represented.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit format expressions are not detailed."
+    },
+    {
+      "guideline_id": "G46",
+      "evidence": "Monthly insights on club growth are described within report generation duties.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G47",
+      "evidence": "Details on club membership report content are part of administrator tasks.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G48",
+      "evidence": "Order guidelines on report contents are outlined in the club growth report.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The System Boundary 'ParkWise System' includes use cases that pertain to the interaction with parking operations but does not explicitly describe attributes such as unique number, name, address, and city for each parking lot in its activities.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The management of parking session implies some degree of lot data management, but specific details about storing unique identifiers are not detailed within the use cases."
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "There is no explicit mention of a use case where the administrator updates parking lot details, although the administrator generates reports potentially displaying this information.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No alternative representation found in the model addressing administrators updating parking lot information."
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "While parking operations are described, specifically mentioning the handling of available spaces, there is no specific indicator that the number of spaces is stored per lot.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Operational flow implies space tracking, yet storage for each lot's spaces is not clearly articulated in any specific use case."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The 'Scan Vehicle' and 'Check Vehicle Details' interact with the 'Gate Sensor', which can involve opening barriers, but actual gate operation after vehicle recognition is only implied.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The necessity to open gates as a result of these checks is logical within the operations, yet no explicit statement regarding this action is made."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Instruction provision is indirectly represented as registration use cases extend from checking vehicle details, yet specific steps when a barrier does not open are lacking.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Instructions relating to not opening barriers aren't explicitly covered, though they can be inferred from the registration stages."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The use cases 'Register Vehicle & Photos' and 'Check Vehicle Details' imply some form of vehicle data processing but lack specific methods for automatic extraction.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Automated extraction from photos in form of the system flow is suggested, yet detailed processing specifics remain unmentioned."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The system discusses vehicle registration but does not mention differentiating vehicle colors against predefined categories directly.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No alternative descriptions in the use cases address the specific task of categorizing vehicle colors against predefined categories."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Post-registration parking operations hint at gate interactions following updates, though explicit instruction to open the gate isn't documented.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While it's a logical step within operations, a clear directional link to open gates post-process isn't specified explicitly."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Although parking operations hint at coordination for vehicle allocation in parking, the comprehensive description of coordinate handling is missing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Vehicle allocations imply a structured approach that might use coordinates but do not specify this directly within the system's description."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Use cases describing moving vehicles imply sizing considerations, however, explicit associations of space requirements related to vehicle size are omitted.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Moving vehicles to spots suggests size matching capabilities which aren't detailed explicitly."
+    },
+    {
+      "guideline_id": "G30",
+      "evidence": "'Update Price List' from IRS and interactions suggest some storage of price information, but a system history keeping isn't thoroughly depicted.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Price adaptations per lot are understood logically in maintaining history yet explicit records paths are implied rather than shown."
+    },
+    {
+      "guideline_id": "G45",
+      "evidence": "The administrator role includes report generation activities, but the exact export formats (PDF, XML) are not expressly defined within the use cases.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Administrator’s tasks in generating reports imply format outputs, yet explicit details of formats aren’t clarified directly."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The interaction between the 'Customer' actor and the 'Send Parking Details SMS' use case, where it implies that customers receive SMS updates, but the model doesn't show a direct connection for this action.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The use case 'Send Parking Details SMS' logically fits the context and provides a communication method not explicitly required but beneficial. The model infers this functionality through its relation to other use cases and actors."
+    },
+    {
+      "fragment": "The 'Check Vehicle Details' use case, which extends to 'Register New Customer' and 'Register Vehicle & Photos', possibly to handle situations when information is missing or incorrect.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These extensions support the workflow when registration data is unavailable or needs completion, aligning with domain objectives of data management even though not explicitly detailed in guidelines."
+    },
+    {
+      "fragment": "The 'Integrated Rate Service' actor interacting with the 'Update Price List' use case to maintain pricing information.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This actor provides a valuable function for updating prices, which reflects domain knowledge, even if specific JSON formatting is not modeled explicitly, as pricing updates are still accurately represented."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G28",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G29",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G30",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G31",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G32",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G33",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G34",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G35",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G36",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G37",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G38",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G39",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G40",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G41",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G42",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G43",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G44",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G45",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G46",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G47",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G48",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The interaction between the 'Customer' actor and the 'Send Parking Details SMS' use case.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Valid alternative modelling choice, not in guidelines."
+    },
+    {
+      "fragment": "The 'Check Vehicle Details' use case, which extends to 'Register New Customer' and 'Register Vehicle & Photos'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Valid alternative modelling choice, not in guidelines."
+    },
+    {
+      "fragment": "The 'Integrated Rate Service' actor interacting with the 'Update Price List' use case.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Valid alternative modelling choice, not in guidelines."
+    }
+  ],
+  "total_score": 44.5,
+  "max_score": 48.0,
+  "score_pct": 92.7,
+  "overall_assessment": "The case model largely adheres to domain guidelines, demonstrating robust compliance with a few partially addressed areas."
+}

@@ -1,0 +1,81 @@
+@startuml
+title Cheers System Use Case Diagram
+
+actor "Employee" as Employee
+actor "Sales Staff" as SalesStaff
+actor "Marketing Staff" as MarketingStaff
+actor "Customer" as Customer
+actor "Gefen System" as Gefen
+actor "GalGalim" as GalGalim
+
+SalesStaff -|> Employee
+MarketingStaff -|> Employee
+
+package "Cheers System" {
+    rectangle "Order Management" {
+        usecase "Place Order" as UC_PlaceOrder
+        usecase "Manage Urgent Order" as UC_ManageUrgentOrder
+        usecase "Manage Regular Order" as UC_ManageRegularOrder
+        usecase "Joint Order" as UC_JointOrder
+        usecase "Track Order Details and Main Customer" as UC_TrackOrder
+    }
+    
+    rectangle "Inventory Management" {
+        usecase "Update Inventory" as UC_UpdateInventory
+        usecase "View Wine Information and type and available wines" as UC_ViewWine
+        usecase "Receive Monthly Producer Data" as UC_ReceiveProducerData
+        usecase "Receive Weekly Quantity Updates" as UC_ReceiveQuantityUpdates
+    }
+    
+    rectangle "Reporting" {
+        usecase "Generate Unproductive Employees Report" as UC_UnproductiveReport
+        usecase "Generate Current Inventory Report" as UC_InventoryReport
+        usecase "Generate Wine Recommendation Report" as UC_WineRecommendation
+    }
+    
+    rectangle "Marketing Updates" {
+    usecase "Update Wine Product Information" as UC_UpdateWineProduct
+    usecase "Update Wine Type Information" as UC_UpdateWineType
+}
+}
+
+Customer -- UC_PlaceOrder
+SalesStaff -- UC_PlaceOrder
+SalesStaff -- UC_UnproductiveReport
+SalesStaff -- UC_WineRecommendation
+Employee -- UC_ViewWine
+Employee -- UC_PlaceOrder
+MarketingStaff -- UC_UpdateWineProduct
+MarketingStaff -- UC_UpdateWineType
+Gefen -- UC_ReceiveProducerData
+Gefen -- UC_ReceiveQuantityUpdates
+Gefen -- UC_InventoryReport
+
+UC_PlaceOrder <|-- UC_ManageUrgentOrder : <<extend>>
+UC_PlaceOrder <|-- UC_ManageRegularOrder : <<extend>>
+UC_PlaceOrder <|-- UC_ViewWine
+UC_ManageRegularOrder <|-- UC_JointOrder : <<extend>>
+UC_JointOrder --> UC_TrackOrder : <<includes>>
+UC_ManageUrgentOrder --> UC_UpdateInventory : <<includes>>
+UC_ManageRegularOrder --> UC_UpdateInventory : <<includes>>
+UC_ReceiveQuantityUpdates --> UC_UpdateInventory : <<includes>>
+UC_ReceiveProducerData <|-- UC_UpdateInventory : <<extend>>
+note bottom of UC_PlaceOrder
+  - Delivery is managed by Galgalim
+  - Inventory is updated automatically after placing the order.
+end note
+
+note right of UC_ManageUrgentOrder
+  - Priority Level (1-5)
+  - Expected Delivery Time
+end note
+
+note bottom of UC_JointOrder
+  - Main Customer Responsible
+  - Tracks Wines and Quantities
+end note
+
+note right of GalGalim
+This actor is outside the scope of the current system.
+end note
+@enduml

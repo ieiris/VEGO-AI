@@ -1,0 +1,61 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Class Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Class(contents)",
+      "fragment_description": "A Class can contain attributes and operations. This fragment includes all features that are considered part of the class's definition.",
+      "involved_constructs": "Class"
+    },
+    {
+      "id": "T2",
+      "short_name": "Attribute",
+      "fragment_description": "An Attribute is a defining property of a Class, specifying a named slot within which a value of a specified type may be stored.",
+      "involved_constructs": "Attribute"
+    },
+    {
+      "id": "T3",
+      "short_name": "Operation",
+      "fragment_description": "An Operation is a behavioral feature of a Class that represents a functional service or computation.",
+      "involved_constructs": "Operation"
+    },
+    {
+      "id": "T4",
+      "short_name": "Class-Association-Class",
+      "fragment_description": "An Association represents a relationship between two classes, indicating that objects of one class are connected to objects of another class.",
+      "involved_constructs": "Class | Association | Class"
+    },
+    {
+      "id": "T5",
+      "short_name": "Class-Generalization-Class",
+      "fragment_description": "Generalization is a relationship that indicates that one Class inherits from another Class, showing a hierarchy between the two.",
+      "involved_constructs": "Class | Generalization | Class"
+    },
+    {
+      "id": "T6",
+      "short_name": "Class-Dependency-Class",
+      "fragment_description": "A Dependency indicates that a change in one class may affect another class, reflecting a usage or implementation relationship.",
+      "involved_constructs": "Class | Dependency | Class"
+    },
+    {
+      "id": "T7",
+      "short_name": "Class-Aggregation-Class",
+      "fragment_description": "Aggregation is a type of association that indicates a whole-part relationship between two classes.",
+      "involved_constructs": "Class | Aggregation | Class"
+    },
+    {
+      "id": "T8",
+      "short_name": "Class-Composition-Class",
+      "fragment_description": "Composition is a strong form of aggregation signifying a whole-part relationship, where the part is existentially dependent on the whole.",
+      "involved_constructs": "Class | Composition | Class"
+    }
+  ],
+  "agent1_capabilities": [
+    "What is the structure of a Class in a UML Class Diagram?",
+    "How does an Association relationship connect two Classes?",
+    "What distinguishes a Generalization from other relationships in UML Class Diagrams?",
+    "How is a Dependency between two Classes represented?",
+    "What are the different types of relationships that can exist between two Classes?"
+  ]
+}

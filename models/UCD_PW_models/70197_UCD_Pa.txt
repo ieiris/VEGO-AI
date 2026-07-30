@@ -1,0 +1,26 @@
+@startuml
+title ParkWise - Administration & Reports
+
+left to right direction
+
+actor Administrator as Admin
+actor "Integrated Rate Service (IRS)" as IRS
+
+rectangle "ParkWise Information System" {
+
+  usecase "Manage parking lot data\n(name, address, city, spaces)" as UC_LotData
+  usecase "Update parking lot price lists" as UC_PriceLists
+  usecase "Generate annual\nsummary report\n(PDF & XML)" as UC_AnnualRpt
+  usecase "Generate customer\nclub growth report" as UC_ClubRpt
+
+}
+
+Admin --> UC_LotData
+Admin --> UC_PriceLists
+Admin --> UC_AnnualRpt
+Admin --> UC_ClubRpt
+
+IRS --> UC_PriceLists : send yearly price lists\n(JSON)
+
+@enduml
+

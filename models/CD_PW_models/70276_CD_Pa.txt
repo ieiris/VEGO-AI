@@ -1,0 +1,164 @@
+@startuml
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam classBorderColor black
+skinparam classBackgroundColor white
+hide empty members
+
+skinparam nodesep 60
+skinparam ranksep 80
+skinparam classPadding 12
+
+left to right direction
+
+
+' ========================================================
+' CENTER — MAIN SYSTEM
+' ========================================================
+class ParkWiseSystem {
+    +updateDetailsFromPhotos()
+    +identifyVehicle(vehicleNumber)
+    +startParkingSession(vehicleNumber)
+    +finalizeSession(sessionId)
+    +printReceipt(sessionId)
+}
+
+
+' ========================================================
+' LEFT COLUMN — CLIENT/VEHICLE DOMAIN
+' ========================================================
+class Client {
+    -clientId : int
+    -firstName : String
+    -lastName : String
+    -phone : String
+    -registrationDate : Date
+    -isClubMember : boolean
+    +registerToClub()
+}
+
+class Vehicle {
+    -vehicleNumber : String
+    -type : String
+    -color : Color
+    -size : VehicleSize
+    -weightKg : float
+}
+
+class ParkingSession {
+    +sessionId : int
+    +startTime : DateTime
+    +endTime : DateTime
+    +getDuration() : float
+    +calculateBaseCost() : float
+    +closeSession(endTime : DateTime)
+}
+
+class ParkingSpace {
+    -spaceId : int
+    -size : VehicleSize
+    -isVacant : boolean
+    +markOccupied()
+    +markVacant()
+}
+
+class ParkingLot {
+    -lotId : int
+    -name : String
+    -address : String
+    -city : String
+    -availableSpaces : int
+}
+
+class PreferredLotSelection <<associationClass>> {
+    -selectionId : int
+    -dateSelected : Date
+}
+
+
+' ========================================================
+' RIGHT COLUMN — PAYMENT / REPORTS
+' ========================================================
+class Receipt {
+    +receiptId : int
+    +totalHours : int
+    +rateUsed : float
+    +finalAmount : float
+}
+
+class PriceList {
+    -priceListId : int
+    -yearr : int
+    -firstHourPrice : float
+    -additionalHourPrice : float
+    -fullDayPrice : float
+    +calculateRate(hours) : float
+}
+
+
+' ========================================================
+' TOP — CONVEYOR + COORDINATES
+' ========================================================
+class Conveyor {
+    -conveyorId : int
+    -maxWeight : float
+}
+
+class Coordinates {
+    -floor : int
+    -x : int
+    -y : int
+}
+
+
+' INHERITANCE
+ParkingSpace --|> Coordinates : "has location"
+Conveyor --|> Coordinates : "located at"
+
+
+' ========================================================
+' ENUMERATIONS
+' ========================================================
+class Color <<enumeration>> {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+class VehicleSize <<enumeration>> {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+
+' ========================================================
+' RELATIONSHIPS — ARROWHEADS RESTORED
+' ========================================================
+
+ParkWiseSystem "1" *--> "1..*" ParkingLot : "manages lots"
+ParkWiseSystem "1" *--> "1..*" Client : "maintains client accounts"
+ParkWiseSystem "1" o--> "0..*" Vehicle : "accesses vehicle data"
+
+ParkingLot "1" *--> "0..*" ParkingSpace : "contains spaces"
+ParkingLot "1" --> "0..*" PriceList : "uses pricing rules"
+
+Client "1" --> "0..*" Vehicle : "possess"
+
+Vehicle "1" --> "0..*" ParkingSession : "has"
+
+ParkingSession "1" --> "1" ParkingSpace : "occupies"
+ParkingSession "0..1" --> "1" Conveyor : "requires"
+ParkingSession "1" --> "0..1" Receipt : "produces receipt"
+
+(Client, ParkingLot) .. PreferredLotSelection : "selects lot preference"
+
+
+' ENUM DEPENDENCIES
+Vehicle ..> Color
+Vehicle ..> VehicleSize
+ParkingSpace ..> VehicleSize
+
+@enduml

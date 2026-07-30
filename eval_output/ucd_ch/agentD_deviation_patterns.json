@@ -1,0 +1,139 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "cheers",
+  "total_cases": 40,
+  "min_recurrence_threshold": 1,
+  "recurring_guideline_patterns": [
+    {
+      "pattern_id": "P1",
+      "guideline_id": "G20",
+      "description": "The guideline for distinguishing wines by their manufacturer and catalog number is often not satisfied.",
+      "affected_cases": [
+        "68092",
+        "68121",
+        "68074",
+        "68141",
+        "68116",
+        "68139",
+        "68122",
+        "68086"
+      ],
+      "pattern_strength": "20.0%",
+      "label_distribution": {
+        "Satisfied": 32,
+        "Partially-Satisfied": 0,
+        "Not-Satisfied": 8
+      }
+    },
+    {
+      "pattern_id": "P2",
+      "guideline_id": "G22",
+      "description": "The guideline for tracking wine storage location is often not satisfied.",
+      "affected_cases": [
+        "68142",
+        "68139",
+        "68123",
+        "68064",
+        "68099"
+      ],
+      "pattern_strength": "12.5%",
+      "label_distribution": {
+        "Satisfied": 35,
+        "Partially-Satisfied": 0,
+        "Not-Satisfied": 5
+      }
+    },
+    {
+      "pattern_id": "P3",
+      "guideline_id": "G18",
+      "description": "The guideline for storing manufacturer information is often not satisfied.",
+      "affected_cases": [
+        "68132",
+        "68075",
+        "68150",
+        "68113"
+      ],
+      "pattern_strength": "10.0%",
+      "label_distribution": {
+        "Satisfied": 36,
+        "Partially-Satisfied": 0,
+        "Not-Satisfied": 4
+      }
+    }
+  ],
+  "recurring_fragment_patterns": [
+    {
+      "pattern_id": "P4",
+      "description": "The inclusion of system interactions with 'Gefen System' often appears as an alternative, providing context about data exchanges.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "68092",
+        "68162",
+        "68075",
+        "68131",
+        "68106",
+        "68113",
+        "68059",
+        "68117",
+        "68106"
+      ],
+      "pattern_strength": "22.5%"
+    },
+    {
+      "pattern_id": "P5",
+      "description": "Marketing employees' ability to update wine information is presented as an alternative across multiple models.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "68064",
+        "68127",
+        "68092",
+        "68162",
+        "68121",
+        "68113"
+      ],
+      "pattern_strength": "15.0%"
+    },
+    {
+      "pattern_id": "P6",
+      "description": "The representation of 'Customer' as an actor interacting with the system frequently appears as an alternative.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "68114",
+        "68064",
+        "68113",
+        "68059",
+        "68132"
+      ],
+      "pattern_strength": "12.5%"
+    },
+    {
+      "pattern_id": "P7",
+      "description": "Generalized relationships between actors are often marked as alternatives to standard actor roles.",
+      "fragment_label": "Alternative",
+      "affected_cases": [
+        "68150",
+        "68075",
+        "68160",
+        "68118",
+        "68156",
+        "68131",
+        "68117"
+      ],
+      "pattern_strength": "17.5%"
+    },
+    {
+      "pattern_id": "P8",
+      "description": "Language mistakes commonly appear related to syntax and structural issues in UML diagrams.",
+      "fragment_label": "Language Mistake",
+      "affected_cases": [
+        "68148",
+        "68123",
+        "68116",
+        "68065",
+        "68061",
+        "68145"
+      ],
+      "pattern_strength": "15.0%"
+    }
+  ]
+}

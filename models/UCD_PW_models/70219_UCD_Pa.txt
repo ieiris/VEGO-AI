@@ -1,0 +1,89 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Client" as client
+actor "Administrator" as admin
+actor "Gate Sensor (GS)" as gs
+actor "Conveyors' Controller (CC)" as cc
+actor "Payment Gateway (PG)" as pg
+actor "Integrated Rate Service (IRS)" as irs
+
+rectangle "ParkWise System" {
+
+    ' Administrative Use Cases
+    usecase "Update Parking Lot Details" as UC_UpdateLot
+    usecase "Generate Annual Summary Report" as UC_ReportAnnual
+    usecase "Generate Customer Club Growth Report" as UC_ReportClub
+
+    ' Entry Process
+    usecase "Detect Vehicle Arrival" as UC_DetectArrival
+    usecase "Open Barrier" as UC_OpenBarrier
+    
+    usecase "Register to System" as UC_Register
+    usecase "Upload Client Info" as UC_ClientInfo
+    usecase "Upload Vehicle Photos" as UC_UploadPhotos
+    usecase "Extract Vehicle Details" as UC_ExtractDetails
+
+    ' Parking Process
+    usecase "Assign Conveyor & Optimize Location" as UC_Optimize
+    usecase "Park Vehicle" as UC_ParkVehicle
+    usecase "Send Parking SMS" as UC_SMS
+
+    ' --- כאן נמצאת הצפייה במידע (Viewing Info) ---
+    usecase "View Parking Details" as UC_ViewDetails
+    usecase "End Parking Session" as UC_EndParking
+    usecase "Verify Phone Number" as UC_VerifyPhone
+
+    ' Payment & Receipt Process
+    usecase "Calculate Payment" as UC_CalcPay
+    usecase "Process Payment" as UC_ProcessPay
+    usecase "Issue Receipt" as UC_Receipt  
+
+    ' Club Management
+    usecase "Register to Club" as UC_JoinClub
+    usecase "Select Preferred Lots" as UC_SelectLots
+    usecase "Update Price Lists" as UC_UpdatePrices
+
+    ' Relationships
+    admin --> UC_UpdateLot
+    admin --> UC_ReportAnnual
+    admin --> UC_ReportClub
+
+    gs --> UC_DetectArrival
+    UC_DetectArrival ..> UC_OpenBarrier : <<include>>
+    UC_DetectArrival <.. UC_Register : <<extend>>
+    
+    client --> UC_Register
+    UC_Register ..> UC_ClientInfo : <<include>>
+    UC_Register ..> UC_UploadPhotos : <<include>>
+    UC_UploadPhotos ..> UC_ExtractDetails : <<include>>
+    
+    cc --> UC_Optimize
+    cc --> UC_ParkVehicle
+    UC_ParkVehicle ..> UC_SMS : <<include>>
+
+    ' --- Client Viewing ---
+    client --> UC_ViewDetails
+    UC_ViewDetails ..> UC_VerifyPhone : <<include>>
+
+    ' --- Client Exit ---
+    client --> UC_EndParking
+    cc --> UC_EndParking
+    
+    UC_EndParking ..> UC_VerifyPhone : <<include>>
+    UC_EndParking ..> UC_CalcPay : <<include>>
+    UC_EndParking ..> UC_ProcessPay : <<include>>
+    
+    UC_ProcessPay --> pg
+    ' --- כאן נמצאת הבקשה לקבלה (Requesting Receipt) ---
+    ' זה Extend כי זה קורה רק אם הלקוח מבקש
+    UC_ProcessPay ..> UC_Receipt : <<extend>> 
+    UC_ProcessPay ..> UC_OpenBarrier : <<include>>
+
+    client --> UC_JoinClub
+    client --> UC_SelectLots
+    
+    irs --> UC_UpdatePrices
+}
+@enduml

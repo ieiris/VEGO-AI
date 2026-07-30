@@ -1,0 +1,46 @@
+@startuml
+left to right direction
+
+actor "Sales Staff" as Sales
+actor "Marketing Employee" as Marketing
+actor "Gefen System" as Gefen
+actor "GalGalim" as Delivery
+actor "Customer" as Cust
+
+rectangle "Cheers System" {
+    usecase "Make Order" as UC1
+    usecase "Update Inventory" as UC5
+    usecase "Update Wine Information" as UC2
+    usecase "View Wine Information" as UC3
+    usecase "Customer Chooses OrderItems" as UC10
+    usecase "Receive Manufacturer and Wine Data" as UC4
+    usecase "Generate Unproductive Employees Report" as UC6
+    usecase "Automatically Generate Current Inventory Report by Wine" as UC7
+    usecase "Wine Recommendation Report" as UC8
+    usecase "Link Wine to Type" as UC9
+    usecase "View Employee Details" as UC12
+}
+
+Sales --> UC1
+UC1 --> Delivery
+UC1 --> UC5 : <<include>>
+
+Sales --> UC3
+Sales --> UC6
+UC6 --> UC12 : <<include>>
+Sales --> UC8
+
+Cust --> UC3
+UC3 .> UC10 : <<extend>>
+
+Marketing --> UC2
+Marketing --> UC3
+Marketing --> UC9
+
+Gefen --> UC4 : <<exchange XML>>
+Gefen <-- UC7 : <<exchange JSON>>
+
+note right of UC7
+  Weekly Automatic Process
+end note
+@enduml

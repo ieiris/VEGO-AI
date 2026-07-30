@@ -1,0 +1,180 @@
+@startuml
+enum SweetnessLevelEnum {
+    Dry
+    SemiDry
+    SemiSweet
+    Sweet
+}
+
+enum OrderStatusEnum {
+    InProcess
+    Dispatched
+    Delivered
+    Paid
+    Suspended
+    Canceled
+}
+
+enum LocationTypeEnum {
+    Indoor
+    Outdoor
+}
+
+enum SeasonEnum {
+    Spring
+    Summer
+    Fall
+    Winter
+}
+
+abstract class Person {
+    +personID: String
+    +Firstname: String
+    +LastName : String
+    +phoneNumber: String
+    +email: String
+}
+
+abstract class Order {
+    +orderNumber: String
+    +orderDate: Date
+    +orderStatus: OrderStatusEnum
+    +shipmentDate: Date
+}
+
+class Employee {
+    +officeAddressCity: String
+    +OfficeAddressStreetName : String
+    +employmentStartDate: Date
+}
+
+class Customer {
+    +CityForDelivery : String
+    +StreetNameForDilevery : String
+    +dateOfFirstContact: Date
+}
+
+class SalesEmployee {
+    +placeOrder(Order: Order): boolean
+    +generateUnproductiveEmployeesReport(startDate: Date, endDate: Date): String
+}
+
+class MarketingEmployee {
+}
+
+class RegularOrder {
+}
+
+class UrgentOrder {
+    +priorityLevel: Integer
+    +expectedDeliveryTime: Date
+}
+
+class Wine {
+    +catalogNumber: String
+    +name: String
+    +description: String
+    +productionYear: Integer
+    +pricePerBottle: Float
+    +sweetnessLevel: SweetnessLevelEnum
+    +productImage: Image
+}
+
+class WineType {
+    +serialNumber: String
+    +name: String
+}
+
+class FoodPairing {
+    +pairingID: String
+    +dishName: String
+}
+
+class Recipe {
+    
+    +recipeURL: String
+}
+
+class Occasion {
+    +occasionId: String
+    +description: String
+    +season: SeasonEnum
+    +location: LocationTypeEnum
+}
+
+class StorageLocation {
+    +locationNumber: String
+    +name: String
+}
+
+class Manufacturer {
+    +manufacturerID: Integer
+    +name: String
+    +phoneNumber: String
+    +address: String
+    +email: String
+}
+
+class GefenSystem {
+    +exportMonthlyData(f: File): boolean
+    +exportWeeklyUpdates(f: File): boolean
+    +importJsonFile(f: File): boolean
+}
+
+' Association class between Wine and StorageLocation
+class WineStorage {
+    +quantity: Integer
+}
+
+' Association class between Wine and Order
+class OrderWine {
+    +quantity: Integer
+}
+
+' Inheritance Relationship
+Person <|-- Employee : Overlapping, Complete
+Person <|-- Customer : Overlapping, Complete
+
+Employee <|-- SalesEmployee : Disjoint, Incomplete
+Employee <|-- MarketingEmployee : Disjoint, Incomplete
+
+' Orders
+Order <|-- RegularOrder : Complete, Disjoint
+Order <|-- UrgentOrder : Complete, Disjoint
+
+' Relationships
+SalesEmployee "1"-- "0..*" Order 
+Order "1..*" -- OrderWine : "have"
+OrderWine -- "1..*" Wine : "have"
+RegularOrder "0..*" -- "1..*" Customer 
+UrgentOrder "0..*" -- "1" Customer 
+
+' Wine and WineTypes (Composition)
+Wine "1..*" *-- "1" WineType 
+
+' Many-to-Many Relationship Between Occasion and WineType
+Occasion "1..*" -- "1..*" WineType
+
+' One-to-Many Relationship: WineType and FoodPairing
+WineType "1" -- "1..*" FoodPairing 
+
+' One-to-Many Relationship: FoodPairing and Recipe
+FoodPairing "1" -- "1..*" Recipe 
+
+' Association Relationships
+Wine "0..*" -- WineStorage : "store"
+WineStorage -- "1..*" StorageLocation : "store"
+
+' GefenSystem relationships (Aggregation)
+GefenSystem o-- "0..*" Manufacturer 
+GefenSystem o-- "0..*" Wine 
+
+' Enum relationships
+Wine --> SweetnessLevelEnum 
+OrderStatusEnum -- Order 
+LocationTypeEnum -- Occasion 
+SeasonEnum -- Occasion
+
+' Manufacturer and Wine Relationship
+Wine "1..*" -- "1" Manufacturer : "produced by"
+@enduml

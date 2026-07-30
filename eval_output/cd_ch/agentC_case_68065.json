@@ -1,0 +1,525 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68065",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The actors in the case model include roles like SalesRep, Customer, MarketingRep, and Employee, which align with managing key business operations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The case model shows SalesRep responsible for ManageOrders, indicating their role in placing customer orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The case model differentiates between regular and urgent orders, but does not explicitly list order details such as order number, order date, and others.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Details like order number, order date, and status are not explicitly indicated in the case model."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The delivery handled by 'GalGalim' is not mentioned in the case model, focusing only on order processing.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The include relationship from DoOrder to ChooseTypeOrderRegular implies a composition of different wines, but it does not explicitly manage joint orders.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Joint orders are not explicitly tracked in the model."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer interactions in the model involve choosing types and quantities, but not specific details like ID, phone number, and email.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Customer-specific details such as contact information are not present in the use case descriptions."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employee actor is associated with DoOrder, implying they can order wines like regular customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Urgent orders are shown in the model with separate use cases, indicating priority processing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The model includes choosing the priority of urgent orders, which aligns with specifying a priority level.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The ability for multiple customers to combine wine selections is not directly evidenced in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The case model allows choosing a main customer, aligning partially with tracking responsibilities, but not specific tracking of each customer's wines and quantities.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Main customer selection is shown, but detailed tracking is missing."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The model does not show customer-specific attributes for urgent and regular orders.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingRep is shown updating wine information, consistent with their role in managing wine types and updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesRep can view wine info when managing orders, indicating their ability to browse available wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The case model includes updating wine information but does not specify using a name and serial number as identifiers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The model contains recommendations for wines but does not detail wine types or associated food pairings.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No detailed classification of wine types and food pairings."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "MarketingRep can recommend occasions for wines, consistent with guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Information exchange with Gefen system is shown, but details on monthly XML specifics are not present.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Detailed XML data reception is not indicated."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "No evidence in the model of storing manufacturer information with unique identifiers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine information updates do not detail specific attributes like sweetness and product image.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Distinction criteria for wines via manufacturer and catalog numbers are not evident in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingRep updates price and product images, indicating they can modify details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The model does not display storage locations with unique identifiers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Inventory views and updates in the model imply tracking of wine quantities, but storage specifics are not detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Multiple storage locations details are not provided."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "UpdateCount use case implies inventory updates after sales.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Report generation by SalesRep, including recommendations and unproductive employee reports, are part of the model.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G3",
+      "evidence": "The use case 'DoOrder' involves activities such as choosing order types and updating inventory, which could imply aspects of order management, but no explicit attributes like order number or status are detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model does not explicitly detail order attributes like number or status but does reference managing order choices through the use cases."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The absence of any fragment in the case model that mentions an external company handling deliveries.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No mention of 'GalGalim' or any reference to external delivery handling."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The use case 'ChooseMainCustomer' indicates some form of order grouping or prioritization, but it does not provide functionality for joint orders by multiple customers.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Model partially implies grouping via main customer involvement but lacks specific joint order handling."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Customer actor interacts with 'DoOrder' without evidencing specific information capture like ID or email.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Customer engagement is implied, yet lacks detail capture reflected in the guideline."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "No use case directly correlates to joint ordering capabilities for multiple customers in a single transaction.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model lacks evidence of capability for multiple customer joint orders."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The use case for choosing a main customer hints at assigning order responsibility, but does not explicitly manage tracking of specific wines per customer.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Partial compliance through main customer responsibility, however, specific tracking is not addressed."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "No explicit details on customer attributes for orders are included within interactions or actions.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model lacks any methods or operations for capturing customer attributes relevant to orders."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Wine information updates occur but without referencing identifications by name or serial number within the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Model does not differentiate wines through unique identifiers."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Wine recommendations exist, yet intricate details like specific types (red, white, sparkling) and food pairing information are missing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Model conceptually approaches wine recommendations but lacks detailed classifications."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Interactions such as data export/import with Gefen System are visible, but separate handling for monthly XML-specific data is not.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Data exchanges are evident but lack specific XML data manipulation."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "No fragment in the model reflects storing detailed manufacturer information tied to unique identifiers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No class, attribute, or use case captures this information."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Updating wine information is presented, though no details on attributes like sweetness or images are included.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Wine attributes discussed in the guideline are missing."
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Failure to observe use cases or structures differentiating wines by manufacturer/catalog numbers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Model does not implement methods for distinguishing wines uniquely."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The sequence does not focus on defining wine storage location properties.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No evidence of unique storage location identification attributes in the model."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "No concrete details on tracking wine quantities across different locations like stated storage should have.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Concept of inventory updates exists, but lack specific location details."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The presence of a 'GefenSystem' that both imports reports and exports information without clear alignment to specific guidelines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The GefenSystem plays a role in the model for data exchanges, which aligns with business functions, even if not explicitly required by guidelines."
+    },
+    {
+      "fragment": "The use case 'ReportEmployee' initiated by SalesRep for generating reports on employee productivity.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This use case adds detail to the system's reporting capabilities, complementing the guideline's mention of reports on employee productivity."
+    },
+    {
+      "fragment": "The connection between 'SalesRep' and 'Recomandation' (intended to be 'Recommendation') for generating wine recommendations.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This provides a functional path for wine recommendations, supporting business processes even if not explicitly covered."
+    },
+    {
+      "fragment": "The actor 'MarketingRep' involved in recommending wines for occasions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Reinforces the collaborative role of MarketingReps, beneficial for wine promotion, though not strictly outlined in the guideline."
+    },
+    {
+      "fragment": "Use case 'ExportInfo' related to 'GefenSystem' without specific guideline alignment.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While not detailed in guidelines, this use case enhances system communication with external entities."
+    },
+    {
+      "fragment": "The use of 'ChooseTypeOrderRegular' and 'ChooseTypeOrderUrgent' to differentiate order types.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "The use cases appear redundant due to their similar purpose and could be unified to enhance clarity."
+    },
+    {
+      "fragment": "The use of 'RecomendForWine' instead of 'RecommendForWine'.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "Contains a typographical error that, while minor, may lead to slight confusion or undermine professionalism."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The presence of a 'GefenSystem' that both imports reports and exports information without clear alignment to specific guidelines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The use case 'ReportEmployee' initiated by SalesRep for generating reports on employee productivity.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The connection between 'SalesRep' and 'Recomandation' (intended to be 'Recommendation') for generating wine recommendations.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The actor 'MarketingRep' involved in recommending wines for occasions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Use case 'ExportInfo' related to 'GefenSystem' without specific guideline alignment.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The use of 'ChooseTypeOrderRegular' and 'ChooseTypeOrderUrgent' to differentiate order types.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    },
+    {
+      "fragment": "The use of 'RecomendForWine' instead of 'RecommendForWine'.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    }
+  ],
+  "total_score": 15.0,
+  "max_score": 26.0,
+  "score_pct": 57.7,
+  "overall_assessment": "The case model demonstrates a moderate level of compliance with domain guidelines, but there are areas for improvement, particularly in detailing specific attributes and handling of orders."
+}

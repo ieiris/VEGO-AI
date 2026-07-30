@@ -1,0 +1,193 @@
+@startuml
+' === Enums ===
+enum OrderStatus {
+    IN_PROCESS
+    DISPATCHED
+    DELIVERED
+    PAID
+    SUSPENDED
+    CANCELED
+}
+
+enum SweetnessLevel {
+    DRY
+    SEMI_DRY
+    SEMI_SWEET
+    SWEET
+}
+
+enum PriorityLevel {
+    LEVEL_1 = 1
+    LEVEL_2 = 2
+    LEVEL_3 = 3
+    LEVEL_4 = 4
+    LEVEL_5 = 5
+}
+
+enum Season {
+    SPRING
+    SUMMER
+    AUTUMN
+    WINTER
+}
+
+enum Location {
+    INDOOR
+    OUTDOOR
+}
+
+enum SuitableOccasions {
+    MARRIAGE_PROPOSAL
+    NATURE_HIKE
+    CHEESE_NIGHT
+    DINNER_PARTY
+    CELEBRATION
+}
+
+enum TypeName{
+RED
+WHITE
+SPARKLING
+FORTIFIED
+ROSE
+DESSERT
+}
+
+' === Main Entities ===
+class CheersSystem{
+    + importMonthlyProducerData(): void  // Method to receive XML data from Gefen
+    + importWeeklyQuantityUpdates(): void // Method to receive weekly purchase quantity updates
+    + exportInventoryReport(jsonData : String) : void // Method to export inventory report in JSON format to Gefen
+}
+
+class Employee {
+    + id: int
+    + name: String
+    + phoneNumber: String
+    + officeAddress: String
+    + email: String
+    + employmentStartDate: Date
+    +viewWineInformation(inventory: Inventory) : List<Wine>
+    +viewWineTypes(inventory: Inventory) : List<WineType>
+}
+
+
+class SalesStaff extends Employee {
+    + generateUnproductiveEmployeesReport(startDate : Date, endDate : Date) : List<Employee>
+    + generateWineRecommendationReport(food : String, occasion : String, wineType : String) : List<Wine>
+}
+
+
+class MarketingStaff extends Employee {
+    + updateWinePrice(wine: Wine, newPrice: double): void
+    + updateWineImage(wine: Wine, imagePath: String): void
+    + linkWineTypeToWine(wineType: WineType, wine: Wine): void
+}
+
+class Customer {
+    + id: int
+    + name: String
+    + phoneNumber: String
+    + deliveryAddress: String
+    + email: String
+    + firstContactDate: Date
+}
+
+class Wine {
+    + name: String
+    + description: String
+    + productionYear: int
+    + pricePerBottle: double
+    + sweetnessLevel: SweetnessLevel
+    + productImagePath: String
+    + catalogNumber: String
+}
+
+class WineType {
+    + sn: int
+    + type: TypeName
+    + season: Season
+    + location: Location
+    + suitableOccasions: List<SuitableOccasions>
+}
+Class FoodPairing{
++dishName: String
++ recipeLinks : List<String> // List of up to 5 recipe URLs
+}
+
+class Manufacturer {
+    + id: int // Unique identifier
+    + name: String
+    + contactPhone: String
+    + address: String
+    + email: String
+}
+
+class StorageLocation { 
++ locationID : Integer // Unique identifier for the storage location 
++ locationName : String // Name of the location "Main Refrigerator", "Cellar"
+}
+
+class Inventory {
+ + quantityInStock : Integer // Number of bottles in stock 
++ updateStock(quantity : Integer) : void // Method to update stock after an order or a purchase quantity update
++ generateInventoryReport() : String // Method to generate current inventory report in JSON format
+}
+' === New class for capturing quantity per wine in an order ===
+class WineItem {
+    + quantity: int
+}
+
+class Order {
+    + orderNumber: int
+    + orderDate: Date
+    + status: OrderStatus
+    + shipmentDate: Date
++ placeOrder() : void // Method to place an order, which updates the inventory
+}
+
+class JointOrder{
++mainCustomer: Customer
+}
+
+class UrgentOrder extends Order {
+    + priority: PriorityLevel
+    + expectedDeliveryTime: Date
+}
+' === Relationships ===
+CheersSystem -- "1.." Employee
+CheersSystem -- "0.." Customer
+CheersSystem -- "0.."Order
+CheersSystem *-- Inventory
+
+Order <|-- RegularOrder
+RegularOrder "0..*" -- "1" JointOrder
+Customer "0..*" -- "1" JointOrder
+SalesStaff "1" -- "0..*" Order : places
+
+Order "1" -- "0..*" WineItem : Contains
+Wine  "1" -- "0..*" WineItem : included in
+
+Wine "0..*" -- "1" WineType : "Has Type"
+
+StorageLocation "1" -- "0..*" Inventory : tracks stock for
+Wine "1" -- "0..*" Inventory : tracked in
+
+UrgentOrder "0..*" o-- "1" Customer  
+
+
+
+Manufacturer "1" o-- "0..*" Wine 
+
+WineType "1" -- "0.." FoodPairing : has a
+
+
+' === Relationships with Enums ===
+Order --> OrderStatus : has status
+Wine --> SweetnessLevel : has sweetness
+UrgentOrder --> PriorityLevel : has priority
+WineType  -->  TypeName : has type
+WineType  -->  Season : produced in
+WineType  -->  Location : served in
+WineType  -->  SuitableOccasions : suitable for
+@enduml

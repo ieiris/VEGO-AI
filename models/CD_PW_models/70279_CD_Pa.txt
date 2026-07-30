@@ -1,0 +1,251 @@
+@startuml
+left to right direction
+class ParkingLot {
+  - lotId : int
+  - name : String
+  - address : String
+  - city : String
+  - availableSpaces : int
+  - currentPriceList : PriceList
+  + updateDetails(name : String, address : String, city : String) : void
+  + setAvailableSpaces(availableSpaces : int) : void
+}
+
+class Vehicle {
+  - vehicleNumber : String
+  - type : String
+  - color : String
+  - size : String
+  - weightKg : double
+}
+
+class Client {
+  - clientId : int
+  - firstName : String
+  - lastName : String
+  - phoneNumber : String
+}
+
+class ClubMember {
+  - memberId : int
+  - registrationDate : Date
+  - isActive : boolean
+  - fixedDiscountPct : double
+}
+
+class VehiclePhoto {
+  - photoId : int
+  - photoType : String
+  - filePath : String
+}
+
+class ParkingSpace {
+  - spaceId : int
+  - floorNumber : int
+  - x : int
+  - y : int
+  - size : String
+}
+
+class Conveyor {
+  - conveyorId : int
+  - floorNumber : int
+  - x : int
+  - y : int
+  - maxWeight : double
+}
+
+class PriceList {
+  - priceListId : int
+  - firstHourPrice : double
+  - additionalHourPrice : double
+  - fullDayPrice : double
+}
+
+class PriceHistoryEntry {
+  - entryId : int
+  - validFrom : Date
+  - validTo : Date
+}
+
+class PreferredParkingLotSelection {
+  - selectionId : int
+  - selectionDate : Date
+}
+
+class ParkingSession {
+  - sessionId : int
+  - startTime : DateTime
+  - endTime : DateTime
+  - status : String
+  - totalAmount : double
+  - isPaid : boolean
+}
+
+class Receipt {
+  - receiptId : int
+  - issuedAt : DateTime
+  - totalHours : double
+  - rateDescription : String
+  - finalAmount : double
+}
+
+class AnnualSummaryReport {
+  - reportId : int
+  - year : int
+  - generatedAt : DateTime
+}
+
+class CustomerClubGrowthReport {
+  - reportId : int
+  - year : int
+  - generatedAt : DateTime
+}
+
+class GateSensor {
+  - sensorId : int
+  - barrierIsOpen : boolean
+  + detectArrival(vehicleNumber : String) : void
+  + detectDeparture(vehicleNumber : String) : void
+  + sendVehicleDataToSystem(vehicleNumber : String) : void
+  + openBarrier() : void
+}
+
+class SystemUI {
+  + registerClient(firstName : String, lastName : String, phoneNumber : String, vehiclePhotos : List<VehiclePhoto>) : Client
+  + showParkingDetails(phoneNumber : String) : List<ParkingSession>
+  + endParking(vehicleNumber : String, phoneNumber : String) : void
+  + registerClubMember(client : Client) : ClubMember
+  + selectPreferredParkingLots(member : ClubMember, lots : List<ParkingLot>) : void
+  + startPaymentFlow(session : ParkingSession) : void
+  + requestReceipt(session : ParkingSession) : void
+}
+
+class ConveyorsController {
+  + scanVehicleNumber() : String
+  + assignConveyor(vehicle : Vehicle) : Conveyor
+  + requestOptimalSpace(vehicle : Vehicle) : ParkingSpace
+  + updateParkingCompletion(vehicle : Vehicle, conveyor : Conveyor, space : ParkingSpace) : void
+  + assignConveyorForExit(vehicle : Vehicle) : Conveyor
+}
+
+class VehicleDetailsExtractor {
+  + extractDetails(photos : List<VehiclePhoto>) : Vehicle
+}
+
+class NotificationService {
+  + sendParkingDetailsSMS(client : Client, session : ParkingSession) : void
+}
+
+class PaymentCalculator {
+  + calculateAmount(session : ParkingSession, priceList : PriceList, member : ClubMember) : double
+}
+
+class ReportGenerator {
+  + generateAnnualSummary(year : int) : AnnualSummaryReport
+  + generateCustomerClubGrowth(year : int) : CustomerClubGrowthReport
+}
+
+class IntegratedRateService {
+  + getYearlyPriceLists() : JSON
+}
+
+class PaymentGateway {
+  + processPayment(client : Client, amount : double) : boolean
+  + notifyPaymentApproved(session : ParkingSession) : void
+}
+
+class Administrator {
+  + updateParkingLot(lot : ParkingLot, name : String, address : String, city : String) : void
+  + generateAnnualSummaryReport(year : int) : AnnualSummaryReport
+  + generateCustomerClubGrowthReport(year : int) : CustomerClubGrowthReport
+}
+
+' Associations 1–15
+
+ParkingLot "1" -- "1..*" ParkingSpace
+ParkingLot "1" -- "1" GateSensor
+ParkingLot "1" -- "0..*" ParkingSession
+ParkingLot "1" -- "0..*" PreferredParkingLotSelection
+ParkingLot "1" -- "0..*" PriceHistoryEntry
+PriceList "1" -- "0..*" ParkingLot
+
+Vehicle "1" -- "1" Client
+Vehicle "1" -- "0..*" VehiclePhoto
+Vehicle "1" -- "0..*" ParkingSession
+Vehicle "1" -- "0..*" Receipt
+
+Client "1" -- "0..*" ParkingSession
+Client "1" -- "0..*" Receipt
+Client "1" -- "0..*" Vehicle
+Client "1" -- "0..1" ClubMember
+
+ClubMember "1" -- "0..*" PreferredParkingLotSelection
+
+VehiclePhoto "1" -- "1" Vehicle
+
+ParkingSpace "1" -- "0..*" ParkingSession
+ParkingSpace "1" -- "1" ParkingLot
+
+Conveyor "1" -- "0..*" ParkingSession
+Conveyor "1" -- "1" ParkingLot
+
+PriceHistoryEntry "1" -- "1" ParkingLot
+PriceHistoryEntry "1" -- "1" PriceList
+
+PreferredParkingLotSelection "1" -- "1" ParkingLot
+PreferredParkingLotSelection "1" -- "1" ClubMember
+
+ParkingSession "1" -- "1" Client
+ParkingSession "1" -- "1" Vehicle
+ParkingSession "1" -- "1" ParkingLot
+ParkingSession "1" -- "1" ParkingSpace
+ParkingSession "1" -- "1" PriceList
+ParkingSession "0..1" -- "1" Conveyor
+ParkingSession "0..1" -- "1" Receipt
+
+Receipt "1" -- "1" Client
+Receipt "1" -- "1" Vehicle
+Receipt "1" -- "1" ParkingSession
+
+GateSensor "1" -- "1" ParkingLot
+
+' Associations 16–24
+
+SystemUI "1" -- "0..*" Client
+SystemUI "1" -- "0..*" ParkingSession
+SystemUI "1" -- "0..*" ClubMember
+SystemUI "1" -- "0..*" PreferredParkingLotSelection
+SystemUI "1" -- "0..*" Receipt
+
+ConveyorsController "1" -- "0..*" Conveyor
+ConveyorsController "1" -- "0..*" ParkingSpace
+ConveyorsController "1" -- "0..*" Vehicle
+ConveyorsController "1" -- "0..*" ParkingSession
+
+VehicleDetailsExtractor "1" -- "0..*" VehiclePhoto
+VehicleDetailsExtractor "1" -- "0..*" Vehicle
+
+NotificationService "1" -- "0..*" Client
+NotificationService "1" -- "0..*" ParkingSession
+
+PaymentCalculator "1" -- "0..*" ParkingSession
+PaymentCalculator "1" -- "0..*" PriceList
+PaymentCalculator "1" -- "0..*" ClubMember
+
+ReportGenerator "1" -- "0..*" AnnualSummaryReport
+ReportGenerator "1" -- "0..*" CustomerClubGrowthReport
+ReportGenerator "1" -- "0..*" ParkingLot
+ReportGenerator "1" -- "0..*" ParkingSession
+ReportGenerator "1" -- "0..*" Vehicle
+ReportGenerator "1" -- "0..*" ClubMember
+
+IntegratedRateService "1" -- "0..*" PriceList
+
+PaymentGateway "1" -- "0..*" Client
+PaymentGateway "1" -- "0..*" ParkingSession
+
+Administrator "1" -- "0..*" ParkingLot
+Administrator "1" -- "0..*" AnnualSummaryReport
+Administrator "1" -- "0..*" CustomerClubGrowthReport
+@enduml

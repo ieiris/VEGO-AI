@@ -1,0 +1,137 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' ===========================
+'        CORE ENTITIES
+' ===========================
+
+class ParkingLot {
+  - lotId : int
+  - name : String
+  - address : String
+  - city : String
+}
+
+class ParkingSpace {
+  - spaceId : int
+  - floor : int
+  - x : int
+  - y : int
+  - size : String        <<small/medium/large>>
+  - isOccupied : boolean
+}
+
+class Conveyor {
+  - conveyorId : int
+  - floor : int
+  - x : int
+  - y : int
+  - maxWeightKg : double
+  - isAvailable : boolean
+}
+
+class Client {
+  - clientId : int
+  - firstName : String
+  - lastName : String
+  - phone : String
+  - isClubMember : boolean
+}
+
+class Vehicle {
+  - vehicleNumber : String
+  - type : String
+  - color : String       <<white/black/silver/blue/other>>
+  - size : String        <<small/medium/large>>
+  - weightKg : double
+}
+
+class VehiclePhoto {
+  - photoId : int
+  - viewType : String    <<front/rear/side>>
+  - filePath : String
+}
+
+class ParkingSession {
+  - sessionId : int
+  - startTime : DateTime
+  - endTime : DateTime
+  - totalHours : double
+  - amountPaid : double
+  - rateType : String    <<firstHour/additional/fullDay/free>>
+  - isFreeSession : boolean
+}
+
+class PriceList {
+  - priceListId : int
+  - year : int
+  - firstHourPrice : double
+  - additionalHourPrice : double
+  - fullDayPrice : double
+  - effectiveFrom : Date
+  - effectiveTo : Date
+}
+
+class ClubMembership {
+  - membershipId : int
+  - joinDate : Date
+  - isActive : boolean
+}
+
+class PreferredLotSelection {
+  - selectionId : int
+  - selectionDate : Date
+}
+
+' ===========================
+'   REPORTING – ANNUAL SUMMARY
+' ===========================
+
+class AnnualLotSummary {
+  - year : int
+  - totalAmountPaid : double
+  - otherColorVehiclesCount : int
+}
+
+class AnnualSummaryReportService {
+  + generateAnnualSummary(year : int) : List<AnnualLotSummary>
+  + exportAnnualSummaryAsPDF(year : int) : void
+  + exportAnnualSummaryAsXML(year : int) : void
+}
+
+' ===========================
+'       RELATIONSHIPS
+' ===========================
+
+' Parking lot structure
+ParkingLot "1" -- "many" ParkingSpace
+ParkingLot "1" -- "many" Conveyor
+
+' Clients, vehicles, photos
+Client "1" -- "many" Vehicle
+Vehicle "1" -- "many" VehiclePhoto
+
+' Parking sessions
+ParkingLot "1" -- "many" ParkingSession
+Client "1" -- "many" ParkingSession
+Vehicle "1" -- "many" ParkingSession
+ParkingSpace "0..1" -- "many" ParkingSession
+
+' Price history
+ParkingLot "1" -- "many" PriceList
+
+' Club & preferred lots
+Client "0..1" -- "1" ClubMembership
+Client "1" -- "many" PreferredLotSelection
+PreferredLotSelection "many" -- "1" ParkingLot
+
+' Annual summaries per lot
+ParkingLot "1" -- "many" AnnualLotSummary
+
+' Reporting service uses sessions & summaries
+AnnualSummaryReportService ..> ParkingSession
+AnnualSummaryReportService ..> AnnualLotSummary
+AnnualSummaryReportService ..> ParkingLot
+AnnualSummaryReportService ..> PriceList
+
+@enduml

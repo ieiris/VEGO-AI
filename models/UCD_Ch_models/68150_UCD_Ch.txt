@@ -1,0 +1,68 @@
+@startuml
+left to right direction
+!define RECTANGLE class
+
+actor "Customer" as Customer
+actor "Sales Staff" as SalesStaff
+actor "Marketing Staff" as MarketingStaff
+actor "Gefen System" as Gefen
+actor "Employees" as Employees
+
+SalesStaff--|> Employees
+MarketingStaff--|> Employees
+Employees--|>Customer
+
+package "Cheers System" {
+    usecase "Send Order " as UC16
+    usecase "Joint order" as UC17
+    usecase " assign employee to order " as UC19
+    usecase " Regular Order" as UC1
+    usecase " Urgent Order" as UC2
+    usecase " Place Order " as UC18
+    usecase "Track Order Status" as UC3
+    usecase "Generate Unproductive Employees Report" as UC4
+    usecase "Generate Wine Recommendation Report" as UC5
+    usecase "Update Wine Information" as UC8
+    usecase "Link Wine to Types and Occasions" as UC9
+    usecase "Track wine storage location" as UC10
+    usecase "Update Inventory After Sale" as UC11
+    usecase "Receive Manufacturer Data" as UC12
+    usecase "Receive Weekly Inventory Updates" as UC13
+    usecase "Send Inventory Report" as UC14
+    usecase "View Wine Details" as UC15
+    usecase " recommend occasions suitable for drinking each wine type" as UC20
+    usecase "Tracks the specific wines and quantities ordered by each customer " as UC21
+}
+' Employees  use cases
+Employees --> UC15
+
+' Customer use cases
+Customer --> UC16
+Customer --> UC3
+
+' Sales Staff use cases
+SalesStaff --> UC18
+SalesStaff --> UC4
+SalesStaff --> UC5
+
+
+' Marketing Staff use cases
+MarketingStaff --> UC8
+MarketingStaff --> UC9
+MarketingStaff --> UC20
+
+' Gefen System use cases
+Gefen --> UC12
+Gefen --> UC13
+
+
+' Relationships between use cases
+UC1 .> UC18 : "Extends"
+UC2 .> UC18 : "Extends"
+UC4 ..> UC3 : "Includes"
+UC18 ..> UC16 : "Includes"
+UC5 ..> UC15 : "Includes"
+UC10 .> UC11 : "Extends"
+UC17 ..> UC16 : "Extends"
+UC18 ..> UC19 : "Includes"
+@enduml

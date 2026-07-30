@@ -1,0 +1,92 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+title Use Case Diagram: ParkWise Lot System
+
+'--- Primary Actors ---
+actor "Client" as Client
+actor "Club Member" as Member
+Client <|-- Member
+actor "Administrator" as Admin
+
+'--- Secondary Actors (Devices & Systems) ---
+actor "Gate Sensor (GS)" as GS <<Device>>
+actor "Conveyors' Controller (CC)" as CC <<Device>>
+actor "Payment Gateway (PG)" as PG <<External System>>
+actor "Integrated Rate Service (IRS)" as IRS <<External System>>
+
+package "ParkWise Lot System" {
+
+    '--- Area: Administration ---
+    usecase "Manage Parking Lot Details" as UC_ManageLots
+    usecase "Generate Annual Summary Report" as UC_ReportAnnual
+    usecase "Generate Club Growth Report" as UC_ReportClub
+
+    '--- Area: Entry & Registration ---
+    usecase "Handle Vehicle Entry" as UC_Entry
+    usecase "Register Client & Vehicle" as UC_Register
+    usecase "Upload Vehicle Photos" as UC_Photos
+    usecase "Extract Vehicle Details" as UC_Extract
+    
+    '--- Area: Parking Operations ---
+    usecase "Park Vehicle" as UC_Park
+    usecase "Optimize Parking Space" as UC_Optimize
+    usecase "View Parking Details" as UC_ViewDetails
+    
+    '--- Area: Customer Club ---
+    usecase "Join Customer Club" as UC_JoinClub
+    usecase "Select Preferred Lots" as UC_PrefLots
+
+    '--- Area: Retrieval & Payment ---
+    usecase "End Parking / Retrieve Vehicle" as UC_Retrieve
+    usecase "Calculate Parking Fee" as UC_CalcFee
+    usecase "Process Payment" as UC_Pay
+    usecase "Issue Receipt" as UC_Receipt
+    usecase "Update Price Lists" as UC_UpdateRates
+
+}
+
+'================ Relationships ================
+
+'--- Admin Section ---
+Admin --> UC_ManageLots
+Admin --> UC_ReportAnnual
+Admin --> UC_ReportClub
+
+'--- Entry Section ---
+GS --> UC_Entry : "Detects Arrival"
+UC_Entry <.. UC_Register : <<extend>> \n(Vehicle Not Found)
+Client --> UC_Register : "Enters Details"
+UC_Register ..> UC_Photos : <<include>>
+UC_Register ..> UC_Extract : <<include>> 
+
+'--- Parking Section ---
+Client --> UC_Park : "Leaves Car at Conveyor"
+CC --> UC_Park : "Scans & Transports"
+UC_Park ..> UC_Optimize : <<include>>
+Client --> UC_ViewDetails : "Via App or SMS"
+
+'--- Club Section ---
+Client --> UC_JoinClub
+Member--> UC_PrefLots : "Update Preferences"
+UC_JoinClub <.. UC_PrefLots : <<extend>> \n(During Reg)
+
+'--- Retrieval Section ---
+Client --> UC_Retrieve : "Requests End Parking"
+UC_Retrieve -- CC : "System instructs CC\nto move vehicle"
+UC_Retrieve ..> UC_Pay : <<include>>
+UC_Pay ..> UC_CalcFee : <<include>>
+UC_Pay <.. UC_Receipt : <<extend>> \n(If requested)
+
+'--- External Integrations ---
+PG -- UC_Pay : "Validates Transaction"
+UC_Pay -- GS : "Instructs to Open Barrier"
+IRS --> UC_UpdateRates : "Sends Rates (JSON)"
+@enduml

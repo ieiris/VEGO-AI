@@ -1,0 +1,382 @@
+{
+  "run_outputs": [
+    {
+      "skill_version": "1.1.0",
+      "language_name": "UML Use Case Diagram",
+      "guidelines": [
+        {
+          "id": "T1",
+          "short_name": "Actor",
+          "fragment_description": "An Actor represents a role played by a user or any other system that interacts with the subject.",
+          "involved_constructs": "Actor"
+        },
+        {
+          "id": "T2",
+          "short_name": "UseCase",
+          "fragment_description": "A Use Case represents a specific way of using a system by an actor. It is a list of actions or event steps.",
+          "involved_constructs": "Use Case"
+        },
+        {
+          "id": "T3",
+          "short_name": "SystemBoundary",
+          "fragment_description": "A System Boundary is used to define the scope of a system and to show the system as a separate entity within the use case diagram.",
+          "involved_constructs": "System Boundary"
+        },
+        {
+          "id": "T4",
+          "short_name": "UseCase-Association-Actor",
+          "fragment_description": "An association between an Actor and a Use Case represents the interaction between them.",
+          "involved_constructs": "Use Case | Association | Actor"
+        },
+        {
+          "id": "T5",
+          "short_name": "UseCase-Include-UseCase",
+          "fragment_description": "An Include relationship in UML represents the inclusion of the behavior described by another use case.",
+          "involved_constructs": "Use Case | Include | Use Case"
+        },
+        {
+          "id": "T6",
+          "short_name": "UseCase-Extend-UseCase",
+          "fragment_description": "An Extend relationship in UML is a directed relationship specifying how the behavior of a use case can be extended.",
+          "involved_constructs": "Use Case | Extend | Use Case"
+        },
+        {
+          "id": "T7",
+          "short_name": "UseCase-Generalization-UseCase",
+          "fragment_description": "Generalization in UML is used to show that one use case is a specialization of another.",
+          "involved_constructs": "Use Case | Generalization | Use Case"
+        }
+      ],
+      "agent1_capabilities": [
+        "What is the role of an Actor in UML Use Case Diagrams?",
+        "How is an Association relationship represented in UML Use Case Diagrams?",
+        "What distinguishes an Include relationship from an Extend relationship in UML Use Case Diagrams?",
+        "How does Generalization function within UML Use Case Diagrams?",
+        "What significance does a System Boundary have in a Use Case Diagram?"
+      ]
+    },
+    {
+      "skill_version": "1.1.0",
+      "language_name": "UML Use Case Diagram",
+      "guidelines": [
+        {
+          "id": "T1",
+          "short_name": "Actor",
+          "fragment_description": "An Actor is a primary construct representing a role played by a user or external system that interacts with the system.",
+          "involved_constructs": "Actor"
+        },
+        {
+          "id": "T2",
+          "short_name": "UseCase",
+          "fragment_description": "A Use Case is a primary construct that describes a sequence of actions performed by the system that yields a valuable result to an Actor.",
+          "involved_constructs": "UseCase"
+        },
+        {
+          "id": "T3",
+          "short_name": "Actor-Association-UseCase",
+          "fragment_description": "An Association is a relationship construct that connects an Actor to a Use Case, indicating that the Actor participates in the Use Case.",
+          "involved_constructs": "Actor | Association | UseCase"
+        },
+        {
+          "id": "T4",
+          "short_name": "UseCase-Includes-UseCase",
+          "fragment_description": "An 'Include' relationship is a directed relationship between Use Cases that specifies that the behavior of the included Use Case is inserted into the behavior of the including Use Case.",
+          "involved_constructs": "UseCase | Includes | UseCase"
+        },
+        {
+          "id": "T5",
+          "short_name": "UseCase-Extends-UseCase",
+          "fragment_description": "An 'Extend' relationship is a directed relationship that specifies how and when the behavior of the extending use case can be inserted into the extended use case.",
+          "involved_constructs": "UseCase | Extends | UseCase"
+        },
+        {
+          "id": "T6",
+          "short_name": "UseCase-Generalization-UseCase",
+          "fragment_description": "A Generalization relationship is a relationship construct where a child use case inherits the behavior and properties of a parent use case.",
+          "involved_constructs": "UseCase | Generalization | UseCase"
+        },
+        {
+          "id": "T7",
+          "short_name": "Subsystem",
+          "fragment_description": "A Subsystem is a primary construct that acts as a grouping mechanism for use cases, representing a module or collection of functionalities.",
+          "involved_constructs": "Subsystem"
+        },
+        {
+          "id": "T8",
+          "short_name": "Subsystem-Containment-UseCase",
+          "fragment_description": "A Containment relationship groups Use Cases within a Subsystem, indicating that the Use Cases are part of the Subsystem.",
+          "involved_constructs": "Subsystem | Containment | UseCase"
+        }
+      ],
+      "agent1_capabilities": [
+        "What is the role of an Actor in a UML Use Case Diagram?",
+        "How does an 'Include' relationship work between two Use Cases?",
+        "What does a Generalization relationship signify in a UML Use Case Diagram?",
+        "How can a Use Case be part of a Subsystem?",
+        "What is the difference between 'Extend' and 'Include' relationships in UML?"
+      ]
+    },
+    {
+      "skill_version": "1.1.0",
+      "language_name": "UML Use Case Diagram",
+      "guidelines": [
+        {
+          "id": "T1",
+          "short_name": "Actor",
+          "fragment_description": "Represents a user or another system that interacts with the subject (system) in the use case diagram.",
+          "involved_constructs": "Actor"
+        },
+        {
+          "id": "T2",
+          "short_name": "UseCase",
+          "fragment_description": "Represents a distinct functionality or interaction scenario in the system.",
+          "involved_constructs": "UseCase"
+        },
+        {
+          "id": "T3",
+          "short_name": "Actor-Association-UseCase",
+          "fragment_description": "Defines the interaction between an actor and a use case in the use case diagram.",
+          "involved_constructs": "Actor | Association | UseCase"
+        },
+        {
+          "id": "T4",
+          "short_name": "UseCase-Extend-UseCase",
+          "fragment_description": "Defines an optional extension of a use case's functionality by another use case.",
+          "involved_constructs": "UseCase | Extend | UseCase"
+        },
+        {
+          "id": "T5",
+          "short_name": "UseCase-Include-UseCase",
+          "fragment_description": "Indicates that a use case includes the behavior of another use case.",
+          "involved_constructs": "UseCase | Include | UseCase"
+        },
+        {
+          "id": "T6",
+          "short_name": "SystemBoundary",
+          "fragment_description": "Encapsulates use cases, representing the boundary of the system.",
+          "involved_constructs": "SystemBoundary"
+        }
+      ],
+      "agent1_capabilities": [
+        "What constructs can appear in a UML Use Case Diagram?",
+        "How does an actor interact with a use case in UML Use Case Diagrams?",
+        "What is the difference between 'extend' and 'include' relationships in UML Use Case Diagrams?",
+        "Can a single use case be associated with multiple actors?",
+        "How are system boundaries represented in UML Use Case Diagrams?"
+      ]
+    }
+  ],
+  "mapping": {
+    "skill_version": "1.0.0",
+    "language_name": "UML Use Case Diagram",
+    "clusters": [
+      {
+        "cluster_id": "C1",
+        "canonical_description": "An Actor represents a role played by a user or any other system interacting with the subject.",
+        "run1_guideline_id": "T1",
+        "run1_short_name": "Actor",
+        "run2_guideline_id": "T1",
+        "run2_short_name": "Actor",
+        "run3_guideline_id": "T1",
+        "run3_short_name": "Actor",
+        "similarity_score": 1.0,
+        "base_assignment": "actors",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C2",
+        "canonical_description": "A Use Case represents a specific way of using a system or distinct functionality by an actor.",
+        "run1_guideline_id": "T2",
+        "run1_short_name": "UseCase",
+        "run2_guideline_id": "T2",
+        "run2_short_name": "UseCase",
+        "run3_guideline_id": "T2",
+        "run3_short_name": "UseCase",
+        "similarity_score": 0.95,
+        "base_assignment": "use cases",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C3",
+        "canonical_description": "A System Boundary defines the scope of a system and represents it as a separate entity.",
+        "run1_guideline_id": "T3",
+        "run1_short_name": "SystemBoundary",
+        "run2_guideline_id": null,
+        "run2_short_name": null,
+        "run3_guideline_id": "T6",
+        "run3_short_name": "SystemBoundary",
+        "similarity_score": 0.8,
+        "base_assignment": "system boundaries",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C4",
+        "canonical_description": "An association between an Actor and a Use Case represents the participation of the actor in the use case.",
+        "run1_guideline_id": "T4",
+        "run1_short_name": "UseCase-Association-Actor",
+        "run2_guideline_id": "T3",
+        "run2_short_name": "Actor-Association-UseCase",
+        "run3_guideline_id": "T3",
+        "run3_short_name": "Actor-Association-UseCase",
+        "similarity_score": 0.9,
+        "base_assignment": "associations use cases - actors",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C5",
+        "canonical_description": "An Include relationship represents the inclusion of behaviors described by another use case.",
+        "run1_guideline_id": "T5",
+        "run1_short_name": "UseCase-Include-UseCase",
+        "run2_guideline_id": "T4",
+        "run2_short_name": "UseCase-Includes-UseCase",
+        "run3_guideline_id": "T5",
+        "run3_short_name": "UseCase-Include-UseCase",
+        "similarity_score": 0.9,
+        "base_assignment": "<<include>> dependencies",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C6",
+        "canonical_description": "An Extend relationship specifies optional extension of a use case's behavior.",
+        "run1_guideline_id": "T6",
+        "run1_short_name": "UseCase-Extend-UseCase",
+        "run2_guideline_id": "T5",
+        "run2_short_name": "UseCase-Extends-UseCase",
+        "run3_guideline_id": "T4",
+        "run3_short_name": "UseCase-Extend-UseCase",
+        "similarity_score": 0.9,
+        "base_assignment": "<<extends>> dependencies",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C7",
+        "canonical_description": "Generalization shows that one use case is a specialization or inherits behavior from another.",
+        "run1_guideline_id": "T7",
+        "run1_short_name": "UseCase-Generalization-UseCase",
+        "run2_guideline_id": "T6",
+        "run2_short_name": "UseCase-Generalization-UseCase",
+        "run3_guideline_id": null,
+        "run3_short_name": null,
+        "similarity_score": 0.8,
+        "base_assignment": "inheritance between use cases",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C8",
+        "canonical_description": "A Subsystem acts as a grouping mechanism for use cases, representing a module or collection.",
+        "run1_guideline_id": null,
+        "run1_short_name": null,
+        "run2_guideline_id": "T7",
+        "run2_short_name": "Subsystem",
+        "run3_guideline_id": null,
+        "run3_short_name": null,
+        "similarity_score": 0.5,
+        "base_assignment": null,
+        "match_confidence": "None"
+      },
+      {
+        "cluster_id": "C9",
+        "canonical_description": "A Containment relationship groups use cases within a subsystem, indicating which are part of it.",
+        "run1_guideline_id": null,
+        "run1_short_name": null,
+        "run2_guideline_id": "T8",
+        "run2_short_name": "Subsystem-Containment-UseCase",
+        "run3_guideline_id": null,
+        "run3_short_name": null,
+        "similarity_score": 0.5,
+        "base_assignment": null,
+        "match_confidence": "None"
+      }
+    ]
+  },
+  "metrics": {
+    "skill_version": "1.0.0",
+    "overall_agreement": 0.7778,
+    "per_run_metrics": [
+      {
+        "run": 1,
+        "true_positives": 7,
+        "false_positives": 0,
+        "false_negatives": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      {
+        "run": 2,
+        "true_positives": 6,
+        "false_positives": 2,
+        "false_negatives": 1,
+        "precision": 0.75,
+        "recall": 0.8571,
+        "f1": 0.8
+      },
+      {
+        "run": 3,
+        "true_positives": 6,
+        "false_positives": 0,
+        "false_negatives": 1,
+        "precision": 1.0,
+        "recall": 0.8571,
+        "f1": 0.9231
+      }
+    ],
+    "reachable_base_count": 7
+  },
+  "best_run_index": 0,
+  "best_template": {
+    "skill_version": "1.1.0",
+    "language_name": "UML Use Case Diagram",
+    "guidelines": [
+      {
+        "id": "T1",
+        "short_name": "Actor",
+        "fragment_description": "An Actor represents a role played by a user or any other system that interacts with the subject.",
+        "involved_constructs": "Actor"
+      },
+      {
+        "id": "T2",
+        "short_name": "UseCase",
+        "fragment_description": "A Use Case represents a specific way of using a system by an actor. It is a list of actions or event steps.",
+        "involved_constructs": "Use Case"
+      },
+      {
+        "id": "T3",
+        "short_name": "SystemBoundary",
+        "fragment_description": "A System Boundary is used to define the scope of a system and to show the system as a separate entity within the use case diagram.",
+        "involved_constructs": "System Boundary"
+      },
+      {
+        "id": "T4",
+        "short_name": "UseCase-Association-Actor",
+        "fragment_description": "An association between an Actor and a Use Case represents the interaction between them.",
+        "involved_constructs": "Use Case | Association | Actor"
+      },
+      {
+        "id": "T5",
+        "short_name": "UseCase-Include-UseCase",
+        "fragment_description": "An Include relationship in UML represents the inclusion of the behavior described by another use case.",
+        "involved_constructs": "Use Case | Include | Use Case"
+      },
+      {
+        "id": "T6",
+        "short_name": "UseCase-Extend-UseCase",
+        "fragment_description": "An Extend relationship in UML is a directed relationship specifying how the behavior of a use case can be extended.",
+        "involved_constructs": "Use Case | Extend | Use Case"
+      },
+      {
+        "id": "T7",
+        "short_name": "UseCase-Generalization-UseCase",
+        "fragment_description": "Generalization in UML is used to show that one use case is a specialization of another.",
+        "involved_constructs": "Use Case | Generalization | Use Case"
+      }
+    ],
+    "agent1_capabilities": [
+      "What is the role of an Actor in UML Use Case Diagrams?",
+      "How is an Association relationship represented in UML Use Case Diagrams?",
+      "What distinguishes an Include relationship from an Extend relationship in UML Use Case Diagrams?",
+      "How does Generalization function within UML Use Case Diagrams?",
+      "What significance does a System Boundary have in a Use Case Diagram?"
+    ]
+  }
+}

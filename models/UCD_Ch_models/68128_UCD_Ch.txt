@@ -1,0 +1,61 @@
+@startuml
+
+left to right direction
+
+rectangle "Cheers System" {
+    usecase UC1 as "Place Order"
+    usecase UC1a as "Regular Order"
+    usecase UC1b as "Urgent Order"
+    usecase UC2 as "View Wine Info"
+    usecase UC3a as "Unproductive Employees Report"
+    usecase UC3b as "Wine Recommendation Report"
+    usecase UC4 as "Manage Wines"
+    usecase UC4a as "Update Wine Details"
+    usecase UC5 as "Import Manufacturer and Wine Data"
+    usecase UC6 as "Export Inventory Report"
+    usecase UC7 as "Delivery"
+    usecase UC8 as "Prepare Order"
+
+    usecase UC9 as "Add Additional Customer to Order"
+    usecase UC10 as "Specify Delivery Time"
+    usecase UC11 as "Add Food Pairings"
+    usecase UC12 as "Add Occasion Recommendations"
+    usecase UC13 as "Link Wine to Type"
+}
+
+actor Customer
+actor "Sales Staff" as SalesStaff
+actor "Marketing Staff" as MarketingStaff
+actor "Gefen System" as GefenSystem
+actor "GalGalim" as GalGalim
+
+Customer --> UC2
+
+SalesStaff --> UC1
+SalesStaff --> UC1a
+SalesStaff --> UC1b
+SalesStaff --> UC2
+SalesStaff --> UC3a
+SalesStaff --> UC3b
+SalesStaff --> UC8
+
+MarketingStaff --> UC4
+MarketingStaff --> UC4a
+
+GefenSystem --> UC5
+GefenSystem --> UC6
+
+GalGalim --> UC7
+
+UC1 <|-.. UC1a : <<extend>>
+UC1 <|-.. UC1b : <<extend>>
+UC1 .> UC7 : <<include>>
+
+UC1a -.-> UC9 : <<extend>>
+UC1b -.-> UC10 : <<extend>>
+
+UC4 -.-> UC11 : <<extend>>
+UC4 -.-> UC12 : <<extend>>
+UC4 -.-> UC13 : <<include>>
+
+@enduml

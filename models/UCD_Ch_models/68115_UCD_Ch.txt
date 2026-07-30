@@ -1,0 +1,111 @@
+@startuml
+!define ACTOR_COLOR #66CCCC
+!define USECASE_COLOR #99CCFF
+left to right direction
+
+actor "Sales Employee" as salesEmployee << (A,ACTOR_COLOR) >>
+actor "Marketing Employee" as marketingEmployee << (A,ACTOR_COLOR) >>
+actor "Gefen System" as gefenSystem << (A,ACTOR_COLOR) >>
+actor "Admin" as admin << (A,ACTOR_COLOR) >>
+actor "Customer" as customer << (A,ACTOR_COLOR) >>
+
+usecase "Place Order" as placeOrder << (U,USECASE_COLOR) >>
+usecase "Validate Order Details" as validateOrderDetails << (U,USECASE_COLOR) >>
+usecase "Assign Employee to Order" as assignEmployeeToOrder << (U,USECASE_COLOR) >>
+usecase "Process Urgent Order" as processUrgentOrder << (U,USECASE_COLOR) >>
+usecase "Process Regular Order" as processRegularOrder << (U,USECASE_COLOR) >>
+usecase "Manage Joint Orders" as manageJointOrders << (U,USECASE_COLOR) >>
+
+usecase "Update Wine Information" as updateWineInformation << (U,USECASE_COLOR) >>
+usecase "Update Product Images" as updateProductImages << (U,USECASE_COLOR) >>
+usecase "Link Wines to Types" as linkWinesToTypes << (U,USECASE_COLOR) >>
+
+usecase "Manage Wine Types" as manageWineTypes << (U,USECASE_COLOR) >>
+usecase "Define Pairings" as definePairings << (U,USECASE_COLOR) >>
+usecase "Recommend Occasions" as recommendOccasions << (U,USECASE_COLOR) >>
+
+usecase "Manage Storage Locations" as manageStorageLocations << (U,USECASE_COLOR) >>
+usecase "Validate Stock Levels" as validateStockLevels << (U,USECASE_COLOR) >>
+
+usecase "Import Manufacturer Data" as importManufacturerData << (U,USECASE_COLOR) >>
+usecase "Validate XML Data" as validateXmlData << (U,USECASE_COLOR) >>
+usecase "Update Manufacturer Records" as updateManufacturerRecords << (U,USECASE_COLOR) >>
+
+usecase "Export Inventory Data" as exportInventoryData << (U,USECASE_COLOR) >>
+
+usecase "Track Inventory" as trackInventory << (U,USECASE_COLOR) >>
+usecase "Log Sale Transactions" as logSaleTransactions << (U,USECASE_COLOR) >>
+usecase "Report Low Stock" as reportLowStock << (U,USECASE_COLOR) >>
+
+usecase "Generate Unproductive Employee Report" as generateUnproductiveEmployeeReport << (U,USECASE_COLOR) >>
+usecase "Filter Orders by Type" as filterOrdersByType << (U,USECASE_COLOR) >>
+usecase "Sort by Total Orders" as sortByTotalOrders << (U,USECASE_COLOR) >>
+usecase "Include Employees Without Orders" as includeEmployeesWithoutOrders << (U,USECASE_COLOR) >>
+
+usecase "Generate Wine Recommendation Report" as generateWineRecommendationReport << (U,USECASE_COLOR) >>
+usecase "Match Preferences with Inventory" as matchPreferencesWithInventory << (U,USECASE_COLOR) >>
+usecase "Sort by Availability" as sortByAvailability << (U,USECASE_COLOR) >>
+
+usecase "View Orders" as viewOrders << (U,USECASE_COLOR) >>
+usecase "Filter by Status" as filterByStatus << (U,USECASE_COLOR) >>
+usecase "Search by Customer" as searchByCustomer << (U,USECASE_COLOR) >>
+
+usecase "Cancel or Suspend Order" as cancelOrSuspendOrder << (U,USECASE_COLOR) >>
+usecase "Archive Orders" as archiveOrders << (U,USECASE_COLOR) >>
+usecase "Collect Customer Feedback" as collectCustomerFeedback << (U,USECASE_COLOR) >>
+usecase "Update Customer Information" as updateCustomerInformation << (U,USECASE_COLOR) >>
+
+usecase "Manage Users and Permissions" as manageUsersAndPermissions << (U,USECASE_COLOR) >>
+usecase "Add/Remove Users" as addRemoveUsers << (U,USECASE_COLOR) >>
+usecase "Assign Roles" as assignRoles << (U,USECASE_COLOR) >>
+
+salesEmployee -->> placeOrder
+salesEmployee -->> generateUnproductiveEmployeeReport
+salesEmployee -->> generateWineRecommendationReport
+salesEmployee -->> viewOrders
+salesEmployee -->> collectCustomerFeedback
+salesEmployee -->> updateCustomerInformation
+salesEmployee -->> trackInventory
+
+marketingEmployee -->> updateWineInformation
+marketingEmployee -->> manageWineTypes
+marketingEmployee -->> trackInventory
+
+gefenSystem -->> importManufacturerData
+gefenSystem -->> exportInventoryData
+gefenSystem -->> validateXmlData
+gefenSystem -->> updateManufacturerRecords
+
+admin -->> manageUsersAndPermissions
+admin -->> addRemoveUsers
+admin -->> assignRoles
+
+placeOrder -->> validateOrderDetails : <<includes>>
+placeOrder -->> assignEmployeeToOrder : <<includes>>
+placeOrder -->> processUrgentOrder : <<extends>>
+placeOrder -->> processRegularOrder : <<extends>>
+placeOrder -->> validateStockLevels : <<includes>>
+placeOrder -->> cancelOrSuspendOrder : <<extends>>
+placeOrder -->> manageJointOrders : <<extends>>
+
+updateWineInformation -->> updateProductImages : <<includes>>
+updateWineInformation -->> linkWinesToTypes : <<includes>>
+
+manageWineTypes -->> definePairings : <<includes>>
+manageWineTypes -->> recommendOccasions : <<includes>>
+
+trackInventory -->> logSaleTransactions : <<includes>>
+trackInventory -->> reportLowStock : <<includes>>
+trackInventory -->> manageStorageLocations : <<includes>>
+
+generateUnproductiveEmployeeReport -->> filterOrdersByType : <<includes>>
+generateUnproductiveEmployeeReport -->> sortByTotalOrders : <<includes>>
+generateUnproductiveEmployeeReport -->> includeEmployeesWithoutOrders : <<extends>>
+
+generateWineRecommendationReport -->> matchPreferencesWithInventory : <<includes>>
+generateWineRecommendationReport -->> sortByAvailability : <<includes>>
+
+viewOrders -->> filterByStatus : <<includes>>
+viewOrders -->> searchByCustomer : <<includes>>
+viewOrders -->> archiveOrders : <<includes>>
+@enduml

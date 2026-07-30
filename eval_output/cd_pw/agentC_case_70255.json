@@ -1,0 +1,306 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70255",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class contains attributes for a unique number, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class includes an attribute for tracking the available spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between the Client class and the Vehicle class ensuring each vehicle is linked to a client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class contains attributes for storing the start time and vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class includes an attribute for size, indicating accommodation suitability.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class has an attribute for maximum vehicle weight capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Conveyors are structurally associated with ParkingLot but not tracked at the session level.",
+      "compliance_status": "Satisfied",
+      "notes": "The diagram shows that conveyors are associated with parking lots but not directly linked to parking sessions, suggesting they are not tracked per session."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Each ParkingLot is associated with a PriceList, which has pricing details for different durations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The ClubMember class suggests the management of a client club.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The ClubMember class represents a specialized form of Client, implying club benefits such as discounts, but lacks explicit attributes for discount rates.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While ClubMember suggests club-specific features, there are no explicit attributes that define discounts. The implication meets some aspects of the requirement but lacks explicit detail."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "There is a mention in the description indicating the first session is free but lacks supporting attributes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The club feature is shown through ClubMember, but the free parking for the first session within the registration month is not explicitly supported by attributes."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The Administrator can trigger reports, including an annual summary report of incomes as indicated in the operations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Annual reports include parking lot details and payment data, and indirectly mention counting vehicles.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The ParkWiseSystem is capable of generating reports, which suggests it can process vehicle color counts but lacks explicit methods or attributes detailing this."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "No explicit ordering mechanism for reports is stated, but report generation capabilities are implied.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "There is no direct evidence of ordering reports by city and total amounts, but the system's report generation implicitly requires sorted outputs."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The report generation formats are stated to be in PDF and XML.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Monthly club member growth reporting is suggested through report generation functionality.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Monthly reporting includes new members and growth, loosely indicated by generation operations but not detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "ParkWiseSystem can generate a Customer Club Growth Report, but details of the calculations or attribute storage are not evident."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Ascending monthly order in reporting isn’t explicitly defined in operations, only implied through chronological ordering.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Although monthly reporting is implied through chronological ordering of data, no explicit mechanism for month-based ordering is present in attributes."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G7",
+      "evidence": "The diagram shows that conveyors are associated with parking lots but not directly linked to parking sessions, suggesting they are not tracked per session.",
+      "compliance_status": "Satisfied",
+      "notes": "The current class model suggests that conveyors are components of parking lots and not tied to any specific vehicle during a parking session, which aligns with the requirement."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The ClubMember class represents a specialized form of Client, implying club benefits such as discounts, but lacks explicit attributes for discount rates.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While ClubMember suggests club-specific features, there are no explicit attributes that define discounts. The implication meets some aspects of the requirement but lacks explicit detail."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The club feature is shown through ClubMember, but the free parking for the first session within the registration month is not explicitly supported by attributes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The diagram hints that ClubMember could have additional benefits like free sessions, but this is not explicitly indicated in its attributes or associated operations."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The ParkWiseSystem is capable of generating reports, which suggests it can process vehicle color counts but lacks explicit methods or attributes detailing this.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The operation to generate reports is present, but the specific counting of vehicles by color is not overtly described in a method or attribute."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "There is no direct evidence of ordering reports by city and total amounts, but the system's report generation implicitly requires sorted outputs.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Ordering mechanisms are expected capabilities in report objects but are absent explicitly in the model's provided operations or methods."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "ParkWiseSystem can generate a Customer Club Growth Report, but details of the calculations or attribute storage are not evident.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model provides for generating reports including monthly growth information, but specifics regarding cumulative totals and growth percentages are absent."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Although monthly reporting is implied through chronological ordering of data, no explicit mechanism for month-based ordering is present in attributes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While report creation suggests ordered data, an explicit mechanism for month-based order is missing, likely contained within report handling processes."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "Abstract class System with a systemVersion attribute and login operation.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This provides an abstract class that can be extended. It structures system-related operations, adding clarity to system architecture beyond the provided guidelines."
+    },
+    {
+      "fragment": "LotSelectionAudit has a selectionDate attribute.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This class and attribute could be used to support audit trails for parking lot selections, adding depth to client-lot interactions. This is beneficial even if not explicitly detailed in the guidelines."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Abstract class System with a systemVersion attribute and login operation.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "LotSelectionAudit has a selectionDate attribute.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 15.5,
+  "max_score": 18.0,
+  "score_pct": 86.1,
+  "overall_assessment": "The case model demonstrates strong compliance with most guidelines, excelling in defined classes and attributes, with minor gaps in explicit detailing for some requirements."
+}

@@ -1,0 +1,109 @@
+Use Case Diagram - PlantUML:
+
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Client" as Client
+actor "Club Member" as ClubMember
+actor "Gate Sensor" as GS
+actor "Conveyors' Controller" as CC
+actor "Payment Gateway" as PG
+actor "Administrator" as Admin
+actor "Integrated Rate Service" as IRS
+
+ClubMember -|> Client
+
+package "ParkWise System" {
+
+    usecase "Access System" as UC1
+    usecase "Provide Required Details" as UC2
+    usecase "View Parking Details via UI system" as UC8
+    usecase "End Parking Session" as UC9
+    usecase "Pay via System UI" as UC29
+    usecase "Request Receipt" as UC12
+    usecase "Register for Club" as UC13
+    usecase "Select Preferred Parking Lots" as UC15
+    usecase "Generate Annual Summary Report" as UC16
+    usecase "Generate Customer Club Growth Report" as UC17
+    usecase "Update Details" as UC18
+    usecase "Import Price Lists" as UC19
+    usecase "Open Exit Gate" as UC20
+
+    ' Payment sub-use cases with extension point inside oval
+    usecase "Handle Payment Approval\n-------------------\nExtension points:\nClient requests receipt" as UC11
+    usecase "Handle Calculation Parking Fee" as UC30
+
+    ' Conveyor use cases
+    usecase "Assign Nearest Vacant Space" as UC21
+    usecase "Handle Parking Completion & Conveyor Location update" as UC22
+    usecase "Handle sending Parking Details SMS" as UC23
+    usecase "Handle Retrieve Parked Vehicle" as UC24
+
+    ' Gate Sensor use cases with extension point inside oval
+    usecase "Handle Vehicle Arrival" as UC25
+    usecase "Update Available Parking Space" as UC26
+    usecase "Authorize Vehicle Entry\n-------------------\nExtension points:\nthe gate is not open" as UC27
+    usecase "Handle Vehicle Departure" as UC28
+
+    ' New End Parking sub-use case
+    usecase "Handle validate Vehicle or Phone Number" as UC31
+}
+
+' Client interactions
+Client --> UC1
+Client --> UC8
+Client --> UC9
+Client --> UC13
+Client --> UC12
+
+' Club Member interactions
+ClubMember --> UC15
+
+' Administrator interactions
+Admin --> UC16
+Admin --> UC17
+Admin --> UC18
+
+' Gate Sensor interactions
+GS --> UC25
+GS --> UC28
+
+' Conveyors' Controller interactions
+CC --> UC21
+CC --> UC22
+CC --> UC24
+' Removed CC --> UC23 link
+
+' Payment interactions
+IRS --> UC19
+PG --> UC11
+
+' System internal use cases with dashed lines and <<include>>
+UC1 ..> UC2 : <<include>>
+
+' Conveyor internal
+UC22 ..> UC23 : <<include>>
+
+' Gate Sensor internal
+UC25 ..> UC26 : <<include>>
+UC25 ..> UC27 : <<include>>
+UC28 ..> UC26 : <<include>>
+
+' End Parking Session internal
+UC9 ..> UC29 : <<include>>
+UC9 ..> UC24 : <<include>>
+UC9 ..> UC31 : <<include>>
+
+' Payment flow
+UC29 ..> UC30 : <<include>>
+UC29 ..> UC11 : <<include>>
+UC30 ..> UC19 : <<include>>
+
+' Process Payment includes Open Exit Gate
+UC11 ..> UC20 : <<include>>
+
+' Extend relationships as dashed lines with <<extends>>
+UC1 ..> UC27 : <<extends>>
+UC12 ..> UC11 : <<extends>>
+@enduml

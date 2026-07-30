@@ -1,0 +1,62 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Use Case Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Actor",
+      "fragment_description": "An actor represents a role that interacts with the use case within the system.",
+      "involved_constructs": "Actor"
+    },
+    {
+      "id": "T2",
+      "short_name": "UseCase",
+      "fragment_description": "A use case represents a functional requirement of the system, defining interactions between an actor and the system.",
+      "involved_constructs": "UseCase"
+    },
+    {
+      "id": "T3",
+      "short_name": "Actor-Association-UseCase",
+      "fragment_description": "An association between an actor and a use case demonstrates that the actor participates in the use case.",
+      "involved_constructs": "Actor | Association | UseCase"
+    },
+    {
+      "id": "T4",
+      "short_name": "UseCase-Include-UseCase",
+      "fragment_description": "An include relationship between two use cases indicates that behavior of the included use case is inserted into the base use case.",
+      "involved_constructs": "UseCase | Include | UseCase"
+    },
+    {
+      "id": "T5",
+      "short_name": "UseCase-Extend-UseCase",
+      "fragment_description": "An extend relationship implies that the behavior of the extending use case can be inserted into the base use case under certain conditions.",
+      "involved_constructs": "UseCase | Extend | UseCase"
+    },
+    {
+      "id": "T6",
+      "short_name": "UseCase-Generalization-UseCase",
+      "fragment_description": "A generalization relationship between use cases where the child use case inherits the behavior and meaning of the parent use case.",
+      "involved_constructs": "UseCase | Generalization | UseCase"
+    },
+    {
+      "id": "T7",
+      "short_name": "Actor-Generalization-Actor",
+      "fragment_description": "A generalization relationship between actors where the child actor role inherits the behavior and responsibility of the parent actor role.",
+      "involved_constructs": "Actor | Generalization | Actor"
+    },
+    {
+      "id": "T8",
+      "short_name": "SystemBoundary",
+      "fragment_description": "A system boundary defines the scope of the system for the use case under consideration.",
+      "involved_constructs": "SystemBoundary"
+    }
+  ],
+  "agent1_capabilities": [
+    "What is the role of an actor in a UML Use Case Diagram?",
+    "How does an include relationship affect two use cases?",
+    "Can a use case have multiple actors associated with it?",
+    "What does an extend relationship signify between use cases?",
+    "How is a system boundary represented and what is its purpose?",
+    "Describe the generalization relationship between actors."
+  ]
+}

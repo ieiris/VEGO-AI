@@ -1,0 +1,423 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68097",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The 'CheersSystem' class aggregates entities like Employee, Customer, and Order, which indicates it manages business operations such as inventory, customer management, and order processing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The association between SalesStaff and Order shows that sales staff are responsible for placing orders, as each order is linked to a specific SalesStaff.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The Order class contains attributes such as order number, date, current status, shipment date, and there is an association with SalesStaff providing employee details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no specific mention of the 'GalGalim' external company or the handling of deliveries outside the system.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "RegularOrder contains a map tracking wines and quantities ordered by each customer, reflecting joint orders to minimize delivery costs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Customer class includes attributes like ID, name, phone number, email, and first contact date, which covers the specified details for customers involved in orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The 'Person' specialization shows Employees can also be Customers, indicating they can place orders under the same conditions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The UrgentOrder class has a singular customer association, indicating it is processed by a single customer with priority.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder class includes attributes for priority level and expected delivery time, aligning with urgent order specifications.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The RegularOrder class allows multiple customer associations, accommodating combined wine selections.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The RegularOrder class tracks wine specifics by customer, meeting the requirement for tracking joint orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Customer attributes like ID, name, phone number, etc., are recorded for regular and urgent orders, as illustrated in the Customer class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingEmployee class includes operations for updating wine and wine types, indicating exclusive authorization.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesStaff operations include browsing available wines, confirming they can view wines when placing orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The Wine class identifies types by name and serial number, consistent with identification requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Wine class includes an enumeration of wine types and maps for food pairings, aligning with wine type details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "MarketingEmployee operations include recommending wine occasions, matching the guideline to provide occasion recommendations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "GefenSystem interactions with CheersSystem suggest data exchange but do not specifically mention XML data or purchase quantity updates.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Mentioned interaction without specific details of XML data receipt from Gefen."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class includes details like name, phone number, and email, but does not mention a unique automatic identifier.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Manufacturer details are present but lack unique identifier specification."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "The Wine class includes captured attributes such as name, description, production year, price per bottle, sweetness level, and image.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine is associated with Manufacturer and catalog number, meeting the distinction criteria mentioned.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingEmployee includes operations for updating WineType and details which align with wine linking responsibilities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "StorageLocation class with unique location ID and name, associated with wine storage.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Inventory class tracks quantities of wines and is linked to StorageLocation, consistent with tracking requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "CheersSystem includes operations to update inventory, satisfying the need for post-sale inventory updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "CheersSystem and SalesStaff generate relevant reports, including WineRecommendation and UnproductiveEmployee reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The current case model does not mention 'GalGalim' or an external company responsible for order delivery, nor does it include a dependency relationship indicating this arrangement. The absence of any reference to an external delivery management component within the UML diagram means no alternative fragment satisfies this guideline presently.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No evidence of the 'GalGalim' company or external handling of deliveries in the case model."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The GefenSystem class is shown to interact with the CheersSystem, which could involve data exchanges, but there is no detailed specification of XML data receipt or the processing of purchase quantity updates.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The interaction suggests potential for data exchange but lacks specificity regarding XML data and purchase quantities from Gefen."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "While the Manufacturer class includes relevant contact details, there is no mention of an automatic unique identifier within the provided attributes.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No evidence of an automatic identifier in Manufacturer class attributes within the case model."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The class Manufacturer is defined as a subclass of Person, capturing details like name, phone number, and email for wine manufacturers.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The Manufacturer class aligns with recording details about manufacturers of wines, consistent with business practices, although not directly cited in the guidelines."
+    },
+    {
+      "fragment": "The system interaction between GefenSystem and CheersSystem indicates XML data exchange, but lacks specificity about data content.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While it provides an abstraction of communication between the systems, it fits general data interaction needs even if XML data specifics aren't detailed."
+    },
+    {
+      "fragment": "\"trackWineByCustomer()\" operation in SalesStaff class is intended to track wines associated with customers.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This operation offers additional functionality for managing customer orders, which is practical for business operations."
+    },
+    {
+      "fragment": "The Inventory class is related to StorageLocation, indicating wine quantities are monitored per location.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This supports efficient inventory management by tracking available stock, a significant business aspect, though not explicitly detailed in guidelines."
+    },
+    {
+      "fragment": "GefenSystem and CheersSystem interaction lacks referenced guideline details about handling wine producers' updates apart from exchange mentions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The interaction is justifiably modeled to indicate system communication, albeit without guideline-level details."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The class Manufacturer is defined as a subclass of Person, capturing details like name, phone number, and email for wine manufacturers.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The system interaction between GefenSystem and CheersSystem indicates XML data exchange, but lacks specificity about data content.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "\"trackWineByCustomer()\" operation in SalesStaff class is intended to track wines associated with customers.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Inventory class is related to StorageLocation, indicating wine quantities are monitored per location.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "GefenSystem and CheersSystem interaction lacks referenced guideline details about handling wine producers' updates apart from exchange mentions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 25.5,
+  "max_score": 26.0,
+  "score_pct": 98.1,
+  "overall_assessment": "The case model demonstrates strong compliance with domain guidelines, with most guidelines fully satisfied and only a few areas needing further detail."
+}

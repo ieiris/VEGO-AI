@@ -1,0 +1,76 @@
+@startuml
+left to right direction
+
+actor "Client" as Client
+actor "Club Member" as ClubMember
+actor "Administrator" as Admin
+actor "Gate Sensor" as GS
+actor "Conveyors Controller" as CC
+actor "Integrated Rate Service" as IRS
+actor "Payment Gateway" as PG
+
+Client <|-- ClubMember
+
+rectangle "ParkWise System" {
+
+  usecase "Enter Parking Lot" as UC_Enter
+  usecase "Identify Vehicle at Gate" as UC_IdentifyGate
+  usecase "Register Client and Vehicle" as UC_Register
+  usecase "Control Gate Barrier" as UC_GateControl
+
+  usecase "Scan Vehicle Number" as UC_Scan
+  usecase "Assign Conveyor" as UC_Assign
+  usecase "Request Parking Space Optimization" as UC_Optimize
+  usecase "Update Parking Completion" as UC_ParkingDone
+
+  usecase "View Parking Details" as UC_ViewParking
+
+  usecase "End Parking Session" as UC_End
+  usecase "Process Payment" as UC_Payment
+  usecase "Retrieve Vehicle to Gate" as UC_Retrieve
+  usecase "Issue Receipt" as UC_Receipt
+  usecase "Apply Club Discount" as UC_ClubDiscount
+
+  usecase "Register to Clients Club" as UC_ClubRegister
+  usecase "Manage Preferred Parking Lots" as UC_ClubPrefs
+
+  usecase "Maintain Parking Lot Data" as UC_MaintainLots
+  usecase "Update Price Lists from IRS" as UC_UpdatePrices
+  usecase "Generate Annual Summary Report" as UC_AnnualReport
+  usecase "Generate Customer Club Growth Report" as UC_ClubReport
+}
+
+Client --> UC_Enter
+Client --> UC_Register
+Client --> UC_ViewParking
+Client --> UC_End
+Client --> UC_Payment
+Client --> UC_ClubRegister
+Client --> UC_ClubPrefs
+Client --> UC_Receipt
+
+ClubMember --> UC_ClubDiscount
+
+UC_Payment --> UC_ClubDiscount : <<include>>
+
+Admin --> UC_MaintainLots
+Admin --> UC_UpdatePrices
+Admin --> UC_AnnualReport
+Admin --> UC_ClubReport
+
+GS --> UC_IdentifyGate
+GS --> UC_GateControl
+
+CC --> UC_Scan
+CC --> UC_Assign
+CC --> UC_Optimize
+CC --> UC_ParkingDone
+CC --> UC_Retrieve
+
+IRS --> UC_UpdatePrices
+
+PG --> UC_Payment
+
+UC_Receipt --> UC_Payment : <<extend>>
+
+@enduml

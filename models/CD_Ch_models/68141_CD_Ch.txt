@@ -1,0 +1,181 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Customer {
+    - customerID: String
+    - FirstName: String
+    - LastName: String
+    - phoneNumber: String
+    - deliveryAddress: String
+    - email: String
+    - dateOfFirstContact: Date
+    + placeOrder(order: Order): void
+    + viewOrderHistory(): List<Order>
+}
+
+abstract class Employee {
+    - EmployeeID: String
+    - FirstName: String
+    - LastName: String
+    - phoneNumber: String
+    - officeAddress: String
+    - email: String
+    - workStartDate: Date
+    - department: String // "sales" or "marketing"
+}
+
+class SalesEmployee {
+    + placeCustomerOrder(customer: Customer, order: Order): void
+    + viewWineCatalog(): List<Wine>
+    + generateReport(reportType: String): Report
+}
+
+class MarketingEmployee {
+    + updateWineInformation(wine: Wine): void
+    + recommendWineOccasions(wine: Wine): List<String>
+}
+
+class Order {
+    - orderID: String
+    - orderDate: Date
+    - currentStatus: String
+    - shipmentDate: Date
+    - orderType: String
+    - EmployeeID: String
+    + calculateTotalPrice(): float
+    + updateStatus(newStatus: String): void
+}
+class UrgentOrder {
+    - priorityLevel: int
+    - expectedDeliveryTime: Date
+}
+
+class Wine {
+    - wineID: String
+    - name: String
+    - description: String
+    - productionYear: int
+    - pricePerBottle: double
+    - sweetnessLevel: String 
+    - productImage: String
+    - wineTypeID: String
+    - manufacturerID: String
+    - catalog: String
+}
+
+class WineType {
+    - wineTypeID: String
+    - name: String
+    - season: String
+    - location: String
+}
+
+class Occasion {
+    - occasionID: String
+    - occasion: String
+}
+
+class FoodPairing {
+    - foodPairingID: String
+    - foodPairing: String
+}
+
+class RecipeLink {
+    - recipeLinkID: String
+    - recipeLink: String
+    - foodPairingID: String
+}
+
+class WineTypeOccasions {
+    - wineTypeID: String
+    - occasionID: String
+}
+
+class WineTypeFoodPairings {
+    - wineTypeID: String
+    - foodPairingID: String
+}
+
+
+class Manufacturer {
+    - manufacturerID: String
+    - fullName: String
+    - phoneNumber: String
+    - address: String
+    - email: String
+    + produceWine(wine: Wine): void
+    + updateContactInfo(phone: String, email: String): void
+}
+
+class Inventory {
+    - locationID: String
+    - wineID: String
+    - quantity: int
+    + updateStock(wine: Wine, quantity: int): void
+    + checkStock(wine: Wine): int
+}
+
+class StorageLocation {
+    - locationID: String
+    - locationName: String
+    - currentStock: int
+    - capacity: int
+}
+
+class Report {
+    - reportID: String
+    - type: String
+    - timePeriod: String
+    - data: String
+    - EmployeeID: String
+    + generateUnproductiveEmployeesReport(): String
+    + generateCurrentInventoryReport(): String
+    + generateWineRecommendationReport(): String
+}
+
+class OrderDetails {
+    - orderID: String
+    - wineID: String
+    - customerID: String
+    - quantity: int
+}
+
+class OrderCustomer {
+    - orderID: String
+    - customerID: String
+    - isMainCustomer: Boolean
+}
+
+WineType "1" o-- "0..*" WineTypeOccasions : has
+Occasion "1" o-- "0..*" WineTypeOccasions : is associated with
+
+WineType "1" o-- "0..*" WineTypeFoodPairings : has
+FoodPairing "1" o-- "0..*" WineTypeFoodPairings : is paired with
+
+FoodPairing "1" o-- "0..*" RecipeLink : has recipe
+
+Customer "1" o-- "0..*" Order : places
+
+Employee "1" -- "0..*" Order : processes / assignedTo
+
+Wine "1" -- "1" WineType : categorizedAs
+Wine --> Manufacturer : producedBy
+Wine "1" o-- "N" Inventory : storedIn
+
+Report "0..*" -- "1" Employee : generatedBy
+Report "1" -- "0..*" Inventory : tracks
+
+Order "1" *-- "N" OrderDetails : contains
+OrderDetails "N" -- "1" Wine : includes
+
+OrderDetails "N" -- "1" Customer : orderedBy
+OrderCustomer "N" -- "1" Customer : relatedTo
+OrderCustomer "N" -- "1" Order : partOf
+
+Inventory "N" o-- "1" StorageLocation : locatedIn
+
+Employee <|-- SalesEmployee
+Employee <|-- MarketingEmployee
+
+Order <|-- UrgentOrder
+@enduml

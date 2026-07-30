@@ -1,0 +1,324 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70283",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes attributes like a unique lot number, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "There is no attribute explicitly detailing available spaces in the ParkingLot class.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The association between Client and Vehicle ensures each vehicle is associated with exactly one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "ParkingSession class includes start time and vehicle details through an association with the Vehicle class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class has an attribute for size, specifying small, medium, or large.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class includes an attribute for maximum weight, representing vehicle transport capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The model indicates that the association between ParkingSession and Conveyor is optional, aligning with the guideline.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The rule of not storing this permanently at session's end could be clearer."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The PriceList class details various costs, and it's linked to ParkingLot, allowing distinct pricing per location.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The Client class has a subclass for ClubMember, indicating client club management.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "ClubMember has an operation for applying a discount, indicating an automatic discount for club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "No explicit attribute or logic is indicated for free parking for new members during the registration month.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "System class has a method to generate an Annual Summary Report.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "ParkingLot class includes methods to retrieve income and vehicle color report data for creating the Annual Summary Report.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The provided evidence does not specify ordering by city or amount.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The generation format of PDF and XML for reports isn't specified in the System's operations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "System class can generate a Customer Club Growth Report detailing monthly growth.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The report operation includes fields accommodating membership growth details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The order for the Customer Club Growth Report is implied by month field in the report.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit ordering is not clear in model."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class does not explicitly list available spaces as an attribute. This information isn't found elsewhere in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The requirement for tracking available spaces in each lot is unmet as no alternative evidence exists in the model."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The ClubMember class does not include any method or logic managing free parking for new members.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No part of the model indicates a mechanism for granting free parking to new club members during their registration month."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "There is no specification for ordering criteria in AnnualSummaryReport generation related to parking lot cities and total amounts.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model provides evidence for generating reports, but no explicit mechanism for applying the ordering criteria is present."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The operations for generating reports in various formats (PDF, XML) are not detailed within the ParkWiseSystem class or other relevant parts of the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The absence of format specifications for reports in operations indicates this guideline is not satisfied."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The Customer Club Growth Report does not explicitly indicate ordering by month, even though the growth data is captured.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the data is present, there is no explicit mechanism or operation ensuring the data is ordered by month in ascending order."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The ParkingLot class includes methods getDailyIncome and countOtherColorVehicles which are not part of the guideline requirements.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These methods provide additional functionality by offering utilities for financial data and vehicle reporting, which can support overall system operations."
+    },
+    {
+      "fragment": "The PreferredLotSelection class is included in the model, representing an association between Client and ParkingLot. This association stores selection dates.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Although relevant to the domain, PreferredLotSelection does not fit any specific guideline. Its inclusion might imply operation capabilities not accounted for, such as selection and storage, which guidelines specifically noted as unmet."
+    },
+    {
+      "fragment": "There is a VehiclePhoto class with attributes like photoID, licensePlate, and image, capturing photos from various views.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This class supplements data with visual vehicle evidence, likely improving data fidelity and vehicle authentication capabilities."
+    },
+    {
+      "fragment": "The Conveyor class includes attributes like conveyorID, lotNumber, floor, and coordinates, detailing its physical placement within the parking structure.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This additional detail aids in optimizing logistics within the parking infrastructure, though not explicitly required by guidelines."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The ParkingLot class includes methods getDailyIncome and countOtherColorVehicles which are not part of the guideline requirements.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The PreferredLotSelection class is included in the model, representing an association between Client and ParkingLot. This association stores selection dates.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "There is a VehiclePhoto class with attributes like photoID, licensePlate, and image, capturing photos from various views.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Conveyor class includes attributes like conveyorID, lotNumber, floor, and coordinates, detailing its physical placement within the parking structure.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 12.0,
+  "max_score": 18.0,
+  "score_pct": 66.7,
+  "overall_assessment": "The case model satisfies most guidelines but misses key compliance elements, affecting system alignment."
+}

@@ -1,0 +1,242 @@
+@startuml CheersWineTradingSystem
+
+'==================== 
+' Enumerations
+'====================
+
+enum CurrentStatus {
+  InProcess
+  Dispatched
+  Delivered
+  Paid
+  Suspended
+  Canceled
+}
+
+enum Season {
+  Spring
+  Summer
+  Autumn
+  Winter
+}
+
+enum SweetnessLevel {
+  Dry
+  SemiDry
+  SemiSweet
+  Sweet
+}
+
+enum PriorityLevel {
+  1
+  2
+  3
+  4
+  5
+}
+
+'====================
+' ImportExportManager
+'====================
+
+class ImportExportManager {
+  +importManufacturerDataFromGefen(): void
+  +importWineDataFromGefen(): void
+  +exportPurchaseDataToGefen(): void
+  +exportInventoryDataToGefen(): void
+}
+
+note "ImportExportManager handles monthly and weekly updates for: \n- Manufacturer data \n- Wine data \n- Stock data \n- Purchases" as NoteImportExportManager
+ImportExportManager -down-> NoteImportExportManager
+
+
+'==========================
+' People Classes
+'==========================
+
+abstract class Person {
+  -ID : int
+  -firstName : String
+  -lastName : String
+  -phoneNumber : String
+  -emailAddress : String
+  +viewCatalog(): void
+}
+
+class Customer {
+  -deliveryStreetAddress : String
+  -deliveryCity : String
+  -deliveryState : String
+  -deliveryZipCode : String
+  -dateOfContact : Date
+  +registerAsCustomer(): void
+  +viewOrderStatus(order: Order): String
+}
+
+class Manufacturer {
+  -manufacturerID : int
+  -manufacturerFirstName : String
+  -manufacturerLastName : String
+  -manufacturerPhoneNumber : String
+  -manufacturerEmail : String
+  -manufacturerStreetAddress : String
+  -manufacturerCity : String
+  -manufacturerState : String
+  -manufacturerZipCode : String
+}
+
+abstract class Employee {
+  -officeStreetAddress : String
+  -officeCity : String
+  -officeState : String
+  -officeZipCode : String
+  -workStartDate : Date
+  +viewOrders(): void
+}
+
+class SalesEmployee {
+  +addOrder(order:Order): void
+  +updateInventory(wineId:int, quantity:int, storageID:int): void
+  +updateOrderStatus(order:Order, status:CurrentStatus): void
+  +generateUnproductiveEmployeeReport(startDate:Date, endDate:Date): int
+  +generateWineRecommendationReport(dishName:String, occasion:String, wineType:String): List<Wine>
+  +joinCustomerToOrder(customerID:int, orderId:int, newOrderID:int): void
+  +checkInventory(wineID:int): int
+
+}
+
+class MarketingEmployee {
+  +updateWinePrice(wine:Wine, price:double) : void
+  +updateWinePicture(wine:Wine, image:String): void
+  +addFoodPairingss(wineType:WineType, pairing:FoodPairings): void
+  +updateWineRecommendation(wineTypeID:int, season:enum, occasion:String, drinkInDoor:boolean): void
+}
+
+(Customer, Employee) --|> Person : {complete, disjoint}
+(SalesEmployee, MarketingEmployee) --|> Employee : {complete, disjoint}
+
+'==========================
+' Orders
+'==========================
+
+class Order {
+  -orderID : int
+  -orderDate : Date
+  -currentStatus : CurrentStatus
+  -shipmentDate : Date
+  -employeeID : int
+  -urgent : boolean
+}
+
+
+class UrgentOrder {
+  -urgentOrderID : int
+  -priorityLevel : priorityLevel
+  -expectedDeliveryTime : DateTime
+}
+
+class CustomerWineSelection {
+  -customerID : int
+  -orderID : int
+  -wineID : int
+  -quantity : int
+}
+
+class JointCustomerOrder {
+  -customerID : int
+  -orderID : int
+  -isMainCustomer : boolean
+}
+
+Order <|-- UrgentOrder : {complete, disjoint}
+
+' Relationships for orders
+Order "1" <--* "1..*" CustomerWineSelection : consistsOf
+Customer "1" <--* "1..*" CustomerWineSelection : places
+JointCustomerOrder "0..*" -- "1..*" Order : includes
+JointCustomerOrder "0..*" -- "1" Customer : participates
+Order ..> CurrentStatus : hasStatus >
+UrgentOrder ..> PriorityLevel : hasPriority >
+
+'==========================
+' Wine and Food
+'==========================
+
+class Wine {
+  -wineID : int
+  -wineTypeID : int
+}
+
+
+
+class WineType {
+  -wineTypeID : int
+  -wineType : String
+}
+
+class Recommendation {
+  -wineTypeID : int
+  -season : Season
+  -occasion : String
+  -drinkInDoor : boolean
+}
+
+class FoodPairings {
+  -wineTypeID : int
+  -dishID : int
+}
+
+class Dishes {
+  -dishID : int
+  -dishName : String
+}
+
+class Recipes {
+  -recipeID : int
+  -dishID : int
+  -recipeURL : String
+}
+
+class ManufacturedBy {
+  -manufacturerID : int
+  -wineID : int
+  -wineName : String
+  -description : String
+  -productionYear : int
+  -price : double
+  -sweetnessLevel : SweetnessLevel
+  -productImage : String
+}
+
+class StoredIn {
+  -wineID : int
+  -storageID : int
+  -stockQuantity : int
+}
+
+
+class Storage {
+  -storageID : int
+  -name : String
+  -address : String
+  +checkStock(wineID:int): int
+}
+
+
+' Relationships for wine and food
+Manufacturer "1" --o "0..*" Wine
+(Manufacturer, Wine) .. ManufacturedBy
+Wine "1" o--> "1" WineType : categorizedAs
+WineType "1" <--* "0..1" Recommendation : recommendedFor
+FoodPairings "1..*" *--> "1" WineType : hasWineType
+Dishes "1" <--o "0..*" FoodPairings : hasDishes
+Dishes "1" <--* "0..5*" Recipes : hasRecipes
+Recommendation ..> Season : recommendedIn >
+Recommendation ..> SweetnessLevel : hasSweetness >
+Storage "0..*" -- "1..*" Wine : storedIn
+(Storage, Wine) .. StoredIn
+CustomerWineSelection "0..*" o--> "1" Wine : includes
+
+
+
+@enduml

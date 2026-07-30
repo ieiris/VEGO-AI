@@ -1,0 +1,148 @@
+@startuml
+abstract class Employee {
++ID: String
++name: String
++phoneNumber: String
++officeAddress: String
++email: String
++employmentStartDate: Date
+}
+
+class SalesStaff extends Employee {
++generateUnproductiveEmployeesReport(startDate: Date, endDate: Date)
++placeOrder(o: Order)
+}
+
+class MarketingEmployee extends Employee {
++updateWineInformation(w: Wine)
++recommendWineOccasions(wt: WineType)
+}
+
+class Customer {
++ID: String
++name: String
++phoneNumber: String
++deliveryAddress: String
++email: String
++dateFirstContact: Date
++placeOrder(o: Order)
+}
+
+abstract class Order {
++orderNumber: String
++orderDate: Date
++status: OrderStatus
++shipmentDate: Date
++assignSalesStaff(s: SalesStaff)
++addWine(w: Wine, quantity: Int)
++assignEmployee(e: Employee)
+}
+
+class RegularOrder extends Order {
++mainCustomerID: String
++joinedCustomer: List<Customer>
+}
+
+class UrgentOrder extends Order {
++priorityLevel: PriorityLevel
++expectedDeliveryTime: Date
+}
+
+class Wine {
++name: String
++serialNumber: String
++pricePerBottle: Double
++sweetnessLevel: SweetnessLevel
++productionYear: Int
++productImage: String
+}
+
+class WineType {
++name: String
++foodPairings: List<String>
++recipeURLs: List<String>
++suitableOccasions: List<Occasion>
++season: Season
++location: Location
+}
+
+class Occasion {
++ID: String
++name: String
++description: String
+}
+
+class Manufacturer {
++ID: String
++fullName: String
++phoneNumber: String
++address: String
++email: String
+}
+
+class StorageLocation {
++locationID: String
++name: String
++inventory: Map<String, Int> ' wineID and quantity
+}
+
+enum OrderStatus {
+InProcess
+Dispatched
+Delivered
+Paid
+Suspended
+Canceled
+}
+
+enum SweetnessLevel {
+Dry
+SemiDry
+SemiSweet
+Sweet
+}
+
+enum Season {
+Winter
+Spring
+Summer
+Fall
+}
+
+enum Location {
+Indoor
+Outdoor
+}
+
+enum PriorityLevel {
+1
+2
+3
+4
+5
+}
+
+
+Customer "0..*" -- "1" RegularOrder : places
+Customer "0..*" -- "1" UrgentOrder : places
+
+' Add link between Employee and Order
+Employee "1" -- "0..*" Order : manages
+
+SalesStaff "0.." -- "0.." Order : manages
+Wine "0..*" -- "1" WineType : categorizedBy
+Wine "1" -- "1" Manufacturer : producedBy
+Wine "0.." -- "0.." StorageLocation : storedAt
+
+Order "0.." -- "0.." Wine : includes
+Order --|> OrderStatus : "status"
+Wine --|> SweetnessLevel : "sweetnessLevel"
+
+' Removed Inventory class
+WineType --> Occasion : "suitableOccasions"
+WineType --> Season : "season"
+WineType --> Location : "location"
+
+UrgentOrder --> PriorityLevel : "priorityLevel"
+@enduml 
+

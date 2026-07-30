@@ -1,0 +1,315 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70277",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes a unique number, name, address, and city as attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class has an attribute for available spaces to track parking lot capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "In the case model, the Client class is associated with the Vehicle class, ensuring each vehicle is owned by one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class contains attributes for start time and vehicle, capturing session information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class defines the size attribute indicating accommodation for different vehicle sizes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class includes a maxWeightKg attribute representing the maximum vehicle weight it can transport.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "ParkingSession class relationship indicates that conveyor handling is temporary and not necessary at session end.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The ParkingLot class has a relationship with PriceList, reflecting adoption of variable pricing lists.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Client class includes attributes related to club membership, managing membership details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Client class has a fixedDiscountPercentage attribute that applies a consistent discount for club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "Model specifies that in registration month, club members may be eligible for a free parking session.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Administrator class is defined with methods to generate reports, including annual report detailing incomes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Administrator class generates reports listing parking lot details and incomes, including vehicles by color.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Report ordering by city and income is supported by an operation in the Administrator class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The requirement to generate reports in PDF and XML formats is mentioned in the report generation method.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The explicit mention of PDF and XML formats is absent, though report generation functionality is present."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Administrator class includes a method to generate customer club growth report detailing member statistics.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Contents such as new members and growth are captured in the report method of the Administrator class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Report ordering by month ascending order is implied through the reports in the Administrator class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G15",
+      "evidence": "The Administrator class is specified to generate reports, but the explicit formats PDF and XML are not mentioned. The Administrator class methods focus on the types of reports and contents rather than formats.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The functionality for generating reports is present, but specific reference to generation in PDF and XML formats is absent in the case model. Given that the function exists without format specifics, it can be seen as partially satisfying the guideline."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The Administrator class includes methods for generating reports: generateAnnualSummaryReport, generateCustomerClubGrowthReport, but it is not explicitly mentioned that these reports need to be in PDF and XML formats.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The guidelines emphasize that reports should be generated in PDF and XML formats, and this specific requirement is missing in the model."
+    },
+    {
+      "fragment": "The Client class operation 'registerToClub' suggests an association with the club membership process, but lacks explicit modeling of this process.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While not explicitly required, this operation might represent a valid extension of the domain to capture registration logic."
+    },
+    {
+      "fragment": "There is no explicit representation of the gate sensor involvement in vehicle arrival and departure data transmission.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "The guidelines specify the use of a gate sensor for vehicle detection essential to operations, and its absence is a significant domain gap."
+    },
+    {
+      "fragment": "The Client class method 'selectPreferredLot' indicates a potential preference selection process but does not include functionality to store selection dates as required by guidelines.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Guidelines require storage of selection dates for audit, and this aspect is missing, which could impact compliance."
+    },
+    {
+      "fragment": "The PaymentDetails class attribute 'status' is a String, while the guidelines specify it should use an enumeration to represent status (e.g., PENDING, APPROVED, DECLINED).",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "reason": "The model uses a basic data type where an enumeration would provide clarity and prevent errors in status assignment."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Potential found aligns with existing mapping."
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The Administrator class includes methods for generating reports: generateAnnualSummaryReport, generateCustomerClubGrowthReport, but it is not explicitly mentioned that these reports need to be in PDF and XML formats.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The Client class operation 'registerToClub' suggests an association with the club membership process, but lacks explicit modeling of this process.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "There is no explicit representation of the gate sensor involvement in vehicle arrival and departure data transmission.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Client class method 'selectPreferredLot' indicates a potential preference selection process but does not include functionality to store selection dates as required by guidelines.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The PaymentDetails class attribute 'status' is a String, while the guidelines specify it should use an enumeration to represent status (e.g., PENDING, APPROVED, DECLINED).",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "base_score": -0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": -0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 13.5,
+  "max_score": 18.0,
+  "score_pct": 75.0,
+  "overall_assessment": "The case model satisfies a majority of the guidelines but has notable domain and language errors that need addressing for full compliance."
+}

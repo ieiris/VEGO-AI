@@ -1,0 +1,49 @@
+@startuml
+package "Cheers System" as CheersSystem {
+    (Place Order)
+    (Unproductive Report)
+    (Recommend)
+    (Regular Order)
+    (Joint)
+    (Track)
+    (Urgent Order)
+    (Exp Time Deliv)
+    (Priority Level)
+    (Assign to Emp)
+    (Recieve XML)
+    (Link Wines)
+    (Price Image)
+    (Sends JSON)
+    (Sends XML)
+    (Wine Info)
+
+}
+
+left to right direction
+:Sales Staff: --> (Place Order)
+(Place Order) --> (Regular Order)
+(Regular Order) <.. (Joint) : <extends>
+(Joint) --> (Track) : <include>
+(Regular Order) <.. (Urgent Order) : <extends>
+(Urgent Order) --> (Exp Time Deliv) : <include> 
+(Urgent Order) --> (Priority Level) : <include>
+(Place Order) --> (Assign to Emp) : <include>
+:Sales Staff: --> (Unproductive Report)
+:Sales Staff: --> (Recommend) 
+
+
+:Marketing Staff: --> (Recieve XML)
+(Recieve XML) --> (Link Wines) : <include>
+(Link Wines) <.. (Price Image) : <extends:
+:Marketing Staff: --> (Sends JSON)
+(Sends JSON) --> :Gefen:
+
+:Gefen: --> (Sends XML)
+(Sends XML) --> :Marketing Staff:
+
+:Employee: --> (Wine Info)
+:Employee: <|-- :Sales Staff:
+:Employee: <|-- :Marketing Staff:
+
+
+@enduml

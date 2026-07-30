@@ -1,0 +1,44 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "cheers",
+  "variability_classifications": [
+    {
+      "pattern_id": "P1",
+      "classification": "Substantial Variability",
+      "justification": "The partial or lack of satisfaction of Guideline G4 regarding the external company 'GalGalim' could be a modeling choice consistent with the fact that the actual delivery management is outside the current system's scope as stated in the domain description.",
+      "evidence": "G4 | \"The actual delivery of orders is managed by an external company, called 'GalGalim,' and falls outside the scope of the current system.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": true,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P3",
+      "classification": "Occasional Variability",
+      "justification": "The lack of satisfaction of Guideline G26 related to generating reports suggests a failure to correctly implement necessary reporting functionalities, which is an error in understanding the domain requirements.",
+      "evidence": "G26 | \"The 'Cheers' system will also generate the following reports: (1) Unproductive Employees Report...; (2) Current Inventory Report by Wine...; (3) Wine Recommendation Report for Customers...\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P2",
+      "classification": "Substantial Variability",
+      "justification": "The use of 'Season' enumeration as an alternative modeling choice offers additional flexibility for categorizing occasions or wines, consistent with the allowance for season recommendations in occasions.",
+      "evidence": "G17 | \"Marketing employees can also recommend occasions suitable for drinking each wine type, providing a general description of the occasion... along with the season...\"",
+      "confidence": "Medium",
+      "flag_for_guidelines_update": true,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P4",
+      "classification": "Occasional Variability",
+      "justification": "The use of an attribute without an enum for order status in UML class diagrams suggests a potential misunderstanding or oversight, leading to capturing inconsistencies in order states as stated in guidelines for order attributes.",
+      "evidence": "G3 | \"Orders can be categorized as either regular or urgent and include the following details: order number, order date, current status (in process, dispatched, delivered, paid, suspended, or canceled)...\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    }
+  ],
+  "questions_to_language_advisor": [],
+  "questions_to_domain_advisor": []
+}

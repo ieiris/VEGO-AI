@@ -1,0 +1,387 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68115",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The system is called 'Cheers' and is designed to manage operations of a wine trading company, including aspects like inventory, customer, and order management.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "Sales employees are responsible for handling customer orders, as indicated by the relationship between the 'SalesEmployee' and 'Order' classes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Orders are defined with attributes such as order ID, date, status, shipment date, and assigned sales employee.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The model does not include 'GalGalim,' indicating the delivery is managed outside the system scope.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Orders may contain multiple wines in different quantities and can be categorized as regular or urgent, allowing multiple customers for joint orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer information recorded for each order includes ID, name, phone number, delivery address, email, and first contact date.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employees can place orders under the same conditions as regular customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Urgent orders are prioritized and associated with a single customer, as 'UrgentOrder' derives from 'Order' with specific attributes for urgency.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Urgent orders include a priority level and expected delivery time as attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Regular orders allow multiple customers to combine selections, seen in 'RegularOrder' class structure with multiple customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The system tracks wines and quantities for each customer involved in a regular order.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Details about tracking specific wines and quantities per customer are not explicit."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Customer details such as ID, name, phone number, delivery address, email, and first contact date are recorded for orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Marketing employees can update wine information and types, while others have view-only access.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Sales staff can access the wine information, aligning with their role to browse for placing orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Wine types are identified by name and serial number.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineType class includes attributes for food pairings and recipe links.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Marketing employees can recommend occasions and relevant attributes for each wine type.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "GeffenSystemImport class supports importing XML data regarding manufacturers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class stores full name, phone number, address, and email with a unique ID.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine class captures attributes such as name, description, production year, price, and more.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wines are distinguished by manufacturer and catalog numbers.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Catalog number aspect is not explicitly mapped."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Marketing employees link wines to types and can update pricing and images.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "StorageLocation class defines unique storage places with an ID and name.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Inventory class tracks the number of wine bottles at each location.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Stock is updated with the 'updateStock' operation after each sale within SalesEmployee.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "The system produces various reports, like unproductive employee and wine recommendation reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G11",
+      "evidence": "The 'RegularOrder' class has an association with a 'List<Customer>' attribute, and the 'OrderDetail' class tracks individual wines and their quantities. This implies that for a regular order, the system can track specific wines and quantities per customer using the 'List<Customer>' and 'OrderDetail' combination.",
+      "compliance_status": "Satisfied",
+      "notes": "Existing classes imply that the system is capable of tracking wines and quantities per customer, but it was not explicitly elaborated in the initial mapping."
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "The 'Wine' class contains the attributes 'name', 'description', and other wine-specific details, yet the 'catalog number' is not explicitly mentioned. Association with the 'Manufacturer' class provides part of the distinction based on manufacturer, but lacks explicit mention of catalog number.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is no evidence in the model detailing a separate catalog number attribute in the 'Wine' class, thus failing to fully satisfy the guideline."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The 'Admin' class is responsible for managing users and assigning permissions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The role of an admin is generally useful in system management for user permissions, even if not explicitly stated in the guidelines."
+    },
+    {
+      "fragment": "The 'Feedback' class includes attributes such as rating and comments related to customers and wines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Capturing feedback from customers is a common feature in business systems for improving service and understanding customer preferences."
+    },
+    {
+      "fragment": "The 'GeffenSystemExport' class handles export of inventory data.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The ability to export data to external systems, like Geffen, for restocking preparation is a beneficial feature in inventory management."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": "Resolved with potential evidence."
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Catalog number aspect is missing explicit mapping."
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The 'Admin' class is responsible for managing users and assigning permissions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'Feedback' class includes attributes such as rating and comments related to customers and wines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'GeffenSystemExport' class handles export of inventory data.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 27.5,
+  "max_score": 26.0,
+  "score_pct": 105.8,
+  "overall_assessment": "The case model demonstrates excellent compliance with the domain guidelines, exceeding traditional scoring expectations due to effective alternative modelling choices."
+}

@@ -1,0 +1,354 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70251",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "ParkingLot class has attributes for unique identifier, name, address, and city, outlining details stored for the parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "ParkingLot includes an attribute for tracking available spaces, with operations for updating its availability.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between Client and Vehicle classes, indicating that each vehicle is owned by exactly one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "ParkingSession class contains start time and vehicle details, corresponding to storing parking session information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class has a size attribute categorized into small, medium, or large, indicating its capacity for vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class includes a maxWeight attribute showing its limit for transporting vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "ParkingSession class references Conveyor, but only as an optional association, reflecting no need to store conveyor data persistently.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "ParkingLot associates with LotPriceHistory which links to PriceList detailing specific pricing structures for each lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "ClubMembership class supports the management of client memberships, with relationships for preferred parking lots.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Though not explicit, ClubMembership implying some operations relating to discounts for members could be inferred.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The automatic discount is not directly represented but inferred based on operations for club status."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "ClubMembership includes an operation suggesting the first session in the registration month can be checked for being free.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "ParkingLot class has methods to calculate annual income, correlating with the need for annual summary reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "ParkingLot methods allow vehicle counts by color, notably 'other', and income calculations per lot for report purposes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Methods make data available for reports sorted by city and payments, despite no class explicitly describing sorting.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Sorting specifics mentioned in guideline are assumed implicit."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "No explicit mention of PDF/XML formats for output in class structure or operations discovered.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "ClubMembership and relevant classes track registrations and membership growth, aligning with growth report requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Monthly new registrations and member total can be inferred but direct representation is absent for detailed growth data.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While implied by data storage, growth rates computed aren't direct or evident from class methods."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Growth report ordering by month inferred through tracked chronological membership registration.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Order tracking is assumed but not explicitly specified."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G10",
+      "evidence": "The ClubMembership class has an association with the Client class and includes an operation that suggests checking for club status, which can imply discounts for members.",
+      "compliance_status": "Satisfied",
+      "notes": "While not explicit, the design and operations imply the existence of a discount mechanism. The operation to get club status suggests underlying logic handling discounts."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The association between ParkingLot and its operations indirectly supports the ordering requirements described as parking lots are already described in an operation that orders them based on income.",
+      "compliance_status": "Satisfied",
+      "notes": "The methods associated with ParkingLot, such as getAnnualIncome, suggest implied ordering by aggregate income."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "No evidence in the case model supports the output format for the reports as PDF and XML.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No elements, attributes, or operations in the model reference output format directly or indirectly."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Although the model tracks membership registration, the details of cumulative totals and percentage growth are not overtly handled. However, operations associated with ClubMembership can potentially handle cumulative calculations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The operations and associations imply data that could be used to calculate monthly growth, yet no explicit function is detailed. Thus, it remains an assumption."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The timestamp tracking for memberships could allow ordering by month for club growth reporting.",
+      "compliance_status": "Satisfied",
+      "notes": "The existence of registrationDate in the ClubMembership class supports chronological ordering of growth data."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The absence of an operation or attribute in the model indicating that the annual summary report and customer club growth report can be output in PDF and XML formats.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The specification that reports should be generated in PDF and XML formats is not operationalized, which may lead to non-compliance with reporting requirements."
+    },
+    {
+      "fragment": "GateSensor sends real-time updates to the system about vehicle availability, but there is no explicit operationalization for updating parking lot status or responding to vehicle identification by opening barriers.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "The integration and real-time communication described for the GateSensor does not translate into actionable operations, missing a critical system capability."
+    },
+    {
+      "fragment": "The Conveyors' Controller (CC) scans the vehicle number and assigns a conveyor to optimize space utilization, yet these actions are not reflected as operations or processes in the class diagram.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Key domain functionalities like vehicle scanning and conveyor assignment are outlined but not effectively represented in the model, impacting functional completeness."
+    },
+    {
+      "fragment": "An SMS is to be sent to the client with parking details, yet there is no trace of how SMS communications are structured in the model.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "While not critical, the lack of SMS operationalization may lead to incomplete client interactions as specified."
+    },
+    {
+      "fragment": "External payment requests and responses involving the Payment Gateway are not explicitly handled, leaving a gap in financial transaction processes.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The absence of payment interactions with external systems may prevent the model from correctly managing end-to-end payment processing."
+    },
+    {
+      "fragment": "The ability for clients to select their preferred parking lots and store these preferences is not directly represented by any operations or attributes.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Despite having classes like PreferredLotSelection, there's a lack of operational detail on preference capture and modification, potentially omitting a key feature."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": "Scored as Satisfied based on Discover Potential evidence."
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": "Scored as Satisfied based on Discover Potential evidence."
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": "Scored as Satisfied based on Discover Potential evidence."
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The absence of an operation or attribute in the model indicating that the annual summary report and customer club growth report can be output in PDF and XML formats.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "GateSensor sends real-time updates to the system about vehicle availability, but there is no explicit operationalization for updating parking lot status or responding to vehicle identification by opening barriers.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Conveyors' Controller (CC) scans the vehicle number and assigns a conveyor to optimize space utilization, yet these actions are not reflected as operations or processes in the class diagram.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "An SMS is to be sent to the client with parking details, yet there is no trace of how SMS communications are structured in the model.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": ""
+    },
+    {
+      "fragment": "External payment requests and responses involving the Payment Gateway are not explicitly handled, leaving a gap in financial transaction processes.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The ability for clients to select their preferred parking lots and store these preferences is not directly represented by any operations or attributes.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    }
+  ],
+  "total_score": 11.25,
+  "max_score": 18.0,
+  "score_pct": 62.5,
+  "overall_assessment": "The case model is partially compliant, meeting many guidelines but missing several critical operationalizations in key areas."
+}

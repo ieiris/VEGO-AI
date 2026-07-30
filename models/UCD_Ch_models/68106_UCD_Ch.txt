@@ -1,0 +1,45 @@
+@startuml
+left to right direction
+
+actor "Sales Staff" as SalesStaff
+actor "Marketing Staff" as MarketingStaff
+actor "Gefen System" as Gefen
+
+rectangle "Cheers System" as Cheers {
+  usecase "Place Order" as PlaceOrder
+  usecase "Update Wine Information" as UpdateWineInfo
+  usecase "Generate Unproductive Employee Report" as GenerateUnproductiveEmployeeReport
+  usecase "Generate Wine Recommendation Report For Customers" as GenerateWineRecommendationReportForCustomers
+  usecase "Recommend Occasions for Wine Type" as RecommendOccasions
+  usecase "Link Wines to Types" as LinkWinesToTypes
+  usecase "Modify Price Details and Product Images" as ModifyPriceAndImage
+  usecase "Assign Order to Employee" as AssignOrderToEmployee
+  usecase "Track Order Status" as TrackOrderStatus
+  usecase "Urgent Order \n extension point:order is placed by a single customer with \n a specified priority level and expected delivery time" as UrgentOrder
+  usecase "Regular Order \n extension point:an order is being placed that does not require urgent processing" as RegularOrder
+  usecase "Joint Order \n extension point:multiple customers combine their wine selections \n into a single regular order to minimize delivery cost" as JointOrder
+  usecase "Sends XML Data" as SendsXMLData
+  usecase "Provides Weekly Updates on Quantity Purchased" as ProvidesWeeklyUpdates
+  usecase "Browse Available Wines\n extension point:wants to view the list of wines" as BrowseAvailableWines
+}
+
+SalesStaff -- PlaceOrder
+SalesStaff -- GenerateUnproductiveEmployeeReport
+SalesStaff -- GenerateWineRecommendationReportForCustomers
+
+PlaceOrder ..> AssignOrderToEmployee : <<include>>
+PlaceOrder ..> TrackOrderStatus : <<include>>
+
+PlaceOrder <.. UrgentOrder : <<extend>>
+PlaceOrder <.. RegularOrder : <<extend>>
+PlaceOrder <.. BrowseAvailableWines : <<extend>>
+RegularOrder <.. JointOrder : <<extend>>
+
+MarketingStaff -- UpdateWineInfo
+MarketingStaff -- RecommendOccasions
+MarketingStaff -- LinkWinesToTypes
+MarketingStaff -- ModifyPriceAndImage
+
+Gefen -- SendsXMLData
+Gefen -- ProvidesWeeklyUpdates
+@enduml

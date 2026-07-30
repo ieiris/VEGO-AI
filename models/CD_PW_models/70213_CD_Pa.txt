@@ -1,0 +1,208 @@
+@startuml
+
+' --- LAYOUT SETTINGS ---
+' Using Orthogonal lines (right angles) for a cleaner, professional look
+skinparam linetype ortho
+' Adjusting separation to keep the diagram compact
+skinparam nodesep 35
+skinparam ranksep 35
+' Forces the diagram to show method names instead of icons
+skinparam classAttributeIconSize 0 
+
+' --- Enums ---
+enum Size {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum VehicleColor {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+enum SessionStatus {
+  PARKED
+  MOVING
+  ENDED
+}
+
+' --- Data Entities ---
+
+class Administrator {
+  - int adminId
+  - String username
+  - String passwordHash
+  + login()
+  + updateLotDetails(ParkingLot lot, String name, String addr, String city)
+  + triggerAnnualReport(int year)
+  + triggerGrowthReport(int year)
+}
+
+class ParkingLot {
+  - int lotId
+  - String name
+  - String address
+  - String city
+  - int availableSpaces
+  + updateDetails(String name, String addr, String city)
+  + decrementSpaces()
+  + incrementSpaces()
+  + getPriceList() : PriceList
+}
+
+class PriceList {
+  - int validFromYear
+  - float priceFirstHour
+  - float priceExtraHour
+  - float priceFullDay
+  + updatePriceList(String jsonData)
+}
+
+class ParkingSpace {
+  - int floor
+  - int x
+  - int y
+  - Size size
+  - boolean isOccupied
+  + assignVehicle(Vehicle v)
+  + vacate()
+}
+
+class Conveyor {
+  - int conveyorId
+  - float maxWeightCapacity
+  - int floorLoc
+  - int x
+  - int y
+  - boolean isBusy
+  + transportVehicle(Vehicle v, ParkingSpace s)
+}
+
+class Vehicle {
+  - String licensePlate
+  - String type
+  - VehicleColor color
+  - Size size
+  - float weight
+  - List<Image> photos
+  + updateDetails(String type, VehicleColor color, Size size, float weight)
+}
+
+class Client {
+  - String firstName
+  - String lastName
+  - String phoneNum
+  + register(String details, List<Image> photos)
+  + requestEndParking()
+  + pay(float amount)
+}
+
+class ClubMember {
+  - int memberId
+  - Date registrationDate
+  - boolean isActive
+  + addPreferredLot(ParkingLot lot)
+  + isEligibleForFreeParking(ParkingLot lot) : boolean
+}
+
+class PreferredLotSelection {
+  - Date selectionDate
+}
+
+class ParkingSession {
+  - int sessionId
+  - DateTime startTime
+  - DateTime endTime
+  - float finalAmount
+  - SessionStatus currentStatus
+  + calculateDuration() : float
+  + calculateCost(PriceList pl) : float
+}
+
+' --- Controllers & Services ---
+
+class SystemController {
+  + handleEntry(VehicleData data)
+  + handleExit(ClientData data)
+  + trackVehicleLoc(int vehicleId)
+}
+
+class PhotoToTextModule {
+  + extractVehicleDetails(List<Image> photos) : VehicleAttributes
+}
+
+class OptimizationService {
+  + findNearestVacantSpace(Size s, float w, List<Conveyor> c, List<ParkingSpace> ps) : ParkingSpace
+}
+
+class ConveyorsController {
+  + scanVehicle()
+  + assignConveyor()
+  + updateParkingCompletion(Location loc)
+}
+
+class PaymentService {
+  + calculateAmount(ParkingSession s, PriceList pl) : float
+  + processPayment(Client c, float amount)
+  + issueReceipt(Client c)
+}
+
+class ReportingService {
+  + generateAnnualSummary(int year) : File
+  + generateClubGrowth(int year) : Report
+}
+
+' --- External Interfaces ---
+
+class GateSensor {
+  + detectArrival()
+  + openBarrier()
+  + displayInstructions()
+}
+
+class PaymentGateway {
+  + authorizeTransaction(String details, float amount)
+}
+
+class IntegratedRateService {
+  + fetchPriceLists()
+}
+
+' --- Relationships ---
+
+' Inheritance
+Client <|-- ClubMember
+
+' Composition / Aggregation
+ParkingLot "1" *-- "*" ParkingSpace : contains >
+ParkingLot "1" *-- "*" Conveyor : contains >
+ParkingLot "1" *-- "*" PriceList : maintains history >
+
+' Associations
+ParkingSession "0..1" --> "1" Vehicle : tracks >
+ParkingSession "0..1" --> "1" ParkingSpace : occupies >
+ParkingSession "*" --> "1" Client : billed to >
+
+' Association Class Connection
+ClubMember "0..*" -- "0..*" ParkingLot
+(ClubMember, ParkingLot) .. PreferredLotSelection
+
+' Administrator Relationships
+Administrator ..> ParkingLot : manages >
+Administrator ..> ReportingService : uses >
+
+' Service Dependencies
+SystemController ..> PhotoToTextModule : uses >
+SystemController ..> ConveyorsController : commands >
+ConveyorsController ..> OptimizationService : uses >
+SystemController ..> PaymentService : uses >
+SystemController ..> ReportingService : uses >
+SystemController ..> GateSensor : listens/commands >
+PaymentService ..> PaymentGateway : uses >
+ParkingLot ..> IntegratedRateService : imports data from >
+
+@enduml

@@ -1,0 +1,166 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' =========================
+'        CLASSES
+' =========================
+
+class ParkingLot {
+
+- lotNumber : int
+- name : String
+- address : String
+- city : String
+- availableSpaces : int
+  }
+
+
+Class System{
+ 
+ +generateAnnualSummaryReport(year: int): File
+ +generateCustomerClubGrowthReport(Month: int): File
+ +importPriceLists(jsonFile: File)
+}
+
+note right of System
+The Annual Summary report will be generated  in both PDF and  XML formats
+end note
+
+class Client {
+
+- clientId : int
+- firstName : String
+- lastName : String
+- mobilePhone : String
+-isClubMember: Boolean
+  }
+
+class ClubMemberClient {
+
+- membershipStartDate : Date
+  }
+
+
+class Vehicle {
+
+- plateNumber : String
+- typeText : String
+- color : String
+- size : Size
+- weightKg : double
+  }
+
+class ParkingSession {
+
+- sessionId : int
+- startTime : DateTime
+- endTime : DateTime
+- isFreeForClubMember : boolean
++totalPaymentCalc()
+  }
+
+class Conveyor {
+
+- conveyorId : int
+- floorNumber : int
+- positionX : int
+- positionY : int
+- maxVehicleWeightKg : double
+  }
+
+class ParkingSpace {
+
+- spaceId : int
+- floorNumber : int
+- positionX : int
+- positionY : int
+- size : Size
+- isOccupied : boolean
+  }
+
+class PriceList {
+
+- priceListId : int
+- firstHourPrice : double
+- additionalHourPrice : double
+- fullDayPrice : double
+  }
+
+class Payment {
+
+- paymentId : int
+- amount : double
+- status : Status
+
+  }
+
+
+class PreferredParkingLotSelection {
+
+- selectionId : int
+- selectionDate : Date
+  }
+
+class ParkingLotPriceList {
+   validFrom: Date
+   validTo: Date
+}
+
+
+enum Size {
+  Small
+  Medium
+  Large
+}
+
+enum Color{
+  White
+  Black
+  Silver
+  Blue
+  Other
+}
+
+enum Status{
+approved
+pending
+rejected
+}
+
+
+' =========================
+'      RELATIONSHIPS
+' =========================
+Vehicle ..> Size
+Vehicle ..> Color
+ParkingSpace ..> Size
+Payment ..> Status
+
+
+
+ParkingLot "1" *-- "*" Conveyor : contains
+ParkingLot "1" *-- "1..*" ParkingSpace : contains
+ParkingLot "0..*" --> "1..*" PriceList
+(ParkingLot, PriceList) .. ParkingLotPriceList
+
+System "1" *-- "0..*" Client 
+System "1" *-- "0..*" ParkingLot 
+System "1" *-- "0..*" ParkingSession
+System "1" *-- "0..*" Vehicle 
+System "1" *-- "0..*" PriceList
+System "1" *-- "0..*" Payment
+
+
+Client "1" -- "*" Vehicle : owns >
+Client "1" -- "1..*" ParkingSession
+Client "1" -- "0..1" ClubMemberClient
+
+ClubMemberClient "0..*" -- "0..*" ParkingLot : preferred
+(ClubMemberClient, ParkingLot) .. PreferredParkingLotSelection
+
+Vehicle "1" <-- "1..*" ParkingSession
+ParkingSession "1" --> "1" ParkingLot
+ParkingSession "0..*" --> "1" ParkingSpace
+ParkingSession "1" --> "0..1" Payment
+@endum
+@enduml

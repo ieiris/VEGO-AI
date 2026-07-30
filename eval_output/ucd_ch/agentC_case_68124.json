@@ -1,0 +1,378 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68124",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The diagram depicts a system boundary named 'Cheers System' encompassing primary business operations like order placement, inventory updates, and customer data processing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The 'Sales Staff' actor is shown interacting with use cases like 'Place Order' and 'Process Customer Order', indicating their role in order placement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Use cases such as 'Place Order', 'Add Order Details', and 'Process Customer Order' cover categorization and detailing of orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model marks 'GalGalim' as out of scope for the system, implying order delivery is managed externally.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The use case 'Joint Order Process' is depicted as an extension of 'Process Customer Order', suggesting tracking of joint orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The inclusion of 'Supply Customer and Order Data' within 'Process Customer Order' indicates recording customer information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Use case 'Pack Order' involves 'General Employee' interacting with the system similar to customers, reflecting employee order capabilities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The 'Urgent Order Process' is an extending use case indicating priority handling of such orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The use case 'Joint Order Process' extends 'Process Customer Order' and allows multiple customer selections, covering regular order handling.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The use case 'Supply Customer and Order Data' includes functionality that records customer details in orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "'General Employee' capable of using the 'Pack Order' use case implies employee ordering ability like customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "'Marketing Department Employees' are uniquely associated with use cases like 'Update Wine Information', showing they are the sole actors for this task.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The generalization relationship between 'General Employee' and 'Sales Staff' shows differing system access levels.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Model lacks explicit indication of viewing-only access for roles other than the indicated interactions."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The use case 'Update Wine Information' and its inclusion of 'Link Wine Types' deal with wine categorization and attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "'Recommend Occasions' extends 'Update Wine Information', illustrating the recommendation of occasions by marketing employees.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "'Process Wine Data from Gefen' involves interfacing with the 'Gefen System', demonstrating monthly data reception.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "'Process Wine Data from Gefen' followed by 'Update Inventory Levels' implies receiving regular updates on purchased quantities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The management of wine data from the 'Gefen System' implies storage of manufacturer information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The extension of 'Update Wine Information' by 'Modify Price and Image' suggests capturing comprehensive wine details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "The connection of 'Link Wine Types' under 'Update Wine Information' covers defining wine by its identifiers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "'Link Wine Types' as part of 'Update Wine Information' addresses linking wines to their types by marketing employees.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "'Manage Storage Locations' describes tracking of storage locations for wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "'Generate Current Inventory Report' deals with tracking inventory levels across locations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "'Update Inventory Levels' implies inventory updates following wine sales.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "'Generate Unproductive Employees Report' shows the creation of reports analyzing employee productivity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "'Generate Current Inventory Report' references report generation by wine inventory level.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "'Generate Wine Recommendation Report' for customer preferences reflects wine recommendation functionality.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G13",
+      "evidence": "The differentiation of actor roles such as 'General Employee', 'Sales Staff', and 'Marketing Department Employees' using generalization lines implies varying levels of system access, suggesting that 'General Employee' has a more generalized role, while 'Sales Staff' has specific system interaction roles. However, explicit mention of view-only access is absent.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The diagram suggests but does not explicitly depict the varying access levels, specifically the view-only access for roles, thus partially satisfying the guideline."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "Actor 'Customer' is involved in the use case 'Place Order'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Including the 'Customer' as an actor involved in placing an order provides clarity and completeness, even if specific guidelines do not explicitly require it."
+    },
+    {
+      "fragment": "Actor 'Gefen System' is involved in use cases 'Generate Wine and Producer Reports' and 'Generate Sales Quantities Report'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Representing the 'Gefen System' as an actor highlights system interactions and dependencies, enhancing the understanding of external integrations."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Partially satisfied due to lack of explicit view-only access indication."
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Actor 'Customer' is involved in the use case 'Place Order'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Alternative modeling choice not required by guidelines."
+    },
+    {
+      "fragment": "Actor 'Gefen System' is involved in use cases 'Generate Wine and Producer Reports' and 'Generate Sales Quantities Report'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Alternative modeling choice enhances understanding."
+    }
+  ],
+  "total_score": 27.5,
+  "max_score": 27.0,
+  "score_pct": 101.9,
+  "overall_assessment": "The case model excellently complies with the guidelines, effectively integrating additional beneficial elements beyond the minimal requirements."
+}

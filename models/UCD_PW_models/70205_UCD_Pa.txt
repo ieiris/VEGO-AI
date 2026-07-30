@@ -1,0 +1,77 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Administrator" as Admin
+actor "Client" as Client
+actor "Club Member" as ClubMember
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors Controller (CC)" as CC
+actor "Integrated Rate Service (IRS)" as IRS
+actor "Payment Gateway (PG)" as PG
+
+rectangle "ParkWise System" {
+
+  usecase "Parking Lots Management" as UC_Lots
+  usecase "Annual Summary Report\nGeneration" as UC_AnnualReport
+  usecase "Customer Club Growth\nReport Generation" as UC_ClubReport
+
+  usecase "Price Lists Import" as UC_PriceImport
+
+  usecase "Club Membership Management" as UC_Visitors
+  usecase "Preferred Parking Lots\nSelection" as UC_PreferredLots
+
+  usecase "Start Parking Session" as UC_StartParking
+  usecase "Provide Vehicle/\nClient Details" as UC_DataFix
+
+  usecase "Vehicle Allocation to\nParking Space" as UC_AllocVehicle
+  usecase "Track Vehicle Location" as UC_TrackVehicle
+  usecase "End Parking Session" as UC_EndParking
+  usecase "Payment Handling" as UC_Payment
+  usecase "Issue Receipt" as UC_Receipt
+}
+
+' Administrator
+Admin -- UC_Lots
+Admin -- UC_AnnualReport
+Admin -- UC_ClubReport
+Admin -- UC_PriceImport
+
+
+' ===== Generalization =====
+Client <|-- ClubMember
+
+' Client (base actor)
+Client -- UC_StartParking
+Client -- UC_EndParking
+Client -- UC_Receipt
+Client -- UC_Visitors
+
+' Club Member (inherits all Client UCs + own)
+
+ClubMember -- UC_PreferredLots
+
+' Gate Sensor
+GS -- UC_StartParking
+
+
+
+' Conveyors Controller
+CC -- UC_AllocVehicle
+CC -- UC_TrackVehicle
+CC -- UC_EndParking
+
+' IRS and Payment Gateway
+IRS -- UC_PriceImport
+PG -- UC_Payment
+
+' Includes / Extends
+
+UC_StartParking -- UC_AllocVehicle : <<include>>
+UC_AllocVehicle -- UC_TrackVehicle : <<include>>
+UC_EndParking -- UC_Payment        : <<include>>
+UC_StartParking -- UC_DataFix      : <<extend>>
+
+
+UC_Receipt .. UC_Payment  : <<extend>>
+@enduml

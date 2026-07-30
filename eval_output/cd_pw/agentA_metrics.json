@@ -1,0 +1,34 @@
+{
+  "skill_version": "1.0.0",
+  "overall_agreement": 0.7879,
+  "per_run_metrics": [
+    {
+      "run": 1,
+      "true_positives": 7,
+      "false_positives": 1,
+      "false_negatives": 2,
+      "precision": 0.875,
+      "recall": 0.7778,
+      "f1": 0.8235
+    },
+    {
+      "run": 2,
+      "true_positives": 6,
+      "false_positives": 1,
+      "false_negatives": 3,
+      "precision": 0.8571,
+      "recall": 0.6667,
+      "f1": 0.75
+    },
+    {
+      "run": 3,
+      "true_positives": 9,
+      "false_positives": 2,
+      "false_negatives": 0,
+      "precision": 0.8182,
+      "recall": 1.0,
+      "f1": 0.9
+    }
+  ],
+  "reachable_base_count": 9
+}

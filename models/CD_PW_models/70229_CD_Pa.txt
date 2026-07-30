@@ -1,0 +1,195 @@
+@startuml
+skinparam packageStyle rectangle
+left to right direction
+
+' ========= Core domain entities =========
+
+class ParkingLot {
+  -lotId: int
+  -name: String
+  -address: String
+  -city: String
+  -totalSpaces: int
+  -availableSpaces: int
+}
+
+class GateSensor {
+  -sensorId: int
+  -parkingLotId: int
+  -locationDescription: String
+  -isActive: boolean
+  -isBarrierOpen: boolean
+}
+
+class Client {
+  -clientId: int
+  -firstName: String
+  -lastName: String
+  -mobilePhone: String
+  -isClubMember: boolean
+  -clubRegistrationDate: Date
+}
+
+class Vehicle {
+  -vehicleNumber: String
+  -typeText: String
+  -color: String        ' white / black / silver / blue / other
+  -size: String         ' small / medium / large
+  -weightKg: double
+}
+
+class VehiclePhoto {
+  -photoId: int
+  -vehicleNumber: String
+  -viewType: String     ' front / rear / side
+  -filePath: String
+}
+
+class ParkingSpace {
+  -spaceId: int
+  -parkingLotId: int
+  -floorNumber: int
+  -positionX: double
+  -positionY: double
+  -size: String         ' small / medium / large
+  -isOccupied: boolean
+}
+
+class Conveyor {
+  -conveyorId: int
+  -parkingLotId: int
+  -floorNumber: int
+  -positionX: double
+  -positionY: double
+  -maxVehicleWeightKg: double
+  -isAvailable: boolean
+}
+
+class ParkingSession {
+  -sessionId: int
+  -startTime: DateTime
+  -endTime: DateTime
+  -status: String                ' active / completed
+  -totalHours: double
+  -isFreeByClubBenefit: boolean
+
+  ' snapshot of vehicle details at parking time
+  -vehicleNumber: String
+  -vehicleType: String
+  -vehicleColor: String
+  -vehicleSize: String
+  -vehicleWeightKg: double
+}
+
+class PriceList {
+  -priceListId: int
+  -parkingLotId: int
+  -year: int
+  -firstHourPrice: double
+  -additionalHourPrice: double
+  -fullDayPrice: double
+  -validFrom: Date
+  -validTo: Date
+}
+
+class Payment {
+  -paymentId: int
+  -amount: double
+  -currency: String
+  -status: String          ' pending / approved / rejected
+  -requestedAt: DateTime
+  -completedAt: DateTime
+}
+
+class Receipt {
+  -receiptId: int
+  -priceRateDescription: String
+  -finalAmount: double
+  -issuedAt: DateTime
+}
+
+class PreferredParkingLot {
+  -selectionDate: Date
+}
+
+class AnnualSummaryItem {
+  -year: int
+  -parkingLotId: int
+  -parkingLotName: String
+  -parkingLotCity: String
+  -totalAmountPaid: double
+  -otherColorVehiclesCount: int
+}
+
+class ClubGrowthItem {
+  -year: int
+  -month: int
+  -newMembersInMonth: int
+  -totalActiveMembersEndOfMonth: int
+  -growthPercentage: double
+}
+
+' ========= Report generation (operations for Annual Summary) =========
+
+class AnnualSummaryReportService {
+  +generateAnnualSummary(year: int): List<AnnualSummaryItem>
+  +calculateTotalAmountForLot(lot: ParkingLot, year: int): double
+  +countOtherColorVehicles(lot: ParkingLot, year: int): int
+  +sortItemsByCityAndAmount(items: List<AnnualSummaryItem>): List<AnnualSummaryItem>
+  +exportAnnualSummaryToPDF(items: List<AnnualSummaryItem>, year: int): PDFDocument
+  +exportAnnualSummaryToXML(items: List<AnnualSummaryItem>, year: int): XMLDocument
+}
+
+class PDFDocument {
+  -fileName: String
+  -generatedAt: DateTime
+}
+
+class XMLDocument {
+  -fileName: String
+  -generatedAt: DateTime
+}
+
+' ========= Directed Associations between entities =========
+
+' ParkingLot relations
+ParkingLot "1" --> "1" GateSensor : has >
+ParkingLot "1" --> "0..*" ParkingSpace : contains >
+ParkingLot "1" --> "0..*" Conveyor : has >
+ParkingLot "1" --> "0..*" PriceList : pricing >
+
+' Client relations
+Client "1" --> "0..*" Vehicle : owns >
+Client "1" --> "0..*" ParkingSession : starts >
+Client "1" --> "0..*" PreferredParkingLot : prefers >
+
+' Vehicle relations
+Vehicle "1" --> "3" VehiclePhoto : photos >
+
+' ParkingSession relations
+ParkingSession "1" --> "1" Vehicle : uses >
+ParkingSession "1" --> "1" Client : belongs to >
+ParkingSession "1" --> "1" ParkingSpace : parked in >
+ParkingSession "1" --> "0..1" Payment : payment >
+ParkingSession "1" --> "0..1" Receipt : receipt >
+
+' Conveyors move vehicles during sessions
+ParkingSession "0..*" <-- "1" Conveyor : moves >
+
+' Preferred lots mapping
+PreferredParkingLot "0..*" --> "1" ParkingLot : selected >
+PreferredParkingLot "0..*" --> "1" Client : by >
+
+' Annual summary items are per parking lot
+AnnualSummaryItem "0..*" --> "1" ParkingLot : for lot >
+
+' ========= Dependencies for report generation =========
+
+AnnualSummaryReportService ..> ParkingLot
+AnnualSummaryReportService ..> ParkingSession
+AnnualSummaryReportService ..> Payment
+AnnualSummaryReportService ..> AnnualSummaryItem
+AnnualSummaryReportService ..> PDFDocument
+AnnualSummaryReportService ..> XMLDocument
+
+@enduml

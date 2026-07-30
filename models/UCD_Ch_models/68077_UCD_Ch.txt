@@ -1,0 +1,47 @@
+@startuml
+actor SalesStaff as "Sales Staff"
+actor MarketingStaff as "Marketing Staff"
+actor Gefen as "Gefen"
+actor BranchManager as "Branch Manager"
+
+rectangle "Cheers System" {
+    usecase "Place Order" as PlaceOrder
+    usecase "Update Wine Inventory" as UpdateWineInventory
+    usecase "Place Urgent Order" as PlaceUrgentOrder
+    usecase "Specify Urgent Order Details" as SpecifyUrgentOrderDetails
+    usecase "Place Regular Order" as PlaceRegularOrder
+    usecase "Track Joint Orders" as TrackJointOrders
+    usecase "Generate Unproductive Employees Report" as GenerateUnproductiveEmployeesReport
+    usecase "Generate Wine Recommendation Report for Customers" as GenerateWineRecommendationReport
+    usecase "Update Wine Information" as UpdateWineInformation
+    usecase "View Wines" as ViewWines
+    usecase "Provide XML Data on Wine Producers and Wines" as ProvideXMLData
+    usecase "Provide Weekly Updates on Quantity Purchased" as ProvideWeeklyUpdates
+    usecase "Generate Current Inventory Report by Wine" as GenerateCurrentInventoryReport
+    usecase "Send Inventory Report to Gefen" as SendInventoryReportToGefen
+}
+
+PlaceOrder ..> UpdateWineInventory
+PlaceUrgentOrder --|> PlaceOrder
+PlaceUrgentOrder ..> SpecifyUrgentOrderDetails : <<include>>
+PlaceRegularOrder --|> PlaceOrder
+PlaceRegularOrder ..> TrackJointOrders : <<extend>>
+
+SalesStaff --> PlaceUrgentOrder
+SalesStaff --> PlaceRegularOrder
+SalesStaff --> ViewWines
+SalesStaff --> GenerateUnproductiveEmployeesReport
+SalesStaff --> GenerateWineRecommendationReport
+
+MarketingStaff --> UpdateWineInformation
+MarketingStaff --> ViewWines
+
+Gefen --> ProvideXMLData
+Gefen --> ProvideWeeklyUpdates
+
+ProvideWeeklyUpdates ..> UpdateWineInventory
+
+BranchManager --> GenerateCurrentInventoryReport
+
+GenerateCurrentInventoryReport ..> SendInventoryReportToGefen : <<extend>>
+@enduml

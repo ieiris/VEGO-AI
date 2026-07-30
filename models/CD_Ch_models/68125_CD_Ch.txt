@@ -1,0 +1,123 @@
+@startuml
+class Employee {
+    employeeId : int
+    name : string
+    phoneNumber : string
+    officeAdress : string
+    email : string
+    employmentStartDate : date
+    department : string
+}
+
+class SalesStaff {
+    // Extends from Employee
+}
+
+class Marketing {
+    // Extends from Employee
+    + updatesWineDeatils(phone,email) : void
+}
+
+class Order {
+    orderNumber : int
+    orderDate : Date
+    isUrgent : boolean
+    assignedEmployeeID : int
+    currentStatus : String
+    shipmentDate : Date
+    priorityLevel : int
+    expectedDeliveryDate : Date
+    customerID : Customer
+    wines : String
+
+   + updateOrderStatus(newStatus) : void
+   + markAsUrgent(priorityLevel , expectedDeliveryDate): void
+
+}
+
+class UnproductiveEmployeesReport {
+    <<Report>>
+    - generatedBy : SalesStaff
+    - startDate : date
+    - endDate : date
+    - totalOrders : int
+    - urgentOrders : int
+    - regularOrders : int
+}
+
+class Wine {
+    wineID : int
+    wineName : string
+    catalogNumber : int
+    manufacturerNumber : int
+    productionYear : int
+    description : String
+    pricePerBottle : double
+    sweetnessLevel : int
+    imageURL : String
+    wineType : String
+    storageLocationID : int
+   + updatePrice(new Price) : void
+   + updateImage(imageURL) : void
+   + linkToType(wineType) : void
+}
+
+class Manufacturer {
+    manufacturerID : int
+    fullName : String
+    contactPhoneNumber : String
+    adress : String
+    email : String
+
+}
+
+class Customer {
+    customerID : int
+    fullName : string
+    phoneNumber : string
+    deliveryAdress : String
+    email : String
+    firstContactDate : Date
+    + placeOrder(Wine,isUrgent) : void
+}
+
+class StorageLocation {
+    locationID : int
+    locationName : string
+    quantityAviliable : int
+    + updateStock(newQuantity) : void
+    + checkAviliablity() : Boolean
+
+}
+
+class Occasion {
+    occasionID : int
+    season : string
+    locationType: string
+    description: string
+
+}
+
+class WineType {
+    serialNumber : int
+    typeName: String
+    foodPairing: String
+    recommendedOccasion: Occasion
+    recipeLink: String
+    + addRecipeLink(newURL) : void
+    + removeRecipeLink(URL) : void
+
+}
+
+' Relationships
+Employee <|-- SalesStaff
+Employee <|-- Marketing
+Marketing --> Occasion : recommend wine based on the occasion
+SalesStaff --> UnproductiveEmployeesReport : generates
+Order --> Employee : "assignedEmployeeID"
+Wine --> Manufacturer : "producedBy"
+Wine --> StorageLocation : "storedAt"
+Wine --> WineType : "hasType"
+Order --> Customer : "placedBy"
+Order --> Wine : "contains"
+@enduml

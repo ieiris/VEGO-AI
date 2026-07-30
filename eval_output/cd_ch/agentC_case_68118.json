@@ -1,0 +1,408 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68118",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The 'Cheers' system entities like Order, Customer, and Wine indicate it is developed for business operations management, such as inventory, customer, and order processing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "SalesStaff class is responsible for placing orders, emphasizing the role of a specific employee in this process.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order class includes attributes for order number, order date, status, shipment date, and assigned employee's details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no evidence in the model about the external delivery company 'GalGalim'.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "JointOrder class allows for tracking multiple wines for different customers, indicating it supports joint orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class records customer ID, name, phone number, delivery address, email, and first contact date.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "There is no specific evidence in the model that employees can order wines like regular customers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "UrgentOrder class, derived from Order, reflects single-customer and priority processing, ensuring prompt delivery.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder class captures priority level and expected delivery time.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Order and JointOrder structure reflect flexibility for multiple customers in regular orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "JointOrder class specifies a main customer responsible for the entire order, tracking specific wines and quantities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Customer and Order classes record all necessary customer attributes and allow for both regular and urgent involvement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingStaff class includes methods for updating wine information and types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesStaff operations include browsing for placing orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType class uses name and serial number to identify wine types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Wine's pairingRecipes attribute indicates keeping food pairings and related URLs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Occasion class recommends occasions for consuming each wine type, mentioning seasons and locations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Gefen class imports wine production data from an external system called Gefen.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class stores all required contact and identifying information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine class has attributes for name, description, production year, price, sweetness, and image.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine class uses manufacturerNum and catalogNum for distinction.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingStaff has operations allowing modifications to wine categories and details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Storage class manages unique storage locations for wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "WinesPerStorage association manages quantity of wines per location.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Order class updates storage quantity post-sales through Orders to Storage association.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "SalesStaff generates various reports including inventory and productivity as per class operations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Model mentions report generation but lacks full details on reports' scope."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not have any classes, dependencies, or annotations related to the external delivery company 'GalGalim'.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There are no indications in the UML diagram that the delivery process is managed by 'GalGalim' and falls outside the system scope."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The SalesStaff class includes operations for placing orders, but it does not specifically indicate that regular employees have the same ordering conditions as regular customers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model lacks explicit representation of employees being able to order wines under the same conditions as regular customers, as required by the guideline."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "The SalesStaff class includes a function to generate an unproductivity report and mention of exporting JSON data, but without further details on other reports.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While report generation is mentioned, the specific type of reports outlined in the guideline such as inventory or wine recommendation reports are not detailed, leaving the compliance partial."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The presence of a class 'Season' which categorizes occasions by seasons: SUMMER, AUTUMN, SPRING, WINTER.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This adds additional categorization for occasions, enriching the model without contradicting domain guidelines."
+    },
+    {
+      "fragment": "Occasion class has an association using stereotype with Season.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The use of Season in the Occasion class aligns with providing detailed descriptions of occasions, consistent with domain requirements for season-specific recommendations."
+    },
+    {
+      "fragment": "Location enum depicting indoor and outdoor settings used by the Occasion class.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Detailing whether occasions are indoors or outdoors offers useful insights, aligning with domain concepts of events tied to wine types."
+    },
+    {
+      "fragment": "Existence of a Gefen class interacting with other classes beyond importing and exporting data.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Gefen's role should primarily focus on data import and export as defined in guidelines. Any additional interactions require clarification."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The presence of a class 'Season' which categorizes occasions by seasons: SUMMER, AUTUMN, SPRING, WINTER.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Occasion class has an association using stereotype with Season.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Location enum depicting indoor and outdoor settings used by the Occasion class.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Existence of a Gefen class interacting with other classes beyond importing and exporting data.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    }
+  ],
+  "total_score": 23.5,
+  "max_score": 26.0,
+  "score_pct": 90.4,
+  "overall_assessment": "The case model demonstrates strong compliance with domain guidelines, with minor areas for improvement."
+}

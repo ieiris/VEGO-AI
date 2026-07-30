@@ -1,0 +1,75 @@
+FINAL:
+@startuml
+left to right direction
+
+actor "Client" as C
+actor "Club Member" as CM
+actor "Administrator" as A
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors' Controller (CC)" as CC
+actor "Payment Gateway (PG)" as PG
+actor "Integrated Rate Service (IRS)" as IRS
+
+CM --|> C
+
+rectangle "ParkWise System" as SYS {
+
+  ' -------- Administration --------
+  usecase "Update Parking Lot Details" as UC_UpdateLot
+  usecase "Generate Annual Report" as UC_AnnualReport
+  usecase "Generate Club Growth Report" as UC_ClubReport
+
+  ' -------- Entry & Parking --------
+  together {
+    usecase "Enter Parking Lot\n(extension point: the vehicle is not found in the database)" as UC_EnterLot
+    usecase "Provide the Required Details" as UC_ProvideDetails
+  }
+
+  usecase "Detect Vehicle Arrival and Departure" as UC_DetectArrDep
+  usecase "Start Parking Session" as UC_StartParkingSession
+  usecase "Assign Parking Space" as UC_Assign
+  usecase "Update Vehicle Location" as UC_UpdateLocation
+  usecase "View Parking Details" as UC_ViewDetails
+  usecase "Verifying Client" as UC_VerifyClient
+
+  ' -------- Payment --------
+  usecase "Process Payment" as UC_Payment
+  usecase "Request Receipt" as UC_RequestReceipt
+
+  ' -------- Client Club --------
+  usecase "Register to Club" as UC_ClubReg
+  usecase "Select Preferred Lots" as UC_SelectPreferredLots
+
+  ' -------- Pricing --------
+  usecase "Provide Yearly Price List" as UC_PriceList
+}
+
+A --> UC_UpdateLot
+A --> UC_AnnualReport
+A --> UC_ClubReport
+
+C --> UC_EnterLot
+C --> UC_ViewDetails
+C --> UC_RequestReceipt
+C --> UC_ClubReg
+
+CM --> UC_SelectPreferredLots
+
+GS --> UC_DetectArrDep
+
+CC --> UC_Assign
+
+PG --> UC_Payment
+
+IRS --> UC_PriceList
+
+' -------- Includes / Extends --------
+UC_EnterLot --> UC_DetectArrDep : <<include>>
+UC_EnterLot --> UC_StartParkingSession : <<include>>
+UC_Assign --> UC_UpdateLocation : <<include>>
+
+UC_ProvideDetails ..> UC_EnterLot : <<extend>>
+
+UC_ViewDetails --> UC_VerifyClient : <<include>>
+
+@enduml

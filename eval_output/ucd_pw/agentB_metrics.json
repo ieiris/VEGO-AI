@@ -1,0 +1,100 @@
+{
+  "skill_version": "1.0.0",
+  "per_cluster_agreement": [
+    {
+      "cluster_id": "C1",
+      "agreement": 1.0,
+      "canonical_citation": "For each parking lot, the system will store a unique number, name, address, and city."
+    },
+    {
+      "cluster_id": "C2",
+      "agreement": 1.0,
+      "canonical_citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+    },
+    {
+      "cluster_id": "C3",
+      "agreement": 1.0,
+      "canonical_citation": "A gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time."
+    },
+    {
+      "cluster_id": "C4",
+      "agreement": 1.0,
+      "canonical_citation": "When a vehicle arrives, the system will get its data (from the gate sensor) and search the database for the corresponding vehicle number."
+    },
+    {
+      "cluster_id": "C5",
+      "agreement": 1.0,
+      "canonical_citation": "If the vehicle is found, the system will instruct the gate sensor to open the barrier."
+    },
+    {
+      "cluster_id": "C6",
+      "agreement": 1.0,
+      "canonical_citation": "If the barrier does not open, the client will have to follow the instructions displayed at the parking lot entrance."
+    },
+    {
+      "cluster_id": "C7",
+      "agreement": 1.0,
+      "canonical_citation": "These instructions guide the client to access the system and provide the required details, including first name, last name, mobile phone number, and three photos of the vehicle (front, rear, and side views)."
+    },
+    {
+      "cluster_id": "C8",
+      "agreement": 1.0,
+      "canonical_citation": "Based on the uploaded photos, the system automatically extracts the vehicle’s details: number, type (as text), color, size (small, medium, or large), and weight (in kg)."
+    }
+  ],
+  "overall_agreement": 1.0,
+  "true_positives": 7,
+  "false_positives": 1,
+  "false_negatives": 17,
+  "precision": 0.875,
+  "recall": 0.2917,
+  "f1": 0.4375,
+  "per_run_metrics": [
+    {
+      "run": 1,
+      "true_positives": 7,
+      "false_positives": 1,
+      "false_negatives": 17,
+      "precision": 0.875,
+      "recall": 0.2917,
+      "f1": 0.4375
+    },
+    {
+      "run": 2,
+      "true_positives": 7,
+      "false_positives": 1,
+      "false_negatives": 17,
+      "precision": 0.875,
+      "recall": 0.2917,
+      "f1": 0.4375
+    },
+    {
+      "run": 3,
+      "true_positives": 7,
+      "false_positives": 1,
+      "false_negatives": 17,
+      "precision": 0.875,
+      "recall": 0.2917,
+      "f1": 0.4375
+    }
+  ],
+  "unassigned_base_guidelines": [
+    "UC: Manage Parking Session, Actor: Gate Sensor",
+    "UC: Request to Move Vehicle, Actor: Conveyors Controller",
+    "UC: Update Conveyor Final Location, Actor: Conveyors Controller",
+    "UC: Get SMS with Parking Details, Actor: Client",
+    "UC: View Parking Details, Actor: Client",
+    "UC: Request Parking End, Actor: Client",
+    "UC: Request Payment, Actor: Client",
+    "UC: Import Price Lists, Actor: IRS",
+    "UC: Request to Handle Payment, Actor: Payment Gateway",
+    "UC: Get Payment Approval, Actor: Payment Gateway",
+    "UC: Issue a Receipt, Actor: Client",
+    "UC: Join to the Club, Actor: Client",
+    "I: Client-Member",
+    "UC: Choose Parking Lots, Actor: Member, Incl: Choose Parking Lots-Join to the Club",
+    "UC: Get Benefits, Actor: Member, Ext: Request to Handle Payment-Get Benefits",
+    "UC: Generate Annual Summary Report, Actor: Administrator",
+    "UC: Generate Customer Club Growth Report, Actor: Administrator"
+  ]
+}

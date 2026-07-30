@@ -1,0 +1,72 @@
+@startuml
+skinparam wrapWidth 200
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+    ActorFontColor Black
+    FontSize 12
+}
+
+left to right direction
+
+actor Customer
+actor "General Employee" as GeneralEmployee
+actor "Gefen System" as GefenSystem
+actor "Marketing Department Employees" as MarketingEmployees
+actor "Sales Staff" as SalesStaff
+
+GeneralEmployee <|-- SalesStaff
+GeneralEmployee <|-- MarketingEmployees
+
+rectangle "Cheers System" {
+    usecase "Place Order" as UC1
+    usecase "Add Order Details" as UC1a
+    usecase "Process Customer Order" as UC2
+    usecase "Assign Employee" as UC2a
+    usecase "Supply Customer and Order Data" as UC2b
+    usecase "Joint Order Process" as UC2c
+    usecase "Urgent Order Process" as UC2d
+    usecase "Generate Unproductive Employees Report" as UC3
+    usecase "Generate Wine Recommendation Report" as UC4
+    usecase "Update Wine Information" as UC5
+    usecase "Link Wine Types" as UC5a
+    usecase "Modify Price and Image" as UC5b
+    usecase "Recommend Occasions" as UC5c
+    usecase "Process Wine Data from Gefen" as UC6
+    usecase "Update Inventory Levels" as UC6a
+    usecase "Manage Storage Locations" as UC7
+    usecase "Generate Current Inventory Report" as UC8
+    usecase "Generate Wine and Producer Reports" as UC9
+    usecase "Generate Sales Quantities Report" as UC10
+    usecase "Pack Order" as UC11
+}
+
+Customer --> UC1
+UC1 --> UC1a : <<include>>
+
+SalesStaff -down-> UC2
+UC2 --> UC2a : <<include>>
+UC2 --> UC2b : <<include>>
+UC2c --> UC2 : <<extend>>
+UC2d --> UC2 : <<extend>>
+
+SalesStaff -down-> UC3
+SalesStaff -down-> UC4
+
+MarketingEmployees --> UC5
+UC5 --> UC5a : <<include>>
+UC5 --> UC5b : <<extend>>
+UC5 --> UC5c : <<extend>>
+
+MarketingEmployees --> UC6
+UC6 --> UC6a : <<include>>
+
+MarketingEmployees --> UC7
+MarketingEmployees --> UC8
+
+GefenSystem --> UC9
+GefenSystem --> UC10
+
+GeneralEmployee --> UC11
+@enduml

@@ -1,0 +1,377 @@
+{
+  "skill_version": "1.0.0",
+  "ranking": [
+    {
+      "rank": 1,
+      "case_id": "68124",
+      "total_score": 27.5,
+      "max_score": 27.0,
+      "score_pct": 101.9,
+      "overall_assessment": "The case model excellently complies with the guidelines, effectively integrating additional beneficial elements beyond the minimal requirements."
+    },
+    {
+      "rank": 2,
+      "case_id": "68092",
+      "total_score": 27.0,
+      "max_score": 27.0,
+      "score_pct": 100.0,
+      "overall_assessment": "The case model fully complies with all domain guidelines."
+    },
+    {
+      "rank": 3,
+      "case_id": "68145",
+      "total_score": 27.0,
+      "max_score": 27.0,
+      "score_pct": 100.0,
+      "overall_assessment": "The case model comprehensively satisfies the guidelines with a perfect score, though some stylistic UML improvements can be made."
+    },
+    {
+      "rank": 4,
+      "case_id": "68158",
+      "total_score": 27.0,
+      "max_score": 27.0,
+      "score_pct": 100.0,
+      "overall_assessment": "The case model fully satisfies all guidelines, demonstrating comprehensive alignment with domain expectations."
+    },
+    {
+      "rank": 5,
+      "case_id": "68061",
+      "total_score": 26.5,
+      "max_score": 27.0,
+      "score_pct": 98.1,
+      "overall_assessment": "The case model mostly satisfies the guidelines with minor improvements needed for explicit depiction of data interaction and minor language-related corrections."
+    },
+    {
+      "rank": 6,
+      "case_id": "68114",
+      "total_score": 26.0,
+      "max_score": 27.0,
+      "score_pct": 96.3,
+      "overall_assessment": "The case model for the 'Cheers' system is highly compliant with domain guidelines, successfully capturing nearly all specified requirements."
+    },
+    {
+      "rank": 7,
+      "case_id": "68162",
+      "total_score": 25.75,
+      "max_score": 27.0,
+      "score_pct": 95.4,
+      "overall_assessment": "The case model demonstrates a strong alignment with the domain guidelines, achieving over 95% compliance."
+    },
+    {
+      "rank": 8,
+      "case_id": "68074",
+      "total_score": 25.0,
+      "max_score": 27.0,
+      "score_pct": 92.6,
+      "overall_assessment": "The use case model effectively covers the majority of the domain guidelines, with only a few areas needing explicit detailing."
+    },
+    {
+      "rank": 9,
+      "case_id": "68121",
+      "total_score": 25.0,
+      "max_score": 27.0,
+      "score_pct": 92.6,
+      "overall_assessment": "The case model achieves a high level of compliance with most guidelines satisfied or partially satisfied, reflecting strong adherence to the domain guidelines."
+    },
+    {
+      "rank": 10,
+      "case_id": "68141",
+      "total_score": 25.0,
+      "max_score": 27.0,
+      "score_pct": 92.6,
+      "overall_assessment": "The case model shows strong compliance with the guidelines, with a few areas for further detail improvement."
+    },
+    {
+      "rank": 11,
+      "case_id": "68065",
+      "total_score": 24.5,
+      "max_score": 27.0,
+      "score_pct": 90.7,
+      "overall_assessment": "The case model shows strong compliance with the guidelines, addressing nearly all requirements effectively, with minor room for improvement."
+    },
+    {
+      "rank": 12,
+      "case_id": "68117",
+      "total_score": 24.5,
+      "max_score": 27.0,
+      "score_pct": 90.7,
+      "overall_assessment": "The case model for 'Cheers' system demonstrates strong compliance with the domain guidelines, meeting most expectations with some opportunities for clarifying customer order tracking specifics."
+    },
+    {
+      "rank": 13,
+      "case_id": "68127",
+      "total_score": 24.5,
+      "max_score": 27.0,
+      "score_pct": 90.7,
+      "overall_assessment": "The case model provides a strong representation of the required guidelines with room for slight improvement in detailing specific wine and inventory handling processes."
+    },
+    {
+      "rank": 14,
+      "case_id": "68115",
+      "total_score": 23.5,
+      "max_score": 27.0,
+      "score_pct": 87.0,
+      "overall_assessment": "The case model demonstrates strong compliance with domain guidelines, though some areas require minor adjustments."
+    },
+    {
+      "rank": 15,
+      "case_id": "68142",
+      "total_score": 23.0,
+      "max_score": 27.0,
+      "score_pct": 85.2,
+      "overall_assessment": "The case model demonstrates a strong alignment with the domain guidelines, effectively capturing key operations and interactions, though some areas related to inventory and storage details require further refinement."
+    },
+    {
+      "rank": 16,
+      "case_id": "68067",
+      "total_score": 22.5,
+      "max_score": 27.0,
+      "score_pct": 83.3,
+      "overall_assessment": "The case model largely complies with the domain guidelines, with most guidelines either satisfied or partially met, achieving a strong overall score."
+    },
+    {
+      "rank": 17,
+      "case_id": "68131",
+      "total_score": 22.5,
+      "max_score": 27.0,
+      "score_pct": 83.3,
+      "overall_assessment": "The case model demonstrates a strong alignment with domain guidelines, fulfilling most guidelines with minor areas for improvement."
+    },
+    {
+      "rank": 18,
+      "case_id": "68092",
+      "total_score": 21.5,
+      "max_score": 27.0,
+      "score_pct": 79.6,
+      "overall_assessment": "The case model effectively satisfies most guidelines with room for improvement in detailing specific data associations and conditions."
+    },
+    {
+      "rank": 19,
+      "case_id": "68097",
+      "total_score": 21.0,
+      "max_score": 27.0,
+      "score_pct": 77.8,
+      "overall_assessment": "The Cheers case model is well-done, satisfying most guidelines with room for improvement in detailing customer information and handling external interactions."
+    },
+    {
+      "rank": 20,
+      "case_id": "68122",
+      "total_score": 21.0,
+      "max_score": 27.0,
+      "score_pct": 77.8,
+      "overall_assessment": "The case model substantially meets the domain guidelines with a few partially satisfied aspects and enhancements reflected as alternatives."
+    },
+    {
+      "rank": 21,
+      "case_id": "68089",
+      "total_score": 20.0,
+      "max_score": 27.0,
+      "score_pct": 74.1,
+      "overall_assessment": "The case model demonstrates good compliance with the domain guidelines, though there are several areas marked partially-satisfied that could benefit from more detail."
+    },
+    {
+      "rank": 22,
+      "case_id": "68123",
+      "total_score": 19.5,
+      "max_score": 27.0,
+      "score_pct": 72.2,
+      "overall_assessment": "The model satisfies most guidelines but lacks explicitly detailed use cases for certain key functionalities, leading to some partial and unsatisfied scores."
+    },
+    {
+      "rank": 23,
+      "case_id": "68138",
+      "total_score": 19.5,
+      "max_score": 27.0,
+      "score_pct": 72.2,
+      "overall_assessment": "The Cheers system case model largely satisfies domain guidelines, with some areas of non-compliance and improvement needed in providing specific details and correct language use."
+    },
+    {
+      "rank": 24,
+      "case_id": "68163",
+      "total_score": 19.5,
+      "max_score": 27.0,
+      "score_pct": 72.2,
+      "overall_assessment": "The case model satisfies many core guidelines, but lacks completeness in specific areas and contains a notable domain error."
+    },
+    {
+      "rank": 25,
+      "case_id": "68086",
+      "total_score": 18.5,
+      "max_score": 27.0,
+      "score_pct": 68.5,
+      "overall_assessment": "The case model demonstrates good coverage of guidelines with room for improvement in specific functional and external integration use cases."
+    },
+    {
+      "rank": 26,
+      "case_id": "68106",
+      "total_score": 18.5,
+      "max_score": 27.0,
+      "score_pct": 68.5,
+      "overall_assessment": "The case model demonstrates reasonable compliance with domain guidelines, though several key areas such as customer details and inventory tracking remain underrepresented."
+    },
+    {
+      "rank": 27,
+      "case_id": "68139",
+      "total_score": 18.0,
+      "max_score": 27.0,
+      "score_pct": 66.7,
+      "overall_assessment": "The case model satisfies many guidelines, with room for improvement in representing external entities and detailed records."
+    },
+    {
+      "rank": 28,
+      "case_id": "68064",
+      "total_score": 17.5,
+      "max_score": 27.0,
+      "score_pct": 64.8,
+      "overall_assessment": "The case model demonstrates a moderate level of compliance, meeting several guidelines but lacking detail in key areas."
+    },
+    {
+      "rank": 29,
+      "case_id": "68077",
+      "total_score": 17.5,
+      "max_score": 27.0,
+      "score_pct": 64.8,
+      "overall_assessment": "The case model satisfies many guidelines but lacks details in certain areas, resulting in a moderate score."
+    },
+    {
+      "rank": 30,
+      "case_id": "68099",
+      "total_score": 17.5,
+      "max_score": 27.0,
+      "score_pct": 64.8,
+      "overall_assessment": "The case model demonstrates a moderate level of compliance with several guidelines fully satisfied but many partially met or unmet, indicating areas for improvement."
+    },
+    {
+      "rank": 31,
+      "case_id": "68113",
+      "total_score": 17.5,
+      "max_score": 27.0,
+      "score_pct": 64.8,
+      "overall_assessment": "The case model effectively meets many of the guidelines, though there are notable areas lacking explicit representation, particularly regarding system boundaries and customer detail recording."
+    },
+    {
+      "rank": 32,
+      "case_id": "68132",
+      "total_score": 17.5,
+      "max_score": 27.0,
+      "score_pct": 64.8,
+      "overall_assessment": "The case model meets several guidelines, but it has significant gaps in detailed functionality regarding employee orders, wine data management, and other specifics."
+    },
+    {
+      "rank": 33,
+      "case_id": "68084",
+      "total_score": 16.5,
+      "max_score": 27.0,
+      "score_pct": 61.1,
+      "overall_assessment": "The case model moderately satisfies domain guidelines, with opportunities for improvement in detailing specific functionalities."
+    },
+    {
+      "rank": 34,
+      "case_id": "68085",
+      "total_score": 16.5,
+      "max_score": 27.0,
+      "score_pct": 61.1,
+      "overall_assessment": "The case model satisfies most guidelines related to the 'Cheers' system but lacks in capturing certain detailed requirements, preventing a higher score."
+    },
+    {
+      "rank": 35,
+      "case_id": "68111",
+      "total_score": 16.5,
+      "max_score": 27.0,
+      "score_pct": 61.1,
+      "overall_assessment": "The case model meets the requirements moderately well, with strong compliance in most areas, though some details and specificities could be improved for complete alignment with guidelines."
+    },
+    {
+      "rank": 36,
+      "case_id": "68075",
+      "total_score": 16.0,
+      "max_score": 27.0,
+      "score_pct": 59.3,
+      "overall_assessment": "The case model meets many guidelines but lacks explicit representation for some key requirements."
+    },
+    {
+      "rank": 37,
+      "case_id": "68150",
+      "total_score": 15.5,
+      "max_score": 27.0,
+      "score_pct": 57.4,
+      "overall_assessment": "The case model partially satisfies the guidelines, with some guidelines fully met, but others lacking necessary detail or representation."
+    },
+    {
+      "rank": 38,
+      "case_id": "68153",
+      "total_score": 15.5,
+      "max_score": 27.0,
+      "score_pct": 57.4,
+      "overall_assessment": "The case model meets a majority of guidelines, though several key areas require additional detail or representation for full compliance."
+    },
+    {
+      "rank": 39,
+      "case_id": "68059",
+      "total_score": 15.0,
+      "max_score": 27.0,
+      "score_pct": 55.6,
+      "overall_assessment": "The case model satisfies several guidelines but lacks explicit representation for many required functionalities, leading to only a partially compliant score."
+    },
+    {
+      "rank": 40,
+      "case_id": "68128",
+      "total_score": 15.0,
+      "max_score": 27.0,
+      "score_pct": 55.6,
+      "overall_assessment": "The case model partially fulfills the guidelines with room for improvement, particularly in capturing details and employee ordering capabilities."
+    },
+    {
+      "rank": 41,
+      "case_id": "68160",
+      "total_score": 15.0,
+      "max_score": 27.0,
+      "score_pct": 55.6,
+      "overall_assessment": "The case model satisfies many guidelines with several partially satisfied or not addressed, and valid alternatives provide some additional value."
+    },
+    {
+      "rank": 42,
+      "case_id": "68156",
+      "total_score": 14.0,
+      "max_score": 27.0,
+      "score_pct": 51.9,
+      "overall_assessment": "The case model partially meets domain guidelines, with many guidelines satisfied or partially satisfied but several still not addressed."
+    },
+    {
+      "rank": 43,
+      "case_id": "68125",
+      "total_score": 13.5,
+      "max_score": 27.0,
+      "score_pct": 50.0,
+      "overall_assessment": "The case model meets about half of its compliance guidelines, with room for improvement in defining system boundaries and detailing use cases."
+    },
+    {
+      "rank": 44,
+      "case_id": "68116",
+      "total_score": 11.5,
+      "max_score": 27.0,
+      "score_pct": 42.6,
+      "overall_assessment": "The case model satisfies several key guidelines but lacks comprehensive coverage of customer and inventory management, leading to a below-average score."
+    },
+    {
+      "rank": 45,
+      "case_id": "68148",
+      "total_score": 11.5,
+      "max_score": 27.0,
+      "score_pct": 42.6,
+      "overall_assessment": "The case model partially satisfies the guidelines with potential improvement needed in detailing system functionalities and roles."
+    },
+    {
+      "rank": 46,
+      "case_id": "68118",
+      "total_score": 11.0,
+      "max_score": 27.0,
+      "score_pct": 40.7,
+      "overall_assessment": "The case model partially fulfills the domain guidelines, with several aspects satisfactorily covered but lacking detail in many key areas."
+    }
+  ],
+  "mean_pct": 73.6,
+  "min_pct": 40.7,
+  "max_pct": 101.9,
+  "std_pct": 17.3
+}

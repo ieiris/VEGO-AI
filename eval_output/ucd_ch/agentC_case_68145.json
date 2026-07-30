@@ -1,0 +1,414 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68145",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model defines use cases related to inventory management, customer management, and order processing aligning with the system's purpose.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The sales staff actor is depicted interacting with the 'Place Orders' use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There are specific use cases such as 'Regular Orders' and 'Urgent Orders' that categorize orders based on their type.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The 'Notify GalGalim for Delivery' use case indicates ordering delivery management by GalGalim, treated as external to the system.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The 'Joint Orders' use case includes tracking customer contributions for joint orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The case model shows 'Manage Customer Details' use case, which typically includes recording such customer information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The model allows Sales Staff to place orders, indicating employees may order under customer conditions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "'Urgent Orders' use case specifies that they are priority-based and processed individually.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "'Regular Orders' allows for multiple customers to partake in a single order, also 'Joint Orders' is included.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Alignment with 'Manage Customer Details' implies tracking customer details for all orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The same evidence as G7 applies, illustrating capability for employee orders similar to customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The 'Marketing Employees' actor is connected with 'Update Wine Details', indicating their specific privilege.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Sales Staff have associations mainly with placing orders, implying different access levels.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Sub-use cases under 'Update Wine Details' pertain to managing wine types and related attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The 'Recommend Occasions' use case under 'Update Wine Details' maps to marketing employees suggesting occasions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The 'Data Integration' use case with 'Gefen System' includes the 'Import Producer Data'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "'Update Purchase Quantities' under 'Data Integration' indicates receiving updates for inventory.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The overarching interactions with 'Data Integration' and 'Gefen System' imply managing producer info.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Details on storing manufacturer information aren't explicitly visible."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The sub-use case 'Update Prices and Images' correlates with the need to capture detailed wine data.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Not all aspects of wine data capture are explicitly covered."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "The wine details management inherently suggest catalog classification by identifiers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Marketing's ability to update wine types implies roles in linking wines to their type.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "'Track Wine Locations' under 'Manage Inventory' signifies tracking individual storage locations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "'Track Wine Locations' involves tracking bottle counts across storage locations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "'Update Inventory After Sale' signifies the need for inventory adjustments post-sale.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "'Unproductive Employees Report' within 'Generate Reports' directly maps to generating productivity reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "'Current Inventory Report' sub-use case has a direct connection with sending inventory data.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "'Wine Recommendation Report' sub-use case matches with generating customer preference reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G18",
+      "evidence": "The 'Manage Customer Details' use case suggests that the system is capable of storing detailed information, which by analogy would include manufacturer details, even if not explicitly shown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The presence of 'Data Integration' suggests capability for data storage related to producers, but explicit evidence of manufacturer information storage isn't provided in the model."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The 'Update Wine Details' use case encompasses sub-use cases for wine attribute management, which implies functionality for capturing comprehensive wine details, albeit not explicitly stated.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While 'Update Prices and Images' reflects some aspects of wine detail management, it doesn't explicitly cover all required details such as production year or sweetness level."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The 'Order Paid' status in the 'Track Order Status' use case.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Although not explicitly required by the guidelines, including 'Order Paid' status adds completeness to the order tracking process, reflecting financial completion, which is a practical consideration."
+    },
+    {
+      "fragment": "The 'Track Contribution' use case associated with 'Joint Orders'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Provides additional functionality that enhances the tracking of joint orders by detailing individual customer contributions, aligning with domain needs even if not directly stated."
+    },
+    {
+      "fragment": "The use of arrows instead of associations between use cases and actors.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "Arrow notation lacks clarity compared to standard UML associations, potentially leading to minor misunderstandings about relationships."
+    },
+    {
+      "fragment": "Skinparam actorStyle being set to awesome.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "While this does not affect the core functionality of the UML diagram, it diverges from standard expressions of actor appearance typically used in UML."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The 'Order Paid' status in the 'Track Order Status' use case.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'Track Contribution' use case associated with 'Joint Orders'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The use of arrows instead of associations between use cases and actors.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    },
+    {
+      "fragment": "Skinparam actorStyle being set to awesome.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    }
+  ],
+  "total_score": 27.0,
+  "max_score": 27.0,
+  "score_pct": 100.0,
+  "overall_assessment": "The case model comprehensively satisfies the guidelines with a perfect score, though some stylistic UML improvements can be made."
+}

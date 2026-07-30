@@ -1,0 +1,46 @@
+@startuml
+left to right direction
+
+actor "Customer" as Customer
+actor "Employee" as Employee
+actor "SalesStaff" as SalesStaff
+actor "MarketingStaff" as MarketingStaff
+actor "GalGalimCompany" as GalGalimCompany
+actor "GefenSystem" as GefenSystem
+
+usecase "Place Order" as PlaceOrder
+usecase "Apply Priority Handling" as ApplyPriorityHandling
+usecase "Combine Orders" as CombineOrders
+usecase "Handling Orders" as HandlingOrders
+usecase "Producing Wine Recommendation Report" as WineRecommendationReport
+usecase "Creating Unproductive Employees Report" as UnproductiveEmployeesReport
+usecase "Update Wine Information" as UpdateWineInfo
+usecase "Recommend Occasion Suitable For Wine" as RecommendOccasion
+usecase "Link Wine to Wine Type" as LinkWineToType
+usecase "View Wine Information" as ViewWineInfo
+usecase "Browse available wines" as BrowseWines
+usecase "Provide XML Data Regarding Producers And Wine" as ProvideXMLData
+usecase "Receive report of inventory levels of all wines in JSON format" as ReceiveInventoryReport
+usecase "Deliver Order" as DeliverOrder
+
+Customer -- PlaceOrder
+Employee -- PlaceOrder
+PlaceOrder .. ApplyPriorityHandling : <<extend>>
+PlaceOrder .. CombineOrders : <<extend>>
+Employee -- ViewWineInfo
+ViewWineInfo .. BrowseWines : <<extend>>
+
+Employee <|-- SalesStaff
+Employee <|-- MarketingStaff
+SalesStaff -- HandlingOrders
+SalesStaff -- UnproductiveEmployeesReport
+MarketingStaff -- WineRecommendationReport
+MarketingStaff -- UpdateWineInfo
+MarketingStaff -- RecommendOccasion
+MarketingStaff -- LinkWineToType
+
+GalGalimCompany -- DeliverOrder
+GefenSystem -- ProvideXMLData
+ProvideXMLData .. ReceiveInventoryReport : <<include>>
+
+@enduml

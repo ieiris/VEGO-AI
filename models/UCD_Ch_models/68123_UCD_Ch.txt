@@ -1,0 +1,87 @@
+@startuml
+!theme reddress-lightgreen
+
+' Actor definitions
+actor "Sales Staff" as SalesStaff #Green
+actor "Marketing Employee" as MarketingEmployee #Blue
+actor "Employee" as Employee #Orange
+actor "Gefen System" as GefenSystem #Purple
+
+' Set the layout to expand horizontally
+left to right direction
+
+' Customize colors and layout
+skinparam usecase {
+ArrowColor black
+ActorBorderColor black
+BorderColor black
+BackgroundColor white
+FontSize 20
+}
+
+skinparam actor {
+FontSize 20
+}
+
+skinparam stereotype {
+FontSize 20
+}
+
+skinparam Arrow {
+FontSize 20
+}
+
+skinparam dpi 150
+skinparam padding 20
+
+rectangle "Cheers System" {
+usecase "Access to viow informations" as viewaccess
+usecase "Place Order" as PlaceOrder
+usecase "place Urgent Order" as urgentOrder
+usecase "place Regular Order" as regularOrder
+usecase "place Joined Order" as joinedOrder
+usecase "Specify Priority Level and Delivery Time" as specifyPriorityAndTime
+usecase "Browse Available Wines" as BrowseWines
+usecase "Generate Unproductive Employees Report" as GenEmployeeReport
+usecase "Produce Wine Recommendation Report" as ProduceWineReport
+usecase "Receive XML Data from Gefen" as ReceiveXMLData
+usecase "Update Wine Information" as UpdateWineInfo
+usecase "Link Wines to Their Types" as linkWines
+usecase "Recommend Occasions for Wine" as RecommendOccasions
+usecase "Modify Price Details and Product Images" as ModifyWineDetails
+usecase "Provide Weekly Updates on Quantity Purchased" as ProvideUpdates
+usecase "Send XML Data for the System" as SendXMLData
+usecase "Receive JSON Format Every Weekend" as ReceiveFormat
+}
+
+' Gefen System Relationships
+GefenSystem --> ReceiveFormat #Purple
+GefenSystem --> ProvideUpdates #Purple
+GefenSystem --> SendXMLData #Purple
+
+' Employee and Sub-actors
+SalesStaff --|> Employee #Green
+MarketingEmployee --|> Employee #Blue
+
+Employee -->viewaccess
+' Sales Staff Use Cases
+SalesStaff --> PlaceOrder #Green
+SalesStaff --> GenEmployeeReport #Green
+SalesStaff --> ProduceWineReport #Green
+
+PlaceOrder <|-- regularOrder : <<extend>>
+regularOrder <|-- joinedOrder : <<extend>>
+PlaceOrder <|-- urgentOrder : <<extend>>
+urgentOrder .> specifyPriorityAndTime : <<include>>
+
+PlaceOrder <|-- BrowseWines : <<extend>>
+
+' Marketing Employee Use Cases
+MarketingEmployee --> UpdateWineInfo #Blue
+MarketingEmployee --> ReceiveXMLData #Blue
+
+ReceiveXMLData .> linkWines : <<include>>
+linkWines <|-- ModifyWineDetails : <<extend>>
+
+UpdateWineInfo <|-- RecommendOccasions : <<extend>>
+@enduml

@@ -1,0 +1,184 @@
+@startuml
+title "Class Diagram"
+
+abstract class Person {
+  - personID: Long
+ 
+  
+}
+
+abstract class Employee extends Person {
+  - name: String
+  - phoneNumber: String
+  - email: String
+  - officeAddress: String
+  - employmentStartDate: Date
+  + placeOrder()
+  + viewOrderHistory()
+  + updateEmployeeInfo()
+  + browseWine()
+}
+
+class Customer extends Person {
+  - name: String
+  - phoneNumber: String
+  - email: String
+  - deliveryAddress: String
+  - dateOfFirstContact: Date
+  - foodPreferences: List<String>
+  - occasionPreferences: List<String>
+  - wineTypePreferences: List<String>
+  + placeOrder()
+  + viewOrderHistory()
+  + updateCustomerInfo()
+  + getPurchaseHistory()
+  + setPreferences(foodPreferences: List<String>, occasionPreferences: List<String>, wineTypePreferences: List<String>)
+  + getPreferences(): Map<String, Object>
+}
+
+class SalesEmployee extends Employee {
+  + generateRecommendations()
+  + generateUnproductiveEmployeeReport(Date date )
+  + assignOrder()
+}
+
+class MarketingEmployee extends Employee {
+  + updateWineInfo()
+  + addOccasionRecommendation()
+}
+
+enum OrderStatus {
+  IN_PROCESS
+  DISPATCHED
+  DELIVERED
+  PAID
+  SUSPENDED
+  CANCELED
+}
+
+enum Sweetness {
+  DRY
+  SEMI_DRY
+  SEMI_SWEET
+  SWEET
+}
+
+enum LocationType {
+  INDOOR
+  OUTDOOR
+}
+
+enum Season {
+  WINTER
+  SUMMER
+  SPRING
+  AUTUMN
+}
+
+abstract class Order {
+  - orderID: int
+  - orderDate: Date
+  - status: OrderStatus
+  - shipmentDate: Date
+  - assignedEmployee: Employee
+  + createOrderAndUpdateInventory()
+  + updateOrderAndInventoryStatus()
+  + cancelOrder()
+  + calculateTotalQuantity()
+}
+
+class RegularOrder extends Order {
+  - mainCustomer: Customer
+  - orderItems: HashMap<Wine, Integer>
+  + addWineToOrder(Wine wine, int quantity)
+  + removeWineFromOrder(Wine wine, int quantity)
+}
+
+class UrgentOrder extends RegularOrder {
+  - priorityLevel: int
+  - expectedDeliveryTime: Date
+}
+
+class JointOrder extends Order {
+  - mainCustomer: Customer
+  - customersAndOrders: HashMap<Customer, HashMap<Wine, Integer>>
+  + addCustomersAndWineToOrder(HashMap<Customer, HashMap<Wine, Integer>>)
+  + removeCustomersFromOrder(List<Customer> customers)
+  + addWineToOrder(Wine wine, int quantity)
+  + removeWineFromOrder(Wine wine, int quantity)
+}
+
+class WineType {
+  - type: String
+  - serialNumber: double
+  - foodPairings: List<String>
+  - occasionRecommendations: List<String>
+  - recipeLinks: List<String>
+  - wines: List<Wine>
+  + addFoodPairing(String foodPairing)
+  + removeFoodPairing(String foodPairing)
+  + addOccasionRecommendation(String occasionRecommendation)
+  + removeOccasionRecommendation(String occasionRecommendation)
+  + getFoodPairings()
+  + getOccasionRecommendations()
+}
+
+class Occasion {
+  - description: String
+  - seasons: List<Season>
+  - locationTypes: List<LocationType>
+}
+
+class Wine {
+  - manufacturerNumber: double
+  - catalogNumber: double
+  - name: String
+  - picture: String
+  - pricePerBottle: double
+  - storageLocations: List<StorageLocation>
+  - sweetness: Sweetness
+  - Description: String
+  - Production Year: int
+}
+
+class StorageLocation {
+  - storageLocationID: int
+  - name: String
+  - uniqueNumber: int
+  - locationType: LocationType
+  - inventory: HashMap<Wine, Integer>
+  + addInventory(Wine wine, int quantity)
+  + removeInventory(Wine wine, int quantity)
+}
+
+class Manufacturer {
+  - manufacturerID: int
+  - fullName: String
+  - contactPhoneNumber: String
+  - address: String
+  - email: String
+}
+
+Customer "1.." -- "1..*" Order : places
+Order "1.." -- "1.." Wine : contains
+WineType "1" -- "1..*" Wine : categorizes
+Manufacturer "1" -- "1..*" Wine : produces
+Employee "1" -- "0..*" Order : manages
+SalesEmployee "1" --* "0..*" Customer: generates recommendations for
+MarketingEmployee "1" --* "0..*" Wine : updates information for
+MarketingEmployee "1" --* "0..*" WineType : updates type information for
+Order "1.." -- "1.." StorageLocation : updates inventory in
+Employee -- "0..1" Customer : can act as a customer
+Occasion "1.." -- "1..*" WineType : recommended for
+StorageLocation "1.." -- "1..*" Wine : stores
+Manufacturer "1" -- "1..*" StorageLocation : supplies to
+
+OrderStatus -- "1" Order : "defines"
+Sweetness -- "1" Wine : "defines"
+LocationType -- "1" StorageLocation : "defines"
+LocationType -- "1" Occasion : "defines"
+
+Season -- "1..*" Occasion : "defines"
+@enduml
+
+

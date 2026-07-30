@@ -1,0 +1,237 @@
+@startuml
+
+'===========================
+' Enumerations
+'===========================
+enum Color {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+enum PhotoType {
+  FRONT
+  REAR
+  SIDE
+}
+
+enum Size {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum ReportFormat {
+  PDF
+  XML
+}
+
+'===========================
+' Core System
+'===========================
+class ParkWiseSys {
+  +updateParkingLotDetails(lotNum: int, name: String, streetNum: String, homeNum: String, zipCode: String, city: String): void
+  +getParkingLotById(lotNum: int): ParkingLot
+  +handleVehicleArrival(lotNum: int, vehicleNum: String): void
+  +handleVehicleDeparture(lotNum: int, vehicleNum: String): void
+  +registerClientAndVehicle(firstName: String, lastName: String, mobile: String, photos: List<VehiclePhoto>): Vehicle
+  +updateVehicleClientAssociation(client: Client, vehicle: Vehicle): void
+  +startParkingSession(vehicle: Vehicle, parkingLot: ParkingLot): ParkingSession
+  +endParking(vehicleNumber: String, phone: String): void
+  +getVehicleLocationConveyor(vehicle: Vehicle): Conveyor
+  +getVehicleLocationParkingSpace(vehicle: Vehicle): ParkingSpace
+  +getParkingDetailsByPhone(mobileNumber: String): ParkingSession
+  +findVehicleByNumber(vehicleNum: String): Vehicle
+  +processPayment(session: ParkingSession, client: Client): void
+  +issueReceipt(session: ParkingSession, payment: Payment): Receipt
+  +importPriceListFromIRS(jsonData: String): PriceList
+  +assignPriceListToParkingLot(parkingLot: ParkingLot, priceList: PriceList, validFrom: Date, validTo: Date): void
+  +getEffectivePriceList(parkingLot: ParkingLot, at: DateTime): PriceList
+  +registerClientToClub(client: Client): ClubMember
+  +addPreferredParkingLot(member: ClubMember, lot: ParkingLot, date: Date): void
+  +applyClubBenefitsToSession(member: ClubMember, session: ParkingSession): void
+  +isFirstFreeSession(member: ClubMember, parkingLot: ParkingLot, DateOfDay: Date): boolean
+  +generateAnnualSummaryReport(year: int, format: ReportFormat)
+  +generateCustomerClubGrowthReport(year: int, format: ReportFormat)
+}
+
+'===========================
+' Parking Lot & Structure
+'===========================
+class ParkingLot {
+  +lotNum: int
+  +name: String
+  +streetNum: String
+  +homeNum: String
+  +zipCode: String
+  +city: String
+  +totalSpaces: int
+  +availableSpaces: int
+  +updateDetails(name: String, streetNum: String, homeNum: String, zipCode: String, city: String): void
+  +isFull(): boolean
+  +getActivePriceList(onDate: Date): PriceList
+}
+
+class ParkingSpace {
+  +spaceNum: int
+  +size: Size
+  +location: Location
+  +isOccupied: boolean
+  +canAccommodate(vehicle: Vehicle): boolean
+}
+
+class Conveyor {
+  +conveyorNum: int
+  +maxVehicleWeight: double
+  +location: Location
+  +isAvailable: boolean
+  +canHandle(vehicle: Vehicle): boolean
+}
+
+class Location {
+  +locationNum: int
+  +floor: int
+  +x: double
+  +y: double
+  +distanceTo(other: Location): double
+}
+
+'===========================
+' Client, Vehicle, Session
+'===========================
+class Client {
+  +clientNum: int
+  +firstName: String
+  +lastName: String
+  +mobileNumber: String
+  +addVehicle(vehicle: Vehicle): void
+  +updateDetails(firstName: String, lastName: String, mobile: String, photos: List<VehiclePhoto>): void
+}
+
+class Vehicle {
+  +vehicleNum: int
+  +type: String
+  +color: Color
+  +size: Size
+  +weightKg: double
+  +setOwner(client: Client): void
+  +addPhoto(photo: VehiclePhoto): void
+}
+
+class VehiclePhoto {
+  +photoNum: int
+  +photoType: PhotoType
+  +path: String
+}
+
+class ParkingSession {
+  +startTime: DateTime
+  +endTime: DateTime
+  +isFree: boolean
+  +start(vehicle: Vehicle): void
+  +close(endTime: DateTime): void
+  +calculateDurationHours(): double
+  +calculateBaseAmount(priceList: PriceList): double
+}
+
+'===========================
+' Pricing & Payments
+'===========================
+class PriceList {
+  +priceListNum: int
+  +firstHourPrice: double
+  +additionalHourPrice: double
+  +fullDayPrice: double
+  +calculateAmount(durationHours: double): double
+}
+
+class ParkingLotPriceHistory {
+  +fromDate: Date
+  +toDate: Date
+}
+
+class Payment {
+  +paymentNum: int
+  +amount: double
+  +markApproved(): void
+}
+
+class Receipt {
+  +receiptNum: int
+  +amount: double
+  +hours: double
+  +priceRateDescription: String
+}
+
+'===========================
+' Club Member & Preferences
+'===========================
+class ClubMember {
+  +registrationDate: Date
+  +fixedDiscountRate: double
+  +addPreferredParkingLot(lot: ParkingLot, selectionDate: Date): void
+  +isEligibleForFreeFirstSession(session: ParkingSession): boolean
+  +markFreeSessionUsed(month: YearMonth): void
+}
+
+class PreferredParkingLot {
+  +selectionId: int
+  +selectionDate: Date
+}
+
+'===========================
+' Inheritance
+'===========================
+Client <|-- ClubMember : {incomplete}
+
+'===========================
+' Associations, Aggregations, Compositions
+'===========================
+
+' ParkingLot structure
+ParkingLot "1" *-- "1..*" ParkingSpace
+ParkingLot "1" o-- "1..*" Conveyor
+ParkingSpace "1" *-- "1" Location
+Conveyor   "1" *-- "1" Location
+
+' Client / vehicle / session
+Client       "1" -- "1..*" Vehicle
+Vehicle      "1" *-- "3"   VehiclePhoto
+Vehicle      "1" -- "1..*" ParkingSession
+ParkingSpace "1" -- "0..1" Vehicle
+Conveyor   "0..1" -- "0..1" Vehicle
+ParkingLot   "1" -- "0..*" ParkingSession
+
+' Many-to-many between ParkingLot and PriceList with association class
+ParkingLot "0..*" -- "0..*" PriceList : price history
+(ParkingLot, PriceList) .. ParkingLotPriceHistory
+
+' Payments / receipts
+Client   "1" -- "0..*" Payment
+Payment  "1" -- "0..1" Receipt
+
+' Club & preferred lots (association class)
+ClubMember "1" *-- "0..*" PreferredParkingLot
+ParkingLot "1" -- "0..*" PreferredParkingLot
+
+' System compositions (logical ownership)
+ParkWiseSys "1" *-- "0..*" ParkingLot
+ParkWiseSys "1" *-- "0..*" Client
+ParkWiseSys "1" *-- "0..*" Vehicle
+ParkWiseSys "1" *-- "0..*" PriceList
+ParkWiseSys "1" *-- "0..*" ParkingLotPriceHistory
+ParkWiseSys "1" *-- "0..*" Payment
+ParkWiseSys "1" *-- "0..*" Receipt
+ParkWiseSys "1" *-- "0..*" ClubMember
+ParkWiseSys "1" *-- "0..*" PreferredParkingLot
+
+' Enum associations (dashed, no labels)
+Vehicle      ..> Color
+Vehicle      ..> Size
+ParkingSpace ..> Size
+VehiclePhoto ..> PhotoType
+ParkWiseSys  ..> ReportFormat
+
+@enduml

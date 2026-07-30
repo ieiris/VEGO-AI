@@ -1,0 +1,218 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' ==== Enums ====
+enum VehicleSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum VehicleColor {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+enum Status {
+ Pending
+ Approved
+ Delinced
+}
+
+enum VehiclePhotoT {
+Front
+Rear
+Back
+}
+
+
+
+' ==== Core data classes ====
+class ParkingLot {
+  +parkingLotId: int
+  +name: String
+  +address: String
+  +city: String
+  +totalSpaces: int
+  +availableSpaces: int
+}
+
+class GateSensor {
+  +gateSensorId: int
+  +locationDescription: String
+}
+
+class Conveyor {
+  +conveyorId: int
+  +floorNumber: int
+  +posX: int
+  +posY: int
+  +maxVehicleWeightKg: double
+}
+
+class ParkingSpace {
+  +parkingSpaceId: int
+  +floorNumber: int
+  +posX: int
+  +posY: int
+  +size: VehicleSize
+  +isOccupied: boolean
+}
+
+class Client {
+  +clientId: int
+  +firstName: String
+  +lastName: String
+  +mobilePhone: String
+}
+
+class ClientClub {
+  +registrationDate: Date
+}
+
+class PreferredParkingLot {
+  +selectionDate: Date
+}
+
+class Vehicle {
+  +vehicleId: String
+  +type: String
+  +color: VehicleColor
+  +size: VehicleSize
+  +weightKg: double
+}
+
+class VehiclePhoto {
+  +photoId: int
+  +photoType: String
+  +filePath: String
+}
+
+class ParkingSession {
+  +sessionId: int
+  +startTime: DateTime
+  +endTime: DateTime
+  +totalHours: double
+  +isFreeSession: boolean
+  +rawAmount: decimal
+  +discountAmount: decimal
+  +finalAmount: decimal
+  +status: String
+  +currentLocationType: String
+}
+
+class PriceList {
+  +priceListId: int
+  +effectiveFromDate: Date
+  +firstHourPrice: decimal
+  +additionalHourPrice: decimal
+  +fullDayPrice: decimal
+}
+
+class Payment {
+  +paymentId: int
+  +amount: decimal
+  +status: String
+  +requestTime: DateTime
+  +approvalTime: DateTime
+}
+
+class Receipt {
+  +receiptId: int
+  +issueTime: DateTime
+  +receiptNumber: String
+}
+
+class SmsLog {
+  +smsId: int
+  +phoneNumber: String
+  +sentTime: DateTime
+  +messageType: String
+}
+
+' ==== Report & service classes ====
+class AnnualSummaryReport {
+  +year: int
+}
+
+class CustomerClubGrowthReport {
+  +year: int
+}
+
+class ParkWiseSystem {
+  +startParkingSession(vehicle: Vehicle, lot: ParkingLot): ParkingSession
+  +requestVehicleReturn(vehicleNumber: String, phone: String): void
+  +calculateParkingFee(session: ParkingSession): decimal
+  +applyClientClubDiscount(session: ParkingSession): void
+  +generateAnnualSummaryReport(year: int): AnnualSummaryReport
+  +generateCustomerClubGrowthReport(year: int): CustomerClubGrowthReport
+}
+
+class PaymentGateway <<external>>
+class SmsService <<external>>
+class IntegratedRateService <<external>>
+class ConveyorsController <<external>>
+
+' ==== Associations (multiplicities) ====
+
+' Parking lot structure
+ParkingLot "1" o-- "0..*" ParkingSpace : contains
+ParkingLot "1" o-- "0..*" Conveyor : has
+ParkingLot "1" o-- "0..*" GateSensor : uses
+ParkingLot "1" o-- "0..*" ParkingSession : sessions
+ParkingLot "1" o-- "1..*" PriceList : price history
+
+' Clients, vehicles, club
+Client "1" o-- "0..1" ClientClub : membership
+Client "1" o-- "0..*" Vehicle : owns
+Client "1" o-- "0..*" PreferredParkingLot : preferences
+ParkingLot "1" o-- "0..*" PreferredParkingLot : preferredBy
+
+Vehicle "1" o-- "0..*" VehiclePhoto : photos
+Vehicle "1" o-- "0..*" ParkingSession : sessions
+
+' Session location
+ParkingSession "0..1" o-- "0..1" ParkingSpace : parkedIn
+ParkingSession "0..1" o-- "0..1" Conveyor : onConveyor
+
+' Payments, receipts, SMS
+ParkingSession "1" o-- "0..*" Payment : payments
+Payment "0..1" o-- "0..1" Receipt : paymentReceipt
+
+' Receipt linked to session (for client/vehicle/parking details)
+ParkingSession "1" o-- "0..*" Receipt : receipts
+
+ParkingSession "1" o-- "0..*" SmsLog : sms
+Client "1" o-- "0..*" SmsLog : recipient
+
+' Reports use core data
+ParkWiseSystem ..> ParkingSession
+ParkWiseSystem ..> ParkingLot
+ParkWiseSystem ..> Client
+ParkWiseSystem ..> PriceList
+ParkWiseSystem ..> AnnualSummaryReport
+ParkWiseSystem ..> CustomerClubGrowthReport
+
+' External services
+ParkWiseSystem ..> PaymentGateway
+ParkWiseSystem ..> SmsService
+ParkWiseSystem ..> IntegratedRateService
+ParkWiseSystem ..> ConveyorsController
+ParkWiseSystem ..> GateSensor
+
+class AnnualSummaryReport {
+  +year: int
+  ' conceptual only: list of lot summaries
+}
+
+class AnnualSummaryReportRow {
+  +totalAmount: decimal
+  +otherColorVehiclesCount: int
+}
+
+ParkingLot "1" o-- "0..*" AnnualSummaryReportRow : appearsIn
+AnnualSummaryReport "1" o-- "1..*" AnnualSummaryReportRow : rows
+@enduml

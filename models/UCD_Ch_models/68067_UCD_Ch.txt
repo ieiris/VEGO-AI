@@ -1,0 +1,80 @@
+@startuml
+left to right direction
+
+' Define Actors
+actor "Sales Employee" as SE #line:gray
+actor "Marketing Employee" as ME #line:gray
+actor "General Employee" as GE #line:gray
+actor "Gefen System" as GS #line:gray
+
+' System Boundary
+rectangle "Cheers System" {
+
+    ' General Employee Use Case
+    usecase "View Wine Information and Types" as UC_ViewWines
+
+    ' Sales Employee Use Cases
+    usecase "Place Orders for Customer" as UC_PlaceOrder
+    usecase "Generate Unproductive Employees Report" as UC_UnproductiveReport
+    usecase "Generate Wine Recommendation Report" as UC_WineRecommendation
+
+    usecase "Browse Wines" as UC_BrowseWines
+    usecase "Categorize Order Urgency" as UC_OrderUrgency
+    usecase "Supply Customer Data" as UC_SupplyCustomer
+
+    ' Extend Use Cases for Sales Employee
+    usecase "Check Wine Availability in Stock" as UC_CheckWineAvailability
+
+    ' Marketing Employee Use Cases
+    usecase "Update Wine Information" as UC_UpdateWineInfo
+    usecase "Update Wine Types" as UC_UpdateWineTypes
+    usecase "Recommend Occasions for Wine" as UC_RecommendOccasions
+    usecase "Link Wine to Type" as UC_LinkWineType
+
+    ' Extend Use Cases for Marketing Employee
+    usecase "Update Product Image" as UC_UpdateImage
+    usecase "Update Product Price" as UC_UpdatePrice
+
+    ' Gefen System Use Cases
+    usecase "Receive Current Inventory Report" as UC_ReceiveInventory
+    usecase "Send Wine Producer Data (XML)" as UC_ReceiveWineData
+    usecase "Send Weekly Inventory Updates" as UC_SendWeeklyUpdates
+}
+
+' General Employee Inheritance
+GE <|-- SE
+GE <|-- ME
+
+' General Employee Connections
+GE --> UC_ViewWines
+
+' Sales Employee Connections
+SE --> UC_PlaceOrder
+UC_PlaceOrder -[dotted]-> UC_BrowseWines : <<include>>
+UC_PlaceOrder -[dotted]-> UC_OrderUrgency : <<include>>
+UC_PlaceOrder -[dotted]-> UC_SupplyCustomer : <<include>>
+UC_PlaceOrder ..> UC_CheckWineAvailability : <<extend>>
+
+SE --> UC_UnproductiveReport
+SE --> UC_WineRecommendation
+
+' Marketing Employee Connections
+ME --> UC_UpdateWineInfo
+ME --> UC_UpdateWineTypes
+ME --> UC_RecommendOccasions
+ME --> UC_LinkWineType
+UC_UpdateWineInfo ..> UC_UpdateImage : <<extend>>
+UC_UpdateWineInfo ..> UC_UpdatePrice : <<extend>>
+
+' Gefen System Connections
+GS --> UC_ReceiveWineData
+GS --> UC_SendWeeklyUpdates
+GS <-- UC_ReceiveInventory : "Receives Report"
+
+' Add spacing between actors
+SE -[hidden]-> ME
+ME -[hidden]-> GE
+GE -[hidden]-> GS
+
+
+@enduml

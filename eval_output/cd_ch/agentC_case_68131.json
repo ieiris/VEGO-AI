@@ -1,0 +1,390 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68131",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model outlines the Cheers system by detailing the relationships and responsibilities surrounding inventory, customer, and order processing, which aligns with the system description for management by 'Wine Ha'Emek'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The SalesEmployee class has operations related to managing customer orders, such as placing orders and assigning each order to a specific employee.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The Order class contains attributes for order number, order date, status, shipment date, and assigned employee ID. Employee class captures detailed employee information including ID, name, phone number, office address, and start date.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not explicitly capture the involvement of an external company for delivery.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Orders can link to multiple wines in different quantities through the Order_Wine class, and the JointOrder class allows for multiple customers on an order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Customer class includes attributes for customer ID, name, phone number, address, email, and first contact date, covering the required customer attributes in orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The Case Model includes employees as part of the order system; however, there is no explicit statement that confirms employees can order wines like regular customers.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No explicit mechanism in the roles for employee ordering under the same customer conditions."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The design of the UrgentOrder class implies handling orders with priority by associating orderID and priority level attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder class includes attributes to specify priority level and expected delivery time, aligning with this requirement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The RegularOrder class supports orders involving multiple customers, as suggested by the JointOrder class model.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The JointOrder association logs multiple relationships between customers and orders, tracking wines and quantities for each customer in a joint order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Attributes for customer details are already part of the Customer class; however, no explicit function for employee ordering is defined.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The ability for employees to order under the same conditions isn't directly established in operations or attributes."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The MarketingEmployee class has operations designated for updating wine information, adhering to the guideline that only marketing staff have such permissions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesEmployee carries functions for generating wine-related reports, indicating access to browse available wine selections.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType class in the case model uses serialNumber and typeName to distinguish wine types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The WineType class includes attributes for food pairings and recipe links, which are part of the details linked to wine types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Occasion class in the model includes attributes for description, season, and location, allowing marketing staff to recommend suitable occasions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The role of external system impacts such as data reception is not explicitly defined in model classes or relationships.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class captures manufacturer details, including contact information and assigns a unique identifier.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Attributes under the Wine class, such as wineName, description, productionYear, pricePerBottle, and sweetness, encompass key wine attributes described in the guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wines are differentiated using manufacturerNumber and catalogNumber in the Wine class according to the outlined differentiation requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "The MarketingEmployee class operations include linking wines to types and modifying price and images, consistent with the guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "StorageLocation class specifies unique locationNumber and locationName, aligning with the storage location guidelines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Wine_StorageLocation class tracks wine quantity and storage location, fulfilling the requirement to track bottles at each location.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "There is no explicit evidence for inventory update processes linked to sales in operations or classes.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Operations in the SalesEmployee class include generating reports that align with the outlined reporting needs in the Cheers system.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "There are no associations or dependencies in the UML diagram related to 'GalGalim' delivering orders or any class representing an external delivery company.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The involvement of an external company like 'GalGalim' is not depicted in the class diagram, nor is there a dependency relationship that shows relying on external delivery services."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The UML does not show any operations or classes that permit employees to place orders like regular customers. The model includes Employees in relationships with orders but does not explicitly allow them to place orders.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is no visible evidence in the model to suggest that employees have the capability to place orders under the same conditions as regular customers."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "While Customer attributes are well defined, the UML does not explicitly show employee participation in orders under customer rules, lacking an explicit mechanism or operation for this.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Attributes and relationships exist for customers, but the model lacks clarity on employees placing orders as customers, leaving this aspect ambiguous."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The model does not include any integration or interaction points with the external system 'Gefen' for monthly data updates on producers, nor is XML data handling depicted.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is no representation of external system data flow or dependency in the current UML, which is necessary to satisfy the requirement."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Though the Wine_StorageLocation association aids in tracking wine quantities, there are no operations or mechanisms shown for updating inventory post-sale.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "While inventory levels are tracked, the model lacks any processes, operations, or methods for updating inventory following sales, which is needed for compliance."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The use of classes UrgentOrder and RegularOrder inheriting from Order imply that there is a distinction between order types in terms of behavior or functionality.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This use of inheritance may provide a way to differentiate functionality between urgent and regular orders, which is a valid design choice even if not directly specified by guidelines."
+    },
+    {
+      "fragment": "The absence of explicit associations or dependencies depicting integration with the external systems like 'Gefen' or 'GalGalim', which are mentioned in the guidelines.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Since external interactions with 'Gefen' for data updates and reliance on 'GalGalim' for deliveries are mentioned in the guidelines, their absence in the UML can lead to misunderstanding about the system's capabilities and boundaries."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Highest compliance from existing_mapping and potential_found."
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Highest compliance from existing_mapping and potential_found."
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The use of classes UrgentOrder and RegularOrder inheriting from Order imply that there is a distinction between order types in terms of behavior or functionality.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The absence of explicit associations or dependencies depicting integration with the external systems like 'Gefen' or 'GalGalim', which are mentioned in the guidelines.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    }
+  ],
+  "total_score": 21.5,
+  "max_score": 26.0,
+  "score_pct": 82.7,
+  "overall_assessment": "The case model largely complies with domain guidelines, but lacks representation of external system interactions and employee order functionalities."
+}

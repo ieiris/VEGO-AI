@@ -1,0 +1,91 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' Define Actors
+actor "Administrator" as Admin
+actor "Client" as Client
+actor "Club Member" as Member
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors' Controller (CC)" as CC
+actor "Integrated Rate Service (IRS)" as IRS
+actor "Payment Gateway (PG)" as PG
+
+' Inheritance: A Club Member IS A Client
+Client <|-- Member
+
+package "ParkWise Lots Information System" {
+
+    ' Administrative Use Cases
+    usecase "Update Parking Lot Details" as UC_UpdateLots
+    usecase "Generate Annual Summary Report" as UC_RepAnnual
+    usecase "Generate Customer Club Growth Report" as UC_RepClub
+
+    ' Entry Process
+    usecase "Handle Vehicle Arrival" as UC_Arrival
+    usecase "Open Barrier" as UC_OpenBarrier
+    usecase "Register Entry Details\n(Upload Photos & Data)" as UC_Register
+    usecase "Extract Vehicle Details" as UC_Extract <<System Process>>
+
+    ' Parking Process
+    usecase "Handle Vehicle Transport" as UC_Transport
+    usecase "Run Optimization Algorithm\n(Find Nearest Space)" as UC_Optimize
+    usecase "View Parking Details" as UC_ViewDetails
+
+    ' Club Management
+    usecase "Join Customer Club" as UC_JoinClub
+    usecase "Manage Preferred Lots" as UC_PrefLots
+
+    ' Departure & Payment
+    usecase "End Parking" as UC_EndParking
+    usecase "Pay for Parking" as UC_Pay
+    usecase "Request Receipt" as UC_Receipt
+    usecase "Update Price Lists" as UC_UpdatePrices
+
+    ' --- Relationships ---
+
+    ' Administrator
+    Admin -- UC_UpdateLots
+    Admin -- UC_RepAnnual
+    Admin -- UC_RepClub
+
+    ' Gate Sensor (GS)
+    GS -- UC_Arrival
+    UC_Arrival ..> UC_OpenBarrier : <<include>>
+    
+    ' Client Entry (Conditional)
+    Client -- UC_Register
+    UC_Register .> UC_Arrival : <<extend>> \n(if vehicle not found)
+    UC_Register ..> UC_Extract : <<include>>
+
+    ' Conveyors Controller (CC)
+    CC -- UC_Transport
+    UC_Transport ..> UC_Optimize : <<include>>
+    
+    ' Client General
+    Client -- UC_ViewDetails
+    
+    ' Club Specifics
+    Client -- UC_JoinClub
+    Member -- UC_PrefLots
+
+    ' Client Departure
+    Client -- UC_EndParking
+    
+    ' REVISED LOGIC HERE:
+    ' End Parking requires Payment
+    UC_EndParking ..> UC_Pay : <<include>>
+    
+    ' Payment triggers Open Barrier (Your correction)
+    UC_Pay ..> UC_OpenBarrier : <<include>>
+    
+    ' Receipt is optional after Payment
+    UC_Pay ..> UC_Receipt : <<extend>>
+    
+    ' External Systems Interaction
+    UC_Pay -- PG
+    UC_UpdatePrices -- IRS
+
+}
+
+@enduml

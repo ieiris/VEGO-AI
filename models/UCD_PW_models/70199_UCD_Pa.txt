@@ -1,0 +1,130 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+skinparam actor {
+    BackgroundColor White
+    BorderColor Black
+}
+
+' ==========================================
+' 1. שחקנים (Actors)
+' ==========================================
+
+' --- צד שמאל ---
+actor "Administrator" as Admin
+actor "Client" as Client
+
+' --- צד ימין ---
+actor "Integrated Rate Service (IRS)" as IRS
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors' Controller (CC)" as CC
+actor "Payment Gateway (PG)" as PG
+
+' ==========================================
+' 2. המערכת (Use Cases)
+' ==========================================
+rectangle "ParkWise System" {
+
+    ' --- איזור 1: ניהול ומחירונים ---
+    usecase "Update Parking Lot Details" as UC_UpdateLot
+    usecase "Generate Annual Summary Report" as UC_ReportAnnual
+    usecase "Generate Customer Club Growth Report" as UC_ReportClub
+    usecase "Update Price Lists" as UC_UpdatePrices
+
+    ' --- איזור 2: כניסה (Entry) ---
+    usecase "Handle Vehicle Arrival" as UC_Arrival
+    usecase "Scan Vehicle Number" as UC_Scan
+    usecase "Open Barrier" as UC_OpenBarrier
+    usecase "Provide Client Details & Photos" as UC_ProvideDetails
+    usecase "Extract Details from Photos" as UC_Extract
+
+    ' --- איזור 3: מועדון לקוחות ---
+    usecase "Register to Client Club" as UC_RegisterClub
+    usecase "Select Preferred Lots" as UC_SelectLots
+
+    ' --- איזור 4: חניה (CC) ---
+    usecase "Park Vehicle" as UC_Park
+    usecase "Assign Conveyor" as UC_AssignConv
+    usecase "Request Optimization" as UC_ReqOpt
+    usecase "Update Final Conveyor Location" as UC_UpdateLoc
+    usecase "Report Completion" as UC_ReportComp
+
+    ' --- איזור 5: יציאה ותשלום (Exit) ---
+    usecase "Request Vehicle Retrieval" as UC_ClientRetrieval
+    usecase "Press 'End Parking'" as UC_PressEnd
+    usecase "Pay for Parking" as UC_Pay
+    usecase "Request Receipt" as UC_Receipt
+    usecase "Process Payment" as UC_ProcessPay
+    
+    usecase "View Parking Status" as UC_ViewStatus
+
+    ' --- סידור פנימי (Hidden Lines) למניעת בלגן ---
+    UC_UpdateLot -[hidden]-> UC_Arrival
+    UC_Arrival -[hidden]-> UC_Park
+    UC_Park -[hidden]-> UC_ClientRetrieval
+}
+
+' ==========================================
+' 3. חיבורים (Relationships)
+' ==========================================
+
+' --- מנהל ---
+Admin -- UC_UpdateLot
+Admin -- UC_ReportAnnual
+Admin -- UC_ReportClub
+
+' --- לקוח ---
+Admin -[hidden]down-> Client
+Client -- UC_ProvideDetails
+Client -- UC_RegisterClub
+Client -- UC_ClientRetrieval
+Client -- UC_ViewStatus
+
+' --- IRS ---
+UC_UpdatePrices -- IRS
+
+' --- חיישן ---
+GS -- UC_Arrival
+
+' --- בקר ---
+UC_Park -- CC
+CC -- UC_AssignConv 
+
+' --- שער תשלום ---
+UC_ProcessPay -- PG
+
+' ==========================================
+' 4. לוגיקה פנימית (Includes / Extends)
+' ==========================================
+
+' --- כניסה ---
+UC_Arrival ..> UC_Scan : <<include>>
+UC_Arrival ..> UC_OpenBarrier : <<include>>
+UC_Arrival <.. UC_ProvideDetails : <<extend>>
+UC_ProvideDetails ..> UC_Extract : <<include>>
+
+' --- מועדון ---
+UC_RegisterClub ..> UC_SelectLots : <<extend>>
+
+' --- חניה ---
+UC_Park ..> UC_AssignConv : <<include>>
+UC_Park ..> UC_ReqOpt : <<include>>
+UC_Park ..> UC_UpdateLoc : <<include>>
+UC_Park ..> UC_ReportComp : <<include>>
+
+' --- יציאה ותשלום ---
+UC_ClientRetrieval ..> UC_PressEnd : <<include>>
+UC_ClientRetrieval ..> UC_AssignConv : <<include>>
+UC_ClientRetrieval ..> UC_Pay : <<include>>
+
+' --- התיקון שלך כאן ---
+UC_Pay ..> UC_Receipt : <<extend>>
+
+UC_Pay ..> UC_ProcessPay : <<include>>
+
+@enduml

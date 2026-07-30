@@ -1,0 +1,80 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Client
+actor "Club Member" as ClubMember
+actor "Administrator" as Admin
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors Controller (CC)" as CC
+actor "Payment Gateway (PG)" as PG
+actor "Integrated Rate Service (IRS)" as IRS
+
+rectangle "ParkWise System" {
+
+  (Update Parking Lot Details) as UC_updateLots
+  
+  (Process Vehicle Arrival) as UC_arrival
+  (Client/Vehicle Registration) as UC_manualReg
+  (Sending Data to the System) as UC_sendData
+
+  (Assign Conveyor & Optimize) as UC_optimize
+  (Update Vehicle Location) as UC_updateVehicle
+
+  (View Parking Information) as UC_viewInfo
+  (Provide Required Details) as UC_provideDetails
+
+  ("Enter Parking Lot\n<<extension point: if the vehicle not found in system>>") as UC_enterParking
+
+  (Start Parking Session) as UC_startParking
+  (End Parking) as UC_endParking
+  (Process Payment) as UC_processPayment
+
+  (Open Exit Gate) as UC_openGate
+
+  (Send Price Lists) as UC_prices
+  (Select Preferred Parking Lots) as UC_selectPreferred
+
+  (Annual Summary Report) as UC_report1
+  (Customer Club Growth Report) as UC_report2
+}
+
+' ---------------- ACTOR CONNECTIONS ----------------
+
+Client --> UC_manualReg
+Client --> UC_viewInfo
+Client --> UC_enterParking
+Client --> UC_endParking
+
+ClubMember --> UC_selectPreferred
+
+Admin --> UC_updateLots
+Admin --> UC_report1
+Admin --> UC_report2
+
+GS --> UC_arrival
+GS --> UC_openGate
+
+CC --> UC_optimize
+
+PG --> UC_processPayment
+
+IRS --> UC_prices
+
+' ---------------- RELATIONSHIPS ----------------
+
+UC_arrival --> UC_sendData : <<include>>
+
+UC_optimize --> UC_updateVehicle : <<include>>
+
+UC_enterParking --> UC_startParking : <<include>>
+
+UC_provideDetails .> UC_enterParking : <<extend>>
+
+UC_endParking --> UC_processPayment : <<include>>
+UC_endParking --> UC_openGate : <<include>>
+
+' ---------------- GENERALIZATION ----------------
+
+ClubMember --|> Client
+@enduml

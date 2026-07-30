@@ -1,0 +1,78 @@
+!define RECTANGLE_RECTANGLE
+skinparam usecase {
+  BackgroundColor #F2F2F2
+  BorderColor #AAAAAA
+  FontColor #333333
+}
+
+actor Employee as "Employee"
+actor Sales_Staff as "Sales Staff"
+actor Marketing_Employees as "Marketing Employees"
+actor Gefen as "Gefen"
+actor Customer as "Customer"
+
+Sales_Staff --|> Employee
+Marketing_Employees --|> Employee
+Employee --|> Customer
+
+package "Cheers System" {
+
+  usecase Current_Inventory_Report_by_Wine as "Current Inventory Report by Wine"
+  usecase Wine_Recommendation_Report as "Wine Recommendation Report"
+  usecase Place_Order as "Receive order info and place order"
+  usecase Track_Order as "Track order"
+  usecase Link_Wines as "Link wines to their types"
+  usecase Send_Order as "Send order info"
+  usecase Send_Joint as "Send joint order info"
+  usecase Assign_Employee as "Assign Employee"
+  usecase Track_Customer_Information as "Track Customer Information"
+  usecase Update_Wine_Information as "Update Wine Information"
+  usecase Process_Urgent_Orders as "Process Urgent Orders"
+  usecase Process_Regular_Orders as "Process Regular Orders"
+  usecase Generate_Reports as "Generate Reports"
+  usecase Receive_XML_Data_from_Gefen as "Receive XML Data from Gefen"
+  usecase Send_Order_Information_to_Delivery_Company as "Send Order Information to Delivery Company"
+  usecase Generate_Unproductive_Employees_Report as "Generate Unproductive Employees Report"
+  usecase Recommend_Wine_Occasions as "Recommend Wine Occasions"
+  usecase Food_Pairings as "Food Pairings"
+  usecase Store_Wine_Producer_Information as "Store Wine Producer Information"
+  usecase Store_Wine_Information as "Store Wine Information"
+  usecase Update_Wine_Price_and_Image as "Update Wine Price and Image"
+  usecase Track_Wine_Inventory as "Track Wine Inventory"
+  usecase Update_Inventory as "Update Inventory"
+  usecase View_Wine_Information as "View Wine Information"
+}
+' Customers
+Customer -- Send_Order
+Customer -- Send_Joint
+Customer -- Track_Order
+
+
+' Employees
+Employee -- View_Wine_Information
+
+' Sales Staff
+Sales_Staff -- Place_Order
+Sales_Staff -- Generate_Reports
+
+' Marketing Employees
+Marketing_Employees -- Update_Wine_Information
+Marketing_Employees -- Link_Wines
+
+
+' Gefen
+Gefen -- Receive_XML_Data_from_Gefen
+
+' Relationships between use cases
+Place_Order ..> Assign_Employee : <<include>>
+Process_Urgent_Orders ..> Place_Order : <<extend>>
+Process_Regular_Orders ..> Place_Order : <<extend>>
+Place_Order ..> Send_Order_Information_to_Delivery_Company : <<include>>
+Generate_Reports ..> Generate_Unproductive_Employees_Report : <<include>>
+Generate_Reports ..> Wine_Recommendation_Report : <<include>>
+Recommend_Wine_Occasions ..> Update_Wine_Information : <<extend>>
+Update_Wine_Information ..> Food_Pairings : <<include>>
+Receive_XML_Data_from_Gefen ..> Store_Wine_Producer_Information : <<include>>
+Receive_XML_Data_from_Gefen ..> Store_Wine_Information : <<include>>
+Link_Wines ..> Update_Wine_Price_and_Image : <<include>>
+Track_Wine_Inventory ..> Update_Inventory : <<extend>>

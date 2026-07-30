@@ -1,0 +1,411 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68132",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model includes classes for managing customers, orders, inventory, and employees, which aligns with managing key business operations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The SalesStaff class has a method for placing orders, directly tying sales staff to the customer order process.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The Order class includes attributes like orderID, orderDate, and orderStatus, but lacks details on assigned employee attributes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Missing details on assigned employee attributes."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not include any reference to external companies handling delivery.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The JointOrders class captures a reference to multiple orders, indirectly supporting joint ordering.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Details on tracking wines and quantities per customer are missing."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class attributes like customerID, customerName, and others align with the customer's information to be recorded.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The Employee class is generalized with roles like SalesStaff and MarketingEmployee, indicating employees can behave as regular customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The UrgentOrder class exists with a priority level and expected delivery time attributes, reflecting prioritization.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder contains attributes for priority level and expected delivery time; these details align with urgent order requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "OrderType enum includes Regular, which allows categorization, though combination of selections is implied and not explicit.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit handling of customer combinations not modeled."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "JointOrders class does not show tracked wines and quantities per customer within a shared order.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The system handles both Customer and Employee orders equivalently in the model.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingEmployee class capable of updating wine information reflects this authorization restriction.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesStaff class operations suggest browsing access by generating wine-related reports.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit browsing operation missing."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Attributes such as wineName and wineID for the Wine class identify wine types clearly.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "FoodPairings class linked to Wine class, including up to five recipes or links, fulfills recording of wine details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The Wine class has attributes for occasion, season, and location, enabling occasion-based recommendations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The Manufacturer class's receiveXMLOfProducers() function implies some interaction with producer data updates.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit details on monthly XML reception not detailed."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The Manufacturer class records ID, name, phone number, and more, satisfying the storage of details requirement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine attributes like wineName, productionYear, pricePerBottle align with required capture of wine information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Distinction by manufacturer and wine IDs aligns with classification criteria.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingEmployee operations for updating wine price indicate modification roles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "StorageLocation class stores number and name, marking unique wine storage identifiers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "WineStored has a relationship with StorageLocation, tracking wine location and quantities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "No direct inventory update function is depicted within the provided operations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "The system generates various reports through operations like GenerateUnproductiveEmployeeReport(), mapping to the described report types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G3",
+      "evidence": "The association between Order and SalesStaff shows a relationship which implies orders are assigned to a specific sales staff member. However, explicit employee attributes are not listed in Order.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The association indicates an assignment but lacks detailing attributes such as employee ID and start dates directly in Order."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "JointOrders class allows multiple customers to place related orders but does not explicitly detail multiple wine quantities per customer.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The structure implies multiple customers could be associated with joint orders, but exact tracking of wines and quantities per customer is not described."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "OrderType enumeration includes a 'Regular' type, indicating an order categorizable as such, but doesn't specify the combination of customer selections.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Regular orders are possible; however, details on handling combined customer selections are implied, not explicit."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "JointOrders links to orders and mainCustomerID but fails to express tracking of wines and quantities per customer within a shared order.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "While JointOrders are related to multiple orders, explicit tracking of specified items per customer in joint orders is not shown."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The Manufacturer class features a method 'receiveXMLOfProducers', implying XML data transaction, but does not clearly describe the periodic nature or schedule of these updates.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The interaction with XML data exists, yet it lacks detailed scheduling or update frequency information."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The currenInvReport() function in wineStored class suggests some level of inventory reporting but doesn't directly indicate post-sale inventory adjustments.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No explicit inventory update function after sales is shown, but report generation suggests tracking exists indirectly."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The case model includes a class named 'wineStored' which is responsible for handling the inventory of wines and has a method 'currenInvReport()' for generating inventory reports.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This class adds a specific mechanism for inventory tracking that aligns well with wine inventory management but is not explicitly detailed in the guidelines."
+    },
+    {
+      "fragment": "The class 'UrgentOrder' inherits from 'Order' and includes two additional attributes: 'priorityLevel' and 'expectedDeliveryTime'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This provides a clear distinction and additional attributes specifically for urgent orders, enhancing the model's detail beyond the general order description."
+    },
+    {
+      "fragment": "The 'JointOrders' class has a constructor with parameters 'JointOrders idJoint' and 'Order idOrder'.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "reason": "In UML class diagrams, constructors are not typically shown with parameter types; instead, they should be represented as operations, potentially leading to confusion."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The case model includes a class named 'wineStored' which is responsible for handling the inventory of wines and has a method 'currenInvReport()' for generating inventory reports.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The class 'UrgentOrder' inherits from 'Order' and includes two additional attributes: 'priorityLevel' and 'expectedDeliveryTime'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'JointOrders' class has a constructor with parameters 'JointOrders idJoint' and 'Order idOrder'.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "base_score": -0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": -0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 22.5,
+  "max_score": 26.0,
+  "score_pct": 86.5,
+  "overall_assessment": "The case model is well-aligned with the domain guidelines, with most requirements satisfied and only a few areas needing improvement."
+}

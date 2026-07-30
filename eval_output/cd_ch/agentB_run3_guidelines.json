@@ -1,0 +1,544 @@
+{
+  "skill_version": "1.0.0",
+  "language_name": "UML Class Diagram",
+  "domain_identifier": "cheers",
+  "is_first_iteration": true,
+  "domain_segments": [
+    {
+      "index": 1,
+      "text": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 2,
+      "text": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 3,
+      "text": "Orders can be categorized as either regular or urgent and include the following details: order number, order date, current status (in process, dispatched, delivered, paid, suspended, or canceled), shipment date, and the assigned employee's information (ID, name, phone number, office address, email, and employment start date).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 4,
+      "text": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 5,
+      "text": "Orders may consist of multiple wines in different quantities.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 6,
+      "text": "To minimize delivery costs, customers can place joint orders.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 7,
+      "text": "In such cases, the system must track which wines and quantities have been ordered by each customer.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 8,
+      "text": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 9,
+      "text": "Company employees are allowed to order wines under the same conditions as regular customers.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 10,
+      "text": "Urgent orders are processed with priority and must be placed by a single customer to ensure prompt delivery.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 11,
+      "text": "When placing an urgent order, the priority level (a number between 1 and 5) and the expected delivery time must be specified.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 12,
+      "text": "Regular orders, on the other hand, allow multiple customers to combine their wine selections into a single order to minimize delivery costs.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 13,
+      "text": "In such cases, the system tracks the specific wines and quantities ordered by each customer, as well as the main customer who is responsible for the entire order.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 14,
+      "text": "For every customer included in an urgent or regular order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 15,
+      "text": "Company employees may also place orders under the same conditions as regular customers.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 16,
+      "text": "Only employees in the marketing department are authorized to update wine information and types.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 17,
+      "text": "All other employees will have view-only access.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 18,
+      "text": "Sales staff can browse available wines when placing orders for customers.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 19,
+      "text": "Each type of wine is identified by its name and serial number.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 20,
+      "text": "Examples of wine types include red, white, sparkling, fortified, rosé, and dessert wines.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 21,
+      "text": "Additional details for each wine type include food pairings; In addition to the name of the dish, up to 5 links (URLs) to possible recipes will be kept.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 22,
+      "text": "Marketing employees can also recommend occasions suitable for drinking each wine type, providing a general description of the occasion (e.g., marriage proposal, nature hike, cheese night), along with the season and location (indoor/outdoor).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 23,
+      "text": "At the start of each month, the system will receive XML data from another system, called \"Gefen,\" regarding wine producers and the wines they produce.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 24,
+      "text": "Additionally, weekly updates will be provided on the quantity purchased (each wine is produced by a single manufacturer).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 25,
+      "text": "For each manufacturer, the system will store the full name, contact phone number, address, and email.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 26,
+      "text": "A unique automatic identifier is assigned to each new manufacturer.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 27,
+      "text": "For each wine, the system will capture the name, description, production year, price per bottle, sweetness level (dry, semi-dry, semi-sweet, sweet), and product image.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 28,
+      "text": "Wines are distinguished by their manufacturer number and catalog number.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 29,
+      "text": "Marketing staff will link wines to their types and can modify price details and product images.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 30,
+      "text": "Each wine is stored in a specific location (e.g., main refrigerator, cellar), and each storage location has a unique number and name.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 31,
+      "text": "The system tracks the number of bottles of each wine at each storage location (wines may be stored in multiple locations and a single location may store multiple wines).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 32,
+      "text": "As wines are sold only from available stock, inventory must be updated after each sale.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 33,
+      "text": "(1) Unproductive Employees Report: Generated by a sales employee, this report takes a time period as a parameter and displays the personal information of employees who placed fewer than 2 urgent orders OR fewer than 4 regular orders within that period;",
+      "status": "MAPPED"
+    },
+    {
+      "index": 34,
+      "text": "(2) Current Inventory Report by Wine: This report provides the inventory levels of all wines and is sent to the Gefen system in JSON format every weekend to assist with restocking preparations;",
+      "status": "MAPPED"
+    },
+    {
+      "index": 35,
+      "text": "(3) Wine Recommendation Report for Customers: Produced by a sales employee, this report returns a list of available wines that match the customer's preferences based on food, occasion, and wine type.",
+      "status": "MAPPED"
+    }
+  ],
+  "templates_in_scope": [
+    {
+      "id": "T1",
+      "short_name": "Class",
+      "description": "A Class represents a blueprint of objects containing attributes and operations specific to the object type it models."
+    },
+    {
+      "id": "T2",
+      "short_name": "Class-Association-Class",
+      "description": "An Association represents a relationship between two classes, indicating that objects of one class can be related to objects of the other class through a defined link."
+    },
+    {
+      "id": "T3",
+      "short_name": "Class-Aggregation-Class",
+      "description": "An Aggregation represents a whole-part relationship between two classes where one class is a container and the other class is a part."
+    },
+    {
+      "id": "T4",
+      "short_name": "Class-Composition-Class",
+      "description": "A Composition represents a strong whole-part relationship between two classes, indicating that the part cannot exist independently of the whole."
+    },
+    {
+      "id": "T5",
+      "short_name": "Class-Generalization-Class",
+      "description": "A Generalization represents an inheritance relationship between a more general superclass and more specific subclasses."
+    },
+    {
+      "id": "T6",
+      "short_name": "Class-Realization-Interface",
+      "description": "A Realization defines a relationship where a class implements the behavior specified by an interface."
+    },
+    {
+      "id": "T7",
+      "short_name": "Class-Dependency-Class",
+      "description": "A Dependency indicates that a change in one class (supplier) may require changes to the other class (client)."
+    },
+    {
+      "id": "T8",
+      "short_name": "Interface",
+      "description": "An Interface defines a set of operations that specify a contract for implementing classes but contains no implementation itself."
+    },
+    {
+      "id": "T9",
+      "short_name": "Class-Attribute",
+      "description": "An Attribute is a stored property or data value of a class, representing characteristics shared by all instances of the class."
+    },
+    {
+      "id": "T10",
+      "short_name": "Class-Operation",
+      "description": "An Operation is a function or service that a class can provide, representing behavior of the objects within the class."
+    }
+  ],
+  "reference_guidelines": [
+    {
+      "id": "G1",
+      "guideline_name": "System Overview",
+      "description": "This segment describes the high-level purpose of the Cheers system and the main business operations it manages. It establishes the overview of the Cheers system as a context for understanding the classes that will structure the system's operations.",
+      "related_template_id": "T1",
+      "mapping_certainty": 0.95,
+      "citation": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery."
+    },
+    {
+      "id": "G2",
+      "guideline_name": "Order Assignment",
+      "description": "This segment explains that sales staff are responsible for assigning orders to employees, suggesting a relationship between Order and Employee classes.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee."
+    },
+    {
+      "id": "G3",
+      "guideline_name": "Order Attributes",
+      "description": "Details various attributes of the Order class, including the order category, order number, dates, employee information, etc.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.95,
+      "citation": "Orders can be categorized as either regular or urgent and include the following details: order number, order date, current status (in process, dispatched, delivered, paid, suspended, or canceled), shipment date, and the assigned employee's information (ID, name, phone number, office address, email, and employment start date)."
+    },
+    {
+      "id": "G4",
+      "guideline_name": "External Delivery Management",
+      "description": "Indicates that the delivery aspect of orders is managed by an external company and not by the system itself, suggesting a dependency on an external system.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.7,
+      "citation": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system."
+    },
+    {
+      "id": "G5",
+      "guideline_name": "Order and Wine Composition",
+      "description": "Indicates that an order is composed of multiple wines in different quantities.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.8,
+      "citation": "Orders may consist of multiple wines in different quantities."
+    },
+    {
+      "id": "G6",
+      "guideline_name": "Joint Orders",
+      "description": "Describes joint order functionality to minimize delivery costs, suggesting an association between orders and customers.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.75,
+      "citation": "To minimize delivery costs, customers can place joint orders."
+    },
+    {
+      "id": "G7",
+      "guideline_name": "Customer Order Tracking",
+      "description": "Indicates that the system tracks the wines and quantities for each customer in a joint order.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.85,
+      "citation": "In such cases, the system must track which wines and quantities have been ordered by each customer."
+    },
+    {
+      "id": "G8",
+      "guideline_name": "Customer Attributes",
+      "description": "Details the attributes of a Customer that the system records when placing an order.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.95,
+      "citation": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company."
+    },
+    {
+      "id": "G9",
+      "guideline_name": "Employee Order Privileges",
+      "description": "States that company employees have the same ordering capabilities as customers.",
+      "related_template_id": "T1",
+      "mapping_certainty": 0.7,
+      "citation": "Company employees are allowed to order wines under the same conditions as regular customers."
+    },
+    {
+      "id": "G10",
+      "guideline_name": "Urgent Order Processing",
+      "description": "Indicates that urgent orders are processed with priority and must be individual orders.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.7,
+      "citation": "Urgent orders are processed with priority and must be placed by a single customer to ensure prompt delivery."
+    },
+    {
+      "id": "G11",
+      "guideline_name": "Urgent Order Details",
+      "description": "Details the attributes specific to urgent orders, including priority level and expected delivery time.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.9,
+      "citation": "When placing an urgent order, the priority level (a number between 1 and 5) and the expected delivery time must be specified."
+    },
+    {
+      "id": "G12",
+      "guideline_name": "Regular Order Composition",
+      "description": "Describes the composition of regular orders, allowing multiple customers to combine selections.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.75,
+      "citation": "Regular orders, on the other hand, allow multiple customers to combine their wine selections into a single order to minimize delivery costs."
+    },
+    {
+      "id": "G13",
+      "guideline_name": "Tracking in Regular Orders",
+      "description": "Explains how the system tracks customer specifics in regular orders, including the main customer's responsibility.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.8,
+      "citation": "In such cases, the system tracks the specific wines and quantities ordered by each customer, as well as the main customer who is responsible for the entire order."
+    },
+    {
+      "id": "G14",
+      "guideline_name": "Customer Data in Orders",
+      "description": "Reiterates how customer data is recorded per order, similar to segment 8.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.95,
+      "citation": "For every customer included in an urgent or regular order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company."
+    },
+    {
+      "id": "G15",
+      "guideline_name": "Employee Ordering Conditions",
+      "description": "States that employees' ordering capabilities mirror those of customers.",
+      "related_template_id": "T1",
+      "mapping_certainty": 0.7,
+      "citation": "Company employees may also place orders under the same conditions as regular customers."
+    },
+    {
+      "id": "G16",
+      "guideline_name": "Marketing Employee Privileges",
+      "description": "Outlines the privileges of marketing employees to update wine information.",
+      "related_template_id": "T1",
+      "mapping_certainty": 0.6,
+      "citation": "Only employees in the marketing department are authorized to update wine information and types."
+    },
+    {
+      "id": "G17",
+      "guideline_name": "View-Only Access",
+      "description": "States that other employees have view-only access to wine data.",
+      "related_template_id": "T1",
+      "mapping_certainty": 0.6,
+      "citation": "All other employees will have view-only access."
+    },
+    {
+      "id": "G18",
+      "guideline_name": "Sales Staff Wine Browsing",
+      "description": "Indicates sales staff can browse wines when ordering, implying a viewing permission.",
+      "related_template_id": "T1",
+      "mapping_certainty": 0.6,
+      "citation": "Sales staff can browse available wines when placing orders for customers."
+    },
+    {
+      "id": "G19",
+      "guideline_name": "Wine Identification",
+      "description": "Discusses how wine types are identified in the system using unique identifiers.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.9,
+      "citation": "Each type of wine is identified by its name and serial number."
+    },
+    {
+      "id": "G20",
+      "guideline_name": "Wine Type Examples",
+      "description": "Provides examples of wine types, indicating different categorization.",
+      "related_template_id": "T1",
+      "mapping_certainty": 0.5,
+      "citation": "Examples of wine types include red, white, sparkling, fortified, rosé, and dessert wines."
+    },
+    {
+      "id": "G21",
+      "guideline_name": "Wine Type Attributes",
+      "description": "Describes attributes related to wine types, like food pairings and recipe links.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.8,
+      "citation": "Additional details for each wine type include food pairings; In addition to the name of the dish, up to 5 links (URLs) to possible recipes will be kept."
+    },
+    {
+      "id": "G22",
+      "guideline_name": "Wine Occasion Recommendations",
+      "description": "Indicates marketing employees can suggest occasions for each wine type.",
+      "related_template_id": "T10",
+      "mapping_certainty": 0.75,
+      "citation": "Marketing employees can also recommend occasions suitable for drinking each wine type, providing a general description of the occasion (e.g., marriage proposal, nature hike, cheese night), along with the season and location (indoor/outdoor)."
+    },
+    {
+      "id": "G23",
+      "guideline_name": "Data Integration with Gefen",
+      "description": "Describes data integration from external system Gefen for wine and producer data.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.7,
+      "citation": "At the start of each month, the system will receive XML data from another system, called \"Gefen,\" regarding wine producers and the wines they produce."
+    },
+    {
+      "id": "G24",
+      "guideline_name": "Wine Quantity Updates",
+      "description": "States that weekly updates on the purchased quantities of wine are provided.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.7,
+      "citation": "Additionally, weekly updates will be provided on the quantity purchased (each wine is produced by a single manufacturer)."
+    },
+    {
+      "id": "G25",
+      "guideline_name": "Manufacturer Attributes",
+      "description": "Lists attributes related to wine manufacturers stored in the system.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.85,
+      "citation": "For each manufacturer, the system will store the full name, contact phone number, address, and email."
+    },
+    {
+      "id": "G26",
+      "guideline_name": "Manufacturer Identification",
+      "description": "Describes the unique identifier assignment to new manufacturers.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.9,
+      "citation": "A unique automatic identifier is assigned to each new manufacturer."
+    },
+    {
+      "id": "G27",
+      "guideline_name": "Wine Attributes",
+      "description": "Describes the attributes captured for each wine in the system.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.95,
+      "citation": "For each wine, the system will capture the name, description, production year, price per bottle, sweetness level (dry, semi-dry, semi-sweet, sweet), and product image."
+    },
+    {
+      "id": "G28",
+      "guideline_name": "Wine Identification Numbers",
+      "description": "Describes how wines are distinguished using manufacturer and catalog numbers.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.9,
+      "citation": "Wines are distinguished by their manufacturer number and catalog number."
+    },
+    {
+      "id": "G29",
+      "guideline_name": "Wine Modification by Marketing",
+      "description": "Indicates marketing staff have roles related to linking wines to types and modifying details.",
+      "related_template_id": "T10",
+      "mapping_certainty": 0.75,
+      "citation": "Marketing staff will link wines to their types and can modify price details and product images."
+    },
+    {
+      "id": "G30",
+      "guideline_name": "Wine Storage Details",
+      "description": "Details the storage of wines, including location attributes like number and name.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.9,
+      "citation": "Each wine is stored in a specific location (e.g., main refrigerator, cellar), and each storage location has a unique number and name."
+    },
+    {
+      "id": "G31",
+      "guideline_name": "Inventory Tracking",
+      "description": "Describes how the system tracks inventory levels of wines at various locations.",
+      "related_template_id": "T9",
+      "mapping_certainty": 0.85,
+      "citation": "The system tracks the number of bottles of each wine at each storage location (wines may be stored in multiple locations and a single location may store multiple wines)."
+    },
+    {
+      "id": "G32",
+      "guideline_name": "Inventory Updates",
+      "description": "Indicates the need for inventory updates following sales to ensure stock accuracy.",
+      "related_template_id": "T10",
+      "mapping_certainty": 0.7,
+      "citation": "As wines are sold only from available stock, inventory must be updated after each sale."
+    },
+    {
+      "id": "G33",
+      "guideline_name": "Unproductive Employees Report",
+      "description": "Describes a reporting operation that identifies unproductive employees based on order frequency.",
+      "related_template_id": "T10",
+      "mapping_certainty": 0.8,
+      "citation": "(1) Unproductive Employees Report: Generated by a sales employee, this report takes a time period as a parameter and displays the personal information of employees who placed fewer than 2 urgent orders OR fewer than 4 regular orders within that period;"
+    },
+    {
+      "id": "G34",
+      "guideline_name": "Current Inventory Report",
+      "description": "Details the operation of generating inventory reports for the Gefen system.",
+      "related_template_id": "T10",
+      "mapping_certainty": 0.8,
+      "citation": "(2) Current Inventory Report by Wine: This report provides the inventory levels of all wines and is sent to the Gefen system in JSON format every weekend to assist with restocking preparations;"
+    },
+    {
+      "id": "G35",
+      "guideline_name": "Wine Recommendation Report",
+      "description": "Describes a reporting operation offering wine recommendations compliant with customer preferences.",
+      "related_template_id": "T10",
+      "mapping_certainty": 0.85,
+      "citation": "(3) Wine Recommendation Report for Customers: Produced by a sales employee, this report returns a list of available wines that match the customer's preferences based on food, occasion, and wine type."
+    }
+  ],
+  "questions_to_language_advisor": [
+    {
+      "id": "Q_lang_001",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T1"
+      ],
+      "question": "Does T1 (Class) appropriately cover the role of employees in ordering wines, or is there a specific template better suited for describing employee roles?"
+    },
+    {
+      "id": "Q_lang_002",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T1"
+      ],
+      "question": "Can T1 (Class) be applied accurately to describe the marketing employees' privilege in updating wine information or should another template be considered?"
+    },
+    {
+      "id": "Q_lang_003",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T1"
+      ],
+      "question": "Is using T1 (Class) correct for describing the view-only access permissions for non-marketing employees, or would another construct better represent this aspect?"
+    }
+  ],
+  "questions_to_domain_advisor": []
+}

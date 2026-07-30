@@ -1,0 +1,158 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' --- Enums ---
+enum Size {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+enum Color {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+
+class ParkWiseSystem {    
+    + checkVehicle(vehicleNumber: String): boolean
+    + runOptimization(conveyor: Conveyor, size: String, weight: double): ParkingSpace
+    + generateAnnualSummaryReport(year: int): AnnualSummaryReport
+    + generateClubGrowthReport(year: int): CustomerClubGrowthReport
+}
+
+class ParkingLot {
+    - lotNumber: String
+    - name: String
+    - address: String
+    - city: String
+    - availableSpaces: int
+    + getPriceRate(date: Date, durationHours: int): PriceList
+}
+
+class PriceList {
+    - listID: String
+    - priceFirstHour: double
+    - priceExtraHour: double
+    - priceFullDay: double
+}
+
+class ParkingSpace {
+    - spaceID: String
+    - floor: int
+    - posX: int
+    - posY: int
+    - size: String
+    + isCompatible(vehicleSize: String): boolean
+}
+
+class Conveyor {
+    - conveyorID: String
+    - floor: int
+    - posX: int
+    - posY: int
+    - maxWeight: double
+}
+
+class Vehicle {
+    - vehicleNumber: String
+    - type: String
+    - color: Color
+    - size: Size
+    - weight: double
+}
+
+class Client {
+    - clientID: String
+    - mobilePhone: String
+    - firstName: String
+    - lastName: String
+    - photoFront: String
+    - photoRear: String
+    - photoSide: String
+    + registerToClub()
+}
+
+class ClubMember {
+    - joiningDate: Date
+    - DiscountRate: double
+
+}
+class ParkingSession {
+    - sessionID: int
+    - startTime: DateTime
+    - endTime: DateTime
+   - FreeParking: boolean
+
+}
+
+class Receipt {
+    - issueDate: DateTime
+    - priceRateUsed: String
+    - overallHours: double
+    - finalAmountPaid: double
+    + printReceipt()
+}
+
+' ==============================
+' ASSOCIATION CLASSES
+' ==============================
+
+Client "1" -- "1..*" Vehicle : owns >
+Client "1" -- "0..1*" ClubMember : can be >
+
+
+ClubMember "1" -- "0..*" ParkingLot : selects preferred >
+(ClubMember , ParkingLot) .. PreferredLotSelection
+class PreferredLotSelection {
+    - selectionDate: Date
+}
+
+Vehicle "1" -- "0..*" ParkingSession : participates >
+(Vehicle, ParkingSession) .. VehicleLocation
+class VehicleLocation {
+
+}
+
+PriceList "1" -- "1..*" ParkingLot : have >
+
+(ParkingLot, PriceList) .. PriceHistory
+class PriceHistory {
+    - priceUpdateDate  : DateTime
+
+}
+Size..Vehicle
+Color..Vehicle
+Size..ParkingSpace
+
+
+
+' ==============================
+' RELATIONSHIPS
+' ==============================
+
+ParkingLot "1" *-- "1..*" ParkingSpace : contains >
+ParkingLot "1" *-- "1..*" Conveyor : contains >
+
+ParkingSession "1" -- "0..1" Receipt : generates >
+ParkingSession "1" -- "1" PriceList : uses >
+
+ParkingLot "1" -- "0..*" ParkingSession : hosts >
+
+VehicleLocation "0..1" -- "1" Conveyor
+VehicleLocation "0..1" -- "1" ParkingSpace
+
+' ==============================
+' SYSTEM COMPOSITION
+' ==============================
+
+ParkWiseSystem *-- "1..*" ParkingLot
+ParkWiseSystem *-- "0..*" ParkingSession
+ParkWiseSystem *-- "0..*" Vehicle
+ParkWiseSystem *-- "0..*" Client
+ParkWiseSystem *-- "0..*" Receipt
+ParkWiseSystem *-- "0..*" PriceList
+@enduml

@@ -1,0 +1,55 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Use Case Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Actor",
+      "fragment_description": "An Actor represents a role played by a user or any other system that interacts with the subject.",
+      "involved_constructs": "Actor"
+    },
+    {
+      "id": "T2",
+      "short_name": "UseCase",
+      "fragment_description": "A Use Case represents a specific way of using a system by an actor. It is a list of actions or event steps.",
+      "involved_constructs": "Use Case"
+    },
+    {
+      "id": "T3",
+      "short_name": "SystemBoundary",
+      "fragment_description": "A System Boundary is used to define the scope of a system and to show the system as a separate entity within the use case diagram.",
+      "involved_constructs": "System Boundary"
+    },
+    {
+      "id": "T4",
+      "short_name": "UseCase-Association-Actor",
+      "fragment_description": "An association between an Actor and a Use Case represents the interaction between them.",
+      "involved_constructs": "Use Case | Association | Actor"
+    },
+    {
+      "id": "T5",
+      "short_name": "UseCase-Include-UseCase",
+      "fragment_description": "An Include relationship in UML represents the inclusion of the behavior described by another use case.",
+      "involved_constructs": "Use Case | Include | Use Case"
+    },
+    {
+      "id": "T6",
+      "short_name": "UseCase-Extend-UseCase",
+      "fragment_description": "An Extend relationship in UML is a directed relationship specifying how the behavior of a use case can be extended.",
+      "involved_constructs": "Use Case | Extend | Use Case"
+    },
+    {
+      "id": "T7",
+      "short_name": "UseCase-Generalization-UseCase",
+      "fragment_description": "Generalization in UML is used to show that one use case is a specialization of another.",
+      "involved_constructs": "Use Case | Generalization | Use Case"
+    }
+  ],
+  "agent1_capabilities": [
+    "What is the role of an Actor in UML Use Case Diagrams?",
+    "How is an Association relationship represented in UML Use Case Diagrams?",
+    "What distinguishes an Include relationship from an Extend relationship in UML Use Case Diagrams?",
+    "How does Generalization function within UML Use Case Diagrams?",
+    "What significance does a System Boundary have in a Use Case Diagram?"
+  ]
+}

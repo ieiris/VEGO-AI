@@ -1,0 +1,226 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+' =======================
+' PERSON HIERARCHY
+' =======================
+abstract class Person {
+  - personId: int
+  - firstName: String
+  - lastName: String
+  - mobilePhone: String
+}
+
+class Administrator {
+  - email: String
+  - role: String
+}
+
+class Client {
+}
+
+Person <|-- Client
+Person <|-- Administrator
+
+' =======================mobile
+' ENUMS
+' =======================
+enum VehicleSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum VehicleColor {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+enum SessionStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+' =======================
+' CORE DOMAIN ENTITIES
+' =======================
+class ParkingLot {
+  - lotId: int
+  - lotName: String
+  - lotAddress: String
+  - lotCity: String
+  - availableSpaces: int
+}
+
+class ParkingSpace {
+  - spaceId: int
+  - spaceFloor: int
+  - x: int
+  - y: int
+  - size: VehicleSize
+  - isOccupied: boolean
+}
+
+class Conveyor {
+  - conveyorId: int
+  - maxWeightKg: double
+  - currentFloor: int
+  - currentX: int
+  - currentY: int
+  - isAvailable: boolean
+}
+
+class GateSensor {
+  - sensorId: int
+}
+
+class Vehicle {
+  - vehicleId: int
+  - plateNumber: String
+  - vehicleType: String
+  - vehicleColor: VehicleColor
+  - vehicleSize: VehicleSize
+  - weightKg: double
+}
+
+class ParkingSession {
+  - sessionId: int
+  - startTime: DateTime
+  - endTime: DateTime
+  - totalHours: double
+  - pSessionStatus: SessionStatus
+}
+
+class PriceList {
+  - priceListId: int
+  - description: String
+  - activeFrom: Date
+  - activeTo: Date
+  - firstHourPrice: double
+  - additionalHourPrice: double
+  - fullDayPrice: double
+}
+
+class Payment {
+  - paymentId: int
+  - paymentAmount: double
+  - paymentDate: DateTime
+  - paymentStatus: PaymentStatus
+}
+
+' =======================
+' RECEIPT
+' =======================
+class Receipt {
+  - receiptId: int
+  - issueDate: DateTime
+  - totalHours: double
+  - finalAmount: double
+}
+
+' =======================
+' CLIENT CLUB
+' =======================
+class ClubMembership {
+  - membershipId: int
+  - registrationDate: Date
+  - discountRate: double
+  - personId: int
+}
+
+class PreferredParkingLot {
+  - preferredId: int
+  - lotId: int
+  - selectionDate: Date
+  - membershipId: int
+}
+
+' =======================
+' REPORTING ENTITIES
+' =======================
+class AnnualSummaryReport {
+  - reportForAllId: int
+  - reportYear: int
+  - generatedAt: DateTime
+  +addLot(line: LotReport): void
+}
+
+class LotReport {
+  - lotReportId: int
+  - totalPaid: double
+  - otherColorVehicles: int
+  - lotId: int
+}
+
+' =======================
+' SYSTEM
+' =======================
+class System {
+  +getAllParkingLots(): ParkingLot[]
+  +getAllSessions(): ParkingSession[]
+  +importParkingData(): void
+  +generateAnnualSummaryReport(year: int): AnnualSummaryReport
+  +startParkingSession(vehicle: Vehicle, lot: ParkingLot, space: ParkingSpace): ParkingSession
+}
+
+' =======================
+' RELATIONSHIPS
+' =======================
+
+' System aggregations & composition
+System o-- Payment            
+System o-- Administrator      
+System o-- Client             
+System o-- Vehicle            
+System o-- ParkingLot         
+System o-- ParkingSession     
+System "1" -- "0.." AnnualSummaryReport 
+
+' Parking lot structure
+ParkingLot "1" -- "1.." ParkingSpace 
+ParkingLot "0..*" -- "1" PriceList  : has
+ParkingLot "1" -- "1" GateSensor       : has
+ParkingLot "1" -- "0..*" Conveyor      : has
+
+
+' Administrator & system and lots
+Administrator -- System
+Administrator "1" -- "0..*" ParkingLot : manages
+
+' Client – Vehicle – Session – Payment – Receipt
+Client "1" -- "1..*" Vehicle           : owns
+Vehicle "1" -- "0..*" ParkingSession  
+Conveyor "1" -- "0..*" Vehicle         : transports
+
+ParkingSession "0..*" -- "1" ParkingLot   
+ParkingSession "1" -- "0..1" Payment
+ParkingSession "1" -- "0..1" Receipt
+
+Client "1" -- "0..*" Payment           : makes
+' Club membership
+Client "1" -- "0..1" ClubMembership    : has
+ClubMembership "1" -- "0..*" PreferredParkingLot : selects
+
+' Annual summary & lot reports
+AnnualSummaryReport "1" -- "1..*" LotReport : includes
+LotReport "0..*" -- "1" ParkingLot          : summarizes
+
+' =======================
+' ENUM USAGE LINKS
+' =======================
+ParkingSpace ..> VehicleSize
+Vehicle ..> VehicleSize
+Vehicle ..> VehicleColor
+ParkingSession ..> SessionStatus
+Payment ..> PaymentStatus
+@enduml

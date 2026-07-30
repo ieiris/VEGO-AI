@@ -1,0 +1,76 @@
+@startuml
+left to right direction
+
+actor "Client" as Client
+actor "Administrator" as Admin
+actor "Gate Sensor\n(GS)" as GS
+actor "Conveyors' Controller\n(CC)" as CC
+actor "Integrated Rate Service\n(IRS)" as IRS
+actor "Payment Gateway\n(PG)" as PG
+
+rectangle "ParkWise Lots System" {
+    ' ------- CLIENT USE CASES -------
+    usecase "Register / Update\nClient & Vehicle" as UC_RegClientVeh
+    usecase "Register to\nClient Club" as UC_RegClub
+    usecase "Manage Preferred\nParking Lots" as UC_ManagePrefLots
+    usecase "View Parking Details\n(SMS / UI)" as UC_ViewParking
+    usecase "End Parking\n& Pay" as UC_EndParkingPay
+    usecase "Request Receipt" as UC_Receipt
+
+    ' ------- ADMIN -------
+    usecase "Update Parking Lot Details" as UC_UpdateLot
+    usecase "Generate Annual\nSummary Report" as UC_AnnualReport
+    usecase "Generate Customer Club\nGrowth Report" as UC_ClubReport
+
+    ' ------- GATE SENSOR -------
+    usecase "Identify Vehicle Arrival /\nDeparture" as UC_GateEvent
+
+    ' ------- CONVEYORS’ CONTROLLER -------
+    usecase "Request Nearest\nVacant Space" as UC_CCRequestSpace
+    usecase "Update Final\nVehicle Location" as UC_CCUpdateVehLoc
+    usecase "Update Final\nConveyor Location" as UC_CCUpdateConvLoc
+
+    ' ------- IRS -------
+    usecase "Send Yearly\nPrice Lists" as UC_SendPrices
+
+    ' ------- PAYMENT GATEWAY -------
+    usecase "Process Payment\nAuthorization" as UC_ProcessPayment
+}
+
+' ------- ACTOR CONNECTIONS -------
+Client -- UC_RegClientVeh
+Client -- UC_RegClub
+Client -- UC_ManagePrefLots
+Client -- UC_ViewParking
+Client -- UC_EndParkingPay
+Client -- UC_Receipt
+
+Admin -- UC_UpdateLot
+Admin -- UC_AnnualReport
+Admin -- UC_ClubReport
+
+GS -- UC_GateEvent
+
+CC -- UC_CCRequestSpace
+CC -- UC_CCUpdateVehLoc
+CC -- UC_CCUpdateConvLoc
+
+IRS -- UC_SendPrices
+
+PG -- UC_ProcessPayment
+
+' ------- DEPENDENCIES -------
+' Preferred parking only AFTER Club registration
+UC_ManagePrefLots -- UC_RegClub : <<extend>>
+
+' End parking requires payment processing
+UC_EndParkingPay -- UC_ProcessPayment : <<include>>
+
+' Ending parking also requires conveyor to bring car to the gate
+UC_EndParkingPay -- UC_CCRequestSpace : <<include>>
+
+' Once a space is assigned, CC updates final locations
+UC_CCRequestSpace -- UC_CCUpdateVehLoc : <<include>>
+UC_CCRequestSpace -- UC_CCUpdateConvLoc : <<include>>
+
+@enduml

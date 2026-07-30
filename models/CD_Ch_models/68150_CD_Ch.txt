@@ -1,0 +1,167 @@
+@startuml
+' Enumeration Definitions
+enum OrderStatus {
+    InProcess
+    Dispatched
+    Delivered
+    Paid
+    Suspended
+    Canceled
+}
+
+enum SweetnessLevel {
+    Dry
+    SemiDry
+    SemiSweet
+    Sweet
+}
+
+enum PriorityLevel {
+    Level1
+    Level2
+    Level3
+    Level4
+    Level5
+}
+
+enum Location {
+    Indoor
+    Outdoor
+}
+
+enum Season {
+    Spring
+    Summer
+    Autumn
+    Winter
+}
+
+' Main classes in the system
+class Order {
+    + orderNumber : int
+    + orderDate : Date
+    + shipmentDate : Date
+    + status : OrderStatus
+    + expectedDeliveryTime : String
+}
+
+class RegularOrder extends Order {
+    + mainCustomer : Customer
+    + customers: List<Customer>
+}
+
+class UrgentOrder extends Order {
+    + priority : PriorityLevel
+    + placeUrgentOrder(customer: Customer) : void
+}
+
+class Customer {
+    + customerID : int
+    + name : String
+    + phone : String
+    + deliveryAddress : String
+    + email : String
+    + dateOfFirstContact : Date
+}
+
+class Employee {
+    + employeeID : int
+    + name : String
+    + phone : String
+    + officeAddress : String
+    + email : String
+    + startDate : Date
+}
+
+class SalesStaff {
+    + department : "Sales"
+    + generateUnproductiveEmployeesReport()
+    + generateWineRecommendationReport()
+}
+
+class MarketingStaff {
+    + department :"Marketing"
+    + updateWineInformation()
+    + linkWineToTypesAndOccasions()
+}
+
+class Wine {
+    + wineID : int <<PK>>
+    + name : String
+    + catalogNumber : int
+    + description : String
+    + productionYear : int
+    + price : float
+    + sweetness : SweetnessLevel
+    + image : String
+}
+
+class WineType {
+    + typeID : int
+    + typeName : String
+    + foodPairings : List<String>
+}
+
+class Recipe {
+    + recipeID : int
+    + dishName : String
+    + recipeLinks : List<String> [1..5]
+}
+
+class Occasion {
+    + description : String
+    + season : Season
+    + location : Location
+}
+
+class Manufacturer {
+    + manufacturerID : int
+    + name : String
+    + phone : String
+    + address : String
+    + email : String
+}
+
+class StorageLocation {
+    + locationID : int
+    + name : String
+    + quantity : int
+    + updateInventory() : void
+}
+
+class UnproductiveEmployeesReport {
+    - reportID : int
+    - startDate : Date
+    - endDate : Date
+    - employeesList : List<SalesStaff>
+}
+
+' Bidirectional Relationships with Cardinality
+Customer "1..*" <-- "1..*" RegularOrder : "includes customers"
+Customer "1" <-- "0..*" UrgentOrder : "places order"
+
+Order  -->  OrderStatus 
+Order "0..*" --> "0..*" Wine : "contains"
+Order "0..*" --> "1" Employee : "is assigned to"
+
+UrgentOrder  -->  PriorityLevel 
+
+SalesStaff -|> Employee
+MarketingStaff -|> Employee
+
+Wine "0..*" <-- "1" Manufacturer : "produced by"
+Wine  <--  SweetnessLevel
+Wine "1" --> "*" WineType : "belongs to"
+
+Wine "0..*" --> "0..*" StorageLocation : "stored at"
+
+WineType "1..*" --> "1..*" Occasion : "recommended for"
+WineType "1" --> "1..*" Recipe : "has recipes"
+
+Occasion  -->  Location 
+Occasion  -->  Season 
+
+MarketingStaff "1" --> "0..*" WineType : " links"
+MarketingStaff "1" --> "0..*" Wine : "updates"
+SalesStaff "1" --> "0..*" UnproductiveEmployeesReport : "generates"
+@enduml

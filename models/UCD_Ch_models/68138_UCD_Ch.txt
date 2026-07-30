@@ -1,0 +1,61 @@
+@startuml
+actor "Sales Employee"
+actor "Marketing Employee"
+actor "Gefen System"
+actor "Customer"
+
+
+rectangle "Cheers" {
+  usecase "Manage Orders"
+  usecase "Manage Customer Information"
+
+  usecase "Inventory"
+  usecase "Receive Monthly Producer Information"
+  usecase "Receive Weekly Updates"
+  usecase "Generate Reports"
+  usecase "Place Order"
+  usecase "Available"
+  usecase "Not Available"
+  usecase "Place Regular Order"
+  usecase "Place Urgent Order"
+  usecase "View Wine Information"
+  usecase "Update Wine Information"
+  usecase "Recommend Wine"
+  usecase "Generate Unproductive Employees Report"
+  usecase "Generate Current Inventory Report by Wine"
+  usecase "Generate Wine Recommendation Report"
+  usecase "Tracks wine ordered"
+  
+  "Generate Reports" ..> "Generate Unproductive Employees Report" : Include
+  "Generate Reports" ..> "Generate Current Inventory Report by Wine" : Include
+  "Generate Reports" ..> "Generate Wine Recommendation Report" : Include
+  "Place Order" ..> "Available" : Include
+  "Place Order" ..> "Not Available" : Include
+  "Available" ..> "Place Regular Order" : Include
+  "Available" ..> "Place Urgent Order" : Include
+  "Place Regular Order" --> "Inventory" : Update
+  "Place Urgent Order" --> "Inventory" : Update
+  note right of "Place Regular Order" : Multiple customers, placed by Sales Employee
+  note right of "Place Urgent Order" : Priority, single customer, placed by Sales Employee
+
+  "Manage Orders" ..> "Manage Customer Information" : Include
+  
+
+  
+}
+
+"Sales Employee" -- "Manage Orders"
+"Sales Employee" -- "Manage Customer Information"
+"Sales Employee" -- "Place Order"
+"Sales Employee" -- "View Wine Information"
+"Sales Employee" -- "Generate Reports"
+"Marketing Employee" -- "View Wine Information"
+"Customer" -- "Tracks wine ordered"
+"Marketing Employee" -- "Update Wine Information"
+"Marketing Employee" -- "Recommend Wine"
+
+
+
+"Gefen System" -- "Receive Monthly Producer Information"
+"Gefen System" -- "Receive Weekly Updates"
+@enduml

@@ -1,0 +1,64 @@
+FINAL USE CASE
+
+@startuml
+left to right direction
+    actor "person" as Person
+    actor "Sales Staff" as SalesStaff
+    actor "Marketing Employee" as MarketingEmployee
+    actor "Customer" as Customer
+    actor "Automatic System" as AutomaticSystem
+    
+
+rectangle "Cheers System" {
+
+    usecase "Place Regular Order" as UC01
+    usecase "Place Urgent Order" as UC02
+    usecase "Browse Available Wines" as UC03
+    usecase "Generate Recommendation Report" as UC04
+    usecase "Generate Unproductive Employee Report" as UC05
+    usecase "Update Wine Information and Types" as UC06
+    usecase "Track Wines by Customer" as UC07
+    usecase "Identify Main Customer" as UC08
+    usecase "Update Real Time Inventory" as UC09
+    usecase "Food Pairing" as UC10
+    usecase "Recommendation for Occasions" as UC11
+    usecase "Send Monthly Producers Data" as UC12
+    usecase "Send Weekly Purchases Updates" as UC13
+    usecase "Ordering" as UC14
+    usecase "Extract Inventory Report" as UC15
+    usecase "Track Number Of Bottles In Storages" as UC16
+
+    Person - UC14
+
+    SalesStaff -- UC01
+    SalesStaff -- UC02
+    SalesStaff - UC04
+    SalesStaff - UC05
+
+    AutomaticSystem -- UC09
+    AutomaticSystem --UC16
+
+    UC01 .> UC07 : "<<include>>"
+    UC01 ..> UC08 : "<<include>>"
+    UC01 <. UC03 : "<<extend>>"
+
+    UC02 <.. UC03 : "<<extend>>"
+
+    MarketingEmployee - UC06
+    UC06 ..> UC10 : "<<include>>"
+    UC06 <. UC11 : "<<extend>>"
+}
+
+actor "Gefen System (External)" as Gefen
+
+
+
+Gefen --- UC12
+Gefen --- UC13
+Gefen --- UC15
+
+' Extend relationships
+Person <|--- Customer
+Person <|-- SalesStaff
+Person <|- MarketingEmployee
+@enduml

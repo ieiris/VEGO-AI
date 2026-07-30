@@ -1,0 +1,20 @@
+# Language base list — UML Class Diagrams
+# One construct per line. Used by Agent A to measure template completeness.
+# Lines starting with # and blank lines are ignored.
+
+# --- Elements ---
+classes
+interfaces
+attributes
+operations
+association classes
+
+# --- Relations ---
+associations
+multiplicities
+composition relations
+aggregation relations
+inheritance relations
+realization relations
+roles
+

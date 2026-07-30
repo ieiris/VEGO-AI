@@ -1,0 +1,130 @@
+@startuml
+left to right direction
+title ParkWise Lots - Use Case Diagram 
+
+' === STYLING ===
+skinparam handwritten false
+skinparam monochrome false
+
+skinparam package {
+  BackgroundColor WhiteSmoke
+  BorderColor DarkSlateGray
+  FontColor DarkSlateGray
+}
+
+skinparam actor {
+  BorderColor DarkBlue
+  FontColor DarkBlue
+  StereotypeFontColor DarkBlue
+}
+
+skinparam usecase {
+  BackgroundColor AliceBlue
+  BorderColor DarkBlue
+  FontColor DarkSlateGray
+  StereotypeFontColor DarkSlateGray
+}
+
+skinparam arrow {
+  FontColor DarkGreen
+}
+
+' === ACTORS ===
+actor "Administrator" as Admin
+actor "Client" as Client
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors Controller (CC)" as CC
+
+' Secondary Actors (External Systems)
+actor "Payment Gateway (PG)" as PG
+actor "Integrated Rate Service (IRS)" as IRS
+actor "SMS Gateway" as SMS << Service >>
+
+rectangle "ParkWise Lots System" {
+
+  ' === PACKAGE: ENTRY ===
+  package "Entry Operations" {
+    usecase UC_Arrival as "Process Vehicle Arrival
+    --
+    **Extension Points**
+    VehicleNotFound"
+    
+    usecase UC_Register as "Register Client and Vehicle"
+  }
+
+  ' === PACKAGE: PARKING ===
+  package "Parking Operations" {
+    usecase UC_Placement as "Manage Parking Placement"
+    usecase UC_ViewLoc   as "View Parking Location"
+  }
+
+  ' === PACKAGE: EXIT & PAYMENT ===
+  package "Exit & Payment Operations" {
+    ' UPDATED NAME based on feedback
+    usecase UC_Retrieve as "Retrieve Vehicle & Pay
+    --
+    **Extension Points**
+    AfterPayment"
+    
+    usecase UC_Pay     as "Process Payment"
+    usecase UC_Receipt as "Issue Receipt"
+  }
+
+  ' === PACKAGE: CLUB ===
+  package "Club Management" {
+    usecase UC_ClubReg   as "Register to Club"
+    usecase UC_PrefLots  as "Select Preferred Lots"
+  }
+
+  ' === PACKAGE: ADMIN & REPORTS ===
+  package "Administration" {
+    usecase UC_UpdateLot as "Update Parking Lot Details"
+    usecase UC_AnnRep    as "Generate Annual Summary Report"
+    usecase UC_ClubRep   as "Generate Club Growth Report"
+  }
+
+  ' === PACKAGE: EXTERNAL DATA ===
+  package "External Services" {
+    usecase UC_Import as "Import Price Lists"
+  }
+
+  ' === RELATIONSHIPS ===
+
+  ' Entry
+  GS --> UC_Arrival
+  Client --> UC_Register
+  UC_Register .> UC_Arrival : <<extend>>
+  
+  ' UPDATED: SMS Gateway connection
+  UC_Arrival --> SMS : "Send Confirmation"
+
+  ' Parking
+  CC --> UC_Placement
+  Client --> UC_ViewLoc
+   
+  ' Exit / Retrieval
+  Client --> UC_Retrieve
+  UC_Retrieve ..> UC_Pay : <<include>>
+  UC_Receipt .> UC_Retrieve : <<extend>>
+  
+  ' Payment Gateway handles the actual transaction
+  UC_Pay --> PG 
+  
+  ' CC is physically involved in retrieval
+  CC --> UC_Retrieve
+
+  ' Club
+  Client --> UC_ClubReg
+  Client --> UC_PrefLots
+
+  ' Admin
+  Admin --> UC_UpdateLot
+  Admin --> UC_AnnRep
+  Admin --> UC_ClubRep
+
+  ' External
+  IRS --> UC_Import
+
+}
+
+@enduml

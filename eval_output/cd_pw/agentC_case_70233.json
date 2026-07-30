@@ -1,0 +1,330 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70233",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class has attributes for a unique ID, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class includes an attribute for availableSpaces which holds the count of available spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The association between Client and Vehicle ensures that each vehicle has exactly one client as an owner.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class records details such as startTime and the associated vehicle.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class features an attribute size, indicating if it accommodates small, medium, or large vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class has an attribute maxWeightKg which defines its vehicle weight capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "ParkingSession class includes references to initial and exit Conveyors, suggesting temporary tracking for the session duration.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The ParkingLot is associated with multiple PriceList instances, which describe prices for different durations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The Client class manages membership information, indicating the presence of a client club.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The attribute discountAmount in ParkingSession relates to automatic discounts for club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The free initial session for club members can be inferred from the relationship between Clients, ParkingSessions, and reference to discount details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While discounts are evident, specific first-session handling isn't explicitly defined."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The AnnualSummaryReport class includes operations for generating and exporting annual summary reports, covering all incomes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "AnnualSummaryReport class attributes include parking lot details and income information, and maps 'other' color vehicles per lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The report includes detailed attributes suggesting data can be ordered by city and payment amount.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The AnnualSummaryReport includes methods for exporting data to PDF and XML formats.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "CustomerClubGrowthReport class offers a monthly overview of the club's growth.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Attributes under CustomerClubGrowthReport class include new members count and cumulative totals.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The report structure in CustomerClubGrowthReport includes an ordering by month.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G11",
+      "evidence": "The ParkWiseSystem offers operations such as startSession and endSession, allowing interaction with ParkingSession to manage state, including the possibility for special conditions like a free initial session for new club members. Operations pertaining to discounts suggest capacity to accommodate the requirement through its logic.",
+      "compliance_status": "Satisfied",
+      "notes": "The existence of startSession and logic for discounts implies the system can recognize and handle a first free session, addressing the guideline requirement."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The presence of a 'GateSensor' class with a status attribute and its association with the ParkingLot class, but without further operationalization regarding data transmission and gate operation.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The guidelines specify that the gate sensor should identify vehicle arrivals and send data in real-time. This operational aspect is not represented, which is a critical domain function."
+    },
+    {
+      "fragment": "Administrator role is not defined in the model despite guideline references to administrator responsibilities.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Administrator roles are mentioned in the guidelines for managing parking lot details, implying a missing domain concept."
+    },
+    {
+      "fragment": "The operation 'generateReceipt' in ParkWiseSystem is mentioned but not linked to guideline requirements.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Generating receipts is a valid business operation that could enhance user experience, even though it's not explicitly covered by the guidelines."
+    },
+    {
+      "fragment": "The 'Payment' association class handling payment details with status and time attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Managing payment details, including time and status, is a valid operation in parking systems, aligning with potential operational needs like payment tracking."
+    },
+    {
+      "fragment": "Operations in ParkWiseSystem like 'approvePaymentWithPG' and 'operateConveyor' not directly tied to guidelines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These operations represent logical extensions for completeness in system functionality, although not explicitly required."
+    },
+    {
+      "fragment": "The system processes payment approvals through a method interacting with an external payment gateway.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Interacting with a payment gateway is a typical system function, adding robustness even if not directly mandated by current guidelines."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": "Elevated from Partially-Satisfied."
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The presence of a 'GateSensor' class with a status attribute and its association with the ParkingLot class, but without further operationalization regarding data transmission and gate operation.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Administrator role is not defined in the model despite guideline references to administrator responsibilities.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The operation 'generateReceipt' in ParkWiseSystem is mentioned but not linked to guideline requirements.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'Payment' association class handling payment details with status and time attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Operations in ParkWiseSystem like 'approvePaymentWithPG' and 'operateConveyor' not directly tied to guidelines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The system processes payment approvals through a method interacting with an external payment gateway.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 16.0,
+  "max_score": 18.0,
+  "score_pct": 88.9,
+  "overall_assessment": "The case model demonstrates strong compliance with domain guidelines, with just a few domain aspects needing better integration."
+}

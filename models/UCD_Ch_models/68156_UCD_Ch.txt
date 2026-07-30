@@ -1,0 +1,52 @@
+@startuml
+actor Customer as "Customer"
+actor SalesEmployee as "Sales Employee"
+actor MarketingEmployee as "Marketing Employee"
+actor GefenSystem as "Gefen System"
+
+usecase PlaceOrder as "Place Order"
+usecase CancelOrder as "Cancel Order"
+usecase ModifyOrder as "Modify Order"
+usecase ViewOrderHistory as "View Order History"
+usecase ManageInventory as "Manage Inventory"
+usecase UpdateWineDetails as "Update Wine Details"
+usecase GenerateUnproductiveEmployeeReport as "Generate Unproductive Employee Report"
+usecase GenerateCurrentInventoryReport as "Generate Current Inventory Report"
+usecase GenerateWineRecommendationReport as "Generate Wine Recommendation Report"
+usecase ImportDataFromGefen as "Import Data from Gefen"
+usecase ExportInventoryToGefen as "Export Inventory to Gefen"
+
+Customer --* PlaceOrder
+Customer --* CancelOrder
+Customer --* ModifyOrder
+Customer --* ViewOrderHistory
+SalesEmployee --* PlaceOrder
+SalesEmployee --* CancelOrder
+SalesEmployee --* ModifyOrder
+SalesEmployee --* ViewOrderHistory
+SalesEmployee --* GenerateUnproductiveEmployeeReport
+MarketingEmployee --* UpdateWineDetails
+MarketingEmployee --* ManageInventory
+MarketingEmployee --* GenerateCurrentInventoryReport
+GefenSystem --* ImportDataFromGefen
+GefenSystem --* ExportInventoryToGefen
+
+PlaceOrder ..> ManageInventory : updates
+CancelOrder ..> ManageInventory : updates
+ModifyOrder ..> ManageInventory : updates
+UpdateWineDetails ..> ManageInventory : updates
+GenerateCurrentInventoryReport ..> ManageInventory : uses
+GenerateWineRecommendationReport ..> UpdateWineDetails : uses
+ExportInventoryToGefen ..> ManageInventory : uses
+ViewOrderHistory ..> PlaceOrder : views
+GenerateUnproductiveEmployeeReport ..> PlaceOrder : uses data from
+UpdateWineDetails ..> GenerateWineRecommendationReport : impacts pairing suggestions
+ImportDataFromGefen ..> ManageInventory : triggers updates
+
+note "Urgent orders can only have one customer."
+note "Inventory updates after an order is placed."
+note "Generate Unproductive Employee Report uses data from Place Order to evaluate employee performance."
+note "Generate Current Inventory Report uses data from Manage Inventory for marketing insights."
+note "Update Wine Details impacts Generate Wine Recommendation Report by adding or removing pairing suggestions."
+
+@enduml

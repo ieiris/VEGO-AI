@@ -1,0 +1,176 @@
+@startuml
+' --- Customer and Order Management ---
+package "Customer and Order Management" {
+    class TblCustomers {
+        +CustomerID: String
+        +CustomerName: String
+        +PhoneNumber: String
+        +DeliveryAddress: String
+        +Email: String
+        +ContactDate: Date
+    }
+
+    class TblCustomerOrders {
+        +CustomerID: String
+        +OrderID: String
+    }
+
+    class TblOrders {
+        +OrderID: String
+        +OrderDate: Date
+        +Status: OrderStatus
+        +ShipmentDate: Date
+        +IsUrgent: Boolean
+        +PriorityLevel: PriorityLevel
+        +EmployeeID: String
+    }
+
+    enum OrderStatus {
+        InProcess
+        Dispatched
+        Delivered
+        Paid
+        Suspended
+        Canceled
+    }
+
+    enum PriorityLevel {
+        1
+2
+3
+4
+5
+
+    }
+
+    class TblEmployees {
+        +EmployeeID: String
+        +EmployeeName: String
+        +PhoneNumber: String
+        +OfficeAddress: String
+        +Email: String
+        +EmploymentStartDate: Date
+        +EmployeeJob: String
+    }
+
+    TblCustomers "1" --> "0..*" TblCustomerOrders : "Places"
+    TblCustomerOrders "0..*" --> "1" TblOrders : "Belongs To"
+    TblOrders "1" --> "1" TblEmployees : "Assigned To"
+    TblOrders --> OrderStatus : "has Status"
+    TblOrders --> PriorityLevel : "has Priority"
+}
+
+' --- Inventory and Locations ---
+package "Inventory and Locations" {
+    class TblInventory {
+        +WineID: String
+        +LocationID: String
+        +Quantity: Integer
+    }
+
+    class TblStorageLocations {
+        +LocationID: String
+        +LocationName: String
+        +Capacity: Integer
+    }
+
+    enum LocationType {
+        Indoor
+        Outdoor
+    }
+
+    TblInventory "0..*" --> "1" TblStorageLocations : "Located At"
+    TblStorageLocations --> LocationType : "has Type"
+}
+
+' --- Wines and Pairings ---
+package "Wines and Pairings" {
+    class TblWines {
+        +WineID: String
+        +WineName: String
+        +Description: String
+        +ProductionYear: Integer
+        +PricePerBottle: Double
+        +SweetnessLevel: SweetnessLevel
+        +ProductImage: File
+        +ManufacturerID: String
+        +WineTypeID: String
+    }
+
+    enum SweetnessLevel {
+        Dry
+        SemiDry
+        SemiSweet
+        Sweet
+    }
+
+    class TblWineTypes {
+        +WineTypeID: String
+        +WineTypeName: String
+        +SerialNumber: String
+        +Description: String
+    }
+
+    class TblWineTypeOccasions {
+        +OccasionID: String
+        +WineTypeID: String
+    }
+
+    class TblOccasions {
+        +OccasionID: String
+        +OccasionName: String
+        +OccasionDescription: String
+        +Season: Season
+        +Location: LocationType
+    }
+
+    enum Season {
+        Spring
+        Summer
+        Fall
+        Winter
+    }
+
+    class TblManufacturers {
+        +ManufacturerID: String
+        +ManufacturerName: String
+        +PhoneNumber: String
+        +Address: String
+        +Email: String
+    }
+
+    class TblOrderWines {
+        +OrderID: String
+        +WineID: String
+        +Quantity: Integer
+    }
+
+    class TblWineFoodPairings {
+        +WineTypeID: String
+        +FoodPairingID: String
+    }
+
+    class TblFoodPairings {
+        +FoodPairingID: String
+        +FoodPairingName: String
+        +RecipeURL: String
+    }
+
+    TblWines "1" --> "1" TblManufacturers : "Produced By"
+    TblWines "1" --> "1" TblWineTypes : "Has Type"
+    TblWines "1" --> "0..*" TblOrderWines : "Referenced In"
+    TblWines "1" --> "0..*" TblInventory : "Stored In"
+    TblOrderWines "0..*" --> "1" TblOrders : "Part Of"
+
+    TblWineTypes "1" --> "0..*" TblWineTypeOccasions : "Linked To"
+    TblWineTypeOccasions "0..*" --> "1" TblOccasions : "Occurs At"
+
+    TblOccasions --> Season : "takes place in"
+    TblOccasions --> LocationType : "takes place at"
+
+    TblWineTypes "1" --> "0..*" TblWineFoodPairings : "Linked To"
+    TblWineFoodPairings "0..*" --> "1" TblFoodPairings : "Food Pairing"
+
+    TblWines --> SweetnessLevel : "has Sweetness Level"
+}
+@enduml 

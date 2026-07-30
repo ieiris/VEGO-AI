@@ -1,0 +1,144 @@
+@startuml
+' ParkWise – FINAL Class Diagram (Entities + Annual Summary Report operations)
+
+skinparam classAttributeIconSize 0
+left to right direction
+
+' ---------- Data Classes (entities) ----------
+
+class Client {
+  +clientID: int
+  +firstName: string
+  +lastName: string
+  +mobilePhone: string
+}
+
+class Vehicle {
+  +vehicleNumber: int
+  +type: string
+  +color: string
+  +size: string              ' small / medium / large
+  +weightKg: double
+  +clientID: int
+  +frontPhoto: string
+  +rearPhoto: string
+  +rightSidePhoto: string
+  +leftSidePhoto: string
+}
+
+class ParkingLot {
+  +lotNumber: int
+  +lotName: string
+  +adress: string
+  +city: string
+  +availableSpaces: int
+  +isAvialiable: boolean
+}
+
+class ParkingSpace {
+  +spaceID: int
+  +lotNumber: int
+  +floorNumber: int
+  +positionX: int
+  +positionY: int
+  +size: string              ' small / medium / large
+}
+
+class Conveyor {
+  +conveyorID: int
+  +lotNumber: int
+  +maxWeightKg: double
+  +floorNumber: int
+  +positionX: int
+  +positionY: int
+}
+
+class PriceRate {
+  +priceListID: int
+  +lotNumber: int
+  +effectiveYear: int
+  +priceFirstHour: double
+  +priceAdditionalHour: double
+  +priceFullDay: double
+}
+
+class ClubMembership {
+  +memberID: int
+  +registrationDate: Date
+  +discountAmount: double
+}
+
+class PreferredLotSelection {
+  +selectionID: int
+  +memberID: int
+  +lotNumber: int
+  +selectionDate: Date
+}
+
+class ParkingSession {
+  +sessionID: int
+  +vehicleNumber: int
+  +lotNumber: int
+  +startTime: DateTime
+  +endTime: DateTime
+  +calculatedAmount: double
+  +finalParkingSpaceID: int
+  +currentConveyorID: int
+  +amountPaid: double
+  +isFreeSession: boolean
+}
+
+' ---------- Classes for Annual Summary Report ----------
+
+class AnnualSummaryReport {
+  +year: int
+  +entries: List<LotAnnualSummaryEntry>
+}
+
+class LotAnnualSummaryEntry {
+  +lotNumber: int
+  +city: string
+  +totalIncome: double
+  +otherColorVehicles: int
+}
+
+class AnnualSummaryReportService {
+  +generateAnnualSummary(year: int): AnnualSummaryReport
+  +loadParkingLots(): List<ParkingLot>
+  +loadSessionsForYear(year: int): List<ParkingSession>
+  +calculateLotIncome(lotNumber: int, year: int): double
+  +countOtherColorVehicles(lotNumber: int, year: int): int
+  +sortByCityAndAmount(report: AnnualSummaryReport): void
+  +exportReportToPDF(report: AnnualSummaryReport, fileName: string): void
+  +exportReportToXML(report: AnnualSummaryReport, fileName: string): void
+}
+
+' ---------- Associations (entities) ----------
+
+Client "1" o-- "0..*" Vehicle : owns
+Client "1" o-- "0..1" ClubMembership : membership
+ClubMembership "1" o-- "0..*" PreferredLotSelection : preferredLots
+
+PreferredLotSelection "0..*" --> "1" ParkingLot : lot
+
+ParkingLot "1" o-- "0..*" ParkingSpace : spaces
+ParkingLot "1" o-- "0..*" Conveyor : conveyors
+ParkingLot "1" o-- "0..*" PriceRate : priceRates
+ParkingLot "1" o-- "0..*" ParkingSession : sessions
+
+Vehicle "1" o-- "0..*" ParkingSession : vehicleSessions
+ParkingSpace "1" o-- "0..*" ParkingSession : finalSpace
+Conveyor "1" o-- "0..*" ParkingSession : currentConveyor
+
+' ---------- Associations for Annual Summary Report ----------
+
+AnnualSummaryReport "1" o-- "0..*" LotAnnualSummaryEntry : entries
+
+AnnualSummaryReportService ..> ParkingLot : uses
+AnnualSummaryReportService ..> ParkingSession : uses
+AnnualSummaryReportService ..> Vehicle : uses
+AnnualSummaryReportService ..> PriceRate : uses
+AnnualSummaryReportService --> AnnualSummaryReport : creates
+AnnualSummaryReportService ..> LotAnnualSummaryEntry : builds
+
+@enduml

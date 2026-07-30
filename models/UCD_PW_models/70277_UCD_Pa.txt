@@ -1,0 +1,103 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' --- Actors Layout ---
+actor "Administrator" as Admin
+actor "Client" as Client
+actor "Gate Sensor" as GS
+
+actor "Integrated Rate Service" as IRS
+actor "Conveyors' Controller" as CC
+actor "Payment Gateway" as PG
+
+' Force Actor Vertical Alignment (Left side and Right side)
+Admin -[hidden]-> Client
+Client -[hidden]-> GS
+IRS -[hidden]-> CC
+CC -[hidden]-> PG
+
+package "ParkWise System" {
+
+    ' --- Group 1: Administration (Top) ---
+    usecase "Generate Annual Summary Report" as UC_ReportAnnual
+    usecase "Generate Customer Club Growth Report" as UC_ReportClub
+    usecase "Update Parking Lot Details" as UC_UpdateLot
+    usecase "Update Price Lists" as UC_UpdatePrices
+
+    ' --- Group 2: Club Management ---
+    usecase "Register to Client Club" as UC_JoinClub
+    usecase "Select Preferred Lots" as UC_PrefLots
+
+    ' --- Group 3: Arrival & Registration ---
+    usecase "Detect Vehicle Arrival" as UC_Arrival
+    usecase "Provide Registration Details" as UC_Register
+    usecase "Extract Data from Photos" as UC_Photo
+    usecase "Associate Vehicle with Client" as UC_Associate
+    usecase "Open Barrier" as UC_OpenBarrier
+
+    ' --- Group 4: Parking Operations ---
+    usecase "Assign Conveyor & Optimize Spot" as UC_Optimize
+    usecase "Update Parking Completion" as UC_ParkComp
+    usecase "Update Vehicle Location" as UC_UpdateLoc
+    usecase "Send SMS with Parking Details" as UC_SMS
+
+    ' --- Group 5: Departure & Payment (Bottom) ---
+    usecase "Detect Vehicle Departure" as UC_Departure
+    usecase "End Parking Session" as UC_EndSession
+    usecase "Pay for Parking" as UC_Pay
+    usecase "Calculate Payment Amount" as UC_CalcPay
+    usecase "Issue Receipt" as UC_Receipt
+
+    ' --- Vertical Layout Enforcers (Hidden Links) ---
+    ' This forces the groups to stack on top of each other
+    UC_ReportAnnual -[hidden]-> UC_JoinClub
+    UC_JoinClub -[hidden]-> UC_Arrival
+    UC_Arrival -[hidden]-> UC_Optimize
+    UC_Optimize -[hidden]-> UC_Departure
+
+}
+
+' --- Relationships ---
+
+' Admin
+Admin --> UC_UpdateLot
+Admin --> UC_ReportAnnual
+Admin --> UC_ReportClub
+
+' IRS
+IRS --> UC_UpdatePrices
+
+' Client - Club
+Client --> UC_JoinClub
+Client --> UC_PrefLots
+
+' Client - Arrival
+Client --> UC_Register : (If not recognized)
+UC_Register ..> UC_Photo : <<include>>
+UC_Register ..> UC_Associate : <<include>>
+UC_Register ..> UC_OpenBarrier : <<include>>
+
+' Gate Sensor
+GS --> UC_Arrival
+GS --> UC_Departure
+UC_Arrival ..> UC_OpenBarrier : <<include>>
+UC_Departure ..> UC_OpenBarrier : <<include>>
+
+' Conveyors Controller
+CC --> UC_Optimize
+CC --> UC_ParkComp
+CC --> UC_UpdateLoc
+UC_ParkComp ..> UC_SMS : <<include>>
+UC_SMS --> Client
+
+' Client - Departure
+Client --> UC_EndSession
+UC_EndSession ..> UC_Pay : <<include>>
+
+' Payment & Barrier
+UC_Pay ..> UC_CalcPay : <<include>>
+UC_Receipt .> UC_Pay : <<extend>>
+UC_Pay ..> UC_OpenBarrier : <<include>>
+UC_Pay -- PG
+@enduml

@@ -1,0 +1,120 @@
+@startuml
+class Order {
+    - orderNumber: int
+    - orderDate: Date
+    - status: String
+    - shipmentDate: Date
+    - priorityLevel: int
+    - deliveryTime: Date
+    - isUrgent: boolean
+    - mainCustomer: Customer
+    + placeOrder(): void
+    + updateStatus(): void
+    + calculateTotalPrice(): float
+    + generateInvoice(): void
+}
+
+class Customer {
+    - customerId: int
+    - name: String
+    - phoneNumber: String
+    - deliveryAddress: String
+    - email: String
+    - firstContactDate: Date
+    + updateCustomerDetails(): void
+    + viewOrderHistory(): void
+    + combineOrder(): void
+}
+
+class Wine {
+    - wineId: int
+    - name: String
+    - description: String
+    - productionYear: int
+    - pricePerBottle: float
+    - sweetnessLevel: String
+    - imageURL: String
+    + updateWineDetails(): void
+    + viewWineDetails(): void
+    + getPairingRecommendations(): void
+}
+
+class WineType {
+    - typeId: int
+    - name: String
+    - foodPairing: List<String>
+    - recipeLinks: List<String>
+    - recommendedOccasions: List<String>
+    + addFoodPairing(): void
+    + updateTypeDetails(): void
+}
+
+class StorageLocation {
+    - locationId: int
+    - locationName: String
+    - quantityInStock: int
+    + updateStockLevel(): void
+    + trackWineStock(): void
+}
+
+class Employee {
+    - employeeId: int
+    - name: String
+    - phoneNumber: String
+    - email: String
+    - startDate: Date
+    - department: Department
+    - role: EmployeeRole
+    + placeOrder(): void
+    + updateEmployeeDetails(): void
+    + generateUnproductiveReport(): Report
+}
+
+class Department {
+    - departmentId: int
+    - departmentName: String
+    - employees: List<Employee>
+    - manager: Employee
+    + assignEmployeeToDepartment(): void
+}
+
+class EmployeeRole {
+    - roleId: int
+    - roleName: String
+}
+
+class Manufacturer {
+    - manufacturerId: int
+    - fullName: String
+    - phoneNumber: String
+    - address: String
+    - email: String
+    + updateManufacturerDetails(): void
+}
+
+class Report {
+    - reportId: int
+    - reportType: String
+    - reportData: List<String>
+    + generateReport(): void
+    + sendReport(): void
+    + filterReportData(): void
+}
+
+class GefenSystem {
+    - systemId: int
+    + importWineData(): void
+    + exportInventoryData(): void
+    + sendReportToGefen(): void
+}
+
+Order "1" --> "*" Customer : "Contains"
+Order "1" --> "1" Employee : "Assigned To"
+Wine "*" --> "1" WineType : "Belongs To"
+Wine "*" --> "*" StorageLocation : "Stored In"
+Employee "*" --> "1" Department : "Works In"
+Employee "*" --> "*" Report : "Generates"
+Manufacturer "1" --> "*" Wine : "Produces"
+GefenSystem "1" --> "*" Wine : "Handles Data"
+
+@enduml

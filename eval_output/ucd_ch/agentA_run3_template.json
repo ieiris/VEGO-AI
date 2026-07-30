@@ -1,0 +1,49 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Use Case Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Actor",
+      "fragment_description": "Represents an entity that interacts with the system in the Use Case Diagram. Typically depicted by a stick figure or a rectangle.",
+      "involved_constructs": "Actor"
+    },
+    {
+      "id": "T2",
+      "short_name": "UseCase",
+      "fragment_description": "Defines the functionalities or services provided by the system as seen by the actors.",
+      "involved_constructs": "UseCase"
+    },
+    {
+      "id": "T3",
+      "short_name": "Actor-Association-UseCase",
+      "fragment_description": "An association relationship connects an actor to a use case, indicating that the actor participates in the use case.",
+      "involved_constructs": "Actor | Association | UseCase"
+    },
+    {
+      "id": "T4",
+      "short_name": "UseCase-Include-UseCase",
+      "fragment_description": "The 'include' relationship is used to include the behavior of another use case into the base use case, indicating that the included use case occurs every time the base use case does.",
+      "involved_constructs": "UseCase | Include | UseCase"
+    },
+    {
+      "id": "T5",
+      "short_name": "UseCase-Extend-UseCase",
+      "fragment_description": "The 'extend' relationship specifies that the behavior of a use case can be extended by another use case under certain conditions, adding optional behavior.",
+      "involved_constructs": "UseCase | Extend | UseCase"
+    },
+    {
+      "id": "T6",
+      "short_name": "SystemBoundary(contents)",
+      "fragment_description": "Represents the boundary of the system, encapsulating use cases and demarcating them from actors outside the boundary.",
+      "involved_constructs": "SystemBoundary | UseCase"
+    }
+  ],
+  "agent1_capabilities": [
+    "What is the role of an Actor in a UML Use Case Diagram?",
+    "How does an 'include' relationship function in a Use Case Diagram?",
+    "In what way does an 'extend' relationship modify a use case?",
+    "How is the System Boundary represented in a Use Case Diagram?",
+    "What does an Association relationship symbolize between an Actor and a Use Case?"
+  ]
+}

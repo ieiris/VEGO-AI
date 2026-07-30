@@ -1,0 +1,429 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68145",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model is divided into packages that cover customer management, order processing, and inventory management, reflecting the business operations of 'Wine Ha'Emek'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The case model shows a relationship between customers and employees, indicating that orders are assigned to specific employees, reflecting the responsibility of sales staff.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The 'TblOrders' class captures order details such as order number, order date, status, shipment date, and employee information, aligning with the required attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not include any representation of an external delivery company like 'GalGalim', as the guideline specifies this is outside the current system scope.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The class 'TblCustomerOrders' links customers and orders, reflecting the concept of joint orders by tracking which customers placed which orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The 'TblCustomers' class records details like ID, name, phone number, address, email, and contact date, reflecting customer attributes when involved in an order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employees can place orders like customers, shown by the same structure of employee and customer records and relationships to orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The 'TblOrders' class includes a Boolean for urgent orders and a priority level, indirectly indicating single-customer placement for urgent orders.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Evidence of singular customer placement for urgent orders is indirect."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The model includes attributes for urgency and priority level within 'TblOrders', but expected delivery time is not explicitly captured.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Missing explicit attribute for expected delivery time in urgent orders."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The model allows multiple customers to place orders, shown by 'TblCustomerOrders' association, supporting scenarios of regular joint orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "Orders link to specific wines and quantities via 'TblOrderWines', reflecting tracking for regular orders by customer.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The 'TblCustomers' structure supports details for both urgent and regular orders, capturing key customer attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "No explicit class or attributes responsible for restricting updates to marketing employees are noted in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "There is no explicit mechanism for sales staff to browse wines directly indicated in the entity relations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The 'TblWineTypes' class includes name and serial number attributes, aligning with wine type identification.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The 'TblWineFoodPairings' and 'TblFoodPairings' classes support food pairing details, consistent with guidance on wine type details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The 'TblWineTypeOccasions' and 'TblOccasions' classes allow linking wines to suitable occasions by description, season, and location.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There is no direct representation of data reception or handling from the 'Gefen' system within the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer details like name, phone, address, and email are captured within 'TblManufacturers', aligned with information storage needs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "The 'TblWines' class captures wine attributes, including name, description, production year, price, sweetness level, and image.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "The use of identifiers in 'TblWines' and 'TblManufacturers' reflects the guideline for distinguishing wines by catalog or manufacturer numbers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "There is no explicit representation of the roles regarding modification capabilities restricted to marketing staff.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "A relationship between inventory and storage locations with unique identifiers is represented, supporting storage schemes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The 'TblInventory' class tracks wine quantities by location, indicating part-whole relationships consistent with tracking inventory.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The system does not explicitly describe how inventory updates occur after sales in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "There is no explicit reference to reports the system should generate within the model description.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The current model does not include any representation of the external company 'GalGalim'. There are no classes, attributes, or associations indicating external delivery not being part of the system.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "As the guideline explicitly states that delivery by 'GalGalim' is outside the system scope, the absence of this representation aligns with not including external factors irrelevant to the system."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "In the 'TblCustomerOrders' and 'TblOrders', the structure allows only a customer to be related to urgent orders due to the implicit association of setting urgency properties at an order level rather than customer order level.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "This provides indirect evidence for single-customer placement of urgent orders, but it's interpretation as it's not explicitly modeled."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "While 'TblOrders' captures priority level and urgency, there is no indication of capturing the expected delivery time in the available classes.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The priority is addressed but not the expected delivery time, which is crucial to fully satisfy the guideline."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "There seems to be no class or specific attribute dedicated to authorize update permissions for marketing only in current model configuration.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Absence of specific role mechanism in model architecture to satisfy and note responsibility exclusively implying marketing staff."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "No explicit reference to sales staff viewing or browsing wines in the model diagram particularly shown within entity relations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The capability for browsing or filtering isn't represented directly which could imply a functional oversight."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The architecture does not display data flow or integration points necessary to portray data import from the 'Gefen' system.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model does not demonstrate interactions or extensions to accommodate external data receipt."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Roles like marketing staff linking wines or updating details have not been portrayed actively within permissions or operations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Model lacks action or operation linking wine modification as limited to marketing staff despite intended guideline."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "No direct process or methodology shows interaction with inventory updates post-sale as current structures define static relations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Model does not encapsulate dynamic interactions or processes for updating inventory upon sales occurrences within existing diagrams."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "There is an absence of any reporting mechanisms or analytic generation mentioned explicitly within the current model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The requirement to visualize report outputs or generation aren't captured, showing lack of dimension for reporting components."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The 'TblStorageLocations' class includes 'LocationName' and 'Capacity' attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The inclusion of 'LocationName' and 'Capacity' provides additional information about storage locations that could be useful for inventory management. This detail adds depth to the model."
+    },
+    {
+      "fragment": "The enumeration 'LocationType' categorizing locations as 'Indoor' or 'Outdoor'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This enumeration adds useful detail to the model by categorizing storage locations, which could be relevant for storage conditions or logistical considerations."
+    },
+    {
+      "fragment": "The 'TblWineTypeOccasions' class linking wine types to occasions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Linking wine types to occasions provides valuable context for marketing and recommendations, aligning with business objectives."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The 'TblStorageLocations' class includes 'LocationName' and 'Capacity' attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The enumeration 'LocationType' categorizing locations as 'Indoor' or 'Outdoor'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'TblWineTypeOccasions' class linking wine types to occasions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 21.5,
+  "max_score": 26.0,
+  "score_pct": 82.7,
+  "overall_assessment": "The case model effectively addresses the majority of guidelines but misses certain external integrations and role-based restrictions."
+}

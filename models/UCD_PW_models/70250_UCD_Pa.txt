@@ -1,0 +1,116 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Administrator" as Admin
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors' Controller (CC)" as CC
+actor "Integrated Rate Service (IRS)" as IRS
+actor "Payment Gateway (PG)" as PG
+
+actor "Client / Driver" as Client
+actor "Club Member" as Member
+Client <|-- Member
+
+rectangle "ParkWise System" {
+
+    ' --- Admin Use Cases ---
+    usecase "Update Parking Lot Details" as UC_UpdateLot
+    usecase "Generate Annual Summary Report" as UC_RepAnnual
+    usecase "Generate Club Growth Report" as UC_RepGrowth
+
+    ' --- Entry Process ---
+    usecase "Check Vehicle Eligibility" as UC_Check
+    usecase "Provide Details & Photos" as UC_Register
+    usecase "Extract Vehicle Details" as UC_Extract
+    usecase "Open Barrier" as UC_OpenGate
+    usecase "Log Parking Session Start" as UC_LogStart
+
+    ' --- Conveyor Process ---
+    usecase "Scan Vehicle at Conveyor" as UC_ScanVeh
+    usecase "Assign Conveyor & Optimize Spot" as UC_Optimize
+    usecase "Track Vehicle Location" as UC_Track
+    usecase "Send Parking Info (SMS)" as UC_SMS
+
+    ' --- Client UI ---
+    usecase "View Parking Details" as UC_ViewDetails
+    usecase "Request End Parking" as UC_EndParking
+
+    ' --- Exit Process ---
+    usecase "Retrieve Vehicle" as UC_Retrieve
+    usecase "Calculate Payment" as UC_CalcPay
+    usecase "Process Payment" as UC_Pay
+    usecase "Issue Receipt" as UC_Receipt
+
+    ' --- Club & Pricing ---
+    usecase "Register to Club" as UC_ClubReg
+    usecase "Select Preferred Lots" as UC_PrefLots
+    usecase "Update Price Lists" as UC_UpdatePrices
+}
+
+' ===========================
+'      Relationships
+' ===========================
+
+' --- Admin ---
+Admin --> UC_UpdateLot
+Admin --> UC_RepAnnual
+Admin --> UC_RepGrowth
+
+' --- Entry Flow ---
+GS --> UC_Check
+UC_Check ..> UC_OpenGate : <<include>>
+UC_Check .> UC_Register : <<extend>>
+note right of UC_Register
+Extension Point:
+- triggered if vehicle not recognized or details missing
+- client must provide details & photos
+end note
+
+UC_Register ..> UC_Extract : <<include>>
+UC_Register ..> UC_OpenGate : <<extend>>
+note right of UC_OpenGate
+Extension Point:
+- Opens automatically if vehicle is recognized.
+- Opens after client provides details & photos if vehicle is not recognized.
+end note
+
+' Logging only after barrier crossing
+GS --> UC_LogStart
+
+' --- Conveyor Process ---
+CC --> UC_ScanVeh
+UC_ScanVeh --> UC_Optimize
+
+UC_Optimize ..> UC_Track : <<include>>
+UC_Optimize ..> UC_SMS : <<include>>
+
+' --- Client Interaction ---
+Client --> UC_Register
+Client --> UC_ViewDetails
+Client --> UC_ClubReg
+Client --> UC_EndParking
+
+' --- Exit Flow ---
+UC_EndParking ..> UC_Retrieve : <<include>>
+UC_EndParking ..> UC_Pay : <<include>>
+
+UC_Pay ..> UC_CalcPay : <<include>>
+UC_Pay --> PG
+UC_Pay <.. UC_Receipt : <<extend>>
+note right of UC_Receipt
+Extension Point:
+- on client request (receipt generation)
+end note
+
+' --- Club ---
+Member --> UC_PrefLots
+UC_PrefLots .> UC_ClubReg : <<extend>>
+note right of UC_PrefLots
+Extension Point:
+- select preferred lots (during or after club registration)
+end note
+
+' --- IRS Pricing ---
+IRS --> UC_UpdatePrices
+@enduml

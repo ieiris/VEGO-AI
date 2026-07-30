@@ -1,0 +1,361 @@
+{
+  "skill_version": "1.0.0",
+  "ranking": [
+    {
+      "rank": 1,
+      "case_id": "70204",
+      "total_score": 53.5,
+      "max_score": 48.0,
+      "score_pct": 111.5,
+      "overall_assessment": "The case model exceeds expectations with all guidelines satisfied and additional valid alternative modeling choices enhancing clarity and functionality."
+    },
+    {
+      "rank": 2,
+      "case_id": "70236",
+      "total_score": 53.5,
+      "max_score": 48.0,
+      "score_pct": 111.5,
+      "overall_assessment": "The case model exceeds the expected compliance, with valid alternative approaches and full guideline satisfaction."
+    },
+    {
+      "rank": 3,
+      "case_id": "70229",
+      "total_score": 52.5,
+      "max_score": 48.0,
+      "score_pct": 109.4,
+      "overall_assessment": "The case model fully satisfies all guidelines, with additional valuable alternatives enhancing user interaction and system functionality."
+    },
+    {
+      "rank": 4,
+      "case_id": "70249",
+      "total_score": 52.5,
+      "max_score": 48.0,
+      "score_pct": 109.4,
+      "overall_assessment": "The case model exhibits excellent compliance with all guidelines and includes several creative operational enhancements."
+    },
+    {
+      "rank": 5,
+      "case_id": "70212",
+      "total_score": 51.5,
+      "max_score": 48.0,
+      "score_pct": 107.3,
+      "overall_assessment": "The case model exceeds expectations by satisfying all domain guidelines and incorporating creative alternative approaches."
+    },
+    {
+      "rank": 6,
+      "case_id": "70282",
+      "total_score": 50.0,
+      "max_score": 48.0,
+      "score_pct": 104.2,
+      "overall_assessment": "The case model exceeds full compliance with domain guidelines, demonstrating extensive alignment with mapped requirements."
+    },
+    {
+      "rank": 7,
+      "case_id": "70251",
+      "total_score": 51.0,
+      "max_score": 49.0,
+      "score_pct": 104.1,
+      "overall_assessment": "The case model meets and in some cases exceeds the domain guidelines with strong compliance and alternative enhancements."
+    },
+    {
+      "rank": 8,
+      "case_id": "70198",
+      "total_score": 49.5,
+      "max_score": 48.0,
+      "score_pct": 103.1,
+      "overall_assessment": "The case model demonstrates robust compliance with the domain guidelines, displaying full or partial satisfaction in almost all areas."
+    },
+    {
+      "rank": 9,
+      "case_id": "70240",
+      "total_score": 49.5,
+      "max_score": 48.0,
+      "score_pct": 103.1,
+      "overall_assessment": "The case model exhibits comprehensive guideline coverage with innovative alternatives contributing to a high compliance score."
+    },
+    {
+      "rank": 10,
+      "case_id": "70228",
+      "total_score": 49.0,
+      "max_score": 48.0,
+      "score_pct": 102.1,
+      "overall_assessment": "The case model demonstrates exceptional coverage and alignment with domain guidelines, with several enhancements identified."
+    },
+    {
+      "rank": 11,
+      "case_id": "70252",
+      "total_score": 49.0,
+      "max_score": 48.0,
+      "score_pct": 102.1,
+      "overall_assessment": "The case model exceeds expectations, with all guidelines being fully satisfied, and additional valuable alternatives noted."
+    },
+    {
+      "rank": 12,
+      "case_id": "70255",
+      "total_score": 49.0,
+      "max_score": 48.0,
+      "score_pct": 102.1,
+      "overall_assessment": "The overall compliance of the case model is exceptionally high, surpassing the maximum expected score due to valid alternative modeling choices enhancing usability."
+    },
+    {
+      "rank": 13,
+      "case_id": "70251",
+      "total_score": 48.5,
+      "max_score": 48.0,
+      "score_pct": 101.0,
+      "overall_assessment": "The case model satisfies all guidelines effectively, with some areas for improvement related to specific usage details."
+    },
+    {
+      "rank": 14,
+      "case_id": "70264",
+      "total_score": 48.5,
+      "max_score": 48.0,
+      "score_pct": 101.0,
+      "overall_assessment": "The case model successfully satisfies all guidelines with an additional valid alternative modeling choice."
+    },
+    {
+      "rank": 15,
+      "case_id": "70271",
+      "total_score": 48.5,
+      "max_score": 48.0,
+      "score_pct": 101.0,
+      "overall_assessment": "The case model for ParkWise is exceptionally well-aligned with the domain guidelines, meeting most with additional coherent alternatives."
+    },
+    {
+      "rank": 16,
+      "case_id": "70278",
+      "total_score": 48.5,
+      "max_score": 48.0,
+      "score_pct": 101.0,
+      "overall_assessment": "The case model demonstrates excellent compliance, addressing nearly all guidelines with some alternative valid solutions presented."
+    },
+    {
+      "rank": 17,
+      "case_id": "70279",
+      "total_score": 48.5,
+      "max_score": 48.0,
+      "score_pct": 101.0,
+      "overall_assessment": "The case model shows a strong alignment with the domain guidelines with some minor room for improvement and achieves an exceptional score."
+    },
+    {
+      "rank": 18,
+      "case_id": "70283",
+      "total_score": 48.5,
+      "max_score": 48.0,
+      "score_pct": 101.0,
+      "overall_assessment": "The case model effectively covers nearly all domain guidelines, with innovative modeling choices beyond the basic requirements."
+    },
+    {
+      "rank": 19,
+      "case_id": "70219",
+      "total_score": 48.0,
+      "max_score": 48.0,
+      "score_pct": 100.0,
+      "overall_assessment": "The case model fully satisfies all domain guidelines without any uncovered fragments or issues."
+    },
+    {
+      "rank": 20,
+      "case_id": "70241",
+      "total_score": 48.0,
+      "max_score": 48.0,
+      "score_pct": 100.0,
+      "overall_assessment": "The case model meets all domain guidelines comprehensively with partial satisfaction for two guidelines being supported by detailed entries and alternatives."
+    },
+    {
+      "rank": 21,
+      "case_id": "70278",
+      "total_score": 48.0,
+      "max_score": 48.0,
+      "score_pct": 100.0,
+      "overall_assessment": "The case model perfectly meets all guidelines with full compliance."
+    },
+    {
+      "rank": 22,
+      "case_id": "70279",
+      "total_score": 48.0,
+      "max_score": 48.0,
+      "score_pct": 100.0,
+      "overall_assessment": "The case model fully complies with all domain guidelines, achieving a perfect score."
+    },
+    {
+      "rank": 23,
+      "case_id": "70238",
+      "total_score": 47.75,
+      "max_score": 48.0,
+      "score_pct": 99.5,
+      "overall_assessment": "The case model strongly aligns with the guidelines, demonstrating comprehensive compliance across most areas with minor improvements noted."
+    },
+    {
+      "rank": 24,
+      "case_id": "70223",
+      "total_score": 49.5,
+      "max_score": 50.0,
+      "score_pct": 99.0,
+      "overall_assessment": "The case model is highly compliant with domain guidelines, with a notable adherence to most required aspects."
+    },
+    {
+      "rank": 25,
+      "case_id": "70197",
+      "total_score": 47.5,
+      "max_score": 48.0,
+      "score_pct": 98.9,
+      "overall_assessment": "The case model covers nearly all guidelines with little to no deviation, demonstrating strong compliance with the domain expectations."
+    },
+    {
+      "rank": 26,
+      "case_id": "70252",
+      "total_score": 46.75,
+      "max_score": 48.0,
+      "score_pct": 97.4,
+      "overall_assessment": "The case model for 70252 demonstrates near-complete compliance with the domain guidelines, evidencing a robust design with minor scope for refinement."
+    },
+    {
+      "rank": 27,
+      "case_id": "70213",
+      "total_score": 46.5,
+      "max_score": 48.0,
+      "score_pct": 96.9,
+      "overall_assessment": "The case model demonstrates strong compliance with domain guidelines, successfully addressing most requirements."
+    },
+    {
+      "rank": 28,
+      "case_id": "70233",
+      "total_score": 46.5,
+      "max_score": 48.0,
+      "score_pct": 96.9,
+      "overall_assessment": "The case model performs excellently, meeting most domain guidelines with few areas for improvement."
+    },
+    {
+      "rank": 29,
+      "case_id": "70239",
+      "total_score": 46.0,
+      "max_score": 48.0,
+      "score_pct": 95.8,
+      "overall_assessment": "The case model demonstrates comprehensive compliance with most of the domain guidelines, with only minor gaps in detailing certain processes."
+    },
+    {
+      "rank": 30,
+      "case_id": "70216",
+      "total_score": 44.5,
+      "max_score": 48.0,
+      "score_pct": 92.7,
+      "overall_assessment": "The case model largely adheres to domain guidelines, demonstrating robust compliance with a few partially addressed areas."
+    },
+    {
+      "rank": 31,
+      "case_id": "70205",
+      "total_score": 44.0,
+      "max_score": 48.0,
+      "score_pct": 91.7,
+      "overall_assessment": "The case model demonstrates strong compliance with domain guidelines, effectively covering most of the required guidelines, with only a few areas lacking explicit detail."
+    },
+    {
+      "rank": 32,
+      "case_id": "70248",
+      "total_score": 43.0,
+      "max_score": 48.0,
+      "score_pct": 89.6,
+      "overall_assessment": "The case model demonstrates strong compliance with guidelines but has minor areas needing clarity or adjustment."
+    },
+    {
+      "rank": 33,
+      "case_id": "70277",
+      "total_score": 42.5,
+      "max_score": 48.0,
+      "score_pct": 88.5,
+      "overall_assessment": "The case model of ParkWise demonstrates strong compliance with the domain guidelines, satisfying most and partially satisfying the remaining criteria."
+    },
+    {
+      "rank": 34,
+      "case_id": "70245",
+      "total_score": 41.75,
+      "max_score": 48.0,
+      "score_pct": 87.0,
+      "overall_assessment": "The case model satisfies most guidelines, with effective use of use cases and actors, though some details like optimization algorithms and client notifications could be further refined."
+    },
+    {
+      "rank": 35,
+      "case_id": "70199",
+      "total_score": 41.5,
+      "max_score": 48.0,
+      "score_pct": 86.5,
+      "overall_assessment": "The case model largely meets domain guidelines with minor gaps in explicit details."
+    },
+    {
+      "rank": 36,
+      "case_id": "70248",
+      "total_score": 41.5,
+      "max_score": 48.0,
+      "score_pct": 86.5,
+      "overall_assessment": "The case model largely complies with the guidelines, with a few areas for improvement in terms of explicit details and connections."
+    },
+    {
+      "rank": 37,
+      "case_id": "70276",
+      "total_score": 40.0,
+      "max_score": 48.0,
+      "score_pct": 83.3,
+      "overall_assessment": "The case model demonstrates strong compliance with the guidelines, with several areas exhibiting room for explicit detail improvements."
+    },
+    {
+      "rank": 38,
+      "case_id": "70256",
+      "total_score": 39.0,
+      "max_score": 48.0,
+      "score_pct": 81.2,
+      "overall_assessment": "The case model demonstrates strong compliance with the guidelines, though certain areas could benefit from greater explicit representation."
+    },
+    {
+      "rank": 39,
+      "case_id": "70291",
+      "total_score": 38.5,
+      "max_score": 48.0,
+      "score_pct": 80.2,
+      "overall_assessment": "The case model mostly adheres to the guidelines, with certain areas clearly detailed and a few needing explicit coverage or improvement."
+    },
+    {
+      "rank": 40,
+      "case_id": "70250",
+      "total_score": 37.75,
+      "max_score": 48.0,
+      "score_pct": 78.6,
+      "overall_assessment": "The case model for ID 70250 demonstrates solid guideline adherence but requires attention to vehicle exit data flows and integration of financial systems."
+    },
+    {
+      "rank": 41,
+      "case_id": "70200",
+      "total_score": 36.5,
+      "max_score": 48.0,
+      "score_pct": 76.0,
+      "overall_assessment": "This case model effectively complies with most domain guidelines, although there are several areas that remain under-specified or lack explicit details."
+    },
+    {
+      "rank": 42,
+      "case_id": "70234",
+      "total_score": 33.0,
+      "max_score": 48.0,
+      "score_pct": 68.8,
+      "overall_assessment": "The case model demonstrates a solid understanding of domain requirements but has room for improvement, particularly in explicitly documenting guideline elements."
+    },
+    {
+      "rank": 43,
+      "case_id": "70197",
+      "total_score": 17.5,
+      "max_score": 48.0,
+      "score_pct": 36.5,
+      "overall_assessment": "The case model partially meets the domain guidelines, with several areas lacking evidence or detail and some guidelines fully satisfied."
+    },
+    {
+      "rank": 44,
+      "case_id": "70229",
+      "total_score": 7.0,
+      "max_score": 48.0,
+      "score_pct": 14.6,
+      "overall_assessment": "The case model satisfies several key guidelines, yet there remains substantial room for improvement to meet all the domain requirements."
+    }
+  ],
+  "mean_pct": 93.2,
+  "min_pct": 14.6,
+  "max_pct": 111.5,
+  "std_pct": 17.7
+}

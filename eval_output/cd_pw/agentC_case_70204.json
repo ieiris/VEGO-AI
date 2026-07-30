@@ -1,0 +1,315 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70204",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class has attributes for a unique lot ID, name, address, and city, representing a parking lot's identification and location details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class does not include an attribute for available spaces, which means the model fails to address this requirement.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "An association exists between the Client and Vehicle classes, where a client can own one or more vehicles, ensuring each vehicle is linked to one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class has attributes like start time and vehicles details within the Vehicle class, storing session information effectively.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class contains an attribute for space size, which indicates the capacity for vehicle accommodation.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class includes a max weight capacity attribute, which correlates with managing vehicle transportation.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The SessionConveyorLog shows the conveyors used during sessions, however, it does not specify that conveyor information is omitted at session end.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "LotPriceHistory and PriceList classes are used to model different pricing practices for each parking lot, covering pricing details for various durations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The Client class associates with ClubPreferredLot but there is no dedicated club management class, failing to meet guideline specification.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "A dedicated ClientClub structure is absent, creating incomplete club management depiction."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "While the Client class is associated with ClubPreferredLot, the inherent fixed discount for club members is not explicitly indicated.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Contractual discounts for club members are not specifically represented."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The absence of a mechanism depicting free session credit for new club members in the model implies non-compliance with the provided guideline.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The System class includes operations for generating the Annual Summary Report, aligning with all ParkWise income overview requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The class System features mechanisms for report generation which can include parking and payment details, in-line with the required attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "While report ordering criteria (by city and amount) is hinted at in report generation, explicit handling mechanism remains uncovered.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Report ordering by specific criteria is not operationalized in detail."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The System class supports generating reports in PDF and XML formats, conforming to stated reporting format requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Generation of a Customer Club Growth Report in the System supports monthly club growth tracking and overview.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Content of the Customer Club Growth Report, covering new members and cumulative data, matches its specification through System operations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Though the System facilitates report generation, ordering by month lacks depicted operational specifics.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit monthly ordering protocol for the growth report is not captured."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G2",
+      "evidence": "The case model does not explicitly depict an attribute for available spaces in the ParkingLot class. The existing model does not accommodate or track this requirement through other classes or methods, indicating that the requirement remains unmet.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Without any representation or implication of available space tracking within the model, this guideline remains not satisfied."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The connection between Client and ClubPreferredLot suggests some handling of club membership but does not fully establish a dedicated ClientClub or similar management class.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While there is evidence of club interaction, the absence of a comprehensive ClientClub class or method leaves the club management undefined as per the guideline."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The association between Client and ClubPreferredLot implies club membership but lacks concreteness concerning automated discounts for club members.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model does not adequately encapsulate the discount mechanism for club members despite implied club associations."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The model does not define any logic for identifying and processing free parking sessions for new club members within any existing classes or associations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No existing mechanisms support or simulate the provision of free parking sessions specifically for new club members' first sessions."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The System class could potentially support the sorting and ordering of reports, but such functionality is neither actively defined nor highlighted through existing operations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While implicit support could be present in generalized reporting, without explicit operations for ordering, it's considered partially satisfied."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Monthly ordering is not explicitly represented for the Customer Club Growth Report, though the System class allows report generation.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The capability might exist implicitly like in other reporting features, but it's not specified for monthly ordering in the context."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The SystemParameters class records system-wide parameters with properties such as paramID, paramName, and paramValue.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This provides additional detail that could be useful for system configuration and management, which is not explicitly required by the guidelines but validly extends the model's configurability."
+    },
+    {
+      "fragment": "The LotPriceHistory class tracks historical pricing data, associated with parking lots.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While not explicitly required by the guidelines, maintaining historical pricing data is a valid and typically useful feature for auditing and price adjustment analytics."
+    },
+    {
+      "fragment": "Enum definitions for VehicleColor, Size, ConveyorStatus, PayOptionsStatus, SessionStatus, and ReportFormat.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These enumerations define the data types used within the classes for attributes and operations, which helps in ensuring data integrity and is a standard practice in modeling."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The SystemParameters class records system-wide parameters with properties such as paramID, paramName, and paramValue.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The LotPriceHistory class tracks historical pricing data, associated with parking lots.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Enum definitions for VehicleColor, Size, ConveyorStatus, PayOptionsStatus, SessionStatus, and ReportFormat.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 14.5,
+  "max_score": 18.0,
+  "score_pct": 80.6,
+  "overall_assessment": "The case model demonstrates a strong level of compliance with the domain guidelines, though there are gaps in detailing specific aspects such as available parking spaces and club member benefits."
+}

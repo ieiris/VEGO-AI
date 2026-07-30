@@ -1,0 +1,396 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68061",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The 'Cheers' system involves classes related to inventory management, customer management, and order processing with entities like Order, Customer, and Inventory.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "SalesStaff class includes operations for placing customer orders and associates each order with a specific Employee.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order class captures details including order number, date, status, and shipment date, and is associated with an Employee for assignment information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The model doesn't include an external company for order delivery as 'GalGalim' is outside the system scope.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "RegularOrder class supports joint orders involving multiple customers and Order class tracks multiple Wines with specific quantities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class includes attributes to capture ID, name, phone number, delivery address, email, and first contact date.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employee class and Order association suggest employees can place orders under similar conditions as customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "UrgentOrder is processed differently, emphasizing priority and single customer placement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder includes attributes for priority level and expected delivery time.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "RegularOrder involves joint orders allowing multiple customer involvement, targeting cost-efficient delivery.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "RegularOrder tracks wines and quantities per customer and identifies a main customer responsible for the order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Customer details are captured for both urgent and regular orders, and Employee class associates with similar order conditions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingStaff has operations to update wine information, confirming that only marketing employees can perform updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesStaff has an operation to view the wine catalog, indicating browsing capability is present.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType class captures the name and is associated with wines, but the serial number isn't explicit.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Lacks explicit reference to a serial number for wine identification."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineType links to FoodPairing and RecipeLink classes, indicating food pairings and recipes are tracked.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "MarketingStaff can recommend occasions and suggest relations to wine types appropriately.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Gefen class includes a method to import manufacturer data via XML, indicating data exchange capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class maintains details like name, phone, address, and email, and uses a unique ID.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine class captures attributes such as name, description, production year, price, sweetness level, and image.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine is distinguished by manufacturer and catalog numbers, covered by existing attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingStaff update operations include wine type linking and potential modifications to wine details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Wine links with StorageLocation class, each storage location has a unique identifier.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "StorageLocation tracks wine quantity through an association with Inventory class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "No direct mechanism is depicted for updating inventory post-sale in the current model representation.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "SalesStaff has operations to generate unproductive employee reports and wine recommendation reports, while Gefen exports inventory reports to another system.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G15",
+      "evidence": "The Wine class contains a 'catalogNumber' which serves to differentiate wines, aligning with the guideline's intent of using a unique identifier. However, the direct association with WineType lacks an explicit 'serial number'.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the 'catalogNumber' is present, it aligns partly with the serial number requirement. The model lacks a standalone serial number specific to WineType as the guideline might imply."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The model reflects an Inventory class that tracks wine quantity by location but lacks explicitly defined processes or operations for dynamic inventory updates post wine sales.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There are no operations illustrated in the model to demonstrate that inventory updates occur following each wine sale, as guided by this requirement."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The Gefen class has a method for receiving inventory reports in JSON format.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Even though the primary purpose of the Gefen class is to import manufacturer data and export reports, the method to receive inventory reports could symbolize advanced integration capabilities and flexibility for future system expansions. This detail is not explicitly mentioned in the guidelines but fits within potential use cases."
+    },
+    {
+      "fragment": "The FoodPairing class has a 'foodName' attribute defined with 'int' instead of 'String'.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "reason": "The attribute 'foodName' should logically hold text data representing the name of the food, thus it should be of type 'String'. Using 'int' appears to be a typing error that could mislead during implementation."
+    },
+    {
+      "fragment": "The RecipeLink class uses 'RecipeLink' as both an attribute name and type.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "reason": "Using 'RecipeLink' as both the attribute name and type within the same class presents a modeling ambiguity, which could lead to interpretation issues during implementation. Typically, UML attributes should specify distinct and relevant data types."
+    },
+    {
+      "fragment": "The inclusion of an empty class recommendedOccation with attributes that are similar to another structure (possibly OccasionDetails).",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "The existence of the recommendedOccation class with overlapping attributes to previously defined concepts suggests a redundancy. It may indicate a misunderstanding of the system's requirements, given that occasion recommendations are tied to MarketingStaff operations."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The Gefen class has a method for receiving inventory reports in JSON format.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The FoodPairing class has a 'foodName' attribute defined with 'int' instead of 'String'.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "base_score": -0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": -0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The RecipeLink class uses 'RecipeLink' as both an attribute name and type.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "base_score": -0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": -0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The inclusion of an empty class recommendedOccation with attributes that are similar to another structure (possibly OccasionDetails).",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": ""
+    }
+  ],
+  "total_score": 23.75,
+  "max_score": 26.0,
+  "score_pct": 91.3,
+  "overall_assessment": "The case model effectively meets most guidelines with minor improvements needed in a few areas and some language errors present."
+}

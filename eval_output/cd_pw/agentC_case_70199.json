@@ -1,0 +1,339 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70199",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class contains attributes such as uniqueNumber, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class has an attribute named availableSpaces which represents the number of available spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "An association exists between the Client class and the Vehicle class, ensuring that a client can own multiple vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class includes attributes for startTime and associations for involving a Vehicle.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class includes a size attribute that indicates the accommodation suitability for vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class contains a maxWeight attribute specifying its transport capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "ParkingSession does not necessitate storing conveyor information, aligning with the note on conveyors.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The class PriceList includes pricing details like first hour price, additional hour price, and full day price.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The Client class includes a boolean attribute isClubMember and a date for clubJoinDate.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The Client class indicates a boolean field isClubMember representing club membership, suggesting discounts.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The implementation of an actual discount mechanism is not observed directly."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The UML model shows an association between preferred lots and clients, suggesting registration tracking.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Evidence for free parking isn't explicitly captured in the diagram."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The ParkWiseSystem class includes methods for generating a report, related to annual summaries.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "ParkingLot class collects income data and vehicle color counts, which form part of the annual report.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The UML capabilities to order reports are suggested but not explicitly denoted within class operations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit mechanisms for sorting the report aren't directly mapped."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The UML model suggests report generation but does not clearly specify formats like PDF and XML.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No direct evidence on implementation of PDF/XML format."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The system class can generate monthly reports, inferring insights into client club growth.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Monthly club member registration data associated with the Client class implies data collection for growth reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Ordering aspects present in guidelines but not reflected within the model’s report generation methods.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Detailed ordering in monthly reports needs clearer representation."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G10",
+      "evidence": "The class Client contains the attribute isClubMember, suggesting a membership status. However, the specific mechanism for applying discounts to parking sessions based on membership is not explicitly modeled.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While club membership is acknowledged, the method or attribute for applying discounts is not directly represented in the model. The presence of a club member attribute suggests potential discount logic, but it is not explicitly shown."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The UML model shows an association between the Client class and the PreferredLotSelection class, which hints at tracking selection dates for audit purposes, suggesting registration tracking.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The association does suggest registration tracking, yet the explicit representation of offering a free parking session to new club members in the registration month is missing."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Although the method generateAnnualSummaryReport suggests data is compiled, the specific attributes or logic to order the report content by parking lot city (descending) or total amount (ascending) is not represented.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Sorting mechanism details are not explicitly found within the generateAnnualSummaryReport function, though it is implied that some report compilation is happening."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The absence of explicit operations or references to file formats like PDF or XML within the generateAnnualSummaryReport method implies it might not be clearly specified how these formats are integrated.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Document generation functionality is implied but does not explicitly define PDF and XML outputs, leaving implementation specifics ambiguous."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The method related to generating the Customer Club Growth Report hints its generation, but specifics regarding ordering are not clearly detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Ordering the report explicitly by month in ascending order isn't distinctly modeled, though monthly tracking is suggested informally."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The 'ParkWiseSystem' class is a singleton responsible for generating global reports.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The decision to model 'ParkWiseSystem' as a singleton is a valid design choice to maintain a single source of truth for global management operations. This adds clarity and ensures state consistency across the application."
+    },
+    {
+      "fragment": "The 'Color' and 'Size' enums define constants for vehicle colors and parking space sizes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Enums for 'Color' and 'Size' provide clarity and restrict values to predefined constants, which is helpful for maintaining consistency in data representation."
+    },
+    {
+      "fragment": "The 'Location' abstract class provides common attributes (floor, xCoordinate, yCoordinate) for 'ParkingSpace' and 'Conveyor'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The abstraction of common location attributes into a superclass reduces duplication and aligns with principles of object-oriented design."
+    },
+    {
+      "fragment": "Class 'PreferredLotSelection' captures the selection of preferred parking lots by clients with timestamps.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Capturing the selection of preferred parking lots with timestamps increases transparency and auditability, offering useful insights into client preferences over time."
+    },
+    {
+      "fragment": "Association between 'Client' and 'PreferredLotSelection' tracks preferred parking lot selections.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This relationship supports the business requirement to audit preferences and can enable features like tracking changes in preferences or loyalty insights."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The 'ParkWiseSystem' class is a singleton responsible for generating global reports.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'Color' and 'Size' enums define constants for vehicle colors and parking space sizes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'Location' abstract class provides common attributes (floor, xCoordinate, yCoordinate) for 'ParkingSpace' and 'Conveyor'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Class 'PreferredLotSelection' captures the selection of preferred parking lots by clients with timestamps.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Association between 'Client' and 'PreferredLotSelection' tracks preferred parking lot selections.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 16.0,
+  "max_score": 18.0,
+  "score_pct": 88.9,
+  "overall_assessment": "The case model largely satisfies the guidelines with only minor gaps mostly due to partially satisfied compliance."
+}

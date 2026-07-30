@@ -1,0 +1,55 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Class Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Class(contents)",
+      "fragment_description": "A Class fragment represents a UML Class specification, including its name, attributes, and operations.",
+      "involved_constructs": "Class | Attribute, Operation"
+    },
+    {
+      "id": "T2",
+      "short_name": "Class-Association-Class",
+      "fragment_description": "An Association represents a relationship between two UML Classes. It may include roles, multiplicities, and navigability.",
+      "involved_constructs": "Class | Association | Class"
+    },
+    {
+      "id": "T3",
+      "short_name": "Class-Aggregation-Class",
+      "fragment_description": "An Aggregation is a special form of association that represents a whole-part relationship between two UML Classes.",
+      "involved_constructs": "Class | Aggregation | Class"
+    },
+    {
+      "id": "T4",
+      "short_name": "Class-Composition-Class",
+      "fragment_description": "A Composition is a strong form of aggregation that implies ownership and a whole-part relationship between two UML Classes.",
+      "involved_constructs": "Class | Composition | Class"
+    },
+    {
+      "id": "T5",
+      "short_name": "Class-Generalization-Class",
+      "fragment_description": "Generalization represents an inheritance relationship between a more general class and a more specific class.",
+      "involved_constructs": "Class | Generalization | Class"
+    },
+    {
+      "id": "T6",
+      "short_name": "Interface(contents)",
+      "fragment_description": "An Interface fragment details a UML Interface specification, including its name and operations.",
+      "involved_constructs": "Interface | Operation"
+    },
+    {
+      "id": "T7",
+      "short_name": "Class-Realization-Interface",
+      "fragment_description": "A Realization relationship indicates that a class implements the operations defined by an interface.",
+      "involved_constructs": "Class | Realization | Interface"
+    }
+  ],
+  "agent1_capabilities": [
+    "What is the role of an Association in a UML Class Diagram?",
+    "How is inheritance represented in UML Class Diagrams?",
+    "What are the differences between Aggregation and Composition in UML Class Diagrams?",
+    "How do you model a class implementing an interface in UML?",
+    "What elements can a UML Class include?"
+  ]
+}

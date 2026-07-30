@@ -1,0 +1,323 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70250",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class contains attributes for a unique number, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class has an attribute for availableSpaces indicating the number of spaces available in the lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between Client and Vehicle classes which ensures that each vehicle is linked to one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class contains start time and other details related to the vehicle.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class includes an attribute for the size which determines the suitability for different vehicle sizes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class has an attribute for maxWeight, indicating each conveyor's vehicle weight capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "There is an explicit mention of not tracking conveyors post-parking session in the VehicleLocation association.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The ParkingLot class can have different PriceList objects which detail various pricing based on duration.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "ParkWiseSystem manages clients through membership associations, implicitly including club management.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The ClubMember class includes a DiscountRate attribute which offers automatic discounts on parking sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "There is an association indicating free parking sessions for new club members within their registration month.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "ParkWiseSystem features generateAnnualSummaryReport detailing an overview of incomes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The summary report includes data like parking lot lists, amounts paid, and vehicle counts by color per lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The generated report is organized by city and total amounts per parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The summary report can be generated in both PDF and XML formats, as indicated by method details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "ParkWiseSystem class has a method generateClubGrowthReport providing a monthly view of club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The report includes detailed monthly joiners, totals, and growth rates for club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The Customer Club Growth Report is announced to be ordered by month in ascending order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [],
+  "uncovered_fragments": [
+    {
+      "fragment": "ParkWiseSystem's method 'checkVehicle' verifying vehicle existence.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The method represents a plausible system functionality that could assist in vehicle management, even though it is not explicitly required by any guideline."
+    },
+    {
+      "fragment": "ParkWiseSystem's method 'runOptimization' involving conveyors and parking spaces.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This method complements operational knowledge of the system by optimizing the allocation of parking spaces, which enriches the problem domain."
+    },
+    {
+      "fragment": "Class 'PreferredLotSelection' capturing selection date for club members.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The inclusion of this class allows for historical tracking of parking lot preferences, adding useful functionality beyond the base requirements."
+    },
+    {
+      "fragment": "Photo attributes (photoFront, photoRear, photoSide) in the Client class.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "Storing these specific photo attributes seems extraneous in the context of the described parking system, with no guidelines indicating their necessity."
+    },
+    {
+      "fragment": "Receipt's method 'printReceipt' to print receipts.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Printing a receipt is a standard functionality that supports the domain's operational needs, even in the absence of a specific guideline mandate."
+    },
+    {
+      "fragment": "Conveyor related 'VehicleLocation' association classes storing the vehicle location information.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Though not strictly guided, this adds depth to the model by enabling better resource management within the domain."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "ParkWiseSystem's method 'checkVehicle' verifying vehicle existence.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "ParkWiseSystem's method 'runOptimization' involving conveyors and parking spaces.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Class 'PreferredLotSelection' capturing selection date for club members.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Photo attributes (photoFront, photoRear, photoSide) in the Client class.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": ""
+    },
+    {
+      "fragment": "Receipt's method 'printReceipt' to print receipts.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Conveyor related 'VehicleLocation' association classes storing the vehicle location information.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 17.25,
+  "max_score": 18.0,
+  "score_pct": 95.8,
+  "overall_assessment": "The case model effectively complies with 95.8% of the domain guidelines and includes several valid alternative modeling decisions."
+}

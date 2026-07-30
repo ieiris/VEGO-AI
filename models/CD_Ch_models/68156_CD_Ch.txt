@@ -1,0 +1,107 @@
+@startuml
+class Customer {
+  - ID: unique identifier (primary key)
+  - Name: string
+  - Phone: string
+  - DeliveryAddress: string
+  - Email: string
+  - FirstContactDate: date
+  + placeOrder(orderDetails)
+  + viewOrderHistory()
+}
+
+class Employee {
+  - ID: unique identifier (primary key)
+  - Name: string
+  - PhoneNumber: string
+  - Email: string
+  - OfficeAddress: string
+  - EmploymentStartDate: date
+  - Department: string
+  + generateUnproductiveEmployeeReport(startDate, endDate)
+  + manageOrders()
+}
+
+class Order {
+  - OrderID: unique identifier (primary key)
+  - OrderDate: date
+  - ShipmentDate: date
+  - Status: string
+  - Type: string
+  - EmployeeID: foreign key referencing Employee
+  + calculateTotalPrice()
+  + updateStatus(newStatus)
+}
+
+class Wine {
+  - ID: unique identifier (primary key)
+  - Name: string
+  - Description: string
+  - ProductionYear: integer
+  - PricePerBottle: decimal
+  - SweetnessLevel: string
+  - ImageURL: string
+  + importDataFromGefen(xmlData)
+  + updateWineDetails(newDetails)
+}
+
+class Manufacturer {
+  - ID: unique identifier (primary key)
+  - Name: string
+  - PhoneNumber: string
+  - Address: string
+  - Email: string
+  + updateManufacturerDetails(newDetails)
+}
+
+class WineType {
+  - ID: unique identifier (primary key)
+  - Name: string
+  - SuitableOccasions: string
+  + updateWineTypeDetails(newDetails)
+}
+
+class StorageLocation {
+  - LocationID: unique identifier (primary key)
+  - Name: string
+  + updateStorageLocationDetails(newDetails)
+}
+
+class Inventory {
+  - InventoryID: unique identifier (primary key)
+  - WineID: foreign key referencing Wine
+  - LocationID: foreign key referencing StorageLocation
+  - QuantityInStock: integer
+  + exportInventoryToGefen()
+  + updateInventoryQuantity(newQuantity)
+}
+
+class OrderLine {
+  - OrderID: foreign key referencing Order
+  - WineID: foreign key referencing Wine
+  - Quantity: integer
+  + updateOrderLineQuantity(newQuantity)
+}
+
+class Report {
+  - ReportID: unique identifier (primary key)
+  - ReportType: string
+  - ReportDate: date
+  - Data: string
+  - OrderID: foreign key referencing Order (if applicable)
+  + generateReport(reportType, startDate, endDate)
+}
+
+Employee --* Order : assigned to
+Customer --* Order : places
+Order --* OrderLine : contains
+OrderLine --* Wine : references
+Wine --* Manufacturer : produced by
+Wine --* WineType : classified as
+Wine --* Inventory : stored in
+StorageLocation --* Inventory : stores
+Inventory --* Wine : references
+Inventory --* StorageLocation : located in
+Report --* Order : associated with
+
+@enduml

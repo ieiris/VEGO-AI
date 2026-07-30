@@ -1,0 +1,73 @@
+@startuml
+left to right direction
+
+rectangle CheersSystem as "Cheers System" {
+  usecase PlaceOrder as "Place Order\n\n<<Extension Points>>\n- If Urgent\n- If Joint"
+  usecase ManageInventory as "Manage Inventory"
+  usecase UpdateWineInformation as "Update Wine Information"
+  usecase UpdateTypeWineInformation as "Update Wine Type Information"
+
+  usecase LinkWinesToTypes as "Link Wines to Types"
+  usecase ManageCustomerInformation as "Manage Customer Information"
+  usecase GenerateReports as "Generate Reports \n\n<<Extension Points>>\n- Unproductive Employees\n- Wine Recommendations"
+
+  usecase ReceiveXMLData as "Receive XML Data"
+  usecase UpdateInventory as "Update Inventory"
+  usecase ViewWineInformation as "View Wine Information"
+
+  usecase GenerateUnproductiveEmployeesReport as "Generate Unproductive Employees Report"
+  usecase GenerateWineRecommendationReportForCustomers as "Generate Wine Recommendation Report for Customers"
+  usecase SendInventoryReportToGefen as "Send Weekly Inventory Report (JSON)"
+  usecase GenerateCurrentInventoryReportByWine as "Generate Current Inventory Report by Wine"
+
+  usecase SelectMainCustomer as "Select Main Customer"
+
+  usecase ProcessUrgent as "Process Urgent Orders"
+  usecase ProcessJoint as "Process Joint Orders"
+
+  usecase UpdateInventory as "Update Inventory"
+  usecase NotifyGalGalimDispatch as "Notify GalGalim of Order Dispatch"
+
+  GenerateReports <.. GenerateUnproductiveEmployeesReport : <<extends>>
+  GenerateReports <.. GenerateWineRecommendationReportForCustomers : <<extends>>
+
+  PlaceOrder ..> ViewWineInformation : <<includes>>
+  PlaceOrder <.. ProcessUrgent : <<extends>>\n[If Urgent]
+  PlaceOrder ..> UpdateInventory : <<includes>>
+  PlaceOrder <.. ProcessJoint : <<extends>>\n[If Joint]
+  PlaceOrder ..> NotifyGalGalimDispatch : <<includes>>
+
+  ProcessJoint ..> SelectMainCustomer : <<includes>>
+}
+
+actor Employee as "Employee"
+actor MarketingEmployee as "Marketing Employee"
+actor SalesEmployee as "Sales Employee"
+
+actor GalGalim as "GalGalim (external delivery company)"
+actor Gefen as "Gefen (external system)"
+
+Employee --> MarketingEmployee
+Employee --> SalesEmployee
+
+SalesEmployee -- PlaceOrder
+SalesEmployee -- ManageCustomerInformation
+SalesEmployee -- GenerateReports
+
+MarketingEmployee -- ManageInventory
+MarketingEmployee -- UpdateWineInformation
+MarketingEmployee -- UpdateTypeWineInformation
+
+MarketingEmployee -- LinkWinesToTypes
+
+Employee -- ViewWineInformation
+
+GalGalim -- NotifyGalGalimDispatch
+
+GenerateCurrentInventoryReportByWine ..> SendInventoryReportToGefen : <<includes>>
+Gefen -- SendInventoryReportToGefen
+Gefen -- ReceiveXMLData
+
+note "Automatically sent every weekend\nin JSON format" as N1
+N1 .. SendInventoryReportToGefen
+@enduml

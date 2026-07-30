@@ -1,0 +1,87 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' --- ACTORS ---
+actor "Administrator" as Admin
+actor "Client" as Client
+actor "Club Member" as Member
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors' Controller (CC)" as CC
+actor "Integrated Rate Service (IRS)" as IRS
+actor "Payment Gateway (PG)" as PG
+
+' Inheritance
+Member -|> Client
+
+package "ParkWise Lots System" {
+
+    ' --- ADMIN ---
+    usecase "Update Parking Lot Details" as UC_UpdateDetails
+    usecase "Generate Annual Summary Report" as UC_AnnualReport
+    usecase "Generate Customer Club Growth Report" as UC_ClubReport
+
+    ' --- ENTRY ---
+    usecase "Handle Vehicle Arrival" as UC_HandleArrival
+    usecase "Register Client & Vehicle" as UC_RegisterEntry
+    usecase "Extract Details from Photos" as UC_ExtractPhotos
+    
+    ' --- PARKING OPERATIONS ---
+    usecase "Find Optimal Parking Space" as UC_Optimize
+    usecase "Update Parking Completion" as UC_UpdateParked
+    usecase "View Parking Details" as UC_ViewDetails
+
+    ' --- EXIT & PAYMENT (UPDATED) ---
+    usecase "Request End Parking" as UC_EndParking
+    usecase "Make Payment" as UC_Pay
+    usecase "Issue Receipt" as UC_Receipt
+    usecase "Update Price Lists" as UC_UpdatePrices
+    usecase "Confirm Vehicle Exit" as UC_ConfirmExit
+
+    ' --- CLUB ---
+    usecase "Register for Club Membership" as UC_JoinClub
+    usecase "Manage Preferred Parking Lots" as UC_PrefLots
+
+}
+
+' --- RELATIONSHIPS ---
+
+' Admin
+Admin --> UC_UpdateDetails
+Admin --> UC_AnnualReport
+Admin --> UC_ClubReport
+
+' Gate Sensor
+GS --> UC_HandleArrival
+GS --> UC_ConfirmExit 
+' (If you strictly want Option 1, delete UC_ConfirmExit and draw: GS --> UC_EndParking)
+
+' Client Entry
+Client --> UC_RegisterEntry
+UC_RegisterEntry ..> UC_ExtractPhotos : <<include>>
+
+' Client General
+Client --> UC_ViewDetails
+Client --> UC_JoinClub
+
+' --- IMPLEMENTING OPTION 2 (INCLUDE PAYMENT) ---
+Client --> UC_EndParking
+UC_EndParking ..> UC_Pay : <<include>>
+' This explicitly states: To End Parking, you MUST Make Payment.
+
+' Payment Details
+UC_Pay --> PG : "Authorize"
+UC_Receipt .> UC_Pay : <<extend>>
+
+' Club
+Member --> UC_PrefLots
+UC_JoinClub ..> UC_PrefLots : <<include>>
+
+' Conveyors Controller
+CC --> UC_Optimize
+CC --> UC_UpdateParked
+
+' IRS
+IRS --> UC_UpdatePrices
+
+@enduml

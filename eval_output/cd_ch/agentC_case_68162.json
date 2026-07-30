@@ -1,0 +1,444 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68162",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model represents 'Cheers' system developed by 'Wine Ha'Emek' for managing orders, inventory, and customers through various classes including 'Order', 'Customer', 'Wine', and employees.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "Sales employees in the model have operations to handle orders for customers, as shown by methods in 'SalesEmployee' class that allows order placement and assignment to a specific employee.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The 'Order' class includes details such as orderID, orderDate, status, shipmentDate, and assignedEmployee which cover the order details described.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not include any mention or class for 'GalGalim', the external delivery company.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Joint orders are represented by 'JointOrder' class which allows multiple customers to combine products into a single order and tracks each customer's wine and quantity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Each customer has detailed attributes like ID, name, phone number, delivery address, email, and date of first contact within the 'Customer' class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The association where an 'Employee' can act as a 'Customer' allows company employees to order wines under the same conditions as regular customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Urgent orders intended for a single customer to ensure prompt delivery are represented by the 'UrgentOrder' extending 'RegularOrder'.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model does not explicitly restrict UrgentOrder to a single customer, but it implies priority processing."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The 'UrgentOrder' class includes attributes like priorityLevel and expectedDeliveryTime for urgent orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "'RegularOrder' class facilitates combining multiple customers' wine selections into one order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "In 'JointOrder', the system tracks wines and quantities per customer with 'customersAndOrders' attribute, capturing responsibility to the main customer.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Customer attributes for orders, including Employee's ability to act as customers, evidenced through Customer and Employee relationship.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Only 'MarketingEmployee' class allows for updating wine and type information, while other employee types lack these capabilities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "'browseWine' function in 'Employee' class enables sales staff to view available wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "'WineType' class identifies each wine type using a 'type' attribute and a unique 'serialNumber'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "'WineType' class lists food pairings and constraint that requires certain details to include recipes in 'recipeLinks'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "'MarketingEmployee' class adds occasion recommendations for wine types, described in 'WineType'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The case model includes classes for 'Manufacturer' and 'Wine', reflecting data updates, but lacks explicit mention of XML data from 'Gefen'.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Missing explicit XML data handling."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Details about manufacturers are stored with attributes like fullName, contactPhoneNumber, address, and email in 'Manufacturer' class.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "'Wine' class captures relevant attributes, including name, description, production year, price, sweetness level, and picture.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "'Wine' class distinguishes wines with attributes manufacturerNumber and catalogNumber.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "'MarketingEmployee' can update 'WineType' and 'Wine' details, including prices and images.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "'StorageLocation' class specifies unique identifiers and names for locations storing wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "'StorageLocation' manages inventories of wines through inventory field, tracking number of bottles per wine.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "'Order' class has methods to update the inventory status upon order creation or cancellation.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Sales employees can generate specific reports as shown in the 'SalesEmployee' class with methods like generateRecommendations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Reports are mentioned, specific generation or format isn't detailed."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "Upon review, the model lacks any reference to an external company like 'GalGalim' handling deliveries, which is specified as outside the system's scope. The design does not provide an explicit class or note regarding this external dependency.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The absence of any indication or placeholder for 'GalGalim' means this requirement remains unaddressed in the current design."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The 'UrgentOrder' class indicates priority functionalities, suggesting it supports urgent processing. However, it still lacks explicit constraints to ensure only single customer placement, crucial for emergency handling.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Features relate to prioritizing deliveries, but the detail that an urgent order must be initiated by a single customer isn't guaranteed, hence partial satisfaction remains."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The system's classes do involve 'Manufacturer' that might indirectly support data handling, though no explicit XML handling for data from 'Gefen' is embedded as visual guidance.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Default design provides classes tied to manufacturers and wine production context, but lacks explicit support for handling XML data contracts with 'Gefen'."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "The model enables 'SalesEmployee' to produce recommendations and unproductive employee reports, yet is missing clarity on data format specifics, such as JSON detailing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Though report generation is partially addressed through methods, precise instructions or elements to ensure JSON formatting and transfers to 'Gefen' are not shown."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The 'JointOrder' class includes a method 'addCustomersAndWineToOrder', allowing multiple customers with specific wines and quantities to be added to and tracked in the order.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This adds useful functionality for managing joint orders effectively, which aligns with the domain context."
+    },
+    {
+      "fragment": "The 'WineType' class method 'getFoodPairings' is possibly unnecessary, as the 'foodPairings' attribute already holds the information.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "Redundant methods may lead to inefficient design and unnecessary complexity."
+    },
+    {
+      "fragment": "The 'WineType' class method 'getOccasionRecommendations' enables retrieval of occasion recommendations.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This method adds clarity and access to the occasion recommendations, which can improve usability."
+    },
+    {
+      "fragment": "The 'StorageLocation' class has a method 'addInventory' which allows addition of wines and quantities to its inventory.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This is a practical method for inventory management within storage locations, enhancing system functionality."
+    },
+    {
+      "fragment": "The 'Wine' class includes a 'description' attribute, which might imply a redundancy given there is a separate 'Description' attribute.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "reason": "Duplicate attributes can create confusion and inconsistency in understanding the model."
+    },
+    {
+      "fragment": "The 'Season' enum defines various seasons, which are used in occasion recommendations.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Defines seasonal context for recommendations, which can refine occasion relevance."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The 'JointOrder' class includes a method 'addCustomersAndWineToOrder', allowing multiple customers with specific wines and quantities to be added to and tracked in the order.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Valid alternative modelling choice, not in guidelines"
+    },
+    {
+      "fragment": "The 'WineType' class method 'getFoodPairings' is possibly unnecessary, as the 'foodPairings' attribute already holds the information.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": "Redundant methods may lead to inefficient design and unnecessary complexity."
+    },
+    {
+      "fragment": "The 'WineType' class method 'getOccasionRecommendations' enables retrieval of occasion recommendations.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Valid alternative modelling choice, not in guidelines"
+    },
+    {
+      "fragment": "The 'StorageLocation' class has a method 'addInventory' which allows addition of wines and quantities to its inventory.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Valid alternative modelling choice, not in guidelines"
+    },
+    {
+      "fragment": "The 'Wine' class includes a 'description' attribute, which might imply a redundancy given there is a separate 'Description' attribute.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "base_score": -0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": -0.5,
+      "note": "Duplicate attributes can create confusion and inconsistency in understanding the model."
+    },
+    {
+      "fragment": "The 'Season' enum defines various seasons, which are used in occasion recommendations.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": "Valid alternative modelling choice, not in guidelines"
+    }
+  ],
+  "total_score": 25.25,
+  "max_score": 26.0,
+  "score_pct": 97.1,
+  "overall_assessment": "The case model is highly compliant with the domain guidelines, successfully capturing nearly all requirements with only minor areas for improvement or refinement."
+}

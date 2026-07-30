@@ -1,0 +1,55 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Use Case Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Use Case",
+      "fragment_description": "A Use Case represents a functionality or service provided by the system. It is a primary construct that can stand alone but is often connected to Actors or other Use Cases.",
+      "involved_constructs": "Use Case"
+    },
+    {
+      "id": "T2",
+      "short_name": "Actor",
+      "fragment_description": "An Actor represents a role played by an external entity that interacts with the system. It is a primary construct that can also stand alone but is typically linked to Use Cases.",
+      "involved_constructs": "Actor"
+    },
+    {
+      "id": "T3",
+      "short_name": "Actor-Association-Use Case",
+      "fragment_description": "An Association relationship between an Actor and a Use Case, showing that the Actor interacts with or participates in the Use Case.",
+      "involved_constructs": "Actor | Association | Use Case"
+    },
+    {
+      "id": "T4",
+      "short_name": "Use Case-Include-Use Case",
+      "fragment_description": "An Include relationship indicates that a Use Case explicitly incorporates the behavior of another Use Case.",
+      "involved_constructs": "Use Case | Include | Use Case"
+    },
+    {
+      "id": "T5",
+      "short_name": "Use Case-Extend-Use Case",
+      "fragment_description": "An Extend relationship indicates that the behavior of a Use Case can be optionally extended by the behavior of another Use Case.",
+      "involved_constructs": "Use Case | Extend | Use Case"
+    },
+    {
+      "id": "T6",
+      "short_name": "Generalization-Actor",
+      "fragment_description": "A Generalization relationship between two Actors, where one Actor inherits the role and responsibilities of another Actor.",
+      "involved_constructs": "Actor | Generalization | Actor"
+    },
+    {
+      "id": "T7",
+      "short_name": "Generalization-Use Case",
+      "fragment_description": "A Generalization relationship between Use Cases, indicating that one Use Case is a special type of another Use Case.",
+      "involved_constructs": "Use Case | Generalization | Use Case"
+    }
+  ],
+  "agent1_capabilities": [
+    "What does the Include relationship between Use Cases represent?",
+    "Can you explain the Association between an Actor and a Use Case?",
+    "How do Extend relationships work in a UML Use Case Diagram?",
+    "What is the purpose of a Generalization relationship between Actors?",
+    "Describe a Use Case and its role within a UML Use Case Diagram."
+  ]
+}

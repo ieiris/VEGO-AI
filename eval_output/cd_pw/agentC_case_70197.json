@@ -1,0 +1,309 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70197",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes parkingLotId, name, address, and city attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class has an availableSpaces attribute that holds the number of available parking spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The association between Client and Vehicle classes ensures each vehicle is linked to one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "ParkingSession class includes attributes such as startTime representing the session start and vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class has a size attribute indicating vehicle accommodation capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class includes maxVehicleWeightKg attribute indicating vehicle weight capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "ParkingSession class is associated with Conveyor, with the evidence that detailed tracking isn't needed post-session.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "PriceList class is associated with each ParkingLot, and it includes different duration prices.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "There is a ClientClub class associated with Client for managing club membership.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "ParkingSession class features a discountAmount attribute to apply discounts for club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "ParkingSession class includes an isFreeSession attribute to support free sessions for new club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "ParkWiseSystem class can generate an AnnualSummaryReport reflecting transaction summaries.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "AnnualSummaryReportRow class covers parking lot summaries and specific vehicle color counts within reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Ordering conditions for the report are addressed conceptually in the system design but not directly modeled.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The diagram doesn't explicitly model sorting, only logical report generation."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The report generation in PDF and XML formats isn't directly represented in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "ParkWiseSystem can generate a CustomerClubGrowthReport detailing new and total members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "CustomerClubGrowthReport contains cumulative totals and growth statistics.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Report ordering by month is logically suggested but not explicitly modeled.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Ordering by month isn't directly depicted but implied by report generation features."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G14",
+      "evidence": "Although the UML class diagram does not explicitly define the ordering by city and amount, the presence of the ParkingLot and AnnualSummaryReportRow classes implies that cities and amounts are being captured, indicating logical support for such ordering.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The ordering by city and amount is suggested by the relation of the classes capturing necessary fields, but explicit details of ordering logic in reports are not depicted."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The UML class diagram involves class associations that allow reports to be generated, but there is no explicit representation or method for generating reports in PDF or XML format.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The diagram lacks any indication of format specifications for generated reports, hence it remains unsatisfied regarding PDF and XML formats."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The report generation regarding club growth logically implies time ordering by month, with related attributes in CustomerClubGrowthReport supporting this; however, no explicit mechanism ensures the ordering within the diagram.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Though monthly attributes suggest time sequence, ensuring chronological order is not visually encoded, leaving it partially satisfied without explicit constructs."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The class 'GateSensor' is defined with attributes 'gateSensorId' and 'locationDescription' and is associated with 'ParkingLot'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The GateSensor class adds detail by representing sensors used at the parking lot entrances, which aligns with the guideline that mentions gate sensors, even though not fully operationalized."
+    },
+    {
+      "fragment": "The 'VehiclePhoto' class contains attributes like 'photoId', 'photoType', and 'filePath'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Including a VehiclePhoto class with these details provides enriched data representation for vehicles and supports better management of vehicle information, though it is not explicitly required by guidelines."
+    },
+    {
+      "fragment": "Enumming 'VehicleSize' with values 'SMALL', 'MEDIUM', 'LARGE'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Creating an enumeration for VehicleSize enhances clarity in describing vehicle dimensions compatibility with different parking spaces, aligning with the domain's need for classification by size."
+    },
+    {
+      "fragment": "Enumming 'VehicleColor' with several color categories.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Defining an enumeration for VehicleColor provides a structured approach to vehicle color data, which can be useful for reporting and operational management, even though it is not a direct requirement."
+    },
+    {
+      "fragment": "Including 'external' classes like 'PaymentGateway', 'SmsService', 'IntegratedRateService', and 'ConveyorsController'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These external classes represent services that integrate with the core ParkWise system, covering interactions stated in the domain but not fully specified or covered in guidelines. They add clarity to external dependencies."
+    },
+    {
+      "fragment": "Enumeration 'Status' with values 'Pending', 'Approved', 'Delinced'.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "There is a typo in the enumeration value 'Delinced', which likely intended to be 'Declined'. This error could lead to misunderstandings or operational errors in handling statuses."
+    },
+    {
+      "fragment": "Enumeration 'VehiclePhotoT' with values 'Front', 'Rear', 'Back'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Using an enumeration for VehiclePhotoT with these values provides a detailed structure for categorizing vehicle photos, aiding in organized data storage and retrieval."
+    },
+    {
+      "fragment": "The class 'Receipt' includes attributes like 'issueTime', 'receiptNumber'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Defining this class adds detail for handling financial transactions and providing documentation, which while not checked against guidelines, is an important real-world business function."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "The ordering is conceptually addressed, but not explicitly modeled."
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": "No representation for generating reports in specific formats."
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Report ordering by month is suggested but not explicitly represented."
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Enumeration 'Status' with values 'Pending', 'Approved', 'Delinced'.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": "Typographical error in the enumeration value."
+    }
+  ],
+  "total_score": 16.25,
+  "max_score": 18.0,
+  "score_pct": 90.3,
+  "overall_assessment": "The case model has achieved a high level of compliance with the guidelines, with most requirements fully satisfied and a few partially addressed."
+}

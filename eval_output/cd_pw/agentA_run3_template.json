@@ -1,0 +1,73 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Class Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Class",
+      "fragment_description": "A class representing a set of objects with the same attributes, operations, methods, relationships, and semantics.",
+      "involved_constructs": "Class"
+    },
+    {
+      "id": "T2",
+      "short_name": "Class-Association-Class",
+      "fragment_description": "An association represents a structural relationship between two classes.",
+      "involved_constructs": "Class | Association | Class"
+    },
+    {
+      "id": "T3",
+      "short_name": "Class-Aggregation-Class",
+      "fragment_description": "An aggregation is a special type of association representing a whole-part relationship between two classes.",
+      "involved_constructs": "Class | Aggregation | Class"
+    },
+    {
+      "id": "T4",
+      "short_name": "Class-Composition-Class",
+      "fragment_description": "A composition is a stronger form of aggregation where the part's lifecycle is strictly tied to the whole.",
+      "involved_constructs": "Class | Composition | Class"
+    },
+    {
+      "id": "T5",
+      "short_name": "Class-Generalization-Class",
+      "fragment_description": "Generalization indicates an inheritance relationship between a more general class and a more specific class.",
+      "involved_constructs": "Class | Generalization | Class"
+    },
+    {
+      "id": "T6",
+      "short_name": "Class-Dependency-Class",
+      "fragment_description": "A dependency indicates a supplier-client relationship between two classes, where changes to the supplier may affect the client.",
+      "involved_constructs": "Class | Dependency | Class"
+    },
+    {
+      "id": "T7",
+      "short_name": "Class(contents)",
+      "fragment_description": "Attributes and operations defined within a class.",
+      "involved_constructs": "Class | Attribute, Operation"
+    },
+    {
+      "id": "T8",
+      "short_name": "Interface",
+      "fragment_description": "An interface defines a contract that a class may implement, specifying operations without implementation.",
+      "involved_constructs": "Interface"
+    },
+    {
+      "id": "T9",
+      "short_name": "Interface-Realization-Class",
+      "fragment_description": "A realization signifies that a class implements an interface.",
+      "involved_constructs": "Interface | Realization | Class"
+    },
+    {
+      "id": "T10",
+      "short_name": "Enumeration",
+      "fragment_description": "An enumeration defines a data type consisting of a set of named values.",
+      "involved_constructs": "Enumeration"
+    }
+  ],
+  "agent1_capabilities": [
+    "What constructs represent relationships between classes and interfaces in UML Class Diagram?",
+    "How is an aggregation relationship represented between classes?",
+    "What distinguishes a composition from a general association between classes?",
+    "What are the structural components of a class in UML Class Diagram?",
+    "How does a class implement an interface in UML?"
+  ]
+}

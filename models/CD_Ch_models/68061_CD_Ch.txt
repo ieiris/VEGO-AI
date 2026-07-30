@@ -1,0 +1,169 @@
+FINAL class Diagram
+
+@startuml
+
+' Enumerations
+enum Department {
+  SALES
+  MARKETING
+  OTHER
+}
+
+enum SweetnessLevel {
+  DRY
+  SEMI_DRY
+  SEMI_SWEET
+  SWEET
+}
+
+enum PriorityLevel {
+  LEVEL_1
+  LEVEL_2
+  LEVEL_3
+  LEVEL_4
+  LEVEL_5
+}
+
+enum OrderStatus {
+  IN_PROCESS
+  DISPATCHED
+  DELIVERED
+  PAID
+  SUSPENDED
+  CANCELED
+}
+
+enum OrderType {
+  REGULAR
+  URGENT
+}
+
+
+class Order {
+  + orderNumber: int
+  + orderDate: Date
+  + status: OrderStatus
+  + shipmentDate: Date
+  + assignedEmployeeID: int
+  + type: OrderType
+}
+
+class UrgentOrder extends Order {
+  + priorityLevel: PriorityLevel
+  + expectedDeliveryTime: String
+  + processUrgentOrder(): void
+}
+
+class RegularOrder extends Order {
+  + mainCustomerID: int
+  + consolidateJointOrder(): void
+  + minimizeDeliveryCosts(): void
+}
+
+class Employee {
+  + employeeID: int
+  + name: String
+  + phone: String
+  + officeAddress: String
+  + email: String
+  + employmentStartDate: Date
+  + department: Department
+  + viewWineCatalog(): void
+}
+
+class SalesStaff extends Employee {
+  + placeOrder(order: Order): void
+  + generateWineRecommendationReport(customerPreferences: Map<String,String>): List<Wine>
+  + generateUnproductiveEmployeeReport(startDate: Date, endDate: Date): List<Employee>
+}
+
+class MarketingStaff extends Employee {
+  + updateWineInformation(wine: Wine): void
+  + updateWineType(wineType: WineType): void
+  + linkWineToType(wine: Wine, wineType: WineType): void
+  + recommendOccasionsForWine(wine: Wine, occasionDetails: String): void
+}
+
+class Customer {
+  + customerID: int
+  + name: String
+  + phone: String
+  + deliveryAddress: String
+  + email: String
+  + firstContactDate: Date
+}
+
+class Wine {
+  + manufacturerNumber: String
+  + catalogNumber: String
+  + name: String
+  + description: String
+  + productionYear: int
+  + pricePerBottle: float
+  + sweetnessLevel: String
+  + productImage: String
+}
+
+class WineType {
+  + name: String
+}
+
+class StorageLocation {
+  + locationID: int
+  + name: String
+}
+
+class Inventory {
+  + wineID: int
+  + locationID: int
+  + quantity: int
+}
+
+class Manufacturer {
+  + manufacturerID: int
+  + name: String
+  + phone: String
+  + address: String
+  + email: String
+}
+class FoodPairing {
+  +foodPairingID: int
+  +foodName: int
+}
+class recommendedOccation{
+  +OccassionID: int
+  +OccassionDescreption: String
+  +Season: String
+  +Location : String
+}
+class RecipeLink{
+  +RecipeLink: int
+  +foodPairingID: int 
+  +UrLink: String
+}
+class Gefen {
+  + importManufacturerData(xml: String): void
+  + exportInventoryReport(json: String): void
+  + receiveInventoryReport(json: String): void
+}
+
+' Relationships
+UrgentOrder "1" -- "1" Customer : "placed by"
+RegularOrder "1" -- "1..*" Customer : "joint participants"
+Order "1" -- "*" Wine : "contains"
+Order "1" -- "1" Employee : "assigned to"
+SalesStaff "1" -- "*" Order : "manages"
+Wine "*" -- "1" WineType : "has type"
+Manufacturer "1" -- "*" Wine : "produces"
+Wine "*" -- "*" StorageLocation : "stored in"
+StorageLocation "1" -- "*" Inventory : "tracks"
+PriorityLevel <.. UrgentOrder
+Department <.. Employee
+OrderStatus <.. Order
+SweetnessLevel <.. Wine
+OrderType <.. Order
+recommendedOccation "*" -- "*" WineType
+FoodPairing "*"-- "*" WineType
+RecipeLink "*" -- "*" FoodPairing
+
+@enduml

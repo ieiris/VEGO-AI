@@ -1,0 +1,64 @@
+@startuml
+left to right direction
+
+' ===== Actors on the left =====
+actor Client
+actor "Club Member" as Member
+
+' ===== System boundary =====
+rectangle "ParkWise Lots System" {
+
+  ' --- Client operations (left side inside box) ---
+  usecase "Identify Arriving Vehicle" as UC_Identify
+  usecase "Register New Client\nand Vehicle" as UC_Register
+  usecase "View Parking Details" as UC_ViewDetails
+  usecase "End Parking Session" as UC_EndSession
+  usecase "Manage Club Membership" as UC_ManageClub
+  usecase "Select Preferred\nParking Lots" as UC_SelectLots
+
+  ' --- Central main use case (like Trip management) ---
+  usecase "Parking management\n\nextension points:\n- Start parking session\n- Assign parking space\n- Update vehicle location\n- Calculate parking fee\n- Apply club discounts\n- Request payment approval\n- Generate receipt" as UC_ParkingMgmt
+
+  ' --- Management & reports (right side inside box) ---
+  usecase "Manage Price Lists" as UC_ManagePrices
+  usecase "Import Price Lists\n(JSON)" as UC_ImportPrices
+  usecase "Generate Annual\nSummary Report" as UC_AnnualReport
+  usecase "Generate Customer Club\nGrowth Report" as UC_GrowthReport
+}
+
+' ===== Actors on the right =====
+actor Administrator as Admin
+actor "Gate Sensor" as GS
+actor "Conveyors' Controller" as CC
+actor "Integrated Rate Service" as IRS
+actor "Payment Gateway" as PG
+
+' ===== Connections – left actors =====
+Client --> UC_Identify
+Client --> UC_Register
+Client --> UC_ViewDetails
+Client --> UC_EndSession
+Client --> UC_ManageClub
+Client --> UC_ParkingMgmt
+
+Member --> UC_ManageClub
+Member --> UC_SelectLots
+
+' ===== Connections – right actors =====
+Admin --> UC_ManagePrices
+Admin --> UC_AnnualReport
+Admin --> UC_GrowthReport
+
+GS --> UC_Identify
+GS --> UC_EndSession
+
+CC --> UC_ParkingMgmt
+IRS --> UC_ImportPrices
+PG --> UC_ParkingMgmt
+
+' ===== Includes / Extends (מעט וברור) =====
+UC_Identify .> UC_Register : <<include>>
+UC_ManagePrices .> UC_ImportPrices : <<include>>
+UC_ManageClub .> UC_SelectLots : <<include>>
+UC_EndSession ..> UC_ParkingMgmt : <<extend>>
+@enduml

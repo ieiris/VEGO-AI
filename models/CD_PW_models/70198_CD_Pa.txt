@@ -1,0 +1,107 @@
+@startuml
+left to right direction
+
+class Client {
+  clientId: int
+  firstName: string
+  lastName: string
+  phoneNumber: string
+}
+
+class Vehicle {
+  vehicleNumber: string
+  type: string
+  color: string    ' white / black / silver / blue / other
+  size: string     ' small / medium / large
+  weightKg: int
+}
+
+class ParkingLot {
+  lotId: int
+  name: string
+  address: string
+  city: string
+}
+
+class ParkingSpace {
+  spaceId: int
+  floor: int
+  x: int
+  y: int
+  size: string
+  isOccupied: bool
+}
+
+class Conveyor {
+  conveyorId: int
+  floor: int
+  x: int
+  y: int
+  maxWeightKg: int
+  isAvailable: bool
+}
+
+class ParkingSession {
+  sessionId: int
+  startTime: datetime
+  endTime: datetime
+  totalHours: double
+  totalAmount: double
+  status: string      ' active / closed
+}
+
+class PriceList {
+  priceListId: int
+  validFrom: date
+  validTo: date
+  firstHourPrice: double
+  additionalHourPrice: double
+  fullDayPrice: double
+}
+
+class ClubMembership {
+  membershipId: int
+  registrationDate: date
+}
+
+class PreferredParkingLot {
+  selectionDate: date
+}
+
+class Payment {
+  paymentId: int
+  paymentTime: datetime
+  amount: double
+  status: string      ' pending / approved / rejected
+  method: string      ' credit / other
+}
+
+' ===== Relationships =====
+
+' Client, vehicles and sessions
+Client "1" -- "0..*" Vehicle
+Client "1" -- "0..*" ParkingSession
+
+Vehicle "1" -- "0..*" ParkingSession
+
+' Parking lots, spaces, price lists
+ParkingLot "1" -- "0..*" ParkingSpace
+ParkingLot "1" -- "0..*" ParkingSession
+ParkingLot "1" -- "0..*" PriceList
+
+PriceList "1" -- "0..*" ParkingSession : usedFor
+
+ParkingSpace "1" -- "0..1" ParkingSession : current
+
+' Conveyors and sessions
+Conveyor "1" -- "0..*" ParkingSession : handles
+
+' Club membership and preferred lots
+Client "0..1" -- "1" ClubMembership
+Client "1" -- "0..*" PreferredParkingLot
+ParkingLot "1" -- "0..*" PreferredParkingLot
+
+' Payment per parking session
+ParkingSession "1" -- "0..1" Payment
+
+@enduml

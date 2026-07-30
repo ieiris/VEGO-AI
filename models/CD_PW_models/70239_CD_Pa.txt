@@ -1,0 +1,184 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+'======================================
+' Enumerations
+'======================================
+enum VehicleSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum VehicleColor {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  FAILED
+  REFUNDED
+}
+
+enum ParkingSessionStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  ERROR
+}
+
+'======================================
+' Domain Model - Core
+'======================================
+package "ParkWise Lots Domain" {
+
+  class ParkingLot {
+    +lotId: int
+    +name: String
+    +address: String
+    +city: String
+    +availableSpaces: int
+  }
+
+  class ParkingSpace {
+    +spaceId: int
+    +floor: int
+    +x: int
+    +y: int
+    +size: VehicleSize
+    +isOccupied: boolean
+  }
+
+  class Conveyor {
+    +conveyorId: int
+    +floor: int
+    +x: int
+    +y: int
+    +maxWeightKg: double
+    +isVacant: boolean
+  }
+
+  class Client {
+    +clientId: int
+    +firstName: String
+    +lastName: String
+    +phone: String
+  }
+
+  class ClubMember {
+    +registrationDate: Date
+    +isActive: boolean
+  }
+
+  Client <|-- ClubMember
+
+  class Vehicle {
+    +vehicleNumber: String
+    +typeText: String
+    +color: VehicleColor
+    +size: VehicleSize
+    +weightKg: double
+    +frontPhotoPath: String
+    +rearPhotoPath: String
+    +sidePhotoPath: String
+  }
+
+  class ParkingSession {
+    +sessionId: int
+    +startTime: DateTime
+    +endTime: DateTime
+    +totalHours: double
+    +status: ParkingSessionStatus
+  }
+
+  class PriceList {
+    +priceListId: int
+    +firstHourPrice: double
+    +additionalHourPrice: double
+    +fullDayPrice: double
+    +validFrom: Date
+    +validTo: Date
+  }
+
+  class Payment {
+    +paymentId: int
+    +amount: double
+    +paymentTime: DateTime
+    +status: PaymentStatus
+  }
+
+  class Receipt {
+    +receiptId: int
+    +issueDate: DateTime
+  }
+
+  class PreferredLotSelection {
+    +selectionDate: Date
+  }
+
+  '=== Reports ===
+  class AnnualSummaryReport {
+    +reportYear: int
+
+    ' Operations related to Annual Summary Report ONLY
+    +generate(year: int): void
+    +calculateTotalAmount(lot: ParkingLot, year: int): double
+    +countOtherColorVehicles(lot: ParkingLot, year: int): int
+    +sortLotsByCityAndAmount(lots: List<ParkingLot>): void
+    +exportAsPDF(filePath: String): void
+    +exportAsXML(filePath: String): void
+  }
+
+  class CustomerClubGrowthReport {
+    +reportYear: int
+  }
+}
+
+
+'======================================
+' Relationships - Structure
+'======================================
+
+ParkingLot "1" o-- "1..*" ParkingSpace
+ParkingLot "1" o-- "0..*" Conveyor
+
+Client  "1" o-- "0..*" Vehicle
+Vehicle "1" -- "0..*" ParkingSession
+Client  "1" -- "0..*" ParkingSession
+ParkingLot "1" -- "0..*" ParkingSession
+ParkingSpace "0..1" -- "0..*" ParkingSession
+
+ClubMember "1" -- "0..*" PreferredLotSelection
+PreferredLotSelection "*" -- "1" ParkingLot
+
+ParkingLot "1" -- "0..*" PriceList
+
+ParkingSession "1" -- "0..1" Payment
+Payment       "1" -- "0..1" Receipt
+
+AnnualSummaryReport ..> ParkingLot
+AnnualSummaryReport ..> ParkingSession
+AnnualSummaryReport ..> Payment
+AnnualSummaryReport ..> Vehicle
+
+CustomerClubGrowthReport ..> ClubMember
+
+
+'======================================
+' Enum Dependencies
+'======================================
+Vehicle       ..> VehicleColor
+Vehicle       ..> VehicleSize
+ParkingSpace  ..> VehicleSize
+ParkingSession ..> ParkingSessionStatus
+Payment       ..> PaymentStatus
+
+@enduml
+

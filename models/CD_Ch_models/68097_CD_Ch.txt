@@ -1,0 +1,164 @@
+@startuml
+skinparam linetype ortho
+skinparam monochrome true
+
+note as N1
+Person is a complete and overlapping specialization.
+Every person must be a Customer, an Employee, or both.
+end note 
+
+abstract class Order {
+    +orderNumber
+    +orderDate
+    +shipmentDate
+    +CurrentStatus
+    +placeOrder()
+    +updateOrderStatus()
+    +calculateDeliveryCost()
+}
+
+class RegularOrder extends Order {
+    +mainCustomer
+    +trackingWineByCustomerMap : Map<Customer, Map<Wine,int>>
+    +calculateJointOrderCost()
+}
+
+class UrgentOrder extends Order {
+    +priorityLevel
+    +expectedDeliveryTime
+    +calculateUrgencyCost()
+}
+
+enum CurrentStatus {
+    InProcess
+    Dispatched
+    Delivered
+    Paid
+    Suspended
+    Canceled
+}
+
+class Person {
+    +id
+    +name
+    +phoneNumber
+    +email
+    +address
+}
+
+class Employee extends Person {
+    +employmentStartDate
+}
+
+class SalesStaff extends Employee {
+    +generateWineRecommendationReport()
+    +generateUnproductiveEmployeesReport()
+    +placeOrder()
+    +browseAvailableWines()
+    +trackWineByCustomer()
+    +trackMainCustomer()
+}
+
+class Customer extends Person {
+    +firstContactDate
+}
+
+class Wine {
+    +name
+    +serialNumber
+    +description
+    +productionYear
+    +pricePerBottle
+    +productImage
+    +catalogNumber
+    +wineType
+    +wineOccasionLocationMap : Map<WineType, Map<String, String>>
+    +foodPairings : Map<WineType, Map<String, List<String>>>
+    +updateDetails()
+}
+
+enum SweetnessLevel {
+    Dry
+    SemiDry
+    SemiSweet
+    Sweet
+}
+
+enum WineType {
+    Red
+    White
+    Sparkling
+    Fortified
+    Rosé
+    Dessert
+}
+
+class Manufacturer extends Person{
+    +updateDetails()
+}
+
+class MarketingEmployee extends Employee {
+    +updateWineInfo()
+    +recommendOccasions()
+    +foodPairing()
+}
+
+class StorageLocation {
+    +locationID
+    +locationName
+    +trackStorageInventory()
+}
+
+class Inventory {
+    +quantity
+    +updateInventory()
+    +extractInventoryReport() 
+    +trackInventory()
+}
+
+class GefenSystem {
+    +xmlData()
+    +WeeklyUpdates()
+    +ExportInventoryReport()
+}
+
+class CheersSystem {
+   +inventory
+   +UpdateInventory()
+   +InventoryReport()
+   +TrackNumberOfBottlesInStorages()
+   +ImportxmlData()
+   +ImportWeeklyUpdates()
+}
+
+CheersSystem *-- Employee
+CheersSystem *-- Customer
+CheersSystem *-- Order
+
+Order --> CurrentStatus 
+
+Order "1" --- "1" SalesStaff : "assigned to      "
+RegularOrder "1" -- "many" Customer : "is for"
+UrgentOrder "1" -- "1" Customer : "is for"
+Order "1" -- "many" Wine : "                                                                                    contains                                "
+
+StorageLocation "1" -- "many" Inventory 
+Inventory "1" -- "1" Wine : "for"
+
+Wine  --> SweetnessLevel
+Wine  --> WineType
+Wine "many            " -- "1" Manufacturer
+Wine "many" -- "many" StorageLocation
+
+SalesStaff --> Order : "places"
+MarketingEmployee --> Wine : "updates"
+MarketingEmployee --> WineType : "recommends"
+
+GefenSystem ..> CheersSystem : "interacts"
+CheersSystem --> Inventory : "                                                        updates"
+
+
+N1 ..|> Employee
+N1 ..|> Customer
+N1 ..|> Person
+@enduml

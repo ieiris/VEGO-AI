@@ -1,0 +1,468 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68106",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model describes a system for managing key business operations such as inventory management, customer management, and order processing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "SalesStaff class has methods to place orders, indicating responsibility for customer orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order class is described with attributes like order number, date, status (in process, dispatched, etc.), shipment date, and sales staff details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no explicit mention of the external company 'GalGalim' handling deliveries.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "OrderWine association class between Order and Wine implies that orders consist of multiple wines with quantities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class records details such as ID, name, phone, address, email, and date of first contact.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Model indicates employees can place orders like customers, as they are associated with placing orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "UrgentOrder class must be linked to a single customer, reflecting priority processing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder includes attributes like priority level and expected delivery time.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "RegularOrder has a relationship to multiple customers, allowing for joint orders to minimize costs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The system tracks the association between Order, OrderWine, and Wine to manage specific wine quantities ordered by each customer.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The model shows that Customer class records necessary order attributes for both regular and urgent orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingEmployee is a subclass of Employee, implying it can update wine information, as it does not contain any operations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model does not explicitly restrict updates to wine information to MarketingEmployee."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesStaff class is involved in wine operations, consistent with being able to browse them.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType class has attributes for name and serial number.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineType has attributes for dish name and recipe links, indicating detailed wine type identification.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Wine is associated with Occasion, suggesting recommendations for suitable drinking occasions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Gefen class handles XML data reception, with a link to Manufacturer, referring to data exchange.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class records full name, contact, address, email, and unique identifier.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine class captures attributes such as name, description, production year, price, sweetness level, and image.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine class includes manufacturer number and catalog number attributes, serving as distinction criteria.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Wine is associated with WineType, aligning with marketing staff's linking and modification roles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Wine is related to StorageLocation, each with a unique identifier, supporting storage management.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "WineLocation association with StorageLocation and Wine taps inventory monitoring.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Operations of generating reports like inventory updates after sales are embedded within the system capable of handling inventory levels.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The direct link between wine sales and inventory updates is not explicitly shown."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Model specifies reports such as unproductive employee, inventory, and recommendation report by matching class operations like generateUnproductiveEmployeeReport.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not explicitly mention the external company 'GalGalim' or its handling of deliveries, nor does it include any dependency that would suggest this relationship.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No alternative representation or association in the case model reflects the role of 'GalGalim'."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "While the MarketingEmployee class is a subclass of Employee, there is no explicit indication that only MarketingEmployee can update wine information. Other employees theoretically have basic access as the diagram doesn't specify the restrictive access control.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The structure suggests MarketingEmployee might handle updates, but without explicit operations or access control, full compliance can't be assured."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The SalesStaff class has an operation to generate reports, showing an indirect link to inventory tasks, but lacks explicit operations showing updates post-sale.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Report generation by SalesStaff suggests awareness of inventory, but the diagram lacks mechanisms for direct inventory updates upon wine sale."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "Class 'Occasion' with attributes 'name', 'description', 'season', and 'location'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The 'Occasion' class provides additional context for recommending wine based on occasions, which aligns with the guideline's description of recommending wines for suitable occasions."
+    },
+    {
+      "fragment": "Enumeration 'OrderStatus' having values IN_PROCESS, DISPATCHED, DELIVERED, PAID, SUSPENDED, and CANCELED.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "OrderStatus enumeration captures all described order statuses, providing clarity to the model."
+    },
+    {
+      "fragment": "Class 'WineLocation' associating quantities of specific wines at storage locations.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "WineLocation enhances the model's capability to track wine quantities at different storage locations, consistent with inventory management objectives."
+    },
+    {
+      "fragment": "Class 'WineType' with attributes 'name', 'serialNumber', 'dishName', 'recipesLinks' and associated to Wine.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "WineType captures the detailed information required for wine categorization and food pairing recommendations, aligning with the guideline's intent."
+    },
+    {
+      "fragment": "Enumeration 'SweetnessLevel' for wines with values DRY, SEMI_DRY, SEMI_SWEET, SWEET.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Capturing sweetness levels is a legitimate extension of wine attributes and allows for enhanced customer recommendations."
+    },
+    {
+      "fragment": "Class 'StorageLocation' designed to capture unique storage location information.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "StorageLocation is an essential component for managing wine inventory and storage details, aligning with system objectives."
+    },
+    {
+      "fragment": "Class 'Gefen' with operations 'sendXMLData' and 'reciveJsonForamt'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Gefen clearly outlines the interactions with external systems for data exchange, which is useful for system integration."
+    },
+    {
+      "fragment": "Wine is related to Manufacturer via association, indicating each wine is made by one manufacturer.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This detail adheres to the requirement that each wine is produced by a single manufacturer."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Class 'Occasion' with attributes 'name', 'description', 'season', and 'location'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Enumeration 'OrderStatus' having values IN_PROCESS, DISPATCHED, DELIVERED, PAID, SUSPENDED, and CANCELED.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Class 'WineLocation' associating quantities of specific wines at storage locations.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Class 'WineType' with attributes 'name', 'serialNumber', 'dishName', 'recipesLinks' and associated to Wine.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Enumeration 'SweetnessLevel' for wines with values DRY, SEMI_DRY, SEMI_SWEET, SWEET.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Class 'StorageLocation' designed to capture unique storage location information.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Class 'Gefen' with operations 'sendXMLData' and 'reciveJsonForamt'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Wine is related to Manufacturer via association, indicating each wine is made by one manufacturer.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 25.0,
+  "max_score": 27.0,
+  "score_pct": 92.6,
+  "overall_assessment": "The case model demonstrates strong compliance with the guidelines, with most criteria fully met and minor areas for improvement."
+}

@@ -1,0 +1,146 @@
+@startuml ParkWise FINAL Class Diagram
+title ParkWise Lot System FINAL Class Diagram
+
+' === Enumerations ===
+enum VehicleSize {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+enum VehicleColor {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+enum PaymentStatus {
+    PENDING
+    APPROVED
+    DECLINED
+}
+
+' === Core Entities ===
+
+class ParkingLot {
+    - lotNumber : String {PK}
+    - name : String
+    - address : String
+    - city : String
+    - availableSpaces : Integer
+    --
+    + updateDetails(name, address, city)
+}
+
+class Client {
+    - clientID : Integer
+    - firstName : String
+    - lastName : String ' FIX: Corrected typo
+    - mobilePhoneNumber : String {Unique}
+    - isClubMember : Boolean ' MERGED: Membership flag
+    - memberSince : Date ' MERGED: Registration date
+    - fixedDiscountPercentage : Real = 10.0
+    --
+    + getParkingDetails() : String
+    + registerToClub()
+    + selectPreferredLot(lot : ParkingLot)
+}
+
+class Vehicle {
+    - vehicleNumber : String {PK}
+    - type : String
+    - color : VehicleColor
+    - size : VehicleSize
+    - weightKg : Real
+}
+
+class ParkingSpace {
+    - floorNumber : Integer
+    - positionX : Integer
+    - positionY : Integer
+    - size : VehicleSize
+    - isOccupied : Boolean
+}
+
+class ParkingSession {
+    - sessionID : Integer {PK}
+    - startTime : DateTime
+    - endTime : DateTime
+    - finalAmount : Real
+    --
+    + calculateFee() : Real
+    + issueReceipt()
+}
+
+class Conveyor {
+    - conveyorID : String {PK}
+    - floorNumber : Integer
+    - positionX : Integer
+    - positionY : Integer
+    - maxWeightKg : Real
+}
+
+' === Rates, Payment & Reporting ===
+
+class Administrator {
+    - adminID : Integer {PK}
+    - username : String
+    --
+    + generateAnnualSummaryReport(year : Integer) : Report
+    + generateCustomerClubGrowthReport(year : Integer) : Report
+    + calculateTotalIncome(lot: ParkingLot, year: Integer) : Real
+    + countOtherColorVehicles(lot: ParkingLot, year: Integer) : Integer
+    + orderReportByCityAndIncome(reportData : List)
+}
+
+class PriceList {
+    - listID : Integer {PK}
+    - year : Integer
+    - priceFirstHour : Real
+    - priceAdditionalHour : Real
+    - priceFullDay : Real
+    - adoptionDate : Date ' Added to track when this list was adopted by any lot
+}
+
+class PaymentDetails {
+    - transactionID : String {PK}
+    - amountPaid : Real
+    - date : DateTime
+    - status : String
+}
+
+
+' === Relationships ===
+
+' Lot to Parking Entities
+ParkingLot "1" -- "*" ParkingSpace : contains
+ParkingLot "1" -- "*" Conveyor : contains
+ParkingLot "1" -- "*" ParkingSession : hosts
+
+' Price History (Refactored)
+' ParkingLot 1 -- * PriceList: Stores the history of rates adopted by the lot
+' The "adoptionDate" is placed on the PriceList for simplicity, assuming a PriceList is uniquely created or versioned when adopted.
+ParkingLot "1" -- "*" PriceList : adoptsHistory
+
+' Client/Vehicle Relationships
+Client "1" -- "0..*" Vehicle : owns
+ParkingSession "1" -- "1" Vehicle : records
+ParkingSession "1" -- "1" Client : belongsTo
+
+' Club Membership Preferred Lots (Association Class implied)
+Client "0..*" -- "*" ParkingLot : selectsPreferredLot
+
+' Parking Session Tracking
+ParkingSession "1" -- "1" ParkingSpace : isLocatedAt
+ParkingSession "1" -- "1..*" Conveyor : handledBy {temporary}
+
+' Fees and Payments
+ParkingSession "1" -- "1" PaymentDetails : recordedPayment
+
+' Client/Report Association (Administrator oversight)
+Administrator "1" -- "0..*" Client : manages
+Administrator "1" -- "0..*" ParkingLot : oversees
+
+@enduml

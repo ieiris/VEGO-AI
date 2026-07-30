@@ -1,0 +1,57 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Class Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Class",
+      "fragment_description": "A Class defines the attributes and operations that belong to a structural classification in the model. It can contain owned attributes, operations, and relationships.",
+      "involved_constructs": "Class"
+    },
+    {
+      "id": "T2",
+      "short_name": "Class-Association-Class",
+      "fragment_description": "An Association represents a relationship between two classes. The association can determine the nature of the link between class instances.",
+      "involved_constructs": "Class | Association | Class"
+    },
+    {
+      "id": "T3",
+      "short_name": "Class-Generalization-Class",
+      "fragment_description": "Generalization defines an inheritance between a more general class and a more specific class, indicating that the specific class inherits the structure and behavior of the general class.",
+      "involved_constructs": "Class | Generalization | Class"
+    },
+    {
+      "id": "T4",
+      "short_name": "Class-Dependency-Class",
+      "fragment_description": "A Dependency signifies a using relationship between two classes, indicating that one class depends on another.",
+      "involved_constructs": "Class | Dependency | Class"
+    },
+    {
+      "id": "T5",
+      "short_name": "Class-Realization-Interface",
+      "fragment_description": "A Realization represents a relationship where a class implements the interface it is connected to, establishing a contract that the class must fulfill.",
+      "involved_constructs": "Class | Realization | Interface"
+    },
+    {
+      "id": "T6",
+      "short_name": "Class-Attribute",
+      "fragment_description": "An Attribute is a named slot within a class that describes a range of values that instances of the class may hold.",
+      "involved_constructs": "Class | Attribute"
+    },
+    {
+      "id": "T7",
+      "short_name": "Class-Operation",
+      "fragment_description": "An Operation is a behavioral feature of a class, defining a set of operations that class instances can perform.",
+      "involved_constructs": "Class | Operation"
+    }
+  ],
+  "agent1_capabilities": [
+    "What constructs form a UML Class?",
+    "How is an association between classes represented in UML?",
+    "What does a generalization link between classes signify in UML?",
+    "What types of relationships can exist between UML classes?",
+    "How can attributes be defined for a class in UML?",
+    "What is the purpose of an operation in a UML class?",
+    "What signifies a realization relationship in UML?"
+  ]
+}

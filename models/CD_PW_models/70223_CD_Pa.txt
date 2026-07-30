@@ -1,0 +1,86 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Vehicle {
+  +vehicleID : INT <<PK>>
+  +plateNumber : STRING
+  +typeText : STRING
+  +colorEnum : STRING
+  +sizeEnum : STRING  ' small/medium/large
+  +weightKg : FLOAT
+}
+
+class ParkingSpace {
+  +spaceID : INT <<PK>>
+  +lotID : INT <<FK>>
+  +floorNo : INT
+  +posX : FLOAT
+  +posY : FLOAT
+  +sizeEnum : STRING   ' small/medium/large
+  +isOccupied : BOOLEAN
+}
+
+class Conveyor {
+  +conveyorID : INT <<PK>>
+  +lotID : INT <<FK>>
+  +floorNo : INT
+  +posX : FLOAT
+  +posY : FLOAT
+  +maxWeightKg : FLOAT
+  +status : STRING
+}
+
+class OptimizationRequest {
+  +optRequestID : INT <<PK>>
+  +conveyorID : INT <<FK>>
+  +vehicleID : INT <<FK>>
+  +lotID : INT <<FK>>
+  +requestTime : DATETIME
+  +selectedSpaceID : INT <<FK>>
+  +score : FLOAT
+}
+
+class OptimizationConstraint {
+  +constraintID : INT <<PK>>
+  +constraintType : STRING  ' weightLimit, sizeMatch, distanceScore
+  +constraintValue : STRING
+}
+
+class OptimizationLog {
+  +logID : INT <<PK>>
+  +optRequestID : INT <<FK>>
+  +candidateSpaceID : INT <<FK>>
+  +isSizeCompatible : BOOLEAN
+  +isWeightCompatible : BOOLEAN
+  +distanceScore : FLOAT
+  +finalScore : FLOAT
+  +timestamp : DATETIME
+}
+
+' Relationships
+
+Vehicle "1" -- "0..*" OptimizationRequest : participates >
+Conveyor "1" -- "0..*" OptimizationRequest : requested_by >
+ParkingSpace "1" -- "0..*" OptimizationLog : candidate >
+OptimizationRequest "1" -- "0..*" OptimizationLog : logs >
+
+' Constraints as notes
+
+note right of ParkingSpace
+Space size constraint:
+- Vehicle.sizeEnum must be <= space.sizeEnum
+end note
+
+note right of Conveyor
+Conveyor weight constraint:
+- Vehicle.weightKg <= maxWeightKg
+end note
+
+note top of OptimizationRequest
+Optimization must satisfy:
+- size compatibility
+- weight compatibility
+- minimal distance score
+end note
+
+@enduml

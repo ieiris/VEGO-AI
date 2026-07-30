@@ -1,0 +1,157 @@
+@startuml
+class Person {
+   - id : int
+   - fName : String
+   - lName : String
+   - phoneNumber : String
+   - email : String
+   - postalCode : int
+}
+class Customer {
+    -firstContact : Date
+}
+class Employee {
+    -startDate : Date
+    +viewWineInfo() 
+}
+class Salesperson {
+    +placeOrder()
+    +wineRecommReport()
+    +unproductiveEmpReport()
+}
+class InventoryEmployee {
+    +updateInventory()
+    +currentInventoryReport()
+}
+class Order {
+    -orderNumber : int
+    -orderDate : Date
+   - currentStatus : Status
+   - shipmentDate : Date
+}
+class UrgentOrder {
+    -priorityLevel : PriorityLevel
+    -expectedDeliveryTime : Date
+}
+class RegularOrder {
+    -mainCustomerID : int
+}
+class WineOrderDetail {
+    -personID : int
+    -quantity : int
+}
+class Wine {
+    -name : String
+    -description : String
+    -productionYear : int
+    -pricePerBottle : float
+    -sweetnessLevel : SweetLevel
+    -manufacturerID : int
+    -catalogNumber : int
+    -productImage : Image
+}
+class Manufacturer {
+    -manufacturerID : int
+    -fullName : String
+    -contactPhoneNumber : String
+    -email : String
+    -postalCode : int
+}
+class WineType {
+    -name : String 
+    -serialNumber : int
+}
+class Food {
+    -foodCode : int
+    -name : String
+}
+class Recipe {
+    -link : URL
+}
+class Occasion {
+    -occasionID : int
+    -description : String
+    -season : Season
+    -location : Location
+}
+class StorageLocation {
+    -locationNumber : int
+    -name : String
+}
+class StorageWine {
+    -bottleCount : int
+}
+class Address {
+    -postalCode : int
+    -addrNum : int
+    -street : String
+    -city : String
+    -country : String
+}
+class GefenSystem {
+    +sendWineXML()
+    +weeklyPurchaseUpdate()
+}
+
+enum Status {
+    in_process
+    dispatched
+    delivered
+    paid
+    suspended
+    canceled
+}
+
+enum PriorityLevel {
+    1
+    2
+    3
+    4
+    5
+}
+
+enum SweetLevel {
+    dry
+    semi_dry
+    semi_sweet
+    sweet
+}
+
+enum Location {
+    indoor
+    outdoor
+}
+
+enum Season {
+    spring
+    summer
+    autumn
+    winter
+}
+Occasion <.. Season
+Wine <.. SweetLevel
+Order <.. Status
+Occasion <.. Location
+UrgentOrder <.. PriorityLevel
+Person <|-- Customer
+Person <|-- Employee
+Employee <|-- Salesperson
+Employee <|-- InventoryEmployee
+Order <|-- UrgentOrder
+Order <|-- RegularOrder
+UrgentOrder "*" -- "1" Person : creates
+RegularOrder "*" -- "1..*" Person : creates
+Wine "1..*" *-- "*" Order
+(Wine, Order) .. WineOrderDetail
+Wine "1..*" *-- "1" WineType
+WineType "1..*" -- "*" Food : paired with
+Wine "*" -- "1" Manufacturer : produces
+Wine "*" o-- "1..*" StorageLocation : stored in
+(Wine, StorageLocation) .. StorageWine
+Address "1" --o "*" Person
+Address "1" --o "*" Manufacturer
+GefenSystem "1" -- "1..*" InventoryEmployee : Send report to
+Recipe "0..5" --* "1" Food
+Occasion "*" -- "1..*" WineType : recommended for
+Order "*" -- "1" Salesperson : assigned to
+@enduml

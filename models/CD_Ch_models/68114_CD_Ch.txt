@@ -1,0 +1,90 @@
+@startuml
+class Order {
+  - orderNumber: String
+  - orderDate: Date
+  - status: String
+  - shipmentDate: Date
+  - priorityLevel: int
+  - expectedDeliveryTime: String
+  - UorR: String
+  + calculateOrderPriority(): void
+}
+
+class Customer {
+  - customerID: String
+  - name: String
+  - phoneNumber: String
+  - deliveryAddress: String
+  - email: String
+  - firstContactDate: Date
+}
+
+class Employee {
+  - employeeID: String
+  - name: String
+  - phoneNumber: String
+  - officeAddress: String
+  - email: String
+  - startDate: Date
+  + generateUnproductiveEmployeesReport(startDate: Date, endDate: Date): List<Employee>
+}
+
+class Wine {
+  - wineID: String
+  - name: String
+  - description: String
+  - productionYear: int
+  - pricePerBottle: float
+  - sweetnessLevel: String
+  - productImage: String
+}
+
+class WineType {
+  - typeName: String
+  - serialNumber: String
+  - foodPairings: String
+  - recommendedOccasions: String
+}
+
+class Manufacturer {
+  - manufacturerID: String
+  - fullName: String
+  - contactPhone: String
+  - address: String
+  - email: String
+}
+
+class Inventory {
+  - locationID: String
+  - locationName: String
+  - storedQuantity: int
+}
+
+class GefenSystem {
+  + importXMLData(): void
+  + exportInventoryReport(): void
+}
+
+Order "1" *-- "1..*" Wine: consists of >
+Customer "1" -- "*" Order: places >
+Employee "1" -- "*" Order: assigned >
+Wine "1" -- "1" WineType: is >
+Wine "1" -- "*" Manufacturer: produced by >
+Inventory "1" -- "*" Wine: stores >
+GefenSystem "1" -- "*" Manufacturer: updates >
+GefenSystem "1" -- "*" Wine: updates >
+enum OrderStatus {
+    InProcess,
+    Dispatched,
+    Delivered,
+    Paid,
+    Suspended,
+    Canceled
+}
+enum SweetnessLevel {
+    Dry,
+    SemiDry,
+    SemiSweet,
+    Sweet
+}
+@enduml

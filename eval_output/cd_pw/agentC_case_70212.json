@@ -1,0 +1,308 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70212",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class contains attributes for a unique identifier, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class includes an attribute for available spaces, indicating the number of unoccupied parking spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Each Vehicle is associated with a Client through a one-to-many relationship, ensuring that each vehicle links to one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class captures session specifics like start time and is related to Vehicle, indicating it holds vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace has a size attribute that classifies each space as small, medium, or large for vehicle accommodation.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class defines a maximum weight capacity, specifying the vehicle weight it can handle.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The case model states a lack of need to store conveyors used by vehicles post session completion.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "PriceList class holds pricing for first hour, additional hours, and full day, linked to relevant ParkingLot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The ClubMember class within the case model represents the management of a client club.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "ClubMember and PaymentGateway indicate automatic discounts for club members on parking sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "ClubMember is associated with a rule where the first parking session in the registration month is free.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The Administrator class has the capability to generate an annual summary report detailing incomes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The Annual Summary Report includes amounts paid per lot and counts vehicles of \"other\" colors in its details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The model specifies ordering of the report by city in descending order and amounts in ascending order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The Report class specifies formats of PDF and XML for generated reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The Report generation function includes a method for generating a monthly overview of club growth.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The system tracks monthly new club members, total members, and calculates growth rates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The Customer Club Growth Report is organized monthly in ascending order.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [],
+  "uncovered_fragments": [
+    {
+      "fragment": "The Administrator class is linked to the ParkWiseSystem class, allowing an administrator to manage the ParkWiseSystem.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Though not explicitly required by the guidelines, it is a valid representation of the relationship between administrative roles and system management."
+    },
+    {
+      "fragment": "The ParkWiseSystem class includes operations for processing vehicle entries, handling unknown vehicles, and running optimization algorithms.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These operations ensure the system's comprehensive functionality and support core operations beyond the detailed guidelines."
+    },
+    {
+      "fragment": "The ParkWiseSystem class communicates with the IRS to import data, such as price lists.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This reflects the need for interaction with external services like IRS for data import, providing a holistic view of system integration."
+    },
+    {
+      "fragment": "The PreferredSelection class is used to record the selection dates for preferred parking lots by a club member.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "This concept is implied in the guidelines but wasn't clearly captured, leading to confusion regarding the storage and management of preferred lot selections."
+    },
+    {
+      "fragment": "The Report class encompassing a method to export in both PDF and XML formats.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This aligns well with report generation specifications in the guidelines, highlighting flexibility in output formats."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The Administrator class is linked to the ParkWiseSystem class, allowing an administrator to manage the ParkWiseSystem.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The ParkWiseSystem class includes operations for processing vehicle entries, handling unknown vehicles, and running optimization algorithms.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The ParkWiseSystem class communicates with the IRS to import data, such as price lists.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The PreferredSelection class is used to record the selection dates for preferred parking lots by a club member.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The Report class encompassing a method to export in both PDF and XML formats.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 18.0,
+  "max_score": 18.0,
+  "score_pct": 100.0,
+  "overall_assessment": "The case model satisfies all domain guidelines with comprehensive coverage, representing all guidelines with satisfactory compliance."
+}

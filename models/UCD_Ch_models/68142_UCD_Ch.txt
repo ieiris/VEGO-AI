@@ -1,0 +1,97 @@
+@startuml
+left to right direction
+
+actor "Company Employee" as CompanyEmployee
+actor "Sales Staff" as SalesStaff
+actor "Marketing Employee" as MarketingEmployee
+actor "External System (Gefen)" as Gefen
+
+CompanyEmployee <|-- SalesStaff
+CompanyEmployee <|-- MarketingEmployee
+
+rectangle "Cheers Wine Management System" {
+    ' SalesStaff Use Cases - Placed Upwards
+    usecase "Place Order" as PlaceOrder
+    usecase "Generate Unproductive Employees Report" as GenerateUnproductiveReport
+    usecase "Generate Wine Recommendation Report" as GenerateWineRecommendationReport
+
+    ' MarketingEmployee Use Cases - Placed Below SalesStaff
+    usecase "Browse Available Wines" as BrowseWines
+    usecase "Update Wine Information and Types" as UpdateModifyWineInfo
+    usecase "Link Wines to Type" as LinkWinesToType
+    usecase "Modify Product Price" as ModifyProductPrice
+    usecase "Update Product Image" as UpdateProductImage
+    usecase "Recommend Occasions Suitable for Drinking Each Wine Type" as RecommendOccasions
+    usecase "Send Weekly Purchase Updates" as SendsPurchaseUpdates
+    usecase "Sends Monthly XML Data (regarding wine producers and wines they produce)" as ReceiveMonthlyXMLData
+    usecase "Store Manufacturer Information" as StoreManufacturerInfo
+    usecase "Store Wine Information" as StoreWineInfo
+
+    ' Other Use Cases
+    usecase "Place Regular Order" as PlaceRegularOrder
+    usecase "Place Joint Order" as PlaceJointOrder
+    usecase "Place Urgent Order" as PlaceUrgentOrder
+    usecase "Specify Delivery Time" as SpecifyDeliveryTime
+    usecase "Make Priority Level" as MakePriorityLevel
+    usecase "Assign Order to Employee" as AssignOrder
+    usecase "Track Wines and Quantities per Customer" as TrackWineQuantities
+    usecase "Track Customer Information Responsible for Order" as TrackCustomerInfo
+    usecase "Record Customer Information" as RecordCustomerInfo
+
+    note right of PlaceRegularOrder
+        Extension Point: The customer asks for a regular order
+    end note
+
+    note right of PlaceUrgentOrder
+        Extension Point: The customer asks for urgent orders
+    end note
+
+    note right of PlaceJointOrder
+       Extension Point: Multiple customers combine their orders into a single transaction.
+end note
+
+    note right of ModifyProductPrice
+        Extension Point: If there is a change to the price
+    end note
+
+    note right of UpdateProductImage
+        Extension Point: If there is a change to the picture
+    end note
+}
+
+' Sales Staff Relationships
+SalesStaff --> PlaceOrder
+SalesStaff --> GenerateUnproductiveReport
+SalesStaff --> GenerateWineRecommendationReport
+
+' Marketing Employee Relationships
+CompanyEmployee --> BrowseWines
+
+MarketingEmployee --> UpdateModifyWineInfo
+MarketingEmployee --> LinkWinesToType
+MarketingEmployee --> RecommendOccasions
+
+
+' Use Case Relationships
+PlaceOrder <.. PlaceRegularOrder : extend
+PlaceOrder <.. PlaceUrgentOrder : extend
+
+PlaceOrder .> AssignOrder : include
+PlaceOrder .> RecordCustomerInfo : include
+
+PlaceJointOrder .> PlaceRegularOrder : extend
+PlaceJointOrder .> TrackWineQuantities : include
+PlaceJointOrder .> TrackCustomerInfo : include
+
+PlaceUrgentOrder .> SpecifyDeliveryTime : include
+PlaceUrgentOrder .> MakePriorityLevel : include
+
+LinkWinesToType <.. ModifyProductPrice : extend
+LinkWinesToType     <..     UpdateProductImage : extend
+
+Gefen --> SendsPurchaseUpdates
+Gefen --> ReceiveMonthlyXMLData
+
+ReceiveMonthlyXMLData .> StoreManufacturerInfo : include
+ReceiveMonthlyXMLData .> StoreWineInfo : include
+@enduml

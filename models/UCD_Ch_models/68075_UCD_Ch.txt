@@ -1,0 +1,53 @@
+@startuml
+skinparam dpi 150
+skinparam pageSize A4 portrait
+skinparam wrapWidth 10
+skinparam margin 10
+
+actor AllEmployees
+actor Customers
+actor "Gefen System" as GefenSystem
+
+package Cheers {
+  usecase "Placing Customer Order" as U1
+  usecase "Track Employee Details" as U2
+  usecase "Browsing Available Wines" as U3
+  usecase "Placing Orders" as U4
+  usecase "Recording Customer Information" as U5
+  usecase "View Wine Information" as U6
+  usecase "Updating Wine Information" as U7
+  usecase "Occasion Recommendation" as U8
+  usecase "Providing General Description" as U9
+  usecase "Managing Wine Products" as U10
+  usecase "Generate Wine Recommendation Report for Customers" as U11
+  usecase "Generate Unproductive Employees Report" as U12
+  usecase "Generate Current Inventory Report" as U13
+  usecase "Sending XML Data" as U14
+}
+
+actor "Sales Staff" as SalesStaff
+actor "Marketing Employees" as MarketingEmployees
+
+SalesStaff --> U1
+SalesStaff --> U11
+SalesStaff --> U12
+SalesStaff --> U13
+
+Customers --> U4
+
+MarketingEmployees --> U7
+MarketingEmployees --> U8
+MarketingEmployees --> U10
+
+GefenSystem --> U14
+
+AllEmployees --> U6
+
+SalesStaff --|> AllEmployees
+MarketingEmployees --|> AllEmployees
+
+U1 ..> U2 : <<include>>
+U1 ..> U3 : <<include>>
+U4 ..> U5 : <<include>>
+U8 ..> U9 : <<include>>
+@enduml

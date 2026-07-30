@@ -1,0 +1,204 @@
+@startuml
+' ===========================
+' ENUMS
+' ===========================
+
+enum VehicleSize {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+enum PaymentStatus {
+    APPROVED
+    DECLINED
+    PENDING
+}
+
+enum VehicleColor {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+' ===========================
+' CLASSES
+' ===========================
+
+class ParkingLot {
+    +lotId : int
+    +parkingLotName : String
+    +address : String
+    +city : String
+    +availableSpaces : int
+    +gateSensor : GateSensor
+    +priceHistory : List<PriceList>
+}
+
+class GateSensor {
+    +sensorId : int
+    +status : String
+    +parkingLot : ParkingLot
+}
+
+class Vehicle {
+    +vehicleNumber : String
+    +type : String
+    +color : VehicleColor
+    +size : VehicleSize
+    +weightKg : double
+    +photoFront : Image
+    +photoRear : Image
+    +photoSide : Image
+    +owner : Client
+}
+
+class Client {
+    +clientId : int
+    +firstName : String
+    +lastName : String
+    +phoneNumber : String
+    +isClubMember : boolean
+    +membershipRegistrationDate : Date
+}
+
+
+class ParkingSession {
+    +sessionId : int
+    +startTime : DateTime
+    +endTime : DateTime
+    +totalHours : double
+    +baseAmount : double
+    +discountAmount : double
+    +finalAmount : double
+    +paymentApproved : boolean
+    +vehicle : Vehicle
+    +client : Client
+    +parkingLot : ParkingLot
+    +parkingSpace : ParkingSpace
+    +initialConveyor : Conveyor
+    +exitConveyor : Conveyor
+}
+
+class ParkingSpace {
+    +spaceId : int
+    +floorNumber : int
+    +x : double
+    +y : double
+    +size : VehicleSize
+    +isOccupied : boolean
+    +currentVehicle : Vehicle
+    +parkingLot : ParkingLot
+}
+
+class Conveyor {
+    +conveyorId : int
+    +floorNumber : int
+    +x : double
+    +y : double
+    +maxWeightKg : double
+    +isAvailable : boolean
+}
+
+class PriceList {
+    +priceListId : int
+    +validFrom : Date
+    +firstHourPrice : double
+    +additionalHourPrice : double
+    +fullDayPrice : double
+    +parkingLot : ParkingLot
+}
+
+' ----------- Receipt as Association Class ------------
+class Receipt <<Association Class>> {
+    +receiptId : int
+    +issueDate : Date
+    +totalHours : double
+    +finalAmount : double
+    +rateDescription : String
+}
+
+' ----------- Payment as Association Class ------------
+class Payment <<Association Class>> {
+    +paymentId : int
+    +amount : double
+    +time : DateTime
+    +status : PaymentStatus
+}
+
+' ----------- PreferredParkingLot as Association Class ------------
+class PreferredParkingLot <<Association Class>> {
+    +selectionDate : Date
+}
+
+' ----------- Reports ------------
+class Report {
+    +year : int
+    +reportDate : Date
+}
+
+class AnnualSummaryReport extends Report {
+    +parkingLots : List<ParkingLot>
+    +totalPayedPerLot : Map<ParkingLot, double>
+    +otherColorCountPerLot : Map<ParkingLot, int>
+    +generateAnnualSummary() : void
+    +exportToPDF() : PDF
+    +exportToXML() : XML
+}
+
+class CustomerClubGrowthReport extends Report {
+    +month : int
+    +newMembers : int
+    +cumulativeActiveMembers : int
+    +growthPercent : double
+    +generateMonthlyReport() : void
+}
+
+class ParkWiseSystem {
+    +identifyVehicle(imageData : Image) : Vehicle
+    +openGate(sensor : GateSensor) : void
+    +operateConveyor(conveyor : Conveyor, vehicle : Vehicle) : void
+    +calculatePrice(session : ParkingSession, priceList : PriceList) : float
+    +approvePaymentWithPG(payment : Payment) : boolean
+    +startSession(vehicle : Vehicle, client : Client, lot : ParkingLot) : ParkingSession
+    +endSession(session : ParkingSession) : void
+    +runOptimizationAlgorithm(lot : ParkingLot) : void
+    +generateReceipt(session : ParkingSession) : Receipt
+    +assignVehicleToClient(vehicle : Vehicle, client : Client) : void
+    +registerToCustomerClub(client : Client) : void
+}
+
+
+
+' ===========================
+' RELATIONSHIPS
+' ===========================
+
+ParkingLot "1" o-- "1" GateSensor
+ParkingLot "1" o-- "*" ParkingSpace
+ParkingLot "1" o-- "*" Conveyor
+ParkingLot "1" -- "*" ParkingSession
+ParkingLot "1" o-- "*" PriceList
+
+Client "1" o-- "*" Vehicle
+
+Vehicle "0..1" -- "0..1" ParkingSpace
+Vehicle "0..1" -- "0..1" Conveyor
+
+ParkingSession "1" -- "1" ParkingSpace
+
+AnnualSummaryReport "1" o-- "*" ParkingLot
+
+' ---------- Association Classes ----------
+
+Client "0..*" -- "0..*" ParkingLot
+(Client, ParkingLot) .. PreferredParkingLot 
+
+Client "1" -- "0..*" ParkingSession
+(Client, ParkingSession) .. Receipt
+
+Client "1" -- "0..*" ParkingSession
+(Client, ParkingSession) .. Payment
+@enduml

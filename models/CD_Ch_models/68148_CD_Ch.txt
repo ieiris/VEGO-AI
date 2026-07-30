@@ -1,0 +1,194 @@
+@startuml
+left to right direction
+
+class System {
+    +importFromGefenSystem(): void
+    +exportToGefenSystem(): void
+
+}
+
+enum OrderStatus {
+    IN_PROCESS
+    DISPATCHED
+    DELIVERED
+    PAID
+    SUSPENDED
+    CANCELED
+}
+
+enum OccasionLocation {
+    INDOOR
+    OUTDOOR
+}
+
+enum SweetnessLevel {
+    DRY
+    SEMI_DRY
+    SEMI_SWEET
+    SWEET
+}
+
+enum PriorityLevel {
+    1
+    2
+    3
+    4
+    5
+}
+
+enum Season {
+    WINTER
+    SPRING
+    SUMMER
+    AUTUMN
+}
+
+
+abstract class Order {
+    +OrderNumber: int
+    +OrderDate: Date
+    +Status: OrderStatus
+    +ShipmentDate: Date
+    
+}
+
+class UrgentOrder {
+    +PriorityLevel: PriorityLevel
+    +ExpectedDeliveryTime: int
+
+}
+
+class RegularOrder {
+    +MainCustomerID: int
+}
+
+Order <|-- UrgentOrder : "Complete, Disjoint"
+Order <|-- RegularOrder : "Complete, Disjoint"
+
+abstract class Person {
+    +ID: int
+    +Name: String
+    +PhoneNumber: int
+    +Email: String
+}
+
+abstract class Employee {
+    +EmploymentStartDate: Date
+    +OfficeAddress: String
+}
+
+class Customer {
+    +DeliveryAddress: String
+    +DateOfFirstContact: Date
+}
+
+Person <|-- Employee : "Complete, Overlap"
+Person <|-- Customer : "Complete, Overlap"
+
+
+class Wine {
+    +Name: String
+    +ManufacturerNumber: int
+    +CatalogNumber: int
+    +Description: String
+    +ProductionYear: int
+    +PricePerBottle: double
+    +SweetnessLevel: SweetnessLevel
+    +ProductImagePath: String
+}
+
+class WineType {
++SerialNumber: int
+    +Name: String
++Occasion: String
+    +Location: OccasionLocation
+    +Season: Season
+}
+
+class Manufacturer {
+    +UniqueIdentifier: int
+    +Name: String
+    +PhoneNumber: int
+    +Address: String
+    +Email: String
+}
+
+class StorageLocation {
+    +LocationNumber: int
+    +Name: String
+}
+
+class SalesEmployee{
+    +generateUnproductiveEmployeeReport(): void
+    +generaWinesListSuitableForCustomer(): void
+}
+
+class MarketingEmployee{
+}
+
+Employee <|-- SalesEmployee: "Complete, Disjoint"
+Employee <|-- MarketingEmployee: "Complete, Disjoint"
+
+class Food{
++NameOfDish: String
++RecipeLink1: URL
++RecipeLink2: URL
++RecipeLink3: URL
++RecipeLink4: URL
++RecipeLink5: URL
+}
+
+
+
+class WinesInUrgentOrder{
+    +Quantity: int
+}
+
+class WinesInCustomerRegularOrder{
+    +Quantity: int
+}
+class CustomerRegularOrder{
+
+}
+
+class StoredIn{
+    +Quantity: int
+}
+
+Order "0..*" -- "1" SalesEmployee: assigned to
+Order "0..*" ..> "1" OrderStatus : has
+Wine "0..*" ..> "1" SweetnessLevel
+WineType "1..*" ..> "1" OccasionLocation 
+Wine "1..*" -- "1" WineType : categorized as
+Wine "0..*" -- "1" Manufacturer : produced by
+Customer "1" -- "0..*" UrgentOrder 
+Wine "0..*" -- "0..*" MarketingEmployee: update
+WineType "0..*" -- "0..*" Food
+MarketingEmployee "1..*" -- "1..*" WineType 
+Wine"1..*" -- "0..*" UrgentOrder
+Wine "0..*" -- "1..*" StorageLocation
+
+(Wine , StorageLocation) .. StoredIn
+(UrgentOrder, Wine) .. WinesInUrgentOrder
+
+
+
+UrgentOrder"0..*" ..> "1" PriorityLevel  
+WineType "1..*" ..> "1" Season 
+
+
+RegularOrder "1..*" --"1..*" Customer
+(RegularOrder, Customer) . CustomerRegularOrder
+
+CustomerRegularOrder "1..*" -- "1..*" Wine
+(CustomerRegularOrder,Wine). WinesInCustomerRegularOrder
+
+WineType "1..*" -- "1..*" SalesEmployee: finds for customer
+
+
+
+System o-- Order
+System o-- Wine: includes a list of
+System o-- Manufacturer : includes a list of
+System o-- Person
+@enduml

@@ -1,0 +1,82 @@
+@startuml
+actor "Sales Staff" as Sales
+actor "Marketing Employees" as Marketing
+actor "Company Employees" as Emp
+actor "Customer" as Cust
+actor "Gefen System" as Gefen
+actor "GalGalim" as GalGalim
+
+Emp <|-- Sales
+Emp <|-- Marketing
+
+usecase "Place Order" as UC1
+usecase "Place Joint Orders" as UC2
+usecase "View Wine Information and Types" as UC3
+usecase "Update Wine Information and Types" as UC4
+usecase "Provide Manufacturer Data" as UC5
+usecase "Update Inventory" as UC6
+usecase "Generate Unproductive Employees Report" as UC7
+usecase "Generate Inventory Report" as UC8
+usecase "Produce Wine Recommendation Report" as UC9
+usecase "Order Wine" as UC10
+usecase "Recommend Wines to Customers" as UC11
+usecase "Perform Delivery" as UC12
+usecase "Provide Purchasing Analytics" as UC13
+
+Emp --> UC3
+Emp --> UC10
+Emp --> UC2
+
+Sales --> UC1
+Sales --> UC7
+Sales --> UC9
+Sales --> UC8
+
+Cust --> UC10
+Cust --> UC2
+
+Marketing --> UC4
+Marketing --> UC6
+Marketing --> UC11
+
+Gefen --> UC5
+Gefen --> UC13
+
+GalGalim --> UC12
+
+UC2 -left-> UC10 : <<extends>>
+
+UC8 .> Gefen : sends data
+
+note right of UC1
+  - Order types: Regular or Urgent
+  - Order details include: 
+    - number, date, type, status, 
+    - assigned employee
+  - Track wines and quantities
+end note
+
+note right of UC4
+  - Update wine types, details
+  - Assign occasions, food pairings
+end note
+
+note right of UC5
+  - Provide XML with:
+    - Manufacturer info
+    - Wine details
+end note
+
+note left of UC8
+  - Provide inventory levels
+  - Sends JSON report weekly
+end note
+
+note right of UC13
+  - Weekly updates on quantity purchased from manufacturers
+end note
+
+note right of GalGalim
+  - External company affiliated with "Wine Ha'emek"
+end note
+@enduml

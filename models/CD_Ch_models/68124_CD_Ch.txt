@@ -1,0 +1,148 @@
+@startuml
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+    FontSize 12
+}
+skinparam linetype ortho
+
+class Employee {
+    +String id
+    +String name
+    +String phoneNumber
+    +String officeAddress
+    +String email
+    +Date employmentStartDate
+}
+
+class SalesStaff {
+    +void generateUnproductiveEmployeesReport(Date startDate, Date endDate)
+    +void generateWineRecommendationReport(Customer customer)
+}
+
+class MarketingStaff {
+    +void updateWineInformation()
+    +void generateCurrentInventoryReport()
+}
+
+class Customer {
+    +String id
+    +String name
+    +String phoneNumber
+    +String deliveryAddress
+    +String email
+    +Date firstContactDate
+}
+
+class Order {
+    +String orderNumber
+    +Date orderDate
+    +OrderStatusEnum status
+    +Date shipmentDate
+    +OrderTypeEnum orderType
+    +Employee assignedEmployee
+    +int urgencyLevel <<range: 1-5>>
+    +JointOrderTypeEnum jointOrderType
+
+    +void processOrder()
+}
+
+class Wine {
+    +String name
+    +String description
+    +int productionYear
+    +double pricePerBottle
+    +SweetnessLevelEnum sweetnessLevel
+    +String productImage
+    +int catalogNumber
+
+    +WineTypeEnum wineType
+    +Manufacturer manufacturer
+}
+
+class StorageLocation {
+    +String locationNumber
+    +String locationName
+}
+
+class Manufacturer {
+    +String id
+    +String fullName
+    +String phoneNumber
+    +String address
+    +String email
+}
+
+class System {
+    +void exportInventoryInJson()
+    +void importProducerDataInXml()
+    +void receiveSalesReports(SalesStaff salesStaff)
+}
+
+class Gefen {
+    +void weeklyUpdateSalesQuantity(System system)
+    +void receiveInventoryLevelReports(MarketingStaff marketingStaff)
+}
+
+enum WineTypeEnum {
+    RED
+    WHITE
+    SPARKLING
+    FORTIFIED
+    ROSE
+    DESSERT
+}
+
+enum SweetnessLevelEnum {
+    DRY
+    SEMI_DRY
+    SEMI_SWEET
+    SWEET
+}
+
+enum OrderStatusEnum {
+    IN_PROCESS
+    DISPATCHED
+    DELIVERED
+    PAID
+    SUSPENDED
+    CANCELED
+}
+
+enum OrderTypeEnum {
+    REGULAR
+    URGENT
+}
+
+enum JointOrderTypeEnum {
+    JOINT
+    DISJOINT
+}
+
+SalesStaff --|> Employee : {complete, disjoint}
+MarketingStaff --|> Employee : {complete, disjoint}
+
+System *-- SalesStaff
+System *-- MarketingStaff
+System *-- Customer
+System *-- Order
+System *-- Wine
+System *-- StorageLocation
+System *-- Manufacturer
+
+SalesStaff "1" -- "*" Order : "places"
+Order "1" -- "*" Wine : "includes"
+Order "1" -- "1..*" Customer : "ordered by"
+Wine "1" -- "1" Manufacturer : "produced by"
+Wine "1" -- "*" StorageLocation : "stored in"
+MarketingStaff "1" -- "1..*" StorageLocation
+
+System <--> Gefen : exportsInventory,\nimportsData
+
+Order o-- OrderStatusEnum : <<enumeration>>
+Order o-- OrderTypeEnum : <<enumeration>>
+Order o-- JointOrderTypeEnum : <<enumeration>>
+Wine o-- WineTypeEnum : <<enumeration>>
+Wine o-- SweetnessLevelEnum : <<enumeration>>
+@enduml

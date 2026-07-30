@@ -1,0 +1,69 @@
+@startuml
+!theme plain
+
+skinparam usecaseMargin 30
+
+rectangle "Cheer's Company" {
+usecase "Place Joint Order" as UC_D
+usecase "View Wine Information and Types" as UC_A
+usecase "Place Order" as UC_H
+usecase "Place Urgent Order" as UC_X
+usecase UC_Y as "Place Regular Order
+--
+*Extension Point*
+Place Urgent order"
+usecase "Generate Unproductive Employees Report" as UC_I
+usecase "Generate Wine Recommendation Report" as UC_J
+usecase "Update Wine Information and Types" as UC_K
+usecase "Modify Price Details and Product Image" as UC_L
+usecase "Recommend Occasions for Each Wine Type" as UC_M
+usecase "Link Wines to their Types" as UC_N
+usecase "Import Wine Producers and Product Data" as UC_O
+usecase "Import Weekly Purchase Quantities" as UC_P
+usecase "Store Manufacturer Details" as UC_S
+usecase "Store Wine Details" as UC_T
+
+usecase "Place Joint Order" as UC_D
+
+note right of UC_D #lightyellow
+when there is more than one customer in the order
+end note
+
+
+}
+
+left to right direction
+actor Customer as Customer
+actor "Company Employee" as Company_Employee
+actor "Sales Staff" as Sales_Staff
+actor "Marketing Staff" as Marketing_Staff
+actor Gefen as Gefen
+
+Customer -- UC_H
+
+Company_Employee -- UC_A
+
+Sales_Staff -- UC_H
+Sales_Staff -- UC_I
+Sales_Staff -- UC_J
+
+Marketing_Staff -- UC_K
+Marketing_Staff -- UC_L
+Marketing_Staff -- UC_M
+Marketing_Staff -- UC_N
+
+Gefen -- UC_O
+Gefen -- UC_P
+
+UC_O ..> UC_T : <<include>>
+UC_O ..> UC_S : <<include>>
+UC_H <|-- UC_X
+UC_H <|-- UC_Y
+UC_Y <.. UC_D : <<extend>>
+
+
+
+
+Marketing_Staff -|> Company_Employee
+Sales_Staff -|> Company_Employee
+@enduml

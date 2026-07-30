@@ -1,0 +1,86 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' --- שחקנים בצד שמאל ---
+actor Client
+actor "Club Member" as ClubMember
+actor "Administrator" as Admin
+
+' כל Club Member הוא סוג מיוחד של Client
+Client <|-- ClubMember
+
+rectangle "ParkWise System" {
+
+  ' --- ניהול חניונים ולקוחות ---
+  usecase "Manage Parking Lots\n& Details" as UC_ManageLots
+  usecase "Register to Club Membership" as UC_Club
+  usecase "Select Preferred\nParking Lots" as UC_SelectLots
+
+  ' --- כניסה לחניון ---
+  usecase "Detect Vehicle\nArrival/Departure" as UC_CheckVehicle
+  usecase "Follow Parking Lot\nInstructions" as UC_FollowInstr
+  usecase "Open Gate" as UC_OpenGate
+
+  ' --- חניה בפועל ---
+  usecase "Assign Conveyor\nand Parking Space" as UC_Assign
+  usecase "Update Vehicle Location" as UC_UpdateLocation
+  usecase "Transfer Vehicle" as UC_TransferVehicle
+
+  ' --- סיום חניה ותשלום ---
+  usecase "End Parking and Pay" as UC_EndParking
+  usecase "Process Payment" as UC_ProcessPayment
+  usecase "Issue Receipt" as UC_Receipt
+
+  ' --- תעריפים ודוחות ---
+  usecase "Update Price Lists" as UC_UpdatePrices
+  usecase "Generate Annual\nSummary Report" as UC_AnnualReport
+  usecase "Generate Customer\nClub Growth Report" as UC_ClubReport
+}
+
+' --- שחקנים בצד ימין ---
+actor "Gate Sensor" as GS
+actor "Conveyors Controller" as CC
+actor "Conveyor" as Conveyor
+actor "Payment Gateway" as PG
+actor "Integrated Rate Service" as IRS
+
+' --- קשרי שחקנים ---
+
+Admin --> UC_ManageLots
+Admin --> UC_AnnualReport
+Admin --> UC_ClubReport
+
+Client --> UC_EndParking
+Client --> UC_Club
+Client --> UC_FollowInstr
+
+ClubMember --> UC_SelectLots
+
+GS --> UC_CheckVehicle
+
+CC --> UC_Assign
+
+GS --> UC_OpenGate
+
+Conveyor --> UC_TransferVehicle
+
+IRS --> UC_UpdatePrices
+
+PG --> UC_ProcessPayment
+
+' --- קשרי include / extend עיקריים ---
+
+' כשלון בבדיקת רכב -> הוראות ללקוח
+UC_CheckVehicle <.. UC_FollowInstr : <<extend>> 
+
+' הצלחה בבדיקת רכב -> פתיחת שער
+UC_CheckVehicle <.. UC_OpenGate : <<extend>> 
+
+' הקצאת מסוע ומקום חניה כוללת עדכון מיקום רכב
+UC_Assign --> UC_UpdateLocation : <<include>>
+
+' בסיום חניה מחשבים תשלום, משלמים ומוציאים קבלה
+UC_EndParking --> UC_ProcessPayment : <<include>>
+UC_EndParking <.. UC_Receipt : <<extend>>
+@enduml

@@ -1,0 +1,188 @@
+```plantuml
+@startuml
+skinparam classAttributeIconSize 0
+
+' ======================
+' ENUMERATIONS
+' ======================
+
+enum ParkingStatus {
+  OPEN
+  CLOSED
+  PAID
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+enum VehicleColor {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+' ======================
+' CORE DOMAIN CLASSES
+' ======================
+
+class Client {
+  -name: String
+  -phoneNumber: String
+  +provideRequiredDetails(): void
+  +requestEndParking(): void
+  +requestReceipt(): void
+  +registerToClub(): void
+  +selectPreferredParkingLots(): void
+}
+
+class ClubMember {
+  -membershipId: int
+  -joinDate: DateTime
+  +getEligibleDiscount(): Money
+  +getPreferredParkingSpace(): ParkingSpace
+}
+
+class Administrator {
+  -adminId: int
+  -name: String
+  +updateParkingLotDetails(): void
+  +generateAnnualSummaryReport(): void
+  +generateCustomerClubGrowthReport(): void
+}
+
+class Vehicle {
+  -plateNumber: String
+  -type: String
+  -color: VehicleColor
+  -frontPhoto: Image
+  -rearPhoto: Image
+  -sidePhoto: Image
+  +extractDetailsFromPhotos(): void
+}
+
+class ParkingLot {
+  -lotId: int
+  -name: String
+  -address: String
+  -city: String
+  -availableSpaces: int
+}
+
+class ParkingSpace {
+  -spaceId: int
+  -floorNumber: int
+  -coordinateX: int
+  -coordinateY: int
+  -parkingLotNumber: int
+  -size: String
+  -occupied: boolean
+}
+
+class ParkingSession {
+  -sessionId: int
+  -startTime: DateTime
+  -endTime: DateTime
+  -status: ParkingStatus
+}
+
+class PriceEntry {
+  -vehicleType: String
+  -hourlyRate: Money
+}
+
+class PriceList {
+  -year: int
+}
+
+class Payment {
+  -paymentId: int
+  -amount: Money
+  -time: DateTime
+  -status: PaymentStatus
+}
+
+class Receipt {
+  -receiptId: int
+  -issueDate: DateTime
+  -totalAmount: Money
+  +issue(): void
+}
+
+' ======================
+' EXTERNAL / DEVICE CLASSES
+' ======================
+
+class GateSensor {
+  -sensorId: int
+  +identifyVehicleArrival(): void
+  +identifyVehicleDeparture(): void
+  +sendVehicleEventToSystem(): void
+  +openBarrier(): void
+}
+
+class ConveyorsController {
+  -controllerId: int
+  -maxWeight: double
+  +scanVehicleNumber(): void
+  +assignConveyor(): void
+  +requestOptimization(): void
+  +updateParkingCompletion(): void
+}
+
+class PaymentGateway {
+  +sendPaymentRequest(): void
+  +notifyPaymentResult(): void
+}
+
+class IntegratedRateService {
+  +sendYearlyPriceLists(): void
+}
+
+class SmsGateway {
+  +sendParkingDetailsSms(): void
+}
+
+' ======================
+' INHERITANCE
+' ======================
+
+Client <|-- ClubMember
+
+' ======================
+' ASSOCIATIONS
+' ======================
+
+' Client, vehicles, sessions
+Client      "1" -- "0..*" Vehicle        : owns
+Client      "1" -- "0..*" ParkingSession : starts
+ClubMember  "1" -- "0..*" ParkingLot     : preferredLots
+
+' Administrator responsibilities
+Administrator "1" -- "0..*" ParkingLot  : manages
+Administrator "1" -- "0..*" PriceList   : configures
+
+' Parking lot structure and pricing
+ParkingLot  "1" -- "0..*" ParkingSpace  : contains
+ParkingLot  "1" -- "0..*" ParkingSession: hosts
+ParkingLot  "1" -- "1"     PriceList    : uses
+PriceList   "1" -- "0..*" PriceEntry    : entries
+
+' Session, payment, receipt
+ParkingSession "1" -- "1"     Vehicle : for
+ParkingSession "1" -- "1"     Payment : "paid by"
+Payment        "1" -- "0..1"  Receipt : issues
+
+' External integrations
+GateSensor          "1" -- "1"     ParkingLot       : "installed at"
+ConveyorsController "1" -- "0..*"  ParkingLot       : controls
+PaymentGateway      "1" -- "0..*"  Payment          : processes
+IntegratedRateService "1" -- "0..*" PriceList       : provides
+SmsGateway          "1" -- "0..*"  Client           : notifies
+
+@enduml
+```

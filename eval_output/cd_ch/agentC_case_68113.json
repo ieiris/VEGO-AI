@@ -1,0 +1,411 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68113",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model revolves around a system called 'Cheers' developed by a wine trading company to manage operations like inventory and order processing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "SalesStaff class has operations like placeOrder and placeUrgentOrder, illustrating their responsibility for placing orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order class includes details such as orderID, orderDate, status, shipmentDate, and employeeID, aligning with guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "No mention in the model about external delivery management, implying no evidence related to external companies.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "RegularOrder and UrgentOrder classes, extending Order, capture the possibility of joint customer orders through attributes like joinCustomers.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Different quantities per customer not explicitly captured."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class includes attributes like customerID, name, phone, deliveryAddress, email, and firstContactDate.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employee can place orders, as per equivalent attributes and relation to customer-ordering conditions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "UrgentOrder specifies singleCustomerID, aligning with single customer placement for priority delivery.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder class includes attributes deliveryTime and priorityLevels, reflecting required urgent order details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "RegularOrder allows multiple customers to participate in a joint order, with attributes like joinCustomers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "Customer specific ordering details are not independently tracked beyond association; no main customer responsibility.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Main customer responsibility unclear in model."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Customer details for regular or urgent orders are covered under the Customer class's attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingStaff class manages wine updates, restricting other roles to view access.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesStaff has viewWineData operation, allowing them to access wine information while placing orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType class uses attributes like name and serialNumber for wine type identification.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Definitions under WineType cover attributes such as foodPairings and recipeLinks.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Occasion recommendations tied to wine types linked to MarketingStaff operations in suggesting occasions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "GefenSystem class mentions XML data import but lacks direct mention of producers and weekly quantity updates.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Model partially covers the monthly data aspect."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class records details like fullName, phone, address, email, and manufacturerID.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Attributes under Wine cover details including name, description, year, price, sweetness, and image.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine distinguishes by attributes wineID and serialNumber, aligned with guideline criteria.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingStaff can associate wines with types and adjust prices and images, fulfilling linking and modification roles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "StorageLocation linked to Inventory offers an association but lacks explicit aggregation to represent whole-part storing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Aggregation not explicitly captured."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Inventory specifies tracking of wine quantities per StorageLocation, supporting joint storage depiction.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Methods in GefenSystem hint towards inventory updates but lack explicit sale event linkage.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Lacks detail on updates from completed sales."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Reports like unproductive employees and inventory appear in functions of SalesStaff and GefenSystem.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The model includes a relationship through the 'Order' class to the external 'GefenSystem,' but there is no mention of 'GalGalim' or any external delivery handling, which would satisfy the evidence of external delivery management.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No explicit or implicit mention of an external delivery company was found in the model that matches the guideline."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The 'RegularOrder' class captures multiple customers through the 'joinCustomers' attribute, missing explicit representation of individual wine and quantity tracking per customer.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While joint orders are represented via 'joinCustomers,' details on specific wines and quantities per customer are absent."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "There is a 'RegularOrder' class that allows for multiple customers to place an order, but responsibility of a main customer is not explicitly represented.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Main customer responsibilities in a joint order context are not well defined in the model."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The class 'GefenSystem' is involved in XML data import functions, but there is no reference to weekly updates or explicit tracking of quantities, fulfilling only part of the guideline requirements.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Only part of the guideline related to XML data reception is covered while weekly updates are absent."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The 'Inventory' class tracks storage across multiple locations but is solely associated with 'StorageLocation,' lacking explicit aggregation representation.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "There is no explicit use of aggregation to represent the whole-part relationships in storage locations."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The 'GefenSystem' appears to provide updates to inventory but lacks explicit linkage to updates triggered directly by sales.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Inventory updates are implied but not explicitly tied to completed sales transactions within the model."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "GefenSystem class has an operation 'importWineData(xmlData: string)' aimed at importing XML data.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The operation suggests additional functionality for importing data, enhancing the system's extensibility."
+    },
+    {
+      "fragment": "GefenSystem class has an operation 'exportInventoryReport(): string' for exporting inventory data.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This operation provides functionality that aligns with generating inventory reports, potentially cooperating with external systems."
+    },
+    {
+      "fragment": "OrderDetails class links Order and Wine, providing attributes including orderID, wineID, and quantity.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This class models details of order items, which adds granularity to tracking order specifics."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "GefenSystem class has an operation 'importWineData(xmlData: string)' aimed at importing XML data.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "GefenSystem class has an operation 'exportInventoryReport(): string' for exporting inventory data.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "OrderDetails class links Order and Wine, providing attributes including orderID, wineID, and quantity.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 24.5,
+  "max_score": 26.0,
+  "score_pct": 94.2,
+  "overall_assessment": "The case model is highly compliant, with most guidelines satisfied and some minor areas for improvement."
+}

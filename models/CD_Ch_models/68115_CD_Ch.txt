@@ -1,0 +1,179 @@
+@startuml
+!define CLASS_COLOR #66CCCC
+!define ABSTRACT_CLASS_COLOR #99CCFF
+
+top to bottom direction
+
+class "Employee" as employee << (C,CLASS_COLOR) >>
+{
+  - id: Integer
+  - name: String
+  - phoneNumber: String
+  - officeAddress: String
+  - email: String
+  - employmentStartDate: Date
+}
+
+class "SalesEmployee" as salesEmployee << (C,CLASS_COLOR) >>
+{
+  - employeeId: Integer
+  - numberOfUrgentOrders: Integer
+  - numberOfRegularOrders: Integer
+  + updateStock(order: Order): void
+}
+salesEmployee --|> employee
+
+class "MarketingEmployee" as marketingEmployee << (C,CLASS_COLOR) >>
+{
+  - employeeId: Integer
+}
+marketingEmployee --|> employee
+
+class "Admin" as admin << (C,CLASS_COLOR) >>
+{
+  - employeeId: Integer
+  + manageUsers(user: Employee): void
+  + assignPermissions(user: Employee, role: String): void
+}
+admin --|> employee
+
+class "Customer" as customer << (C,CLASS_COLOR) >>
+{
+  - id: Integer
+  - name: String
+  - phoneNumber: String
+  - deliveryAddress: String
+  - email: String
+  - dateOfFirstContact: Date
+}
+
+enum OrderStatus {
+  IN_PROCESS
+  DISPATCHED
+  DELIVERED
+  PAID
+  SUSPENDED
+  CANCELED
+}
+
+class "Order" as order << (C,CLASS_COLOR) >>
+{
+  - id: Integer
+  - orderDate: Date
+  - status: OrderStatus
+  - shipmentDate: Date
+  - assignedEmployee: SalesEmployee
+  - customer: Customer
+}
+order --* salesEmployee
+order --* customer
+order *-- orderDetail : contains
+order --* OrderStatus
+
+class "OrderDetail" as orderDetail << (C,CLASS_COLOR) >>
+{
+  - wine: Wine
+  - quantity: Integer
+}
+orderDetail --* wine
+
+class "UrgentOrder" as urgentOrder << (C,CLASS_COLOR) >>
+{
+  - priorityLevel: Integer
+  - expectedDeliveryTime: Date
+}
+urgentOrder --|> order
+
+class "RegularOrder" as regularOrder << (C,CLASS_COLOR) >>
+{
+  - jointOrder: Boolean
+  - customers: List<Customer>
+}
+regularOrder --|> order
+
+class "Wine" as wine << (C,CLASS_COLOR) >>
+{
+  - id: Integer
+  - name: String
+  - description: String
+  - productionYear: Integer
+  - pricePerBottle: Double
+  - sweetnessLevel: String
+  - productImage: String
+  - wineType: WineType
+}
+wine --* wineType
+
+class "WineType" as wineType << (C,CLASS_COLOR) >>
+{
+  - id: Integer
+  - name: String
+  - foodPairings: String
+  - recipeLinks: String
+  - occasions: String
+  - season: String
+  - location: String
+}
+
+class "Manufacturer" as manufacturer << (C,CLASS_COLOR) >>
+{
+  - id: Integer
+  - name: String
+  - contactPhoneNumber: String
+  - address: String
+  - email: String
+}
+manufacturer --* wine
+
+class "Inventory" as inventory << (C,CLASS_COLOR) >>
+{
+  - id: Integer
+  - wine: Wine
+  - quantity: Integer
+  - storageLocation: StorageLocation
+}
+inventory --* wine
+inventory --* storageLocation
+
+class "StorageLocation" as storageLocation << (C,CLASS_COLOR) >>
+{
+  - id: Integer
+  - name: String
+  - description: String
+}
+
+class "UnproductiveEmployeeReport" as unproductiveEmployeeReport << (C,CLASS_COLOR) >>
+{
+  + generateReport(startDate: Date, endDate: Date): List<Employee>
+}
+unproductiveEmployeeReport --* salesEmployee
+
+class "WineRecommendationReport" as wineRecommendationReport << (C,CLASS_COLOR) >>
+{
+  + generateReport(customer: Customer): List<Wine>
+}
+wineRecommendationReport --* customer
+wineRecommendationReport --* wine
+
+class "Feedback" as feedback << (C,CLASS_COLOR) >>
+{
+  - rating: Integer
+  - comments: String
+  - customer: Customer
+  - wine: Wine
+}
+feedback --* customer
+feedback --* wine
+
+class "GeffenSystemImport" as geffenSystemImport << (C,CLASS_COLOR) >>
+{
+  + importData(xmlData: String): void
+}
+geffenSystemImport --* manufacturer
+
+class "GeffenSystemExport" as geffenSystemExport << (C,CLASS_COLOR) >>
+{
+  + exportData(): String
+}
+geffenSystemExport --* inventory
+@enduml

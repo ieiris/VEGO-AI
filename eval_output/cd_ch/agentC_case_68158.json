@@ -1,0 +1,489 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68158",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The class diagram includes classes such as Order, Inventory, Customer, and OrderItem, which suggests managing key business operations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The OrderAssignment class shows that each order is linked to an employee.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order class includes attributes such as orderNumber, orderDate, status, shipmentDate, and association with OrderAssignment (employee details).",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no indication of an external company managing deliveries represented in the class diagram.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Order class is associated with multiple OrderItems, where each OrderItem tracks quantities and wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class contains relevant attributes such as id, name, phoneNumber, deliveryAddress, email, and dateOfFirstContact.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The Employee class has no special attributes or methods indicating order placing like regular customers, but association with OrderAssignment suggests involvement in orders.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While employees are associated with orders, there's no explicit evidence of them ordering like regular customers."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The Order class lacks explicit features for handling urgent order conditions.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "There is no specification for priority levels or expected delivery times in urgent orders within the Order class.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Order and CustomerOrder classes imply the possibility of multiple customers in a single order, without explicit distinction between regular and urgent orders.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The class model suggests combined orders but doesn't explicitly categorize them as regular or urgent."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "CustomerOrder is associated with multiple Orders indicating tracking of customer-specific order details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Attributes recorded for customer details in the Customer class align with guidelines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "There is no indication of specific roles or department-based permissions for updating wine information.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "There is no explicit indication of browsing capabilities by sales staff in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType class includes name and description attributes but no direct link to serial numbers for wine types.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The needed attributes for individual wine types are not directly evident."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineType class includes a description but lacks attributes for detailed food pairings or URLs for recipes.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "There's no evidence of occasion recommendations made for wine types.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No evidence of integration or updates from an external system (Gefen) in this model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Attributes within the Manufacturer class meet the guideline requirements, with id, name, contactPhoneNumber, address, and email.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine class meets requirements with attributes like name, serialNumber, pricePerBottle, sweetnessLevel, and productImage.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine class specifies a serialNumber which can be inferred as covering catalog numbers; however, manufacturer number distinction isn't defined.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Catalog number is implied but manufacturer-specific distinction is missing."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "There is no clear indication of role-based linking of wines to types or modification capabilities in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "StorageLocation class includes unique id and name attributes, accommodates multiple wines through aggregation with Inventory.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Inventory class shows wine quantities per StorageLocation, aligning with tracking needs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "No explicit operation or method for inventory update post-sale is evident within the Inventory or related classes.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Defined report subclasses suggest the existence of a reporting feature: UnproductiveEmployeesReport, CurrentInventoryReportByWine, and WineRecommendationReportForCustomers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The class model does not include a class or dependency that references an external delivery company such as 'GalGalim'.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No evidence found that ties the class diagram to the specific externalizing of delivery management."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "OrderAssignment includes an association with Employee, which is involved with order processing, but does not specify employee ordering conditions explicitly.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While employees are associated with orders, there's no explicit evidence of them placing orders like customers. Employee involvement suggests some level of order interaction."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Order class does not have specific attributes or mechanisms detailed for urgent orders such as priority handling.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is no structural representation of urgent order processing duties."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "No attributes like priority level or expected delivery time for urgent orders are present in the Order class.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The diagram lacks those specific attributes for urgent orders."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "CustomerOrder's association with multiple Orders supports combined orders but doesn’t differentiate regular and urgent conditions directly.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The possibility of multiple customer inclusion is implied but categorization remains ambiguous."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "There's no indication of specific roles or permissions for updating wine information in the diagram.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The class diagram lacks details on authorization for modifying wine types restricted to certain employee roles."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The diagram lacks explicit elements representing browsing capabilities by sales staff.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Functional capabilities of browsing are missing in the class model."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType doesn't contain attributes for serial numbers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Identification attributes required by the guideline are absent."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineType does not include attributes for food pairings or recipes.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Lacks detailed pairings or recipes needed to fully describe wine types."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "No suggestion of occasion recommendations provided by any employee type is in the diagram.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The class diagram shows no evidence of marketing functions related to wine consumption occasions."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The model does not show classes or associations for any data exchange with the 'Gefen' system.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is an absence of any information exchange paths or dependencies between systems within the diagram."
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine's serialNumber can infer catalog number, yet no unique manufacturer number within Wine class is explicit.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Catalog numbers implied by serialNumber attribute but need unique manufacturer number isn't clear."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "No feature in the model indicates role-based wine type linking or modification.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Authority to modify and manage wine types isn't covered in shown classes."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The Inventory class lacks explicit operations that demonstrate a post-sale update process.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Necessary update functionality following sales isn't indicated within Inventory or related classes."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The 'Report' class is marked as abstract, serving as a superclass for various specific report types.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This abstraction provides a clear structure for extending report functionalities and is a valid design choice in class modeling."
+    },
+    {
+      "fragment": "The 'WineManufacturer' class associates wines with manufacturers, capturing the production year but lacks explicit attributes detailing the method of relation, like keys.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "While documenting the relationship between wines and manufacturers is important, the absence of explicit identifiers such as foreign keys may lead to data integrity issues."
+    },
+    {
+      "fragment": "The 'OrderStatus' class is defined as an enumeration listing all possible states an order can have.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Use of enumerations for defining order states is common practice in UML, facilitating easier state management and validation."
+    },
+    {
+      "fragment": "The 'sweetnessLevel' attribute in the Wine class that could define levels such as dry or sweet.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This attribute aligns well with requirements to describe wines distinctly and might facilitate user queries or classifications of wines."
+    },
+    {
+      "fragment": "The use of lists within the classes like 'WineRecommendationReportForCustomers' containing 'List<Wine>'.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "UML typically doesn't explicitly use generic-like syntax (e.g., 'List<>') in standard notation, which could confuse interpretation unless justified explicitly."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The 'Report' class is marked as abstract, serving as a superclass for various specific report types.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'WineManufacturer' class associates wines with manufacturers, capturing the production year but lacks explicit attributes detailing the method of relation, like keys.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The 'OrderStatus' class is defined as an enumeration listing all possible states an order can have.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'sweetnessLevel' attribute in the Wine class that could define levels such as dry or sweet.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The use of lists within the classes like 'WineRecommendationReportForCustomers' containing 'List<Wine>'.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    }
+  ],
+  "total_score": 13.75,
+  "max_score": 26.0,
+  "score_pct": 52.9,
+  "overall_assessment": "The case model satisfies a majority of the guidelines partially or fully, but several domain and language issues remain unaddressed."
+}

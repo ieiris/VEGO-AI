@@ -1,0 +1,675 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70213",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The system includes a use case to manage parking lot details, suggesting storage of unique identifiers and attributes for each parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The administrator actor is associated with the use case for managing parking lot details, implying responsibility for updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The management of parking lot details likely involves tracking available spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "A gate sensor system actor interacts with the vehicle entry use case to collect real-time data.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The gate sensor actor sends vehicle data to the system, which then searches the database for vehicle entries.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The use case for vehicle entry implies barrier control when recognizing vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "It is inferred that instructions are provided to the client at the entrance, but not explicitly shown in the diagram.",
+      "compliance_status": "Satisfied",
+      "notes": "The extension use case implies that clients who encounter issues with automatic entry will follow a flow to register themselves, suggesting instructions are provided during this process."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The register client/vehicle use case suggests clients provide personal and vehicle data during registration.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The system includes automatic extraction of vehicle details from photos in an included use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Within the extraction process, predefined color categorizations are implied.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The inclusion relationship in client/vehicle registration suggests updating associations between vehicles and clients.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "A logical extension of the use case flow that results in opening the barrier after updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The parking session details management is implied by the use cases involved in vehicle entry and exit.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The client is involved in driving to a conveyor as part of the vehicle park use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The conveyors' controller interacts with the system to run an optimization algorithm for parking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The use case involving parking space optimization implies coordination by floor and (x,y) location.",
+      "compliance_status": "Satisfied",
+      "notes": "While specific coordinates aren't explicitly shown in the model, the 'Run Optimization Algorithm' use case suggests that spatial coordination is a factor in its consideration."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The parking optimization use case suggests consideration of space size.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Conveyor weight limits are considered in the optimization algorithm.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The optimization use case includes space size and conveyor weight as factors.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Post-movement updates are implied in the vehicle park use case with the conveyors' controller.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "The system implies tracking vehicles through optimization, parking, and retrieval use cases.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "An SMS notification process is not explicitly covered in the diagram.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Access to parking details via the system UI is not explicitly modeled but implied through client interactions.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Explicit UI access process is not detailed."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Conveyance information retention post-parking is not modeled.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The client's role in vehicle retrieval through UI interaction is modeled.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Use cases align with the assignment of vacated conveyors for vehicle retrieval.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "The process payment use case includes the client paying via system UI.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G28",
+      "evidence": "The calculate payment amount use case incorporates IRS data for fee calculations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G29",
+      "evidence": "Price list updating and calculation are managed for different parking lots.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G30",
+      "evidence": "Price history maintenance is inferred through the update price lists use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G31",
+      "evidence": "External payment handling is indicated by the process payment use case's connection to the payment gateway.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G32",
+      "evidence": "The gate opening after payment approval suggests integration between the payment gateway and the gate sensor.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G33",
+      "evidence": "Issued receipts are covered under the issue receipt use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G34",
+      "evidence": "The receipt use case likely includes a detailed transaction breakdown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Receipt details are suggested, but not explicitly shown in the diagram, leading to a partially-satisfied status."
+    },
+    {
+      "guideline_id": "G35",
+      "evidence": "The client club registration use case suggests management of a clients' club.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G36",
+      "evidence": "The club registration suggests provision of parking session discounts.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G37",
+      "evidence": "The client can register for the club through a dedicated use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G38",
+      "evidence": "Lifetime free membership is part of the club registration context.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G39",
+      "evidence": "Preferred lot management includes storing selections for audit purposes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G40",
+      "evidence": "The management of preferred lots suggests initial free sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G41",
+      "evidence": "Report generation for administrators is inferred through related use cases.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G42",
+      "evidence": "The annual summary report use case would logically include a financial overview.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G43",
+      "evidence": "The contents of the annual report are encompassed within its generation use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G44",
+      "evidence": "Reports are likely sorted as described, associated with their generation use cases.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G45",
+      "evidence": "Report format options in PDF and XML are likely part of the use case specifics.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G46",
+      "evidence": "The client club growth report use case reflects monthly memberships overview.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G47",
+      "evidence": "Detailed metrics of club growth are understood through the related report use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G48",
+      "evidence": "The chronological sorting of club growth data is implied in the report generation use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G7",
+      "evidence": "The case model features a use case called 'Register Client / Vehicle' that extends 'Handle Vehicle Entry'. This suggests that clients who are unable to gain automatic entry will interact with the system to register, implying they receive and follow instructions.",
+      "compliance_status": "Satisfied",
+      "notes": "The extension use case implies that clients who encounter issues with automatic entry will follow a flow to register themselves, suggesting instructions are provided during this process."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The inclusion of the 'Run Optimization Algorithm' use case with 'Park Vehicle' implies coordination by (x,y) coordinates and floor number in finding the appropriate parking space.",
+      "compliance_status": "Satisfied",
+      "notes": "While specific coordinates aren't explicitly shown in the model, the 'Run Optimization Algorithm' use case suggests that spatial coordination is a factor in its consideration."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "The absence of an explicit SMS notification process remains, and no additional case model content suggests resolution.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is no new evidence found within the provided case model for SMS notification."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The 'Retrieve Vehicle / End Parking' use case suggests client interaction via system UI, which could implicitly include accessing parking details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While this implies UI interaction, explicit details on data access aren't provided, warranting this partial satisfaction."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The case model doesn't explicitly cover non-retention of conveyor handling information post-parking.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No alternative representation found to suggest compliance with conveyor information management."
+    },
+    {
+      "guideline_id": "G34",
+      "evidence": "The 'Issue Receipt' use case logically follows the payment process, implying receipt content includes necessary payment details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Receipt details are suggested, but not explicitly shown in the diagram, leading to a partially-satisfied status."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The 'Payment Gateway' actor is directly connected to the 'Process Payment' use case indicating a detailed interaction for payment processing, which aligns with the system's external payment handling.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The direct connection of the Payment Gateway actor to the 'Process Payment' use case provides a clearer view of the external integration and properly models the interaction."
+    },
+    {
+      "fragment": "The 'Integrated Rate Service' is connected to the 'Update Price Lists' use case, indicating routine updates to parking rates.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This provides additional clarity on data flow for rate updates, showing integration with an external service to maintain accurate pricing."
+    },
+    {
+      "fragment": "The case model employs 'include' relationships in cases like 'Process Payment' including 'Calculate Payment Amount' and 'Issue Receipt,' indicating structured process flows.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The use of 'include' relationships for modular functionalities captures the procedural aspects of payment processing and receipt issuance accurately."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": "The extension use case implies that clients who encounter issues with automatic entry will follow a flow to register themselves, suggesting instructions are provided during this process."
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": "While specific coordinates aren't explicitly shown in the model, the 'Run Optimization Algorithm' use case suggests that spatial coordination is a factor in its consideration."
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Explicit UI access process is not detailed."
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G28",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G29",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G30",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G31",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G32",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G33",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G34",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Receipt details are suggested, but not explicitly shown in the diagram, leading to a partially-satisfied status."
+    },
+    {
+      "guideline_id": "G35",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G36",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G37",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G38",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G39",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G40",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G41",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G42",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G43",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G44",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G45",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G46",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G47",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G48",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The 'Payment Gateway' actor is directly connected to the 'Process Payment' use case indicating a detailed interaction for payment processing, which aligns with the system's external payment handling.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The 'Integrated Rate Service' is connected to the 'Update Price Lists' use case, indicating routine updates to parking rates.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The case model employs 'include' relationships in cases like 'Process Payment' including 'Calculate Payment Amount' and 'Issue Receipt,' indicating structured process flows.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 46.5,
+  "max_score": 48.0,
+  "score_pct": 96.9,
+  "overall_assessment": "The case model demonstrates strong compliance with domain guidelines, successfully addressing most requirements."
+}

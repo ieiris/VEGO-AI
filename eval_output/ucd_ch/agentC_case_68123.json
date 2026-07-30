@@ -1,0 +1,411 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68123",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model defines a system boundary with the name 'Cheers System,' indicating the inclusion of primary use cases for managing operations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The case model shows 'Sales Staff' as an actor interacting with the system to place orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Use cases for placing orders include 'Place Order,' 'place Urgent Order,' and 'place Regular Order,' indicating categorization and order details involvement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The absence of 'GalGalim' in the system components indicates it's outside the system boundary.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The 'place Joined Order' use case suggests a capability for tracking joint orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer information recording is not explicitly depicted as a use case in the diagram.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "General employee actor allows placing orders like customers, satisfying this guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "There is an 'urgentOrder' use case that includes specifying priority and expected delivery time.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "'place Regular Order' includes an extend relationship with 'place Joined Order,' suggesting multiple customer order handling.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Specific customer detail tracking is not shown explicitly as use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The actor hierarchy suggests that employees can interact with the system similarly to customers for orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Marketing Employee has the ability to update wine information, suggesting restricted privileges.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Non-marketing employees, like Sales Staff, have view access related to 'Browse Available Wines.'",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The model doesn't explicitly cover wine type classification through use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "'Recommend Occasions for Wine' suggests recommending occasions suitable for different wine types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "'Receive XML Data from Gefen' implies interaction boundaries for external data reception.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "'Provide Weekly Updates on Quantity Purchased' indicates use case for purchase update tracking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No specific use case explicitly handling manufacturer information storage.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "'Modify Price Details and Product Images' implies capturing wine details but is not explicit.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The use case implies modification but not explicitly capturing all described details."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Model does not show explicit use cases distinguishing wines by identifiers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "'Link Wines to Their Types' use case aligns with wine type linking to maintain data.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Storage location tracking is not depicted in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The model does not explicitly show a use case for inventory level tracking per location.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "There is no explicit representation depicting inventory updates post-order.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "'Generate Unproductive Employees Report' specifies report generation on employee productivity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Inventory report generation in JSON format is linked to 'Receive JSON Format Every Weekend.'",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "'Produce Wine Recommendation Report' indicates use case for matching wine to customer preferences.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G6",
+      "evidence": "The 'Place Order' use case encompasses the activity of ordering which implicitly involves recording customer information, but it is not explicitly outlined as a distinct use case.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The activity of placing an order suggests the collection of customer details but lacks explicit representation as a dedicated use case, leading to a partially satisfied status."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "As previously indicated, during order placement ('Place Order' use case), it is reasonable to imply customer details are captured, but this is not independently shown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The capturing of customer details is probably embedded within the 'Place Order' process, yet it is inadequately differentiated, yielding only partial satisfaction."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Within 'Link Wines to Their Types' and 'Modify Price Details and Product Images', references to wine attributes are touched upon though they do not clearly include type classification.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The types and their respective data like food pairings indirectly relate to classifying wines, but it does not suffice to fully satisfy the requirement."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There are no use cases such as 'Store Manufacturer Info' that reflect storing detailed manufacturer information.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While marketing employees may interact with producer data ('Receive XML Data from Gefen'), the explicit storage of all manufacturer details isn't detailed, hence only partly meets the guideline."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "'Modify Price Details and Product Images' entails modifications, but details like wine name and description are not evidently captured.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Certain details pertaining to wine such as prices and images are included; however, comprehensive data capturing steps are missing."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Identification details like manufacturer or catalog numbers aren't explicitly covered within any use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Lack of explicit use case representation for distinguishing wines through identifiers keeps this guideline not satisfied."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Tracking of storage locations and the associated numbers/names for wines does not appear in any use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model lacks clarity on how wine storage locations are documented, resulting in non-satisfaction."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The model does not reveal a direct use case detailing inventory levels per location.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Inventory tracking by location isn't explicit within this diagram's use cases, which leaves this requirement unfulfilled."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Any post-sale inventory update mechanisms are unrepresented in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The lack of an explicit post-order inventory update use case explanation keeps this not satisfied."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The use case 'Access to view informations'",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "reason": "The term 'viow informations' likely contains a typo or unclear phrasing. It should be a correctly spelled and clear action verb that accurately reflects system functionality."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The use case 'Access to view informations'",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "base_score": -0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": -0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 19.5,
+  "max_score": 27.0,
+  "score_pct": 72.2,
+  "overall_assessment": "The model satisfies most guidelines but lacks explicitly detailed use cases for certain key functionalities, leading to some partial and unsatisfied scores."
+}

@@ -1,0 +1,429 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68111",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model includes classes and relationships that manage operations like inventory via WinesLocation, customer management with Customer and Person, and order processing through Order and related subclasses.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "There is an association between SalesEmployee and Order, indicating responsibility for placing orders as each order is related to a SalesEmployee.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order attributes include order number, date, and status, corresponding with the guideline's details. Employee information related to orders isn't fully captured.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Employee-specific details not fully covered."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no explicit representation of an external delivery entity like 'GalGalim'.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "JointOrder class suggests handling of joint orders with a link to multiple Customers and OrderItem indicating multiple wines per order.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Tracking specific quantities per customer not evident."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class includes all the stipulated attributes such as ID, name, and contact details, and links to orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employee as a subclass of Person can be a Customer, indicating they can place orders as regular customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "UrgentOrder requires a single Customer, aligning with priority processing for urgent orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder class includes the attributes for priority and expected delivery time, fulfilling the specified requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "JointOrder supports combining customer selections, but specific conditions for regular orders aren't detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Lacks detailed conditions for regular orders."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "JointOrder has associations with multiple Customers, implying oversight by a main customer, yet tracking specifics is unclear.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Specific tracking per customer not detailed."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Attributes in Customer and inclusion in Orders align with recording customer details, covered by both order types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingEmployee class lists operations that include updating wine details and their types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesEmployee operations include managing customer information, suggesting they access wine data when ordering.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Browsing wines is implied but not explicitly stated."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType includes name and serial number attributes, fulfilling the identification requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineType related to Dish with an association supports food pairing, while recipes fulfill keeping URLs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Occasion descriptions capture general occasions and link to WineType, though season and location in string format.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Location enum conversion suggested but not implemented."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There's no explicit evidence of XML data reception from Gefen within the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Manufacturer class includes name, phone, address, email aligned with assigned numbers, fulfilling storage requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wines class attributes parallel with captured details: name, description, year, price, sweetness, and image.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Manufacturer number and catalog number are featured in Wines as distinguishing criteria.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingEmployee includes operations to update and link wines to types.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Location class with unique number and name, aggregating WinesLocation, suggests storage representation.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "WinesLocation aggregates with Wines and Location to track quantities at specific sites.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "No direct reference of inventory updates upon sales, though WinesLocation suggests stock tracking.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Inventory updates post-sale not directly addressed."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "No explicit generation of the specified reports within the system model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G3",
+      "evidence": "The Employee class is associated with Order but does not specify attributes like ID, phone, etc. These details are encapsulated within Person, which Employee inherits from, but not explicitly referenced within an Order.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The inheritance from Person partially satisfies the need for employee information but isn't explicit within Order."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The model does not represent the external company 'GalGalim' handling deliveries.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No evidence of representation for an external delivery entity exists in the model."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The OrderItem class indicates multiple wines per order, which aligns with joint orders but does not explicitly track specific quantities for each customer in a joint order.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The capacity for joint orders is implied through associations but lacks the specific tracking of customer-specific quantities."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The model shows JointOrder class relationships, indicating combined customer orders, but does not enumerate conditions specific to regular orders beyond joint capabilities.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While JointOrder supports group orders, it does not specify criteria unique to regular orders."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The JointOrder class links to multiple Customers, implying main customer oversight, yet specifics on tracking individual customer order quantities are absent.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While a leading customer is suggested, detail on tracking per customer isn't provided in the model."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The Occasion class holds season and location as strings which should be enums, restricting the integrity of location-based recommendations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Season and location should be structured as enums to fully satisfy requirement."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No representation indicates XML data reception from Gefen regarding wine producers and their production.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model lacks evidence of integration with external systems for data updates."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "WinesLocation provides clues on potential inventory levels but does not state updates after sales.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Implied inventory tracking does not explicitly address inventory updates post-sale."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "There are no explicit classes or operations that support the generation of the specified report types within the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No implementation for generating required reports is visible in the diagram."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The class UrgentOrder includes a priority level attribute with a range of values not specified as an enum, contrary to practice.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "While it correctly captures business logic, the absence of an enum for priority range is not aligned with best practices for clarity and consistency."
+    },
+    {
+      "fragment": "Occasion class has a string attribute for location instead of using an enum.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "The use of a string attribute instead of an enum for location types can lead to inconsistencies in data entry and misinterpretation."
+    },
+    {
+      "fragment": "Order class status attribute encompasses several states but is not an enum.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "Not using an enum could lead to errors or inconsistencies, as enums are designed to handle specific sets of constant values."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The class UrgentOrder includes a priority level attribute with a range of values not specified as an enum, contrary to practice.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    },
+    {
+      "fragment": "Occasion class has a string attribute for location instead of using an enum.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    },
+    {
+      "fragment": "Order class status attribute encompasses several states but is not an enum.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    }
+  ],
+  "total_score": 18.75,
+  "max_score": 26.0,
+  "score_pct": 72.1,
+  "overall_assessment": "The case model satisfies many key guidelines, but has several partial satisfactions and omissions, with some language mistakes affecting clarity."
+}

@@ -1,0 +1,46 @@
+ex1_UCD_FINAL_2025_Design1
+@startuml
+left to right direction
+
+actor SalesStaff as "Sales Staff"
+actor MarketingStaff as "Marketing Staff"
+actor Customer as "Customer"
+actor Gefen as "Gefen"
+
+SalesStaff --|> Customer
+MarketingStaff --|> Customer
+
+rectangle CheersSystem {
+  Customer -- (Place Order)
+  (Place Urgent Order) ..> (Place Order) : extend
+  (Place Joint Order) ..> (Place Order) : extend
+  (Place Employee Order) ..> (Place Order) : extend
+
+  Customer -- (Track Order Status)
+  (Place Urgent Order) ..> (Track Order Status) : extend
+  (Place Employee Order) ..> (Track Order Status) : extend
+  (Place Joint Order) ..> (Track Order Status) : extend
+  (Track Order Status) ..> (View Order History) : include
+
+  SalesStaff -- (Process Orders)
+  (Process Orders) ..> (Assign Order to Employee) : include
+  (Process Orders) ..> (Update Inventory after each sale) : include
+  (Generate Unproductive Employees Report) ..> (Process Orders) : extend
+  (Generate Unproductive Employees Report) ..> (View Employee Information) : include
+
+  MarketingStaff -- (Update Wine Information)
+  MarketingStaff -- (Link Wines to Types)
+  MarketingStaff -- (View Wine Inventory)
+
+  Customer -- (View Wine Information)
+  (Generate Wine Recommendation Report for Customers) ..> (View Wine Information) : extend
+  (Generate Wine Recommendation Report for Customers) ..> (View Wine Information) : include
+
+  Gefen -- (Provide Wine Producer Information)
+  Gefen -- (Provide Wine Information)
+
+  (Generate Current Inventory Report by Wine) ..> (Track Inventory Levels) : extend
+  (Track Inventory Levels) ..> (Update Inventory after each sale) : include
+  (Generate Current Inventory Report by Wine) ..> (Track Inventory Levels) : include
+}
+@enduml

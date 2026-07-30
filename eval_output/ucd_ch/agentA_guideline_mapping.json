@@ -1,0 +1,110 @@
+{
+  "skill_version": "1.0.0",
+  "language_name": "UML Use Case Diagram",
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "canonical_description": "Actors represent roles or entities that interact with the system.",
+      "run1_guideline_id": "T2",
+      "run1_short_name": "Actor",
+      "run2_guideline_id": "T1",
+      "run2_short_name": "Actor",
+      "run3_guideline_id": "T1",
+      "run3_short_name": "Actor",
+      "similarity_score": 1.0,
+      "base_assignment": "actors",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C2",
+      "canonical_description": "Use Cases represent functionalities or services provided by the system and define interactions between actors and the system.",
+      "run1_guideline_id": "T1",
+      "run1_short_name": "Use Case",
+      "run2_guideline_id": "T2",
+      "run2_short_name": "UseCase",
+      "run3_guideline_id": "T2",
+      "run3_short_name": "UseCase",
+      "similarity_score": 1.0,
+      "base_assignment": "use cases",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C3",
+      "canonical_description": "Generalization relationship between actors indicates that one actor inherits roles and responsibilities from another.",
+      "run1_guideline_id": "T6",
+      "run1_short_name": "Generalization-Actor",
+      "run2_guideline_id": "T7",
+      "run2_short_name": "Actor-Generalization-Actor",
+      "run3_guideline_id": null,
+      "run3_short_name": null,
+      "similarity_score": 0.85,
+      "base_assignment": "inheritance between actors",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C4",
+      "canonical_description": "Generalization relationship between use cases indicates inheritance of behavior between use cases.",
+      "run1_guideline_id": "T7",
+      "run1_short_name": "Generalization-Use Case",
+      "run2_guideline_id": "T6",
+      "run2_short_name": "UseCase-Generalization-UseCase",
+      "run3_guideline_id": null,
+      "run3_short_name": null,
+      "similarity_score": 0.85,
+      "base_assignment": "inheritance between use cases",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C5",
+      "canonical_description": "The include relationship shows that one use case incorporates the behavior of another use case.",
+      "run1_guideline_id": "T4",
+      "run1_short_name": "Use Case-Include-Use Case",
+      "run2_guideline_id": "T4",
+      "run2_short_name": "UseCase-Include-UseCase",
+      "run3_guideline_id": "T4",
+      "run3_short_name": "UseCase-Include-UseCase",
+      "similarity_score": 1.0,
+      "base_assignment": "<<include>> dependencies",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C6",
+      "canonical_description": "The extend relationship indicates that the behavior of a use case can be optionally extended by another use case.",
+      "run1_guideline_id": "T5",
+      "run1_short_name": "Use Case-Extend-Use Case",
+      "run2_guideline_id": "T5",
+      "run2_short_name": "UseCase-Extend-UseCase",
+      "run3_guideline_id": "T5",
+      "run3_short_name": "UseCase-Extend-UseCase",
+      "similarity_score": 1.0,
+      "base_assignment": "<<extends>> dependencies",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C7",
+      "canonical_description": "An association relationship between actors and use cases shows participation in the use case.",
+      "run1_guideline_id": "T3",
+      "run1_short_name": "Actor-Association-Use Case",
+      "run2_guideline_id": "T3",
+      "run2_short_name": "Actor-Association-UseCase",
+      "run3_guideline_id": "T3",
+      "run3_short_name": "Actor-Association-UseCase",
+      "similarity_score": 1.0,
+      "base_assignment": "associations use cases - actors",
+      "match_confidence": "High"
+    },
+    {
+      "cluster_id": "C8",
+      "canonical_description": "System boundaries define the scope of the system, encapsulating use cases and distinguishing them from external actors.",
+      "run1_guideline_id": null,
+      "run1_short_name": null,
+      "run2_guideline_id": "T8",
+      "run2_short_name": "SystemBoundary",
+      "run3_guideline_id": "T6",
+      "run3_short_name": "SystemBoundary(contents)",
+      "similarity_score": 0.7,
+      "base_assignment": "system boundaries",
+      "match_confidence": "High"
+    }
+  ]
+}

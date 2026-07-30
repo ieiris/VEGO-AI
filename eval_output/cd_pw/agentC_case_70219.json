@@ -1,0 +1,303 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70219",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes attributes like lotID, name, city, and address which align with storing a unique number, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class includes an attribute availableSpaces, which aligns with the requirement to hold the number of available spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The association between Client and Vehicle classes is a one-to-many relationship where a Client owns many Vehicles, ensuring each Vehicle is linked to a Client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class contains attributes for entryTime and exitTime along with associations to Vehicle and ParkingLot, aligning with storing session start time and vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class includes a size attribute of enum type Size. This indicates the suitability for accommodating different vehicle sizes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class includes a maxWeight attribute, aligning with having a maximum vehicle weight capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "There is no part of the model that stores conveyors handling vehicles during parking sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The PriceList class indicates a many-to-many relationship with ParkingLot, supporting different pricing structures for each lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The Client class includes attributes and operations needed for managing club membership, aligning with club management.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The Client class has a function registerToClub() and an attribute isClubMember, implying club members receive benefits such as discounts.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The feature for first free parking session for club members is conceptual with the registration and selection date storage mentioned in guidelines but not detailed in the model.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the concept of club membership is included, the specific handling of a free session is not explicitly shown."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The System class has operations to generateAnnualSummaryReport(). This indicates that the System is responsible for creating an annual summary of incomes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "ParkingLot includes a function countOtherColorVehicles(), in support of a report on vehicles and their payments, and counts of vehicles of other colors.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The guideline suggests sorting criteria for reports but there's no evidence of that in terms of explicit ordering operations within the model.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model outlines report generation but does not detail the sorting logic specified in the guideline."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The operation generateAnnualSummaryReport() suggests output, however, the formats (PDF/XML) are not indicated.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Formats of reports aren't explicitly detailed within the model but are implied through operations."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The System class has operations associated with generatingClubGrowthReport(), which aligns with generating a club growth overview.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The Client and System relationship indicates detailed metrics for members and growth statistics, to calculate and display growth rates and totals.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Reports are ordered by various criteria, but there's no specific mention of months in the existing model.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Ordering by month is logically inferred but not explicit within the model."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G11",
+      "evidence": "The Client class has an attribute 'joinDate' which can be utilized to implement logic for offering a free parking session during the registration month. Although the exact methodology for implementing the free session isn't explicitly modelled, the presence of joinDate provides a basis for such a functionality.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The concept of club membership is included, and 'joinDate' could potentially be used for programming logic to track the first free session, although it's not entirely detailed."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The UML does not specify sorting methodologies but does provide reporting capabilities. The ordering criteria should be part of the report generation logic, potentially within 'generateAnnualSummaryReport()'.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Though sorting isn't explicitly modeled, the operation attributes suggest that reports can be structured and organized, implicating expected order by criteria."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The operation 'generateAnnualSummaryReport()' in ParkWiseSystem suggests report generation, but does not explicitly list formats. The formats (PDF/XML) would be part of the implementation detail.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While report generation is indicated, there is no explicit information on formats being covered in the model, implying it is an implementation detail."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Customer Club Growth Report's details about growth and totals are implied in 'generateClubGrowthReport()', however, specific ordering logic by month is missing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Ordering is partially-conveyed as the focus lies more on report contents. Monthly ordering is an implicit detail suggested rather than explicit."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The Administrator class has an operation updateParkingLotDetails(lotID).",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While this operation is not explicitly required by the guidelines, it aligns with typical administrative responsibilities."
+    },
+    {
+      "fragment": "The GateSensor class has an operation openGate().",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The guidelines specify the role of the gate sensor in vehicle identification and communication with the system, but this operation does not accommodate those functionalities."
+    },
+    {
+      "fragment": "The Vehicle class has an operation extractDetailsFromPhoto().",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This operation adds additional functionality to the vehicle, which could aid in vehicle identification and record-keeping."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "While the concept of club membership is included, the specific handling of a free session is not explicitly shown."
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "The model outlines report generation but does not detail the sorting logic specified in the guideline."
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Formats of reports aren't explicitly detailed within the model but are implied through operations."
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Ordering by month is logically inferred but not explicit within the model."
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The Administrator class has an operation updateParkingLotDetails(lotID).",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The GateSensor class has an operation openGate().",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The Vehicle class has an operation extractDetailsFromPhoto().",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 12.5,
+  "max_score": 18.0,
+  "score_pct": 69.4,
+  "overall_assessment": "The UML Class Diagram aligns well with the domain guidelines but there are some areas with partial satisfaction and an identified domain mistake."
+}

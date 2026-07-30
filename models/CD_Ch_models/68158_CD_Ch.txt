@@ -1,0 +1,137 @@
+Final code for class diagram :
+@startuml
+!define MAIN_FONT_NAME Arial
+!define MAIN_FONT_SIZE 24
+!define TEXT_FONT_NAME Arial
+!define TEXT_FONT_SIZE 18
+
+title "Cheers System Class Diagram"
+
+class Order {
+  - orderNumber: int
+  - orderDate: Date
+  - status: OrderStatus
+  - shipmentDate: Date
+}
+
+class OrderStatus {
+  <<enumeration>>
+  - IN_PROCESS
+  - DISPATCHED
+  - DELIVERED
+  - PAID
+  - SUSPENDED
+  - CANCELED
+}
+
+class Employee {
+  - id: int
+  - name: String
+  - phoneNumber: String
+  - officeAddress: String
+  - email: String
+  - employmentStartDate: Date
+}
+
+class Customer {
+  - id: int
+  - name: String
+  - phoneNumber: String
+  - deliveryAddress: String
+  - email: String
+  - dateOfFirstContact: Date
+}
+
+class Wine {
+  - id: int
+  - name: String
+  - serialNumber: String
+  - type: WineType
+  - pricePerBottle: double
+  - sweetnessLevel: SweetnessLevel
+  - productImage: String
+}
+
+class WineType {
+  - id: int
+  - name: String
+  - description: String
+}
+
+class Manufacturer {
+  - id: int
+  - name: String
+  - contactPhoneNumber: String
+  - address: String
+  - email: String
+}
+
+class OrderItem {
+  - quantity: int
+  - wine: Wine
+  - order: Order
+}
+
+class OrderAssignment {
+  - employee: Employee
+  - order: Order
+  - assignmentDate: Date
+}
+
+class CustomerOrder {
+  - customer: Customer
+  - order: Order
+  - orderDate: Date
+}
+
+class WineManufacturer {
+  - wine: Wine
+  - manufacturer: Manufacturer
+  - productionYear: int
+}
+
+class StorageLocation {
+  - id: int
+  - name: String
+  - wines: List<Wine>
+}
+
+class Inventory {
+  - storageLocation: StorageLocation
+  - wine: Wine
+  - quantity: int
+}
+
+class Report {
+  <<abstract>>
+  - reportType: ReportType
+}
+
+class UnproductiveEmployeesReport extends Report {
+  - timePeriod: DateRange
+  - employees: List<Employee>
+}
+
+class CurrentInventoryReportByWine extends Report {
+  - wines: List<Wine>
+  - inventoryLevels: List<int>
+}
+
+class WineRecommendationReportForCustomers extends Report {
+  - customer: Customer
+  - recommendedWines: List<Wine>
+}
+
+Order "1" --* "N" OrderItem
+OrderItem "N" --* "1" Wine
+Order "1" --* "1" OrderAssignment
+OrderAssignment "1" --* "1" Employee
+Order "1" --* "N" CustomerOrder
+CustomerOrder "N" --* "1" Customer
+Wine "1" --* "1" WineManufacturer
+WineManufacturer "1" --* "1" Manufacturer
+StorageLocation "1" --* "N" Inventory
+Inventory "N" --* "1" Wine
+Manufacturer "1" --* "N" Wine
+
+@enduml

@@ -1,0 +1,156 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "cheers",
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "canonical_citation": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery.",
+      "run1_guideline_id": "G1",
+      "run1_guideline_name": "Cheers System Description",
+      "run1_guideline": {
+        "description": "Defines the 'Cheers' system which is developed by 'Wine Ha'Emek' for managing business operations.",
+        "related_template_id": "T1",
+        "mapping_certainty": 0.9,
+        "citation": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery."
+      },
+      "run2_guideline_id": "G1",
+      "run2_guideline_name": "System Overview",
+      "run2_guideline": {
+        "description": "This segment outlines the general purpose of the 'Cheers' system and the business operations it manages.",
+        "related_template_id": "T1",
+        "mapping_certainty": 0.7,
+        "citation": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery."
+      },
+      "run3_guideline_id": "G1",
+      "run3_guideline_name": "System Overview",
+      "run3_guideline": {
+        "description": "This segment describes the high-level purpose of the Cheers system and the main business operations it manages. It establishes the overview of the Cheers system as a context for understanding the classes that will structure the system's operations.",
+        "related_template_id": "T1",
+        "mapping_certainty": 0.95,
+        "citation": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "C: Order",
+      "match_confidence": "Medium",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C2",
+      "canonical_citation": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee.",
+      "run1_guideline_id": "G2",
+      "run1_guideline_name": "Sales Staff Responsibilities",
+      "run1_guideline": {
+        "description": "Describes the responsibility of sales staff in placing customer orders.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee."
+      },
+      "run2_guideline_id": "G2",
+      "run2_guideline_name": "Sales Staff Responsibility",
+      "run2_guideline": {
+        "description": "This segment describes the relationship between the sales staff and customer orders.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee."
+      },
+      "run3_guideline_id": "G2",
+      "run3_guideline_name": "Order Assignment",
+      "run3_guideline": {
+        "description": "This segment explains that sales staff are responsible for assigning orders to employees, suggesting a relationship between Order and Employee classes.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "A: Order-Employee",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C3",
+      "canonical_citation": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company.",
+      "run1_guideline_id": "G6",
+      "run1_guideline_name": "Customer Attributes in Order",
+      "run1_guideline": {
+        "description": "Specifies the attributes recorded for customers when they are involved in an order.",
+        "related_template_id": "T9",
+        "mapping_certainty": 0.9,
+        "citation": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company."
+      },
+      "run2_guideline_id": "G8",
+      "run2_guideline_name": "Customer Information Recording",
+      "run2_guideline": {
+        "description": "This segment lists the attributes of customer information recorded by the system.",
+        "related_template_id": "T9",
+        "mapping_certainty": 0.9,
+        "citation": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company."
+      },
+      "run3_guideline_id": "G8",
+      "run3_guideline_name": "Customer Attributes",
+      "run3_guideline": {
+        "description": "Details the attributes of a Customer that the system records when placing an order.",
+        "related_template_id": "T9",
+        "mapping_certainty": 0.95,
+        "citation": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "C: Customer",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C4",
+      "canonical_citation": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system.",
+      "run1_guideline_id": "G4",
+      "run1_guideline_name": "External Company for Delivery",
+      "run1_guideline": {
+        "description": "Mentions the external company's responsibility in actual delivery which is outside of current system scope.",
+        "related_template_id": "T7",
+        "mapping_certainty": 0.7,
+        "citation": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system."
+      },
+      "run2_guideline_id": "G4",
+      "run2_guideline_name": "External Delivery Management",
+      "run2_guideline": {
+        "description": "This segment indicates a dependency on an external company for order delivery.",
+        "related_template_id": "T7",
+        "mapping_certainty": 0.85,
+        "citation": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system."
+      },
+      "run3_guideline_id": "G4",
+      "run3_guideline_name": "External Delivery Management",
+      "run3_guideline": {
+        "description": "Indicates that the delivery aspect of orders is managed by an external company and not by the system itself, suggesting a dependency on an external system.",
+        "related_template_id": "T7",
+        "mapping_certainty": 0.7,
+        "citation": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "I: Order - Urgent Order",
+      "match_confidence": "Medium",
+      "disjointness_notes": null
+    }
+  ],
+  "unassigned_base_guidelines": [
+    "E: Order Status",
+    "I: Customer + Employee",
+    "A: Urgent Order-Customer",
+    "C: Regular Order",
+    "A: Regular Order-Customer",
+    "I: Order - Regular Order",
+    "AC: Regular Order - Wine - Customer",
+    "C: Wine Type",
+    "C: Food",
+    "A: Food - Wine Type",
+    "C: Occasion",
+    "E: Location",
+    "A: Wine Type - Occasion",
+    "C: Manufacturer",
+    "C: Wine",
+    "E: Sweetness Level",
+    "A: Wine - Wine Type",
+    "A: Wine - Manufacturer",
+    "C: Storage",
+    "AC: Wine-Storage"
+  ]
+}

@@ -1,0 +1,955 @@
+2026-03-26 23:35:28,664  INFO      ===== Eval setting: ucd_pw =====
+2026-03-26 23:35:28,811  INFO      Interaction log → G:\.shortcut-targets-by-id\1-98DFQUMGOOq91SFCb8KQOKrV7Nzr4VZ\Variability2.0\Implementations\v2\eval\interaction_log.jsonl
+2026-03-26 23:35:28,815  INFO      === Phase A: Language Template Evaluation ===
+2026-03-26 23:35:28,819  INFO      Phase A — running Agent 1 three times independently …
+2026-03-26 23:35:28,820  INFO      [agentA/agent1_run1] Calling gpt-4o …
+2026-03-26 23:35:37,841  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:35:37,860  INFO        Run 1: 7 guideline(s)
+2026-03-26 23:35:37,862  INFO      [agentA/agent1_run2] Calling gpt-4o …
+2026-03-26 23:35:45,582  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:35:45,602  INFO        Run 2: 8 guideline(s)
+2026-03-26 23:35:45,603  INFO      [agentA/agent1_run3] Calling gpt-4o …
+2026-03-26 23:35:51,944  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:35:51,955  INFO        Run 3: 6 guideline(s)
+2026-03-26 23:35:51,972  INFO        Wrote ..\eval_output\ucd_pw\agentA_run1_template.json
+2026-03-26 23:35:52,002  INFO        Wrote ..\eval_output\ucd_pw\agentA_run2_template.json
+2026-03-26 23:35:52,022  INFO        Wrote ..\eval_output\ucd_pw\agentA_run3_template.json
+2026-03-26 23:35:52,038  INFO      Phase A — mapping guidelines and assigning to language base (8 items) …
+2026-03-26 23:35:52,042  INFO      [agentA/map_and_assign] Calling gpt-4o …
+2026-03-26 23:36:02,982  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:36:03,025  INFO        Wrote ..\eval_output\ucd_pw\agentA_guideline_mapping.json
+2026-03-26 23:36:03,044  INFO        Wrote ..\eval_output\ucd_pw\agentA_metrics.json
+2026-03-26 23:36:03,045  INFO      Phase A  run 1 — P=1.000  R=1.000  F1=1.000
+2026-03-26 23:36:03,047  INFO      Phase A  run 2 — P=0.750  R=0.857  F1=0.800
+2026-03-26 23:36:03,047  INFO      Phase A  run 3 — P=1.000  R=0.857  F1=0.923
+2026-03-26 23:36:03,048  INFO      Phase A  overall agreement=0.778
+2026-03-26 23:36:03,049  INFO      Phase A — best template: run 1 (F1=1.000, 7 guidelines)
+2026-03-26 23:36:03,085  INFO        Wrote ..\eval_output\ucd_pw\agentA_best_template.json
+2026-03-26 23:36:03,111  INFO        Wrote ..\eval_output\ucd_pw\agentA_result.json
+2026-03-26 23:36:03,141  INFO      State saved → ..\eval_output\ucd_pw\eval_state.json
+2026-03-26 23:36:03,163  INFO      Loaded domain description (5940 chars)
+2026-03-26 23:36:03,164  INFO      === Phase B: Domain Guidelines Evaluation ===
+2026-03-26 23:36:03,165  INFO      Phase B — running Agent 2 three times independently …
+2026-03-26 23:36:03,167  INFO      [agentB/agent2_run1] Calling gpt-4o …
+2026-03-26 23:37:18,045  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:37:18,069  INFO        Run 1: 48 guideline(s)
+2026-03-26 23:37:18,071  INFO      [agentB/agent2_run2] Calling gpt-4o …
+2026-03-26 23:38:27,123  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:38:27,311  INFO        Run 2: 42 guideline(s)
+2026-03-26 23:38:27,313  INFO      [agentB/agent2_run3] Calling gpt-4o …
+2026-03-26 23:40:31,205  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:40:31,222  INFO        Run 3: 48 guideline(s)
+2026-03-26 23:40:31,244  INFO        Wrote ..\eval_output\ucd_pw\agentB_run1_guidelines.json
+2026-03-26 23:40:31,262  INFO        Wrote ..\eval_output\ucd_pw\agentB_run2_guidelines.json
+2026-03-26 23:40:31,278  INFO        Wrote ..\eval_output\ucd_pw\agentB_run3_guidelines.json
+2026-03-26 23:40:31,290  INFO      Phase B — mapping guidelines and assigning to domain base (23 items) …
+2026-03-26 23:40:31,293  INFO      [agentB/map_and_assign] Calling gpt-4o …
+2026-03-26 23:41:13,093  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:41:13,290  INFO        Wrote ..\eval_output\ucd_pw\agentB_guideline_mapping.json
+2026-03-26 23:41:13,310  INFO        Wrote ..\eval_output\ucd_pw\agentB_metrics.json
+2026-03-26 23:41:13,311  INFO      Phase B  run 1 — P=0.875  R=0.292  F1=0.438
+2026-03-26 23:41:13,312  INFO      Phase B  run 2 — P=0.875  R=0.292  F1=0.438
+2026-03-26 23:41:13,313  INFO      Phase B  run 3 — P=0.875  R=0.292  F1=0.438
+2026-03-26 23:41:13,314  INFO      Phase B  overall agreement=1.000
+2026-03-26 23:41:13,315  INFO      Phase B — best guidelines: run 1 (F1=0.438, 48 guidelines)
+2026-03-26 23:41:13,335  INFO        Wrote ..\eval_output\ucd_pw\agentB_best_guidelines.json
+2026-03-26 23:41:13,383  INFO        Wrote ..\eval_output\ucd_pw\agentB_result.json
+2026-03-26 23:41:13,426  INFO      State saved → ..\eval_output\ucd_pw\eval_state.json
+2026-03-26 23:41:13,427  INFO      === Phase C: Case Model Scoring ===
+2026-03-26 23:41:13,806  INFO      Loaded case model '70197' from 70197_ex1_UCD_FINAL2_2026_3PM.txt (656 chars)
+2026-03-26 23:41:14,219  INFO      Loaded case model '70197' from 70197_ex1_UCD_FINAL_2026_3PM.txt (2749 chars)
+2026-03-26 23:41:14,599  INFO      Loaded case model '70198' from 70198_ex1_UCD_FINAL_2026_lions.txt (2119 chars)
+2026-03-26 23:41:15,036  INFO      Loaded case model '70199' from 70199_ex1_UCD_FINAL_2026_NOVA.txt (3738 chars)
+2026-03-26 23:41:15,057  INFO      Loaded case model '70200' from 70200_EX1_UCS_FINAL_2026_ISAI.txt (2030 chars)
+2026-03-26 23:41:15,431  INFO      Loaded case model '70204' from 70204_ex1_UCD_FINAL_2026_ShirTali.txt (2975 chars)
+2026-03-26 23:41:15,853  INFO      Loaded case model '70205' from 70205_ex1_UCD_FINAL_2026_LinorMaya.txt (1953 chars)
+2026-03-26 23:41:16,224  INFO      Loaded case model '70212' from 70212_ex1_UCD_FINAL_2026_admour.txt (5460 chars)
+2026-03-26 23:41:16,569  INFO      Loaded case model '70213' from 70213_ex1_UCD_FINAL_2026_TheAdjudicators.txt.txt (2387 chars)
+2026-03-26 23:41:16,922  INFO      Loaded case model '70216' from 70216_ex1_UCD_FINAL_2026_OfriMagi.txt (2810 chars)
+2026-03-26 23:41:17,294  INFO      Loaded case model '70219' from 70219_ex1_UCD_FINAL_2026_Ascendant.txt (2880 chars)
+2026-03-26 23:41:17,678  INFO      Loaded case model '70223' from 70223_ex1_UCD_FINAL_2026_212687073.txt (1715 chars)
+2026-03-26 23:41:18,041  INFO      Loaded case model '70228' from 70228_ex1_UCD_FINAL_2026_KG.txt (2048 chars)
+2026-03-26 23:41:18,401  INFO      Loaded case model '70229' from 70229_._ex1_UCD_FINAL_2026_SamarAyat.txt .txt (506 chars)
+2026-03-26 23:41:18,779  INFO      Loaded case model '70229' from 70229_ex1_UCD_FINAL_2026_SamarAyat.txt .txt (4055 chars)
+2026-03-26 23:41:19,155  INFO      Loaded case model '70233' from 70233_ex1_UCD_FINAL_2026_NoaMeitar.txt (3852 chars)
+2026-03-26 23:41:19,171  INFO      Loaded case model '70234' from 70234_ex1_UC_FINAL_2026_JoelleLady.txt (2679 chars)
+2026-03-26 23:41:20,050  INFO      Loaded case model '70236' from 70236_ex1_UCD_FINAL_2026_IceAndFire.txt (4505 chars)
+2026-03-26 23:41:20,511  INFO      Loaded case model '70238' from 70238_ex1_UCD_FINAL_2026_DevNexus.txt (3031 chars)
+2026-03-26 23:41:20,999  INFO      Loaded case model '70239' from 70239_ex1_UCD_FINAL_2026_Paifect.txt (2411 chars)
+2026-03-26 23:41:21,383  INFO      Loaded case model '70240' from 70240_ex1_UCD_FINAL_2026_CodeConcept.txt.txt (4623 chars)
+2026-03-26 23:41:21,742  INFO      Loaded case model '70241' from 70241_ex1_UCD_FINAL_2026_NZAM.txt (2297 chars)
+2026-03-26 23:41:22,118  INFO      Loaded case model '70245' from 70245_ex1_UCD_FINAL_2026_DuoTech.txt (2075 chars)
+2026-03-26 23:41:22,480  INFO      Loaded case model '70248' from 70248_ex1_UCD_FINAL_2026_designDuo.txt (2719 chars)
+2026-03-26 23:41:22,797  INFO      Loaded case model '70248' from 70248_ex1_UCD_FINAL_2026_designDuo_1.txt (2719 chars)
+2026-03-26 23:41:23,135  INFO      Loaded case model '70249' from 70249_ex1_Unity_ucd_final_.txt (3880 chars)
+2026-03-26 23:41:23,546  INFO      Loaded case model '70250' from 70250_ex1_UCD_FINAL_2026_DG.txt (3276 chars)
+2026-03-26 23:41:23,560  INFO      Loaded case model '70251' from 70251_ex1_UCD_DRAFT_2026_IcedCoffeeHolic.txt.txt (4807 chars)
+2026-03-26 23:41:23,914  INFO      Loaded case model '70251' from 70251_ex1_UCD_FINAL_2026_IcedCoffeeHolic.txt (3530 chars)
+2026-03-26 23:41:23,929  INFO      Loaded case model '70252' from 70252_ChatGPT-ParkWise system Use-case diagram final.txt (45154 chars)
+2026-03-26 23:41:24,289  INFO      Loaded case model '70252' from 70252_ex1_UCD_FINAL_2026_WorodYhamed.txt (4538 chars)
+2026-03-26 23:41:24,686  INFO      Loaded case model '70255' from 70255_ex1_UCD_FINAL_2026_RAFA.txt (3015 chars)
+2026-03-26 23:41:25,029  INFO      Loaded case model '70256' from 70256_ex1_UCD_FINAL_2026_KH.txt.txt (1356 chars)
+2026-03-26 23:41:25,414  INFO      Loaded case model '70264' from 70264_ex1_UCD_FINAL_2026_STAR.txt (2374 chars)
+2026-03-26 23:41:25,715  INFO      Loaded case model '70271' from 70271_ex1_UCD_FINAL_2026_CodeConcept.txt.txt (4623 chars)
+2026-03-26 23:41:26,084  INFO      Loaded case model '70276' from 70276_ex1_UCD_FINAL_2026_DesignGC.txt (2989 chars)
+2026-03-26 23:41:26,437  INFO      Loaded case model '70277' from 70277_ex1_UCD_FINAL_2026_Turan.txt (3050 chars)
+2026-03-26 23:41:26,820  INFO      Loaded case model '70278' from 70278_._ex1_UCD_FINAL_2026_X.txt (733 chars)
+2026-03-26 23:41:27,226  INFO      Loaded case model '70278' from 70278_ex1_UCD_FINAL_2026_X.txt (1852 chars)
+2026-03-26 23:41:27,600  INFO      Loaded case model '70279' from 70279_._ex1_UCD_FINAL_2026_MJSys.txt (278 chars)
+2026-03-26 23:41:28,028  INFO      Loaded case model '70279' from 70279_ex1_UCD_FINAL_2026_MJSys.txt (3656 chars)
+2026-03-26 23:41:28,433  INFO      Loaded case model '70282' from 70282_ex1_UCD_FINAL_2026_karimabed.txt (2612 chars)
+2026-03-26 23:41:28,795  INFO      Loaded case model '70283' from 70283_ex1_UCD__FINAL_2026_SH.txt (2826 chars)
+2026-03-26 23:41:29,183  INFO      Loaded case model '70291' from 70291_ex1_UCD_FINAL_2026_Hanayat.txt (2002 chars)
+2026-03-26 23:41:29,186  INFO      Phase C — loaded 44 case model(s)
+2026-03-26 23:41:29,192  INFO      Using scoring schema from G:\.shortcut-targets-by-id\1-98DFQUMGOOq91SFCb8KQOKrV7Nzr4VZ\Variability2.0\Implementations\v2\inputs\scoring_schema.txt
+2026-03-26 23:41:29,208  INFO        Case 70197 — skill 3-1: map_guidelines_to_model
+2026-03-26 23:41:29,211  INFO      [agentC/70197/map] Calling gpt-4o …
+2026-03-26 23:42:01,012  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:42:01,176  INFO        Case 70197 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-26 23:42:01,180  INFO      [agentC/70197/resolve] Calling gpt-4o …
+2026-03-26 23:42:35,411  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:42:35,607  INFO        Case 70197 — skill 3-3: audit_uncovered_fragments
+2026-03-26 23:42:35,612  INFO      [agentC/70197/audit] Calling gpt-4o …
+2026-03-26 23:42:39,075  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:42:39,090  INFO      [agentC/score_70197] Calling gpt-4o …
+2026-03-26 23:44:40,195  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:44:40,234  INFO        Case 70197         total=10.00 / 48.00  (20.8%)
+2026-03-26 23:44:40,252  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70197.json
+2026-03-26 23:44:40,253  INFO        Case 70197 — skill 3-1: map_guidelines_to_model
+2026-03-26 23:44:40,256  INFO      [agentC/70197/map] Calling gpt-4o …
+2026-03-26 23:45:12,393  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:45:12,580  INFO        Case 70197 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-26 23:45:12,585  INFO      [agentC/70197/resolve] Calling gpt-4o …
+2026-03-26 23:45:37,753  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:45:37,768  INFO        Case 70197 — skill 3-3: audit_uncovered_fragments
+2026-03-26 23:45:37,770  INFO      [agentC/70197/audit] Calling gpt-4o …
+2026-03-26 23:45:43,386  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:45:43,408  INFO      [agentC/score_70197] Calling gpt-4o …
+2026-03-26 23:47:17,822  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:47:17,843  INFO        Case 70197         total=25.50 / 48.00  (53.1%)
+2026-03-26 23:47:17,873  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70197.json
+2026-03-26 23:47:17,874  INFO        Case 70198 — skill 3-1: map_guidelines_to_model
+2026-03-26 23:47:17,877  INFO      [agentC/70198/map] Calling gpt-4o …
+2026-03-26 23:47:58,940  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:47:59,102  INFO        Case 70198 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-26 23:47:59,106  INFO      [agentC/70198/resolve] Calling gpt-4o …
+2026-03-26 23:48:23,588  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:48:23,610  INFO        Case 70198 — skill 3-3: audit_uncovered_fragments
+2026-03-26 23:48:23,614  INFO      [agentC/70198/audit] Calling gpt-4o …
+2026-03-26 23:48:30,426  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:48:30,650  INFO      [agentC/score_70198] Calling gpt-4o …
+2026-03-26 23:50:06,832  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:50:06,854  INFO        Case 70198         total=30.50 / 48.00  (63.5%)
+2026-03-26 23:50:06,883  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70198.json
+2026-03-26 23:50:06,885  INFO        Case 70199 — skill 3-1: map_guidelines_to_model
+2026-03-26 23:50:06,892  INFO      [agentC/70199/map] Calling gpt-4o …
+2026-03-26 23:50:41,831  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:50:41,850  INFO        Case 70199 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-26 23:50:41,854  INFO      [agentC/70199/resolve] Calling gpt-4o …
+2026-03-26 23:50:56,475  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:50:56,493  INFO        Case 70199 — skill 3-3: audit_uncovered_fragments
+2026-03-26 23:50:56,498  INFO      [agentC/70199/audit] Calling gpt-4o …
+2026-03-26 23:50:59,771  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:50:59,792  INFO      [agentC/score_70199] Calling gpt-4o …
+2026-03-26 23:52:27,457  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:52:27,649  INFO        Case 70199         total=47.50 / 48.00  (99.0%)
+2026-03-26 23:52:27,697  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70199.json
+2026-03-26 23:52:27,698  INFO        Case 70200 — skill 3-1: map_guidelines_to_model
+2026-03-26 23:52:27,703  INFO      [agentC/70200/map] Calling gpt-4o …
+2026-03-26 23:53:08,622  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:53:08,801  INFO        Case 70200 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-26 23:53:08,807  INFO      [agentC/70200/resolve] Calling gpt-4o …
+2026-03-26 23:53:21,411  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:53:21,430  INFO        Case 70200 — skill 3-3: audit_uncovered_fragments
+2026-03-26 23:53:21,435  INFO      [agentC/70200/audit] Calling gpt-4o …
+2026-03-26 23:53:29,470  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:53:29,492  INFO      [agentC/score_70200] Calling gpt-4o …
+2026-03-26 23:54:33,721  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:54:33,926  INFO        Case 70200         total=30.00 / 48.00  (62.5%)
+2026-03-26 23:54:33,953  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70200.json
+2026-03-26 23:54:33,955  INFO        Case 70204 — skill 3-1: map_guidelines_to_model
+2026-03-26 23:54:33,960  INFO      [agentC/70204/map] Calling gpt-4o …
+2026-03-26 23:55:03,668  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:55:03,868  INFO        Case 70204 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-26 23:55:03,873  INFO      [agentC/70204/resolve] Calling gpt-4o …
+2026-03-26 23:55:14,430  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:55:14,457  INFO        Case 70204 — skill 3-3: audit_uncovered_fragments
+2026-03-26 23:55:14,461  INFO      [agentC/70204/audit] Calling gpt-4o …
+2026-03-26 23:55:22,455  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:55:22,478  INFO      [agentC/score_70204] Calling gpt-4o …
+2026-03-26 23:56:32,141  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:56:32,155  INFO        Case 70204         total=48.50 / 48.00  (101.0%)
+2026-03-26 23:56:32,177  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70204.json
+2026-03-26 23:56:32,178  INFO        Case 70205 — skill 3-1: map_guidelines_to_model
+2026-03-26 23:56:32,181  INFO      [agentC/70205/map] Calling gpt-4o …
+2026-03-26 23:57:25,279  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:57:25,474  INFO        Case 70205 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-26 23:57:25,479  INFO      [agentC/70205/resolve] Calling gpt-4o …
+2026-03-26 23:57:42,688  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:57:42,705  INFO        Case 70205 — skill 3-3: audit_uncovered_fragments
+2026-03-26 23:57:42,712  INFO      [agentC/70205/audit] Calling gpt-4o …
+2026-03-26 23:57:45,422  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:57:45,446  INFO      [agentC/score_70205] Calling gpt-4o …
+2026-03-26 23:58:37,340  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:58:37,361  INFO        Case 70205         total=47.50 / 48.00  (99.0%)
+2026-03-26 23:58:37,398  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70205.json
+2026-03-26 23:58:37,401  INFO        Case 70212 — skill 3-1: map_guidelines_to_model
+2026-03-26 23:58:37,406  INFO      [agentC/70212/map] Calling gpt-4o …
+2026-03-26 23:59:13,682  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:59:13,850  INFO        Case 70212 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-26 23:59:13,855  INFO      [agentC/70212/resolve] Calling gpt-4o …
+2026-03-26 23:59:26,913  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:59:26,924  INFO        Case 70212 — skill 3-3: audit_uncovered_fragments
+2026-03-26 23:59:26,926  INFO      [agentC/70212/audit] Calling gpt-4o …
+2026-03-26 23:59:33,325  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-26 23:59:33,348  INFO      [agentC/score_70212] Calling gpt-4o …
+2026-03-27 00:00:54,788  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:00:54,969  INFO        Case 70212         total=45.50 / 48.00  (94.8%)
+2026-03-27 00:00:55,001  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70212.json
+2026-03-27 00:00:55,003  INFO        Case 70213 — skill 3-1: map_guidelines_to_model
+2026-03-27 00:00:55,007  INFO      [agentC/70213/map] Calling gpt-4o …
+2026-03-27 00:01:30,584  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:01:30,780  INFO        Case 70213 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 00:01:30,787  INFO      [agentC/70213/resolve] Calling gpt-4o …
+2026-03-27 00:01:41,450  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:01:41,471  INFO        Case 70213 — skill 3-3: audit_uncovered_fragments
+2026-03-27 00:01:41,476  INFO      [agentC/70213/audit] Calling gpt-4o …
+2026-03-27 00:01:45,285  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:01:45,309  INFO      [agentC/score_70213] Calling gpt-4o …
+2026-03-27 00:03:10,855  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:03:11,059  INFO        Case 70213         total=47.50 / 48.00  (99.0%)
+2026-03-27 00:03:11,093  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70213.json
+2026-03-27 00:03:11,095  INFO        Case 70216 — skill 3-1: map_guidelines_to_model
+2026-03-27 00:03:11,100  INFO      [agentC/70216/map] Calling gpt-4o …
+2026-03-27 00:03:45,654  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:03:45,835  INFO        Case 70216 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 00:03:45,841  INFO      [agentC/70216/resolve] Calling gpt-4o …
+2026-03-27 00:04:14,221  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:04:14,243  INFO        Case 70216 — skill 3-3: audit_uncovered_fragments
+2026-03-27 00:04:14,249  INFO      [agentC/70216/audit] Calling gpt-4o …
+2026-03-27 00:04:17,163  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:04:17,186  INFO      [agentC/score_70216] Calling gpt-4o …
+2026-03-27 00:06:15,974  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:06:16,146  INFO        Case 70216         total=32.00 / 48.00  (66.7%)
+2026-03-27 00:06:16,175  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70216.json
+2026-03-27 00:06:16,177  INFO        Case 70219 — skill 3-1: map_guidelines_to_model
+2026-03-27 00:06:16,183  INFO      [agentC/70219/map] Calling gpt-4o …
+2026-03-27 00:06:45,558  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:06:45,740  INFO        Case 70219 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 00:06:45,746  INFO      [agentC/70219/resolve] Calling gpt-4o …
+2026-03-27 00:06:50,274  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:06:50,301  INFO        Case 70219 — skill 3-3: audit_uncovered_fragments
+2026-03-27 00:06:50,307  INFO      [agentC/70219/audit] Calling gpt-4o …
+2026-03-27 00:06:55,446  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:06:55,570  INFO      [agentC/score_70219] Calling gpt-4o …
+2026-03-27 00:07:56,931  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:07:57,106  INFO        Case 70219         total=50.50 / 48.00  (105.2%)
+2026-03-27 00:07:57,138  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70219.json
+2026-03-27 00:07:57,141  INFO        Case 70223 — skill 3-1: map_guidelines_to_model
+2026-03-27 00:07:57,147  INFO      [agentC/70223/map] Calling gpt-4o …
+2026-03-27 00:08:32,573  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:08:32,593  INFO        Case 70223 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 00:08:32,599  INFO      [agentC/70223/resolve] Calling gpt-4o …
+2026-03-27 00:08:41,231  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:08:41,248  INFO        Case 70223 — skill 3-3: audit_uncovered_fragments
+2026-03-27 00:08:41,253  INFO      [agentC/70223/audit] Calling gpt-4o …
+2026-03-27 00:08:45,008  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:08:45,030  INFO      [agentC/score_70223] Calling gpt-4o …
+2026-03-27 00:09:45,248  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:09:45,269  INFO        Case 70223         total=48.50 / 48.00  (101.0%)
+2026-03-27 00:09:45,301  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70223.json
+2026-03-27 00:09:45,303  INFO        Case 70228 — skill 3-1: map_guidelines_to_model
+2026-03-27 00:09:45,309  INFO      [agentC/70228/map] Calling gpt-4o …
+2026-03-27 00:10:21,787  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:10:21,948  INFO        Case 70228 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 00:10:21,956  INFO      [agentC/70228/resolve] Calling gpt-4o …
+2026-03-27 00:10:38,769  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:10:38,790  INFO        Case 70228 — skill 3-3: audit_uncovered_fragments
+2026-03-27 00:10:38,796  INFO      [agentC/70228/audit] Calling gpt-4o …
+2026-03-27 00:10:41,850  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:10:41,874  INFO      [agentC/score_70228] Calling gpt-4o …
+2026-03-27 00:11:53,376  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:11:53,398  INFO        Case 70228         total=48.00 / 49.00  (98.0%)
+2026-03-27 00:11:53,428  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70228.json
+2026-03-27 00:11:53,430  INFO        Case 70229 — skill 3-1: map_guidelines_to_model
+2026-03-27 00:11:53,435  INFO      [agentC/70229/map] Calling gpt-4o …
+2026-03-27 00:12:41,306  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:12:41,474  INFO        Case 70229 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 00:12:41,480  INFO      [agentC/70229/resolve] Calling gpt-4o …
+2026-03-27 00:12:46,032  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:12:46,052  INFO        Case 70229 — skill 3-3: audit_uncovered_fragments
+2026-03-27 00:12:46,057  INFO      [agentC/70229/audit] Calling gpt-4o …
+2026-03-27 00:12:51,047  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:12:51,070  INFO      [agentC/score_70229] Calling gpt-4o …
+2026-03-27 00:13:04,849  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 00:13:04,854  WARNING   [agentC/score_70229] Direct JSON parse failed — brace-extraction fallback. Starts with: '{\n  "skill_version": "1.0.0",\n  "case_id": "70229",\n  "existing_mapping": [\n    {\n      "guideline_id": "G1",\n      "evi'
+2026-03-27 11:34:36,889  INFO      ===== Eval setting: ucd_pw =====
+2026-03-27 11:34:36,892  INFO      Resuming from existing state at ..\eval_output\ucd_pw\eval_state.json
+2026-03-27 11:34:36,903  INFO      State loaded ← ..\eval_output\ucd_pw\eval_state.json
+2026-03-27 11:34:36,961  INFO      Interaction log → G:\.shortcut-targets-by-id\1-98DFQUMGOOq91SFCb8KQOKrV7Nzr4VZ\Variability2.0\Implementations\v2\eval\interaction_log.jsonl
+2026-03-27 11:34:36,962  INFO      Phase A already complete — skipping.
+2026-03-27 11:34:36,971  INFO      Loaded domain description (5940 chars)
+2026-03-27 11:34:36,972  INFO      Phase B already complete — skipping.
+2026-03-27 11:34:36,993  INFO      === Phase C: Case Model Scoring ===
+2026-03-27 11:34:37,013  INFO      Loaded case model '70197' from 70197_ex1_UCD_FINAL2_2026_3PM.txt (656 chars)
+2026-03-27 11:34:37,025  INFO      Loaded case model '70197' from 70197_ex1_UCD_FINAL_2026_3PM.txt (2749 chars)
+2026-03-27 11:34:37,039  INFO      Loaded case model '70198' from 70198_ex1_UCD_FINAL_2026_lions.txt (2119 chars)
+2026-03-27 11:34:37,062  INFO      Loaded case model '70199' from 70199_ex1_UCD_FINAL_2026_NOVA.txt (3738 chars)
+2026-03-27 11:34:37,080  INFO      Loaded case model '70200' from 70200_EX1_UCS_FINAL_2026_ISAI.txt (2030 chars)
+2026-03-27 11:34:37,099  INFO      Loaded case model '70204' from 70204_ex1_UCD_FINAL_2026_ShirTali.txt (2975 chars)
+2026-03-27 11:34:37,117  INFO      Loaded case model '70205' from 70205_ex1_UCD_FINAL_2026_LinorMaya.txt (1953 chars)
+2026-03-27 11:34:37,137  INFO      Loaded case model '70212' from 70212_ex1_UCD_FINAL_2026_admour.txt (5460 chars)
+2026-03-27 11:34:37,156  INFO      Loaded case model '70213' from 70213_ex1_UCD_FINAL_2026_TheAdjudicators.txt.txt (2387 chars)
+2026-03-27 11:34:37,177  INFO      Loaded case model '70216' from 70216_ex1_UCD_FINAL_2026_OfriMagi.txt (2810 chars)
+2026-03-27 11:34:37,195  INFO      Loaded case model '70219' from 70219_ex1_UCD_FINAL_2026_Ascendant.txt (2880 chars)
+2026-03-27 11:34:37,215  INFO      Loaded case model '70223' from 70223_ex1_UCD_FINAL_2026_212687073.txt (1715 chars)
+2026-03-27 11:34:37,233  INFO      Loaded case model '70228' from 70228_ex1_UCD_FINAL_2026_KG.txt (2048 chars)
+2026-03-27 11:34:37,257  INFO      Loaded case model '70229' from 70229_._ex1_UCD_FINAL_2026_SamarAyat.txt .txt (506 chars)
+2026-03-27 11:34:37,276  INFO      Loaded case model '70229' from 70229_ex1_UCD_FINAL_2026_SamarAyat.txt .txt (4055 chars)
+2026-03-27 11:34:37,297  INFO      Loaded case model '70233' from 70233_ex1_UCD_FINAL_2026_NoaMeitar.txt (3852 chars)
+2026-03-27 11:34:37,318  INFO      Loaded case model '70234' from 70234_ex1_UC_FINAL_2026_JoelleLady.txt (2679 chars)
+2026-03-27 11:34:37,338  INFO      Loaded case model '70236' from 70236_ex1_UCD_FINAL_2026_IceAndFire.txt (4505 chars)
+2026-03-27 11:34:37,361  INFO      Loaded case model '70238' from 70238_ex1_UCD_FINAL_2026_DevNexus.txt (3031 chars)
+2026-03-27 11:34:37,378  INFO      Loaded case model '70239' from 70239_ex1_UCD_FINAL_2026_Paifect.txt (2411 chars)
+2026-03-27 11:34:37,391  INFO      Loaded case model '70240' from 70240_ex1_UCD_FINAL_2026_CodeConcept.txt.txt (4623 chars)
+2026-03-27 11:34:37,405  INFO      Loaded case model '70241' from 70241_ex1_UCD_FINAL_2026_NZAM.txt (2297 chars)
+2026-03-27 11:34:37,416  INFO      Loaded case model '70245' from 70245_ex1_UCD_FINAL_2026_DuoTech.txt (2075 chars)
+2026-03-27 11:34:37,424  INFO      Loaded case model '70248' from 70248_ex1_UCD_FINAL_2026_designDuo.txt (2719 chars)
+2026-03-27 11:34:37,431  INFO      Loaded case model '70248' from 70248_ex1_UCD_FINAL_2026_designDuo_1.txt (2719 chars)
+2026-03-27 11:34:37,438  INFO      Loaded case model '70249' from 70249_ex1_Unity_ucd_final_.txt (3880 chars)
+2026-03-27 11:34:37,445  INFO      Loaded case model '70250' from 70250_ex1_UCD_FINAL_2026_DG.txt (3276 chars)
+2026-03-27 11:34:37,451  INFO      Loaded case model '70251' from 70251_ex1_UCD_DRAFT_2026_IcedCoffeeHolic.txt.txt (4807 chars)
+2026-03-27 11:34:37,457  INFO      Loaded case model '70251' from 70251_ex1_UCD_FINAL_2026_IcedCoffeeHolic.txt (3530 chars)
+2026-03-27 11:34:37,464  INFO      Loaded case model '70252' from 70252_ChatGPT-ParkWise system Use-case diagram final.txt (45154 chars)
+2026-03-27 11:34:37,479  INFO      Loaded case model '70252' from 70252_ex1_UCD_FINAL_2026_WorodYhamed.txt (4538 chars)
+2026-03-27 11:34:37,487  INFO      Loaded case model '70255' from 70255_ex1_UCD_FINAL_2026_RAFA.txt (3015 chars)
+2026-03-27 11:34:37,495  INFO      Loaded case model '70256' from 70256_ex1_UCD_FINAL_2026_KH.txt.txt (1356 chars)
+2026-03-27 11:34:37,502  INFO      Loaded case model '70264' from 70264_ex1_UCD_FINAL_2026_STAR.txt (2374 chars)
+2026-03-27 11:34:37,508  INFO      Loaded case model '70271' from 70271_ex1_UCD_FINAL_2026_CodeConcept.txt.txt (4623 chars)
+2026-03-27 11:34:37,514  INFO      Loaded case model '70276' from 70276_ex1_UCD_FINAL_2026_DesignGC.txt (2989 chars)
+2026-03-27 11:34:37,521  INFO      Loaded case model '70277' from 70277_ex1_UCD_FINAL_2026_Turan.txt (3050 chars)
+2026-03-27 11:34:37,528  INFO      Loaded case model '70278' from 70278_._ex1_UCD_FINAL_2026_X.txt (733 chars)
+2026-03-27 11:34:37,534  INFO      Loaded case model '70278' from 70278_ex1_UCD_FINAL_2026_X.txt (1852 chars)
+2026-03-27 11:34:37,541  INFO      Loaded case model '70279' from 70279_._ex1_UCD_FINAL_2026_MJSys.txt (278 chars)
+2026-03-27 11:34:37,547  INFO      Loaded case model '70279' from 70279_ex1_UCD_FINAL_2026_MJSys.txt (3656 chars)
+2026-03-27 11:34:37,555  INFO      Loaded case model '70282' from 70282_ex1_UCD_FINAL_2026_karimabed.txt (2612 chars)
+2026-03-27 11:34:37,561  INFO      Loaded case model '70283' from 70283_ex1_UCD__FINAL_2026_SH.txt (2826 chars)
+2026-03-27 11:34:37,569  INFO      Loaded case model '70291' from 70291_ex1_UCD_FINAL_2026_Hanayat.txt (2002 chars)
+2026-03-27 11:34:37,570  INFO      Phase C — loaded 44 case model(s)
+2026-03-27 11:34:37,571  INFO      Using scoring schema from G:\.shortcut-targets-by-id\1-98DFQUMGOOq91SFCb8KQOKrV7Nzr4VZ\Variability2.0\Implementations\v2\inputs\scoring_schema.txt
+2026-03-27 11:34:37,576  INFO        Case 70197 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:34:37,578  INFO      [agentC/70197/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:35:06,092  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:35:06,119  INFO        Case 70197 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:35:06,124  INFO      [agentC/70197/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:35:34,177  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:35:34,337  INFO        Case 70197 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:35:34,342  INFO      [agentC/70197/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:35:36,400  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:35:36,419  INFO      [agentC/score_70197] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:36:46,424  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:36:46,448  INFO        Case 70197         total=17.50 / 48.00  (36.5%)
+2026-03-27 11:36:46,484  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70197.json
+2026-03-27 11:36:46,485  INFO        Case 70197 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:36:46,491  INFO      [agentC/70197/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:37:14,194  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:37:14,362  INFO        Case 70197 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:37:14,366  INFO      [agentC/70197/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:37:25,585  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:37:25,604  INFO        Case 70197 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:37:25,610  INFO      [agentC/70197/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:37:27,817  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:37:27,841  INFO      [agentC/score_70197] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:38:18,129  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:38:18,317  INFO        Case 70197         total=47.50 / 48.00  (98.9%)
+2026-03-27 11:38:18,347  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70197.json
+2026-03-27 11:38:18,348  INFO        Case 70198 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:38:18,352  INFO      [agentC/70198/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:39:20,735  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:39:24,246  INFO        Case 70198 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:39:24,255  INFO      [agentC/70198/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:39:38,626  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:39:38,645  INFO        Case 70198 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:39:38,651  INFO      [agentC/70198/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:39:44,060  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:39:44,083  INFO      [agentC/score_70198] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:41:00,957  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:41:01,165  INFO        Case 70198         total=49.50 / 48.00  (103.1%)
+2026-03-27 11:41:01,200  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70198.json
+2026-03-27 11:41:01,201  INFO        Case 70199 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:41:01,209  INFO      [agentC/70199/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:41:54,070  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:41:54,235  INFO        Case 70199 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:41:54,239  INFO      [agentC/70199/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:42:18,326  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:42:18,337  INFO        Case 70199 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:42:18,341  INFO      [agentC/70199/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:42:24,367  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:42:25,296  INFO      [agentC/score_70199] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:43:32,216  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:43:32,379  INFO        Case 70199         total=41.50 / 48.00  (86.5%)
+2026-03-27 11:43:32,395  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70199.json
+2026-03-27 11:43:32,397  INFO        Case 70200 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:43:32,401  INFO      [agentC/70200/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:44:04,394  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:44:04,557  INFO        Case 70200 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:44:04,563  INFO      [agentC/70200/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:44:35,447  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:44:35,467  INFO        Case 70200 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:44:35,475  INFO      [agentC/70200/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:44:40,303  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:44:40,326  INFO      [agentC/score_70200] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:45:50,461  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:45:50,708  INFO        Case 70200         total=36.50 / 48.00  (76.0%)
+2026-03-27 11:45:50,730  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70200.json
+2026-03-27 11:45:50,731  INFO        Case 70204 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:45:50,733  INFO      [agentC/70204/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:46:16,180  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:46:16,344  INFO        Case 70204 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:46:16,346  INFO      [agentC/70204/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:46:18,640  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:46:18,658  INFO        Case 70204 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:46:18,663  INFO      [agentC/70204/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:46:23,601  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:46:23,615  INFO      [agentC/score_70204] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:47:26,396  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:47:26,606  INFO        Case 70204         total=53.50 / 48.00  (111.5%)
+2026-03-27 11:47:26,639  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70204.json
+2026-03-27 11:47:26,641  INFO        Case 70205 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:47:26,644  INFO      [agentC/70205/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:48:00,335  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:48:00,498  INFO        Case 70205 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:48:00,504  INFO      [agentC/70205/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:48:21,105  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:48:21,115  INFO        Case 70205 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:48:21,117  INFO      [agentC/70205/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:48:27,692  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:48:27,883  INFO      [agentC/score_70205] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:49:57,066  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:49:57,241  INFO        Case 70205         total=44.00 / 48.00  (91.7%)
+2026-03-27 11:49:57,273  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70205.json
+2026-03-27 11:49:57,274  INFO        Case 70212 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:49:57,280  INFO      [agentC/70212/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:50:29,985  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:50:30,141  INFO        Case 70212 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:50:30,146  INFO      [agentC/70212/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:50:31,538  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:50:31,554  INFO        Case 70212 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:50:31,563  INFO      [agentC/70212/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:50:35,595  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:50:35,615  INFO      [agentC/score_70212] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:51:39,176  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:51:39,383  INFO        Case 70212         total=51.50 / 48.00  (107.3%)
+2026-03-27 11:51:39,422  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70212.json
+2026-03-27 11:51:39,424  INFO        Case 70213 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:51:39,428  INFO      [agentC/70213/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:52:06,192  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:52:06,383  INFO        Case 70213 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:52:06,388  INFO      [agentC/70213/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:52:14,156  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:52:14,175  INFO        Case 70213 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:52:14,181  INFO      [agentC/70213/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:52:18,466  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:52:18,489  INFO      [agentC/score_70213] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:53:18,400  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:53:18,607  INFO        Case 70213         total=46.50 / 48.00  (96.9%)
+2026-03-27 11:53:18,645  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70213.json
+2026-03-27 11:53:18,647  INFO        Case 70216 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:53:18,654  INFO      [agentC/70216/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:53:55,001  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:53:55,163  INFO        Case 70216 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:53:55,166  INFO      [agentC/70216/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:54:08,828  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:54:08,850  INFO        Case 70216 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:54:08,855  INFO      [agentC/70216/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:54:14,559  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:54:15,676  INFO      [agentC/score_70216] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:55:00,242  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:55:00,444  INFO        Case 70216         total=44.50 / 48.00  (92.7%)
+2026-03-27 11:55:00,482  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70216.json
+2026-03-27 11:55:00,484  INFO        Case 70219 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:55:00,488  INFO      [agentC/70219/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:55:26,245  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:55:26,446  INFO        Case 70219 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:55:26,452  INFO      [agentC/70219/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:55:27,895  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:55:27,908  INFO        Case 70219 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:55:27,912  INFO      [agentC/70219/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:55:28,989  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:55:29,028  INFO      [agentC/score_70219] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:56:11,027  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:56:11,050  INFO        Case 70219         total=48.00 / 48.00  (100.0%)
+2026-03-27 11:56:11,081  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70219.json
+2026-03-27 11:56:11,083  INFO        Case 70223 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:56:11,088  INFO      [agentC/70223/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:56:41,172  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:56:41,372  INFO        Case 70223 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:56:41,378  INFO      [agentC/70223/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:56:50,019  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:56:50,036  INFO        Case 70223 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:56:50,043  INFO      [agentC/70223/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:56:51,965  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:56:51,984  INFO      [agentC/score_70223] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:57:33,563  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:57:33,772  INFO        Case 70223         total=49.50 / 50.00  (99.0%)
+2026-03-27 11:57:33,806  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70223.json
+2026-03-27 11:57:33,806  INFO        Case 70228 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:57:33,813  INFO      [agentC/70228/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:58:02,792  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:58:02,954  INFO        Case 70228 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:58:02,956  INFO      [agentC/70228/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:58:18,189  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:58:18,205  INFO        Case 70228 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:58:18,208  INFO      [agentC/70228/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:58:21,032  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:58:21,055  INFO      [agentC/score_70228] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:59:32,598  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:59:32,771  INFO        Case 70228         total=49.00 / 48.00  (102.1%)
+2026-03-27 11:59:32,802  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70228.json
+2026-03-27 11:59:32,802  INFO        Case 70229 — skill 3-1: map_guidelines_to_model
+2026-03-27 11:59:32,806  INFO      [agentC/70229/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:59:33,997  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:59:34,013  INFO        Case 70229 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 11:59:34,015  INFO      [agentC/70229/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:59:55,985  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:59:56,006  INFO        Case 70229 — skill 3-3: audit_uncovered_fragments
+2026-03-27 11:59:56,011  INFO      [agentC/70229/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 11:59:57,165  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 11:59:57,185  INFO      [agentC/score_70229] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:00:08,816  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:00:08,839  INFO        Case 70229         total=7.00 / 48.00  (14.6%)
+2026-03-27 12:00:08,854  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70229.json
+2026-03-27 12:00:08,854  INFO        Case 70229 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:00:08,858  INFO      [agentC/70229/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:00:37,989  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:00:38,065  INFO        Case 70229 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:00:38,072  INFO      [agentC/70229/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:00:47,009  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:00:47,030  INFO        Case 70229 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:00:47,035  INFO      [agentC/70229/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:01:11,474  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:01:11,488  INFO      [agentC/score_70229] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:02:21,888  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:02:21,898  INFO        Case 70229         total=52.50 / 48.00  (109.4%)
+2026-03-27 12:02:21,921  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70229.json
+2026-03-27 12:02:21,922  INFO        Case 70233 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:02:21,924  INFO      [agentC/70233/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:03:10,788  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:03:10,934  INFO        Case 70233 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:03:10,936  INFO      [agentC/70233/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:03:18,941  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:03:18,962  INFO        Case 70233 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:03:18,967  INFO      [agentC/70233/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:03:22,012  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:03:22,028  INFO      [agentC/score_70233] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:04:39,250  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:04:39,265  INFO        Case 70233         total=46.50 / 48.00  (96.9%)
+2026-03-27 12:04:39,287  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70233.json
+2026-03-27 12:04:39,290  INFO        Case 70234 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:04:39,294  INFO      [agentC/70234/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:05:17,588  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:05:17,745  INFO        Case 70234 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:05:17,750  INFO      [agentC/70234/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:05:59,095  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:05:59,116  INFO        Case 70234 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:05:59,121  INFO      [agentC/70234/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:06:06,855  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:06:06,878  INFO      [agentC/score_70234] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:07:40,918  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:07:40,931  INFO        Case 70234         total=33.00 / 48.00  (68.8%)
+2026-03-27 12:07:40,954  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70234.json
+2026-03-27 12:07:40,954  INFO        Case 70236 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:07:40,956  INFO      [agentC/70236/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:08:24,639  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:08:24,827  INFO        Case 70236 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:08:24,829  INFO      [agentC/70236/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:08:28,903  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:08:28,916  INFO        Case 70236 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:08:28,918  INFO      [agentC/70236/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:08:35,247  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:08:35,269  INFO      [agentC/score_70236] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:09:26,159  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:09:26,348  INFO        Case 70236         total=53.50 / 48.00  (111.5%)
+2026-03-27 12:09:26,379  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70236.json
+2026-03-27 12:09:26,380  INFO        Case 70238 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:09:26,384  INFO      [agentC/70238/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:09:52,504  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:09:52,667  INFO        Case 70238 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:09:52,672  INFO      [agentC/70238/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:10:08,321  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:10:08,339  INFO        Case 70238 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:10:08,346  INFO      [agentC/70238/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:10:13,613  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:10:13,638  INFO      [agentC/score_70238] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:11:28,042  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:11:28,213  INFO        Case 70238         total=47.75 / 48.00  (99.5%)
+2026-03-27 12:11:28,227  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70238.json
+2026-03-27 12:11:28,228  INFO        Case 70239 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:11:28,233  INFO      [agentC/70239/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:12:13,116  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:12:13,285  INFO        Case 70239 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:12:13,288  INFO      [agentC/70239/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:12:22,556  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:12:22,575  INFO        Case 70239 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:12:22,579  INFO      [agentC/70239/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:12:27,129  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:12:27,151  INFO      [agentC/score_70239] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:13:21,465  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:13:21,661  INFO        Case 70239         total=46.00 / 48.00  (95.8%)
+2026-03-27 12:13:21,690  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70239.json
+2026-03-27 12:13:21,691  INFO        Case 70240 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:13:21,696  INFO      [agentC/70240/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:14:00,882  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:14:01,057  INFO        Case 70240 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:14:01,064  INFO      [agentC/70240/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:14:13,865  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:14:13,885  INFO        Case 70240 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:14:13,891  INFO      [agentC/70240/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:14:18,646  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:14:18,678  INFO      [agentC/score_70240] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:15:24,638  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:15:24,806  INFO        Case 70240         total=49.50 / 48.00  (103.1%)
+2026-03-27 12:15:24,826  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70240.json
+2026-03-27 12:15:24,827  INFO        Case 70241 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:15:24,831  INFO      [agentC/70241/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:15:51,073  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:15:51,095  INFO        Case 70241 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:15:51,102  INFO      [agentC/70241/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:15:56,394  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:15:56,432  INFO        Case 70241 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:15:56,437  INFO      [agentC/70241/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:15:59,921  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:15:59,948  INFO      [agentC/score_70241] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:16:51,677  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:16:51,883  INFO        Case 70241         total=48.00 / 48.00  (100.0%)
+2026-03-27 12:16:51,918  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70241.json
+2026-03-27 12:16:51,922  INFO        Case 70245 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:16:51,928  INFO      [agentC/70245/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:17:20,741  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:17:20,907  INFO        Case 70245 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:17:20,913  INFO      [agentC/70245/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:17:58,145  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:17:58,165  INFO        Case 70245 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:17:58,171  INFO      [agentC/70245/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:18:03,493  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:18:03,514  INFO      [agentC/score_70245] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:19:11,476  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:19:11,498  INFO        Case 70245         total=41.75 / 48.00  (87.0%)
+2026-03-27 12:19:11,532  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70245.json
+2026-03-27 12:19:11,533  INFO        Case 70248 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:19:11,538  INFO      [agentC/70248/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:19:48,964  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:19:49,129  INFO        Case 70248 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:19:49,134  INFO      [agentC/70248/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:20:06,567  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:20:06,578  INFO        Case 70248 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:20:06,580  INFO      [agentC/70248/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:20:09,163  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:20:09,186  INFO      [agentC/score_70248] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:21:30,580  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:21:30,604  INFO        Case 70248         total=41.50 / 48.00  (86.5%)
+2026-03-27 12:21:30,638  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70248.json
+2026-03-27 12:21:30,639  INFO        Case 70248 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:21:30,644  INFO      [agentC/70248/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:22:04,275  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:22:04,468  INFO        Case 70248 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:22:04,470  INFO      [agentC/70248/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:22:10,380  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:22:11,464  INFO        Case 70248 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:22:11,471  INFO      [agentC/70248/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:22:14,260  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:22:14,284  INFO      [agentC/score_70248] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:23:09,054  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:23:09,216  INFO        Case 70248         total=43.00 / 48.00  (89.6%)
+2026-03-27 12:23:09,251  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70248.json
+2026-03-27 12:23:09,253  INFO        Case 70249 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:23:09,258  INFO      [agentC/70249/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:23:35,068  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:23:35,266  INFO        Case 70249 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:23:35,275  INFO      [agentC/70249/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:23:38,927  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:23:38,947  INFO        Case 70249 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:23:38,953  INFO      [agentC/70249/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:23:45,919  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:23:47,234  INFO      [agentC/score_70249] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:24:36,977  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:24:37,198  INFO        Case 70249         total=52.50 / 48.00  (109.4%)
+2026-03-27 12:24:37,232  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70249.json
+2026-03-27 12:24:37,234  INFO        Case 70250 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:24:37,239  INFO      [agentC/70250/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:25:04,632  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:25:04,811  INFO        Case 70250 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:25:04,816  INFO      [agentC/70250/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:25:27,746  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:25:27,766  INFO        Case 70250 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:25:27,772  INFO      [agentC/70250/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:25:34,852  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:25:34,875  INFO      [agentC/score_70250] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:26:35,667  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:26:35,695  INFO        Case 70250         total=37.75 / 48.00  (78.6%)
+2026-03-27 12:26:35,728  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70250.json
+2026-03-27 12:26:35,729  INFO        Case 70251 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:26:35,731  INFO      [agentC/70251/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:27:01,483  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:27:01,675  INFO        Case 70251 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:27:01,678  INFO      [agentC/70251/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:27:04,698  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:27:04,715  INFO        Case 70251 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:27:04,721  INFO      [agentC/70251/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:27:11,258  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:27:11,282  INFO      [agentC/score_70251] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:27:55,753  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:27:55,926  INFO        Case 70251         total=48.50 / 48.00  (101.0%)
+2026-03-27 12:27:55,954  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70251.json
+2026-03-27 12:27:55,956  INFO        Case 70251 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:27:55,958  INFO      [agentC/70251/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:28:27,860  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:28:28,063  INFO        Case 70251 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:28:28,068  INFO      [agentC/70251/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:28:34,913  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:28:35,327  INFO        Case 70251 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:28:35,329  INFO      [agentC/70251/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:28:45,215  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:28:45,238  INFO      [agentC/score_70251] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:29:46,799  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:29:46,810  INFO        Case 70251         total=51.00 / 49.00  (104.1%)
+2026-03-27 12:29:46,830  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70251.json
+2026-03-27 12:29:46,831  INFO        Case 70252 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:29:46,834  INFO      [agentC/70252/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:31:11,754  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:31:11,922  INFO        Case 70252 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:31:11,927  INFO      [agentC/70252/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:31:17,185  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:31:17,198  INFO        Case 70252 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:31:17,201  INFO      [agentC/70252/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:31:23,804  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:31:24,966  INFO      [agentC/score_70252] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:32:35,739  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:32:35,948  INFO        Case 70252         total=46.75 / 48.00  (97.4%)
+2026-03-27 12:32:35,977  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70252.json
+2026-03-27 12:32:35,978  INFO        Case 70252 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:32:35,980  INFO      [agentC/70252/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:33:01,486  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:33:01,682  INFO        Case 70252 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:33:01,689  INFO      [agentC/70252/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:33:06,120  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:33:06,140  INFO        Case 70252 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:33:06,146  INFO      [agentC/70252/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:33:09,199  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:33:09,221  INFO      [agentC/score_70252] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:34:07,506  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:34:07,673  INFO        Case 70252         total=49.00 / 48.00  (102.1%)
+2026-03-27 12:34:07,706  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70252.json
+2026-03-27 12:34:07,708  INFO        Case 70255 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:34:07,714  INFO      [agentC/70255/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:34:38,017  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:34:38,221  INFO        Case 70255 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:34:38,227  INFO      [agentC/70255/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:34:42,457  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:34:42,477  INFO        Case 70255 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:34:42,482  INFO      [agentC/70255/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:34:46,199  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:34:46,223  INFO      [agentC/score_70255] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:35:44,136  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:35:44,303  INFO        Case 70255         total=49.00 / 48.00  (102.1%)
+2026-03-27 12:35:44,337  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70255.json
+2026-03-27 12:35:44,338  INFO        Case 70256 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:35:44,343  INFO      [agentC/70256/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:36:17,413  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:36:17,609  INFO        Case 70256 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:36:17,614  INFO      [agentC/70256/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:36:41,338  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:36:41,379  INFO        Case 70256 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:36:41,384  INFO      [agentC/70256/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:36:45,771  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:36:45,786  INFO      [agentC/score_70256] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:37:55,240  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:37:55,264  INFO        Case 70256         total=39.00 / 48.00  (81.2%)
+2026-03-27 12:37:55,293  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70256.json
+2026-03-27 12:37:55,294  INFO        Case 70264 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:37:55,298  INFO      [agentC/70264/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:38:20,833  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:38:20,852  INFO        Case 70264 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:38:20,857  INFO      [agentC/70264/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:38:23,335  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:38:23,367  INFO        Case 70264 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:38:23,371  INFO      [agentC/70264/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:38:25,486  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:38:25,507  INFO      [agentC/score_70264] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:39:27,441  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:39:27,651  INFO        Case 70264         total=48.50 / 48.00  (101.0%)
+2026-03-27 12:39:27,678  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70264.json
+2026-03-27 12:39:27,680  INFO        Case 70271 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:39:27,683  INFO      [agentC/70271/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:40:03,771  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:40:03,862  INFO        Case 70271 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:40:03,867  INFO      [agentC/70271/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:40:16,976  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:40:16,995  INFO        Case 70271 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:40:16,999  INFO      [agentC/70271/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:40:25,786  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:40:25,806  INFO      [agentC/score_70271] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:41:48,144  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:41:48,168  INFO        Case 70271         total=48.50 / 48.00  (101.0%)
+2026-03-27 12:41:48,199  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70271.json
+2026-03-27 12:41:48,201  INFO        Case 70276 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:41:48,207  INFO      [agentC/70276/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:42:16,153  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:42:16,314  INFO        Case 70276 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:42:16,318  INFO      [agentC/70276/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:42:38,147  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:42:38,166  INFO        Case 70276 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:42:38,174  INFO      [agentC/70276/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:42:41,882  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:42:41,903  INFO      [agentC/score_70276] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:43:52,682  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:43:52,858  INFO        Case 70276         total=40.00 / 48.00  (83.3%)
+2026-03-27 12:43:52,897  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70276.json
+2026-03-27 12:43:52,901  INFO        Case 70277 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:43:52,904  INFO      [agentC/70277/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:44:29,242  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:44:29,409  INFO        Case 70277 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:44:29,414  INFO      [agentC/70277/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:44:53,242  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:44:53,262  INFO        Case 70277 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:44:53,267  INFO      [agentC/70277/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:44:57,719  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:44:57,748  INFO      [agentC/score_70277] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:47:18,812  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:47:18,836  INFO        Case 70277         total=42.50 / 48.00  (88.5%)
+2026-03-27 12:47:18,869  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70277.json
+2026-03-27 12:47:18,872  INFO        Case 70278 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:47:18,876  INFO      [agentC/70278/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:47:48,651  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:47:48,671  INFO        Case 70278 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:47:48,677  INFO      [agentC/70278/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:47:50,557  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:47:50,578  INFO        Case 70278 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:47:50,583  INFO      [agentC/70278/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:47:51,477  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:47:51,501  INFO      [agentC/score_70278] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:48:35,613  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:48:35,816  INFO        Case 70278         total=48.00 / 48.00  (100.0%)
+2026-03-27 12:48:35,848  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70278.json
+2026-03-27 12:48:35,849  INFO        Case 70278 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:48:35,853  INFO      [agentC/70278/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:49:05,177  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:49:05,357  INFO        Case 70278 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:49:05,364  INFO      [agentC/70278/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:49:14,510  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:49:14,523  INFO        Case 70278 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:49:14,525  INFO      [agentC/70278/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:49:18,395  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:49:18,419  INFO      [agentC/score_70278] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:50:07,732  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:50:07,901  INFO        Case 70278         total=48.50 / 48.00  (101.0%)
+2026-03-27 12:50:07,934  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70278.json
+2026-03-27 12:50:07,935  INFO        Case 70279 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:50:07,938  INFO      [agentC/70279/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:50:42,146  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:50:42,310  INFO        Case 70279 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:50:42,315  INFO      [agentC/70279/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:50:46,003  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:50:46,017  INFO        Case 70279 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:50:46,022  INFO      [agentC/70279/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:50:50,067  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:50:50,091  INFO      [agentC/score_70279] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:51:40,613  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:51:40,778  INFO        Case 70279         total=48.00 / 48.00  (100.0%)
+2026-03-27 12:51:40,807  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70279.json
+2026-03-27 12:51:40,808  INFO        Case 70279 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:51:40,810  INFO      [agentC/70279/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:52:15,070  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:52:15,239  WARNING   [agentC/70279/map] Direct JSON parse failed — brace-extraction fallback. Starts with: '{\n  "skill_version": "1.0.0",\n  "case_id": "70279",\n  "existing_mapping": [\n    {\n      "guideline_id": "G1",\n      "evi'
+2026-03-27 12:52:15,250  ERROR     [agentC/70279/map] JSON repair failed: Invalid \escape: line 145 column 40 (char 5473)
+2026-03-27 12:52:15,266  WARNING   [agentC/70279/map] Parse failed (attempt 1/3) — retrying…
+2026-03-27 12:52:15,271  INFO      [agentC/70279/map] Calling gpt-4o (attempt 2/3)…
+2026-03-27 12:52:48,964  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:52:49,131  INFO        Case 70279 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:52:49,136  INFO      [agentC/70279/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:53:05,496  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:53:05,519  INFO        Case 70279 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:53:05,524  INFO      [agentC/70279/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:53:11,519  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:53:12,554  INFO      [agentC/score_70279] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:54:45,507  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:54:45,528  INFO        Case 70279         total=48.50 / 48.00  (101.0%)
+2026-03-27 12:54:45,564  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70279.json
+2026-03-27 12:54:45,565  INFO        Case 70282 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:54:45,569  INFO      [agentC/70282/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:55:14,029  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:55:14,225  INFO        Case 70282 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:55:14,231  INFO      [agentC/70282/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:55:18,022  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:55:18,045  INFO        Case 70282 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:55:18,050  INFO      [agentC/70282/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:55:22,388  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:55:22,413  INFO      [agentC/score_70282] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:56:34,340  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:56:34,548  INFO        Case 70282         total=50.00 / 48.00  (104.2%)
+2026-03-27 12:56:34,583  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70282.json
+2026-03-27 12:56:34,585  INFO        Case 70283 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:56:34,589  INFO      [agentC/70283/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:57:35,154  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:57:35,319  INFO        Case 70283 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:57:35,324  INFO      [agentC/70283/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:57:49,334  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:57:49,354  INFO        Case 70283 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:57:49,359  INFO      [agentC/70283/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:57:55,322  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:57:56,185  INFO      [agentC/score_70283] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:58:52,459  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:58:52,645  INFO        Case 70283         total=48.50 / 48.00  (101.0%)
+2026-03-27 12:58:52,678  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70283.json
+2026-03-27 12:58:52,679  INFO        Case 70291 — skill 3-1: map_guidelines_to_model
+2026-03-27 12:58:52,682  INFO      [agentC/70291/map] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:59:18,138  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:59:18,339  INFO        Case 70291 — skill 3-2: resolve_unsatisfied_guidelines
+2026-03-27 12:59:18,346  INFO      [agentC/70291/resolve] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:59:41,124  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:59:41,145  INFO        Case 70291 — skill 3-3: audit_uncovered_fragments
+2026-03-27 12:59:41,151  INFO      [agentC/70291/audit] Calling gpt-4o (attempt 1/3)…
+2026-03-27 12:59:42,817  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 12:59:42,840  INFO      [agentC/score_70291] Calling gpt-4o (attempt 1/3)…
+2026-03-27 13:01:44,322  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 13:01:44,527  INFO        Case 70291         total=38.50 / 48.00  (80.2%)
+2026-03-27 13:01:44,558  INFO        Wrote ..\eval_output\ucd_pw\agentC_case_70291.json
+2026-03-27 13:01:44,575  INFO        Wrote ..\eval_output\ucd_pw\agentC_all_scores.json
+2026-03-27 13:01:44,576  INFO      Phase C complete — mean=93.2%  min=14.6%  max=111.5%  std=17.7%
+2026-03-27 13:01:44,605  INFO      State saved → ..\eval_output\ucd_pw\eval_state.json
+2026-03-27 13:01:44,608  INFO      Eval setting ucd_pw complete. Results → ..\eval_output\ucd_pw/
+2026-03-27 17:32:32,826  INFO      ===== Eval setting: ucd_pw =====
+2026-03-27 17:32:32,829  INFO      Resuming from existing state at ..\eval_output\ucd_pw\eval_state.json
+2026-03-27 17:32:32,841  INFO      State loaded ← ..\eval_output\ucd_pw\eval_state.json
+2026-03-27 17:32:32,904  INFO      Interaction log → G:\.shortcut-targets-by-id\1-98DFQUMGOOq91SFCb8KQOKrV7Nzr4VZ\Variability2.0\Implementations\v2\eval\interaction_log.jsonl
+2026-03-27 17:32:32,905  INFO      Phase A already complete — skipping.
+2026-03-27 17:32:32,917  INFO      Loaded domain description (5940 chars)
+2026-03-27 17:32:32,918  INFO      Phase B already complete — skipping.
+2026-03-27 17:32:32,936  INFO      Phase C already complete — skipping.
+2026-03-27 17:32:34,086  INFO      === Phase D: Variability Exploration ===
+2026-03-27 17:32:34,089  INFO      Phase D — 44 compliance vector(s), 44 fragment classification(s)
+2026-03-27 17:32:34,091  INFO      Phase D — running skill 4-1: identify_deviation_patterns …
+2026-03-27 17:32:34,130  INFO      [agentD/identify_patterns] Calling gpt-4o (attempt 1/3)…
+2026-03-27 17:32:35,930  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 400 Bad Request"
+2026-03-27 17:39:31,084  INFO      ===== Eval setting: ucd_pw =====
+2026-03-27 17:39:31,087  INFO      Resuming from existing state at ..\eval_output\ucd_pw\eval_state.json
+2026-03-27 17:39:31,100  INFO      State loaded ← ..\eval_output\ucd_pw\eval_state.json
+2026-03-27 17:39:31,181  INFO      Interaction log → G:\.shortcut-targets-by-id\1-98DFQUMGOOq91SFCb8KQOKrV7Nzr4VZ\Variability2.0\Implementations\v2\eval\interaction_log.jsonl
+2026-03-27 17:39:31,182  INFO      Phase A already complete — skipping.
+2026-03-27 17:39:31,195  INFO      Loaded domain description (5940 chars)
+2026-03-27 17:39:31,196  INFO      Phase B already complete — skipping.
+2026-03-27 17:39:31,207  INFO      Phase C already complete — skipping.
+2026-03-27 17:39:32,196  INFO      === Phase D: Variability Exploration ===
+2026-03-27 17:39:32,199  INFO      Phase D — 44 compliance vector(s), 44 fragment classification(s)
+2026-03-27 17:39:32,201  INFO      Phase D — running skill 4-1: identify_deviation_patterns …
+2026-03-27 17:39:32,224  INFO      [agentD/identify_patterns] Calling gpt-4o (attempt 1/3)…
+2026-03-27 17:39:50,717  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 17:39:50,778  INFO        Wrote ..\eval_output\ucd_pw\agentD_deviation_patterns.json
+2026-03-27 17:39:50,783  INFO        Guideline patterns: 3   Fragment patterns: 5
+2026-03-27 17:39:50,787  INFO      Phase D — running skill 4-2: classify_variability …
+2026-03-27 17:39:50,791  INFO      [agentD/classify_variability] Calling gpt-4o (attempt 1/3)…
+2026-03-27 17:40:07,123  INFO      HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-27 17:40:07,176  INFO        Wrote ..\eval_output\ucd_pw\agentD_variability_classes.json
+2026-03-27 17:40:07,178  INFO      Phase D complete — Substantial=5  Occasional=3  Undetermined=0
+2026-03-27 17:40:07,221  INFO      State saved → ..\eval_output\ucd_pw\eval_state.json
+2026-03-27 17:40:07,223  INFO      Eval setting ucd_pw complete. Results → ..\eval_output\ucd_pw/

@@ -1,0 +1,132 @@
+@startuml
+left to right direction
+skinparam usecaseBorderColor Black
+skinparam usecaseBackgroundColor White
+skinparam actorStyle awesome
+
+'---------------- Actors ----------------
+actor Human
+actor ExternalSystem
+actor Device
+
+actor Client
+actor Administrator
+actor "Gate Sensor" as GateSensor
+actor "Conveyors' Controller" as CC
+actor "Integrated Rate Service" as IRS
+actor "Payment Gateway" as PG
+
+'--- Actor generalization (extends for actors) ---
+Human <|-- Client
+Human <|-- Administrator
+
+Device<|-- GateSensor
+Device<|-- CC
+ExternalSystem <|-- IRS
+ExternalSystem <|-- PG
+
+rectangle "ParkWise Information System" {
+
+  '------------- Core arrival & registration -------------
+  usecase "Handle Vehicle Arrival" as UC_Arrive
+  usecase "Detect Arrival / Departure" as UC_Detect
+  usecase "Search Vehicle in DB" as UC_SearchVehicle
+  usecase "Open Entrance Barrier" as UC_OpenEntrance
+  usecase "Start Parking Session\n(store start time & vehicle)" as UC_StartSession
+
+  usecase "Register/Update Client\nand Vehicle via UI" as UC_Register
+  usecase "Extract Vehicle Details\nfrom Photos" as UC_ExtractPhotos
+  usecase "Associate Vehicle\nwith Client" as UC_Associate
+
+  '------------- Parking & conveyors -------------
+  usecase "Assign Parking Space\n(Optimization)" as UC_AssignSpace
+  usecase "Update Vehicle Location\n(conveyor/space)" as UC_UpdateLocation
+  usecase "Notify Parking Completion" as UC_ParkingDone
+
+  '------------- Client info & club -------------
+  usecase "Send Parking Details\n(SMS / UI)" as UC_SendDetails
+  usecase "View Parking Details\nby Phone Number" as UC_ViewDetails
+
+  usecase "Register to Client Club" as UC_ClubRegister
+  usecase "Manage Preferred Parking Lots" as UC_ClubLots
+
+  '------------- End parking & payment -------------
+  usecase "End Parking Session" as UC_EndParking
+  usecase "Validate Client & Vehicle\n(number + phone)" as UC_Validate
+  usecase "Assign Conveyor\nfor Vehicle Pickup" as UC_AssignPickup
+  usecase "Calculate Parking Fee" as UC_CalcFee
+  usecase "Process Payment\n(via Payment Gateway)" as UC_Pay
+  usecase "Issue Receipt" as UC_Receipt
+  usecase "Open Exit Barrier" as UC_OpenExit
+
+  '------------- Prices & IRS -------------
+  usecase "Receive & Store Price List\n(per Parking Lot)" as UC_PriceList
+  usecase "Maintain Price History" as UC_PriceHistory
+
+  '------------- Administration & reports -------------
+  usecase "Maintain Parking Lot Details\n(id, name, address, city,\navailable spaces)" as UC_MaintainLots
+
+  usecase "Generate Annual Summary Report\n(XML)" as UC_AnnualReport
+  usecase "Generate Customer Club\nGrowth Report" as UC_ClubReport
+}
+
+'---------------- Associations ----------------
+
+' Arrival / registration
+GateSensor --> UC_Detect
+GateSensor --> UC_OpenEntrance
+GateSensor --> UC_OpenExit
+
+Client --> UC_Register
+Client --> UC_ViewDetails
+Client --> UC_ClubRegister
+Client --> UC_ClubLots
+Client --> UC_EndParking
+
+CC --> UC_AssignSpace
+CC --> UC_ParkingDone
+CC --> UC_AssignPickup
+CC --> UC_UpdateLocation
+
+IRS --> UC_PriceList
+PG  --> UC_Pay
+
+Administrator --> UC_MaintainLots
+Administrator --> UC_AnnualReport
+Administrator --> UC_ClubReport
+
+'---------------- Include relations (reduced) ----------------
+
+' Handle arrival flow (main decomposition)
+UC_Arrive ..> UC_Detect        : <<include>>
+UC_Arrive ..> UC_SearchVehicle : <<include>>
+UC_Arrive ..> UC_OpenEntrance  : <<include>>
+UC_Arrive ..> UC_StartSession  : <<include>>
+
+' Send info to client
+UC_StartSession ..> UC_SendDetails : <<include>>
+
+' Registration / update flow
+UC_Register ..> UC_ExtractPhotos : <<include>>
+UC_Register ..> UC_Associate     : <<include>>
+
+' End parking & payment flow (main decomposition)
+UC_EndParking ..> UC_Validate : <<include>>
+UC_EndParking ..> UC_CalcFee  : <<include>>
+UC_EndParking ..> UC_Pay      : <<include>>
+
+' Prices from IRS
+UC_PriceList ..> UC_PriceHistory : <<include>>
+
+' Reports may use price & club history internally
+UC_AnnualReport ..> UC_PriceHistory : <<include>>
+UC_ClubReport   ..> UC_ClubRegister : <<include>>
+
+'---------------- Extend relations (optional paths) ----------------
+
+' If vehicle not found / barrier doesn’t open -> client registers/updates
+UC_Register ..> UC_Arrive : <<extend>>\n[vehicle unknown or\nbarrier did not open]
+
+' Client may request receipt after successful payment
+UC_Receipt ..> UC_Pay : <<extend>>\n[client requests receipt]
+@enduml

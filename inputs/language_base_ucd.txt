@@ -1,0 +1,21 @@
+# Language base list — UML Use Case Diagrams
+# One construct per line. Used by Agent A to measure template completeness.
+# Lines starting with # and blank lines are ignored.
+
+# --- Elements ---
+use cases
+actors
+
+# --- Actor-Actor Relations ---
+inheritance between actors
+
+# --- UseCase-UseCase Relations ---
+inheritance between use cases
+<<include>> dependencies
+<<extends>> dependencies
+
+# --- Actor-UseCase Relations ---
+associations use cases - actors
+
+# --- Other ---
+system boundaries

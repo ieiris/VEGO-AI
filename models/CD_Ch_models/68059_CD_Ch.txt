@@ -1,0 +1,181 @@
+@startuml
+skinparam linetype ortho
+
+class Employee {
+    - ID: String
+    - Name: String
+    - Phone Number: String
+    - Email: String
+    - Office Address: String
+    - Employment Start Date: Date
+}
+
+class Customer {
+    - ID: String
+    - Name: String
+    - Phone Number: String
+    - Email: String
+    - Delivery Address: String
+    - Date of First Contact: Date
+}
+
+class Order {
+    - Order Number: String
+    - Order Type: String
+    - Order Date: Date
+    - Current Status: String
+    - Shipment Date: Date
+}
+
+class RegularOrder {
+    - CustomerOrder Serial: String
+    - Order Number: String
+    - Customer ID: String
+}
+
+class UrgentOrder {
+    - Order Number: String
+    - Priority Level: Integer
+    - Specific Delivery Date: Date
+}
+
+class RegularOrderItem {
+    - Order Item Number: String
+    - CustomerOrder Serial: String
+    - Quantity: Integer
+}
+
+class UrgentOrderItem {
+    - Order Item Number: String
+    - Order Number: String
+    - Quantity: Integer
+}
+
+class Manufacturer {
+    - ID: String
+    - Full Name: String
+    - Contact Phone Number: String
+    - Address: String
+    - Email: String
+}
+
+class WineBottleComposite {
+    - Manufacturer ID: String
+    - Catalog Number: String
+}
+
+class WineBottle {
+    - WineBottleComposite: WineBottleComposite
+    - Wine Name: String
+    - Description: String
+    - Production Year: Integer
+    - Price Per Bottle: Float
+    - Sweetness Level: String
+    - Product Image: String
+    - WineType: WineType
+}
+
+class WineStorage {
+    - Storage Serial: String
+    - Quantity: Integer
+}
+
+class Storages {
+    - HashMap<Storage Serial, List<WineStorage>> storageMap
+}
+
+class WineType {
+    - WineType Serial: String
+    - Name: String
+    - Serial Number: String
+}
+
+class Occasions {
+    - Occasion ID: String
+    - Name: String
+    - Season: String
+    - Location: String
+}
+
+class FoodPairings {
+    - Pairing ID: String
+    - Dish Name: String
+    - Recipes recipes
+}
+
+class Recipes {
+    - Recipes ID: String
+    - Recipe1 URL: String
+    - Recipe2 URL: String
+    - Recipe3 URL: String
+    - Recipe4 URL: String
+    - Recipe5 URL: String
+}
+
+class System {
+    {static} - instance : System
+    {static} + getInstance() : System
+    + GenerateUnproductiveEmployeesReport(startDate: Date, endDate: Date) : List<Employee>
+    + GenerateCurrentInventoryReport() : HashMap<WineBottle, Integer>
+    + GenerateWineRecommendationReport(fp: FoodPairings, oc: Occasions, wt: WineType) : List<WineBottle>
+}
+
+' Core Relationships with Multiplicities
+System --> "0..*" Employee : retrieves
+System --> "0..*" Order : retrieves
+System --> "1" Storages : retrieves
+System --> "0..*" Customer : retrieves
+System --> "0..*" WineType : retrieves
+
+Order "1" --> "1" Customer : Main Customer ID
+Order "1" --> "1" Employee : Employee ID
+RegularOrder "1" --> "1" Order : Order Number
+RegularOrder "1" --> "1" Customer : Customer ID
+UrgentOrder "1" --> "1" Order : Order Number
+
+RegularOrderItem "1" --> "1" RegularOrder : CustomerOrder Serial
+UrgentOrderItem "1" --> "1" UrgentOrder : Order Number
+
+RegularOrderItem "1" --> "1" WineBottle : refers to
+UrgentOrderItem "1" --> "1" WineBottle : refers to
+WineBottle "1" --> "1" WineBottleComposite : identified by
+WineBottle "1" --> "1" WineType : categorized as
+
+WineStorage "1" --> "1" WineBottle : stores
+Storages "1" --> "0..*" WineStorage : manages
+
+WineType "0..*" --> "0..*" Occasions : linked to
+WineType "0..*" --> "0..*" FoodPairings : linked to
+FoodPairings "1" --> "1" Recipes : contains
+
+WineBottleComposite "1" --> "1" Manufacturer : Manufacturer ID
+
+' Notes for Clarity
+note right of System
+    System generates various reports:
+    - Unproductive employees
+    - Current inventory
+    - Wine recommendations
+end note
+
+note right of WineBottle
+    WineBottle connects to WineBottleComposite and WineType.
+end note
+
+note right of RegularOrderItem
+    Links RegularOrder and WineBottle with Quantity.
+end note
+
+note right of UrgentOrderItem
+    Links UrgentOrder and WineBottle with Quantity.
+end note
+
+note right of WineStorage
+    WineStorage links WineBottle to storage locations with quantities.
+end note
+
+note right of WineBottleComposite
+    WineBottleComposite references Manufacturer using Manufacturer ID.
+end note
+
+@enduml

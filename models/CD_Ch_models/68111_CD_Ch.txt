@@ -1,0 +1,125 @@
+@startuml
+class Person {
+    - personNumber: int
+    - fName: string
+    - lName: string
+    - phone: string
+    - address: string
+    - email: string
+}
+ 
+class Customer{
+    - deliveryAddress: string
+    - firstContactDate: date
+}
+
+Person <|-- Customer : {complete,overlapping}
+
+class Employee {
+    - officeAddress: string
+    - employmentStartDate: date
+}
+
+Person <|-- Employee: {complete,overlapping}
+
+class SalesEmployee  {
+  placeOrder()
+  generateReport()
+  manageCustomerInformation()
+}
+ 
+class MarketingEmployee {
+  updateWine() //includes linking wine to type, updating information, wine type etc..
+}
+
+Employee<|-- SalesEmployee: {incomplete,disjoint}
+Employee<|-- MarketingEmployee: {incomplete,disjoint}
+ 
+class Order {
+    - orderNumber: int
+    - orderDate: Date
+    - status: string {in process, dispatched, delivered, paid, suspended, canceled} // turn this into enum
+    - shipmentDate: Date
+}
+ 
+class UrgentOrder {
+    - priorityLevel: int {1..5}
+    - expectedDeliveryTime: datetime
+}
+
+class JointOrder{
+    chooseMainCustomer() // who chooses and how is this done?
+}
+
+Order <|-- JointOrder: {incomplete,disjoint}
+Order <|-- UrgentOrder: {incomplete,disjoint}
+
+ 
+class OrderItem {
+    - quantity: int
+}
+ 
+class Wines {
+    - catalogNumber : int  
+    - wineName: string
+    - description: string
+    - productionYear: int
+    - pricePerBottle: double
+    - sweetnessLevel: string {dry, semi-dry, semi-sweet, sweet} // turns this to enum
+    - productImage: string
+}
+ 
+class WineType {
+    - serialNumber: int
+    - wineTypeName: string
+    - description: string
+}
+ 
+class Occasion {
+    - OccationsNumber: int
+    - description: string
+    - season: string
+    - location: string // CHANGE THIS TO ENUM {INDOOR/OUTDOOR}
+}
+ 
+class Manufacturer {
+    - manufacturerNumber: int 
+    - manufacturerName: string
+    - phone: string
+    - address: string
+    - email: string
+}
+ 
+
+
+class Dish{
+   - dishNumber: int
+   - dishName: String
+}
+
+class Recipe{
+   - linkURL: string
+}
+
+ class Location {
+  - locationNumber: int
+  - locationName: string
+}
+
+class WinesLocation{
+  - quantity: int
+}
+
+Wines --* "1..*" WinesLocation
+Location --* "1..*" WinesLocation
+Order --* "1..*" OrderItem
+OrderItem "0..*" -- "1" Wines
+Wines "0..*" -- "1" WineType
+WineType "0..*" -- "0..*" Occasion
+Manufacturer -- "1..*" Wines
+Order "0..*" --* "1" Customer
+JointOrder "0..*" --* "1..*" Customer : part of
+WineType "0..*" -- "0..*" Dish
+Order "0..*" -- "1" SalesEmployee : responsible for
+Dish "1" -- "0..5" Recipe
+@enduml

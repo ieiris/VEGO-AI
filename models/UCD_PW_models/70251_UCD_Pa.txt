@@ -1,0 +1,118 @@
+@startuml
+left to right direction
+skinparam packageStyle rect
+skinparam usecase {
+  BackgroundColor<<core>> #FDF6E3
+  BackgroundColor<<ext>> #EEF6FF
+}
+
+actor "Administrator" as Admin
+actor "Client / Driver" as Client
+actor "Gate Sensor (GS)\n(external HW)" as GS
+actor "Conveyors' Controller (CC)\n(external HW)" as CC
+actor "Integrated Rate Service (IRS)\n(external)" as IRS
+actor "Payment Gateway (PG)\n(external)" as PG
+
+package "ParkWise System" {
+
+  package "Parking Lot Management" {
+    usecase "UC1: Manage Parking Lots" as UC1 <<core>>
+    usecase "UC2: Maintain Price History & Import Price List" as UC2 <<core>>
+    usecase "UC3a: Update Available Spaces\n(on arrival/departure)" as UC3a <<core>>
+  }
+
+  package "Entry & Registration" {
+    usecase "UC3: Detect Vehicle Arrival (via GS)" as UC3 <<core>>
+    usecase "UC4: Identify Vehicle (search DB)" as UC4 <<core>>
+    usecase "UC5: Prompt Manual Registration\n(client provides details & photos)" as UC5 <<core>>
+    usecase "UC6: Extract Vehicle Details (photo→text)" as UC6 <<core>>
+    usecase "UC7: Associate Vehicle ↔ Client (ensure 1:1)" as UC7 <<core>>
+    usecase "UC8: Open Entry Barrier" as UC8 <<core>>
+  }
+
+  package "Parking & Conveyors" {
+    usecase "UC9: Start Parking Session\n(store start time & details)" as UC9 <<core>>
+    usecase "UC10: Scan & Assign Conveyor" as UC10 <<core>>
+    usecase "UC11: Run Optimization\n(find nearest suitable space)" as UC11 <<core>>
+    usecase "UC12: Update Parking Completion" as UC12 <<core>>
+    usecase "UC13: Track Vehicle Location" as UC13 <<core>>
+    usecase "UC14: Send SMS with Parking Details" as UC14 <<core>>
+    usecase "UC15: View Parking Info (phone #)" as UC15 <<core>>
+  }
+
+  package "Exit & Payment" {
+    usecase "UC16: End Parking Request" as UC16 <<core>>
+    usecase "UC17: Assign Conveyor for Retrieval" as UC17 <<core>>
+    usecase "UC18: Calculate Parking Fee" as UC18 <<core>>
+    usecase "UC19: Request Payment (send to PG)" as UC19 <<core>>
+    usecase "UC20: Receive Payment Approval" as UC20 <<core>>
+    usecase "UC21: Open Exit Barrier" as UC21 <<core>>
+    usecase "UC22: Issue Receipt" as UC22 <<core>>
+    usecase "UC23b: Detect Vehicle Departure (via GS)" as UC23b <<core>>
+    usecase "UC23c: Close Parking Session\n(clear conveyor tracking)" as UC23c <<core>>
+  }
+
+  package "Club & Reports" {
+    usecase "UC23: Register Club Member" as UC23 <<core>>
+    usecase "UC24: Select Preferred Lots" as UC24 <<core>>
+    usecase "UC25: Apply Club Discount" as UC25 <<core>>
+    usecase "UC26: Generate Annual Summary Report\n(PDF & XML)" as UC26 <<core>>
+    usecase "UC27: Generate Club Growth Report" as UC27 <<core>>
+  }
+}
+
+' Administrator
+Admin --> UC1
+Admin --> UC2
+Admin --> UC26
+Admin --> UC27
+
+' Client
+Client --> UC3
+Client --> UC5
+Client --> UC9
+Client --> UC15
+Client --> UC16
+Client --> UC23
+Client --> UC24
+Client --> UC22
+
+' Gate Sensor (Arrival)
+GS --> UC3
+UC3 --> UC4
+UC3 --> UC3a : updates space count
+
+' Manual registration & extraction
+UC5 --> UC6
+UC6 --> UC7
+UC7 --> UC8
+
+' Parking session
+UC9 --> UC10
+UC10 --> UC11
+UC11 --> UC12
+UC12 --> UC13
+UC12 --> UC14
+
+' IRS and pricing
+IRS --> UC2
+UC18 --> UC2
+
+' Exit process
+UC16 --> UC17
+UC17 --> UC19
+UC19 --> PG
+PG --> UC20
+UC20 --> UC21
+Client --> UC22 : optional receipt
+
+' Departure detection (NEW)
+GS --> UC23b
+UC23b --> UC3a
+UC23b --> UC23c
+
+' Club logic
+UC23 --> UC25
+UC24 --> UC25
+
+@enduml

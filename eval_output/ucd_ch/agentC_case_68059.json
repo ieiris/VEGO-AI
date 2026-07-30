@@ -1,0 +1,480 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68059",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The Cheers System is defined as a rectangle with various functionalities such as managing orders, inventory, and customer interaction.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The actor 'Sales Staff' interacts with use cases related to placing orders and viewing wines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The 'Make Order' use case likely encompasses tasks related to order details and categorization, but specific details like order types or conditions are not explicit.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Lack of explicit inclusion of specific order details and categorization in the model."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The actor 'GalGalim' is shown as outside of the system boundary with an association to 'Make Order', indicating its role is external.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The 'Customer Chooses OrderItems' use case represents actions involving customer orders, but joint order tracking isn't explicitly depicted.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Joint order tracking functionality is not explicitly indicated."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer interaction with the system is depicted through 'View Wine Information' and 'Customer Chooses OrderItems' use cases.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Specific customer information recording isn't separately addressed."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The 'Make Order' use case includes interactions potentially for both customers and employees, but doesn't explicitly detail employee conditions.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Employee ordering isn't specifically separated from regular customer orders."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Urgent order processing isn't explicitly depicted; the 'Make Order' use case may imply prioritization functions but doesn't distinguish order types.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Regular order combining and tracking responsibility isn't addressed specifically in the depicted use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "There's no specific representation of tracking customer details for orders beyond basic viewing and choosing order items.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The 'Make Order' appears to accommodate employee ordering but lacks clarity on analogous conditions with regular customers.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Employee-specific conditions aren't distinctly illustrated."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The 'Update Wine Information' use case is associated with the 'Marketing Employee' actor, aligning with guideline conditions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Sales staff has access to 'View Wine Information', supporting the guideline on access levels.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "While the 'Link Wine to Type' use case may cover part of this functionality, detailed wine type classification specifics aren't provided.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Completeness in the representation of wine type specifics isn't ensured."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Marketing employees can link wines to types within the 'Link Wine to Type' use case but recommendation nuances aren't depicted.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Recommendation specifics are not visibly included in the use case."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The 'Receive Manufacturer and Wine Data' implies XML data exchange from 'Gefen', aligning with guideline integration.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "There is a use case for 'Automatically Generate Current Inventory Report by Wine', but not specifically for weekly updates of quantities purchased.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Frequency and update specifics for quantities purchased are missing."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "While system interactions with manufacturer data are possible, specific storage details are not illustrated.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The 'Update Wine Information' covers aspects of capturing wine details but not to the comprehensive extent needed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "May not address all attributes detailed in the guideline sufficiently."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Distinct wines might be implied in 'Update Wine Information', yet explicit differentiation by identifiers isn't demonstrated.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "The role of 'Marketing Employee' in 'Link Wine to Type' signifies handling types, aligning with part of functionality.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Tracking storage location specifics are suggested within inventory reports but not outlined separately.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "Inventory report generation for wines suggests tracking levels but doesn't illustrate specific storage locations.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Lacks explicit mention of different storage location specifics."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Include-use between 'Make Order' and 'Update Inventory' suggests sales impact on inventory but detailed procedural inclusion is absent.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Adequately detailed post-sale update steps are missing."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The 'Generate Unproductive Employees Report' use case explicitly indicates report creation by sales employees.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "The 'Automatically Generate Current Inventory Report by Wine' implies reporting functionality but lacks document protocol details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Specific format and recipient protocol details are unspecified."
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "The 'Wine Recommendation Report' points to functionality for matching customer preferences in wine choices.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G3",
+      "evidence": "The 'Make Order' use case indirectly involves order categorization and details through interactions with other actors and use cases but does not explicitly illustrate specific order types or conditions.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model only implies order processing but lacks explicit categorization details."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The 'Make Order' use case implies interactions where multiple customer orders can be handled but does not explicitly track joint orders or their details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Joint order tracking is implied but not explicitly represented."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "There isn't a specific use case dedicated to recording customer information beyond choosing order items and viewing wines.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The case model doesn't explicitly document customer information recording."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The case model includes 'Make Order' but fails to distinctly separate employee orders from regular customer orders.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Employee ordering specifics aren't clearly differentiated from general orders."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "There is no specific differentiation of urgent orders within the 'Make Order' use case.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Urgent order processing remains unaddressed in the model."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Functionalities related to handling regular orders and combining customer selections are not specified in the use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Combining orders is not depicted."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "Customer detail tracking is generally addressed through 'Customer Chooses OrderItems' but isn't explicitly covered for every order scenario.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Order-specific customer detail tracking needs more explicit representation."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The use cases do not clearly show the parity of employee and regular customer ordering conditions within 'Make Order'.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Clear depiction of this parity is not present."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The case model contains the use case 'Link Wine to Type', implying classification features but doesn't represent comprehensive classification details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Wine classification isn't comprehensively depicted in terms of attributes."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Marketing has a role in 'Link Wine to Type', yet specific recommendations for occasions aren't illustratively included.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Nuances of recommendation activities remain unclear."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "No explicit representation of weekly updates to quantities purchased as described in the updates guidelines.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Lacks indication of specific weekly purchase updates."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No specific use case or detail exists concerning the storage of manufacturer information.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Storage details for manufacturer data are missing in the model."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The 'Update Wine Information' implies part of the product detail maintenance but doesn't ensure coverage of all components.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Incomplete depiction of all wine product details."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Discerning specifics by identifiers isn't sufficiently visible within 'Update Wine Information'.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Identifier-based distinction isn't clearly represented."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Distinct tracking of wine storage locations isn't individually represented in the existing use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Specific storage location tracking not defined."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "While there are references to inventory reporting, no clear distinction is present for location-specific inventory management.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Detailed storage location inventory isn't separately depicted."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The 'Update Inventory' inclusion after 'Make Order' suggests inventory updates but omits clear steps post-sale.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The post-sale update sequence remains inadequately detailed."
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Though the 'Automatically Generate Current Inventory Report by Wine' indicates functionality, it doesn’t specify JSON formatting or the Gefen recipient.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The report's format and destination are unclear."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "A use case named 'Customer Chooses OrderItems' that extends 'View Wine Information'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The extension of 'View Wine Information' by 'Customer Chooses OrderItems' suggests additional optional functionality where a customer can choose items while viewing information, which aligns with realistic scenarios in the domain."
+    },
+    {
+      "fragment": "A note on 'Automatically Generate Current Inventory Report by Wine' indicating it's a 'Weekly Automatic Process'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The note serves as a clarification that aligns with automated reporting processes, enhancing understanding without conflicting with any guidelines."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "A use case named 'Customer Chooses OrderItems' that extends 'View Wine Information'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "A note on 'Automatically Generate Current Inventory Report by Wine' indicating it's a 'Weekly Automatic Process'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 15.0,
+  "max_score": 27.0,
+  "score_pct": 55.6,
+  "overall_assessment": "The case model satisfies several guidelines but lacks explicit representation for many required functionalities, leading to only a partially compliant score."
+}

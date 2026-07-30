@@ -1,0 +1,129 @@
+@startuml
+!define COLOR_CLASS      #66CCCC
+!define COLOR_ABSTRACT   #FFCC66
+!define COLOR_INTERFACE  #CCFFCC
+
+skinparam class {
+  BackgroundColor COLOR_CLASS
+  BorderColor #444444
+  FontColor #222222
+  FontName Courier
+  FontStyle bold
+}
+skinparam abstract {
+  BackgroundColor COLOR_ABSTRACT
+  BorderColor #444444
+  FontColor #222222
+  FontName Courier
+  FontStyle bold
+}
+skinparam interface {
+  BackgroundColor COLOR_INTERFACE
+  BorderColor #444444
+  FontColor #222222
+  FontName Courier
+  FontStyle bold
+}
+
+class Employee {
+  <b>-</b> id: Integer
+  <b>-</b> name: String
+  <b>-</b> phoneNumber: String
+  <b>-</b> officeAddress: String
+  <b>-</b> email: String
+  <b>-</b> employmentStartDate: Date
+  <b>-</b> orderCount: Integer
+  <b>+</b> generateUnproductiveEmployeeReport(startDate: Date, endDate: Date): Report
+}
+
+class MarketingEmployee extends Employee {
+  <b>-</b> wineUpdateCount: Integer
+  <b>+</b> updateWine(wine: Wine): void
+}
+
+class SalesStaff extends Employee {
+  <b>-</b> orderPlacedCount: Integer
+  <b>+</b> importWineData(): void
+  <b>+</b> exportInventoryReport(): void
+}
+
+class Customer {
+  <b>-</b> id: Integer
+  <b>-</b> name: String
+  <b>-</b> phoneNumber: String
+  <b>-</b> deliveryAddress: String
+  <b>-</b> email: String
+  <b>-</b> firstContactDate: Date
+}
+
+class Wine {
+  <b>-</b> id: Integer
+  <b>-</b> name: String
+  <b>-</b> description: String
+  <b>-</b> price: Double
+  <b>-</b> productImage: String
+  <b>-</b> type: String
+  <b>-</b> manufacturer: Manufacturer
+  <b>-</b> quantity: Integer
+  <b>+</b> updateQuantity(newQuantity: Integer): void
+  <b>+</b> changePrice(newPrice: Double): void
+}
+
+class Manufacturer {
+  <b>-</b> id: Integer
+  <b>-</b> name: String
+  <b>-</b> contactPhoneNumber: String
+  <b>-</b> address: String
+  <b>-</b> email: String
+  <b>+</b> produceWine(wine: Wine): void
+}
+
+class Order {
+  <b>-</b> id: Integer
+  <b>-</b> orderDate: Date
+  <b>-</b> orderType: String
+  <b>-</b> customer: Customer
+  <b>-</b> employee: Employee
+  <b>-</b> wines: List<Wine>
+  <b>+</b> addWine(wine: Wine): void
+  <b>+</b> calculateTotalPrice(): Double
+}
+
+interface GeffenSystem {
+  <b>+</b> importWineData(): void
+  <b>+</b> exportInventoryReport(): void
+}
+
+interface GalGalim {
+  <b>+</b> processUrgentOrder(order: Order): void
+  <b>+</b> processRegularOrder(order: Order): void
+}
+
+interface ReportGenerator {
+  <b>+</b> generateReport(): Report
+}
+
+class UnproductiveEmployeeReportGenerator implements ReportGenerator {
+  <b>+</b> generateReport(): Report
+}
+
+class Report {
+  <b>-</b> id: Integer
+  <b>-</b> reportDate: Date
+  <b>-</b> reportData: String
+  <b>+</b> getId(): Integer
+  <b>+</b> getReportDate(): Date
+  <b>+</b> getReportData(): String
+}
+
+ReportGenerator --* Report
+UnproductiveEmployeeReportGenerator --* Report
+
+Employee --* Order
+Customer --* Order
+Wine --* Order
+Wine --* Manufacturer
+SalesStaff --* Order
+SalesStaff --* GeffenSystem
+Order --* GalGalim
+@enduml

@@ -1,0 +1,56 @@
+@startuml
+left to right direction
+actor CompanyEmployee as "Company Employee"
+actor SalesEmployee as "Sales Employee"
+actor MarketingEmployee as "Marketing Employee"
+actor GefenSystem as "Gefen System"
+
+CompanyEmployee <|-- SalesEmployee
+CompanyEmployee <|-- MarketingEmployee
+
+rectangle "Cheers System" {
+    usecase "Place Order" as UC1
+    usecase "Place Regular Order" as UC1a
+    usecase "Place Urgent Order" as UC1b
+    usecase "Manage Order\nStatus" as UC2
+    usecase "Update Wine\nInformation and Types" as UC4
+    usecase "Link Wine to Type" as UC4a
+    usecase "Modify Wine Price" as UC4b
+    usecase "Update Product Image" as UC4c
+    usecase "Recommend Types for Occasions" as UC4d
+    usecase "View Wine\nCatalog" as UC5
+    usecase "Send XML\nData" as UC6
+    usecase "Manage Inventory" as UC7
+    usecase "Generate Recommendation Report" as UC8
+    usecase "Generate Unproductive Employees Report" as UC9
+    usecase "Specify Delivery Time" as UC9a
+    usecase "Mark the Priority Level" as UC9b
+    usecase "Joint Order" as UC10
+    usecase "Assign Order to Employee" as UC10a
+    usecase "Record Customer Information" as UC10b
+}
+
+SalesEmployee --> UC1
+SalesEmployee --> UC8
+SalesEmployee --> UC9
+CompanyEmployee --> UC5
+MarketingEmployee --> UC4
+MarketingEmployee --> UC4a
+MarketingEmployee --> UC4b
+MarketingEmployee --> UC4c
+MarketingEmployee --> UC4d
+GefenSystem --> UC6
+GefenSystem --> UC7
+
+UC1 -down-> UC1a : "<<extend>>"
+note right of UC1a : Extension occurs when\nplacing a regular order.
+UC1 -down-> UC1b : "<<extend>>"
+note right of UC1b : Extension occurs when\nplacing an urgent order.
+UC1b -down-> UC9a : "<<include>>"
+UC1b -down-> UC9b : "<<include>>"
+UC1a -left-> UC10 : "<<extend>>"
+note top of UC10 : Extension occurs when\nplacing a joint order.
+UC2 -up-> UC1 : "<<include>>"
+UC10a -down-> UC1 : "<<include>>"
+UC10b -down-> UC1 : "<<include>>"
+@enduml

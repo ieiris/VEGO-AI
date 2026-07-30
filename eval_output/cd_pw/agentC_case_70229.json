@@ -1,0 +1,368 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70229",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class contains attributes for a unique number, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class includes an attribute for the number of available spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between Vehicle and Client, indicating each vehicle is linked to one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "Attributes in the ParkingSession class capture start time and details of the vehicle.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class includes an attribute that indicates the space size as small, medium, or large.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class has an attribute for maximum vehicle weight capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The model indicates that conveyor details are not needed at the end of parking sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The PriceList class provides pricing details, including specific durations, associated per ParkingLot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Client class includes attributes indicating club membership, showing client club management.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "ParkingSession class has an attribute flagging free sessions due to club member benefits.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "ParkingSession has a flag to mark sessions as free due to club registration benefits.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The AnnualSummaryReportService class includes operations for generating financial reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "AnnualSummaryItem class captures parking lot details, total payments, and vehicle counts.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "AnnualSummaryReportService sorts reports by city (descending) and amounts (ascending).",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "AnnualSummaryReportService supports output in both PDF and XML formats.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "ClubGrowthItem class represents monthly new memberships and growth tracking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "ClubGrowthItem class captures monthly membership statistics and growth rates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "ClubGrowthItem is ordered by month to provide chronological growth tracking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [],
+  "uncovered_fragments": [
+    {
+      "fragment": "Administrator's role in updating parking lot details is not operationalized.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "The domain guideline mentions an administrator updating parking lot details, but the model does not represent this role or operation."
+    },
+    {
+      "fragment": "Real-time vehicle data from gate sensor not operationalized.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "The guidelines specify real-time data transmission from gate sensors to the system, but this process is not depicted in the model."
+    },
+    {
+      "fragment": "System's instruction to gate sensor for barrier operation is missing.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "Guidelines specify that the system instructs the gate sensor to open the barrier if the vehicle is found, which is not reflected in the model."
+    },
+    {
+      "fragment": "Absence of optimization algorithm execution for conveyor assignment.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "No representation of optimization algorithms mentioned in guiding documents, linked to conveyor assignment."
+    },
+    {
+      "fragment": "SMS message sending with parking details is not included.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The process of sending parking details via SMS is indicated by guidelines but not implemented in the model."
+    },
+    {
+      "fragment": "End of parking session - vehicle handling by conveyors and request to external payment gateway.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Conveyors are to be used at the end of a session to transfer vehicles; also, requests to external payment gateways are omitted."
+    },
+    {
+      "fragment": "System notifies gate opening post-payment approval.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Notification to open the gate after payment approval is part of the domain but missing in the model."
+    },
+    {
+      "fragment": "Issuing of receipts upon client request is not modeled.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Although issuing receipts upon a client's request is mentioned, this feature appears absent in the current model."
+    },
+    {
+      "fragment": "Preferred Parking Lots selection and storage not fully depicted.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "reason": "Guidelines mention clients can choose preferred lots, but selection and audit trail aspects are not fully modeled."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Administrator's role in updating parking lot details is not operationalized.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    },
+    {
+      "fragment": "Real-time vehicle data from gate sensor not operationalized.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    },
+    {
+      "fragment": "System's instruction to gate sensor for barrier operation is missing.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    },
+    {
+      "fragment": "Absence of optimization algorithm execution for conveyor assignment.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "SMS message sending with parking details is not included.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "End of parking session - vehicle handling by conveyors and request to external payment gateway.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "System notifies gate opening post-payment approval.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Issuing of receipts upon client request is not modeled.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Preferred Parking Lots selection and storage not fully depicted.",
+      "label": "Domain Mistake",
+      "severity": "Low",
+      "base_score": -1.0,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.75,
+      "note": ""
+    }
+  ],
+  "total_score": 9.75,
+  "max_score": 18.0,
+  "score_pct": 54.2,
+  "overall_assessment": "The case model satisfies many guidelines but has significant domain omissions that need addressing for full compliance."
+}

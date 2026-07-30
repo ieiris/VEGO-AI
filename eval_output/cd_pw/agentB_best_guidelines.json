@@ -1,0 +1,414 @@
+{
+  "skill_version": "1.0.0",
+  "language_name": "UML Class Diagram",
+  "domain_identifier": "parkwise",
+  "is_first_iteration": true,
+  "domain_segments": [
+    {
+      "index": 1,
+      "text": "For each parking lot, the system will store a unique number, name, address, and city.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 2,
+      "text": "An administrator will be responsible for updating these details in the system.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 3,
+      "text": "The system will hold the number of available spaces in each parking lot (0 if full).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 4,
+      "text": "A gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 5,
+      "text": "The system will get its data (from the gate sensor) and search the database for the corresponding vehicle number.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 6,
+      "text": "If the vehicle is found, the system will instruct the gate sensor to open the barrier.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 7,
+      "text": "If the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 8,
+      "text": "After passing the barrier, the system will store the parking session information, including start time and vehicle details.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 9,
+      "text": "The Conveyors’ Controller (CC) will scan the vehicle number, assign a conveyor and ask the system to run an optimization algorithm.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 10,
+      "text": "Each parking space also has its size (small, medium, or large) to indicate which vehicles it can accommodate.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 11,
+      "text": "Each conveyor has a maximum vehicle weight it can transport.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 12,
+      "text": "An SMS message with the parking details will be sent to the client's phone.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 13,
+      "text": "Only at the end of the parking session, there is no need to store the conveyors that handle each vehicle.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 14,
+      "text": "Upon requesting to end parking, a vacant conveyor (assigned by the conveyors’ controller) transfers the vehicle to the parking lot gate.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 15,
+      "text": "The client will be requested to pay via the system UI.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 16,
+      "text": "The payment amount will be calculated based on fixed price lists, sent yearly by the Integrated Rate Service (IRS) in a JSON format.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 17,
+      "text": "Each parking lot can adopt a different price list, which includes the price for the first hour, the price for each additional hour, and the price for a full day.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 18,
+      "text": "Payment is handled outside the system: the system will send a request to the external Payment Gateway (PG) with the client details and the payment amount;",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 19,
+      "text": "Once the payment is approved, the payment gateway will notify the system, which will instruct the gate sensor to open the gate.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 20,
+      "text": "The system will further issue a receipt at the client’s request.",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 21,
+      "text": "ParkWise also manages a client’s club.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 22,
+      "text": "Club members will get an automatic, fixed discount for all parking sessions.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 23,
+      "text": "During registration, and at any time afterwards, the client can select preferred parking lots (the selection dates are stored for audit purposes).",
+      "status": "UNOPERATIONALIZED"
+    },
+    {
+      "index": 24,
+      "text": "The member’s first parking session in the registration month, in any of the selected parking lots, is free.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 25,
+      "text": "The administrator should be able to generate the following reports: Annual Summary Report – a yearly overview of all incomes of ParkWise.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 26,
+      "text": "The report will include a list of all parking lots, the total amount paid (per lot), and the number of vehicles in “other” colors which parked in the lot, in a given year.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 27,
+      "text": "The report will be ordered by parking lot’s city (descending order) and total amounts (ascending order).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 28,
+      "text": "The report will be generated in both PDF and XML formats.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 29,
+      "text": "Customer Club Growth Report – a monthly overview of new and total club members.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 30,
+      "text": "The report includes, for each month in the current year, the number of customers who joined the club in that month, the cumulative total of active members by the end of the month, and the percentage of total growth compared to the previous month.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 31,
+      "text": "The report will be ordered by month in ascending order.",
+      "status": "MAPPED"
+    }
+  ],
+  "templates_in_scope": [
+    {
+      "id": "T1",
+      "short_name": "Class",
+      "description": "A class representing a set of objects with the same attributes, operations, methods, relationships, and semantics."
+    },
+    {
+      "id": "T2",
+      "short_name": "Class-Association-Class",
+      "description": "An association represents a structural relationship between two classes."
+    },
+    {
+      "id": "T3",
+      "short_name": "Class-Aggregation-Class",
+      "description": "An aggregation is a special type of association representing a whole-part relationship between two classes."
+    },
+    {
+      "id": "T4",
+      "short_name": "Class-Composition-Class",
+      "description": "A composition is a stronger form of aggregation where the part's lifecycle is strictly tied to the whole."
+    },
+    {
+      "id": "T5",
+      "short_name": "Class-Generalization-Class",
+      "description": "Generalization indicates an inheritance relationship between a more general class and a more specific class."
+    },
+    {
+      "id": "T6",
+      "short_name": "Class-Dependency-Class",
+      "description": "A dependency indicates a supplier-client relationship between two classes, where changes to the supplier may affect the client."
+    },
+    {
+      "id": "T7",
+      "short_name": "Class(contents)",
+      "description": "Attributes and operations defined within a class."
+    },
+    {
+      "id": "T8",
+      "short_name": "Interface",
+      "description": "An interface defines a contract that a class may implement, specifying operations without implementation."
+    },
+    {
+      "id": "T9",
+      "short_name": "Interface-Realization-Class",
+      "description": "A realization signifies that a class implements an interface."
+    },
+    {
+      "id": "T10",
+      "short_name": "Enumeration",
+      "description": "An enumeration defines a data type consisting of a set of named values."
+    }
+  ],
+  "reference_guidelines": [
+    {
+      "id": "G1",
+      "guideline_name": "Parking lot class attributes",
+      "description": "Defines a class for parking lot with unique number, name, address, and city as attributes.",
+      "related_template_id": "T7",
+      "mapping_certainty": 1.0,
+      "citation": "For each parking lot, the system will store a unique number, name, address, and city."
+    },
+    {
+      "id": "G2",
+      "guideline_name": "Available spaces attribute in Parking lot",
+      "description": "Specifies that the parking lot class includes an attribute for the number of available spaces.",
+      "related_template_id": "T7",
+      "mapping_certainty": 1.0,
+      "citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+    },
+    {
+      "id": "G3",
+      "guideline_name": "Vehicle-Client Association",
+      "description": "There is an association ensuring that each vehicle is linked to exactly one client.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.9,
+      "citation": "If the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client."
+    },
+    {
+      "id": "G4",
+      "guideline_name": "Parking Session Information",
+      "description": "Attributes related to a parking session, such as start time, and vehicle details.",
+      "related_template_id": "T7",
+      "mapping_certainty": 1.0,
+      "citation": "After passing the barrier, the system will store the parking session information, including start time and vehicle details."
+    },
+    {
+      "id": "G5",
+      "guideline_name": "Parking space size attribute",
+      "description": "Defines parking space size as an attribute indicating suitability for vehicle accommodation.",
+      "related_template_id": "T7",
+      "mapping_certainty": 1.0,
+      "citation": "Each parking space also has its size (small, medium, or large) to indicate which vehicles it can accommodate."
+    },
+    {
+      "id": "G6",
+      "guideline_name": "Conveyor capacity attribute",
+      "description": "Defines a weight capacity attribute for conveyors to manage vehicle transport.",
+      "related_template_id": "T7",
+      "mapping_certainty": 1.0,
+      "citation": "Each conveyor has a maximum vehicle weight it can transport."
+    },
+    {
+      "id": "G7",
+      "guideline_name": "Conveyors handling vehicles",
+      "description": "At the end of a parking session, tracking conveyors for vehicles is unnecessary.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.8,
+      "citation": "Only at the end of the parking session, there is no need to store the conveyors that handle each vehicle."
+    },
+    {
+      "id": "G8",
+      "guideline_name": "Price list per parking lot",
+      "description": "Each parking lot can have different pricing that includes prices for different durations.",
+      "related_template_id": "T7",
+      "mapping_certainty": 1.0,
+      "citation": "Each parking lot can adopt a different price list, which includes the price for the first hour, the price for each additional hour, and the price for a full day."
+    },
+    {
+      "id": "G9",
+      "guideline_name": "Client Club",
+      "description": "Defines a class for the client club managing membership.",
+      "related_template_id": "T1",
+      "mapping_certainty": 0.8,
+      "citation": "ParkWise also manages a client’s club."
+    },
+    {
+      "id": "G10",
+      "guideline_name": "Discount for club members",
+      "description": "Club members receive a fixed discount for parking sessions.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.8,
+      "citation": "Club members will get an automatic, fixed discount for all parking sessions."
+    },
+    {
+      "id": "G11",
+      "guideline_name": "Free parking for new club members",
+      "description": "The first parking session for a club member in the registration month is free.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.8,
+      "citation": "The member’s first parking session in the registration month, in any of the selected parking lots, is free."
+    },
+    {
+      "id": "G12",
+      "guideline_name": "Annual Summary Report Overview",
+      "description": "Details the structure of annual summary report for ParkWise incomes.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.9,
+      "citation": "The administrator should be able to generate the following reports: Annual Summary Report – a yearly overview of all incomes of ParkWise."
+    },
+    {
+      "id": "G13",
+      "guideline_name": "Contents of the Annual Summary Report",
+      "description": "The report covers parking lot details, payments, and specific vehicle color counts.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.9,
+      "citation": "The report will include a list of all parking lots, the total amount paid (per lot), and the number of vehicles in “other” colors which parked in the lot, in a given year."
+    },
+    {
+      "id": "G14",
+      "guideline_name": "Ordering Annual Summary Report",
+      "description": "Report ordered by the city and total amount received.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.9,
+      "citation": "The report will be ordered by parking lot’s city (descending order) and total amounts (ascending order)."
+    },
+    {
+      "id": "G15",
+      "guideline_name": "Format for the Annual Summary Report",
+      "description": "Generated formats for the report include PDF and XML.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.9,
+      "citation": "The report will be generated in both PDF and XML formats."
+    },
+    {
+      "id": "G16",
+      "guideline_name": "Customer Club Growth Report Overview",
+      "description": "The report provides a monthly growth overview of club members.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.8,
+      "citation": "Customer Club Growth Report – a monthly overview of new and total club members."
+    },
+    {
+      "id": "G17",
+      "guideline_name": "Contents of the Customer Club Growth Report",
+      "description": "Covers monthly new members, cumulative totals, and growth rates.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.8,
+      "citation": "The report includes, for each month in the current year, the number of customers who joined the club in that month, the cumulative total of active members by the end of the month, and the percentage of total growth compared to the previous month."
+    },
+    {
+      "id": "G18",
+      "guideline_name": "Ordering Customer Club Growth Report",
+      "description": "Report ordered by month in ascending sequence.",
+      "related_template_id": "T7",
+      "mapping_certainty": 0.9,
+      "citation": "The report will be ordered by month in ascending order."
+    }
+  ],
+  "questions_to_language_advisor": [
+    {
+      "id": "Q_lang_001",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T1",
+        "T7"
+      ],
+      "question": "Which template should be used to represent the responsibility of the administrator updating parking lot details?"
+    },
+    {
+      "id": "Q_lang_002",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T2"
+      ],
+      "question": "Which UML construct best represents real-time vehicle data transmission from gate sensors to the system?"
+    },
+    {
+      "id": "Q_lang_003",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T1",
+        "T7"
+      ],
+      "question": "How should the operation of assigning a conveyor and running an optimization algorithm be represented?"
+    },
+    {
+      "id": "Q_lang_004",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T1"
+      ],
+      "question": "How can sending an SMS with parking details be operationalized in UML Class Diagram?"
+    },
+    {
+      "id": "Q_lang_005",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T1"
+      ],
+      "question": "Which construct is appropriate for representing external payment requests and responses in UML?"
+    },
+    {
+      "id": "Q_lang_006",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T1"
+      ],
+      "question": "How can the selection and storage of preferred parking lots by clients be represented in UML Class Diagram?"
+    }
+  ],
+  "questions_to_domain_advisor": []
+}

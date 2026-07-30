@@ -1,0 +1,152 @@
+@startuml
+left to right direction
+
+' ============================
+' ACTORS
+' ============================
+
+actor Client as client
+actor Administrator as admin
+actor "Gate Sensor" as gateSensor
+actor "Conveyor Controller" as conveyorCtrl
+actor "Payment Gateway" as paymentGW
+actor "Integrated Rate Service" as rateService
+
+
+' ============================
+' SYSTEM BOUNDARY
+' ============================
+
+rectangle "ParkWise System" {
+
+
+' ============================
+' USE CASES – CLIENT
+' ============================
+
+usecase "Register / Update Client Profile" as UC_ClientProfile
+usecase "Register / Update Vehicle" as UC_RegisterVehicle
+usecase "Associate Vehicle with Client" as UC_AssociateVehicle
+usecase "Enter Parking Lot" as UC_EnterLot
+usecase "Start Parking Session" as UC_StartSession
+usecase "View Parking Details" as UC_ViewParking
+usecase "Request Vehicle Return (End Parking)" as UC_EndParking
+usecase "Pay for Parking" as UC_Pay
+usecase "Request Receipt" as UC_Receipt
+usecase "Register to Customer Club" as UC_Club
+usecase "Manage Preferred Parking Lots" as UC_PreferredLots
+
+
+' ============================
+' USE CASES – ADMIN
+' ============================
+
+usecase "Maintain Parking Lot Details" as UC_MaintainLot
+usecase "Generate Annual Summary Report" as UC_AnnualReport
+usecase "Generate Customer Club Growth Report" as UC_ClubReport
+
+
+' ============================
+' USE CASES – GATE SENSOR
+' ============================
+
+usecase "Identify Vehicle" as UC_IdentifyVehicle
+usecase "Control Gate Opening" as UC_ControlGate
+
+
+' ============================
+' USE CASES – CONVEYOR CONTROLLER
+' ============================
+
+usecase "Operate Conveyor" as UC_OperateConveyor
+usecase "Run Parking Optimization" as UC_RunOptimization
+
+
+' ============================
+' USE CASES – PAYMENT GATEWAY
+' ============================
+
+usecase "Process Payment with Payment Gateway" as UC_ProcessPayment
+
+
+' ============================
+' USE CASES – INTEGRATED RATE SERVICE
+' ============================
+
+usecase "Import Yearly Price Lists" as UC_ImportRates
+
+}
+
+' ============================
+' ASSOCIATIONS (Actors -> Use Cases)
+' ============================
+
+' ---- Client ----
+client --> UC_ClientProfile
+client --> UC_RegisterVehicle
+client --> UC_AssociateVehicle
+client --> UC_EnterLot
+client --> UC_StartSession
+client --> UC_ViewParking
+client --> UC_EndParking
+client --> UC_Pay
+client --> UC_Receipt
+client --> UC_Club
+client --> UC_PreferredLots
+
+' ---- Administrator ----
+admin --> UC_MaintainLot
+admin --> UC_AnnualReport
+admin --> UC_ClubReport
+
+' ---- Gate Sensor ----
+gateSensor --> UC_IdentifyVehicle
+gateSensor --> UC_ControlGate
+
+' ---- Conveyor Controller ----
+conveyorCtrl --> UC_OperateConveyor
+conveyorCtrl --> UC_RunOptimization
+
+' ---- Payment Gateway ----
+paymentGW --> UC_ProcessPayment
+
+' ---- Integrated Rate Service ----
+rateService --> UC_ImportRates
+
+
+
+' ============================
+' INCLUDE RELATIONSHIPS
+' ============================
+
+UC_AssociateVehicle ..> UC_RegisterVehicle : <<include>>
+
+UC_EnterLot ..> UC_IdentifyVehicle : <<include>>
+
+UC_Pay ..> UC_ProcessPayment : <<include>>
+
+UC_Receipt ..> UC_Pay : <<include>>
+
+UC_OperateConveyor ..> UC_RunOptimization : <<include>>
+
+UC_EnterLot ..> UC_StartSession : <<include>>
+
+UC_EndParking ..> UC_OperateConveyor: <<include>>
+
+UC_EndParking ..> UC_Pay: <<include>>
+
+' ============================
+' EXTEND RELATIONSHIPS
+' ============================
+
+UC_PreferredLots ..> UC_ClientProfile : <<extend>>
+
+UC_Club ..> UC_ClientProfile : <<extend>>
+
+UC_ViewParking ..> UC_StartSession : <<extend>>
+
+UC_EndParking ..> UC_ViewParking : <<extend>>
+
+UC_ControlGate ..> UC_EnterLot : <<extend>>
+
+@enduml

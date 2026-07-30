@@ -1,0 +1,36 @@
+# Domain base list — Use Case Diagram - ParkWise
+# One ground-truth domain requirement per line. Used by Agent B to measure
+# guideline completeness. Lines starting with # and blank lines are ignored.
+#
+# Element type codes:
+#   UC   = Use Case
+#   Actor = Actor
+#   Incl = Include relationship   (format: Incl: UC-UC)
+#   Ext  = Extend relationship    (format: Ext: UC-UC)
+#   I    = Inheritance            (format: I: Parent-Child)
+#
+# Each line describes one use case and its associated actor(s) and relationships.
+
+UC: Manage Lots Details, Actor: Administrator
+UC: Send Vehicle Arrival/Departure Data, Actor: Gate Sensor
+UC: Search Database for Vehicle, Actor: Gate Sensor
+UC: Manage Parking Session, Actor: Gate Sensor
+UC: Send Instructions to Open Barriers, Actor: Gate Sensor
+UC: Provide Client Details, Actor: Client
+UC: Extract Vehicle Details, Incl: Provide Client Details-Extract Vehicle Details
+UC: Request to Move Vehicle, Actor: Conveyors Controller
+UC: Update Conveyor Final Location, Actor: Conveyors Controller
+UC: Get SMS with Parking Details, Actor: Client
+UC: View Parking Details, Actor: Client
+UC: Request Parking End, Actor: Client
+UC: Request Payment, Actor: Client
+UC: Import Price Lists, Actor: IRS
+UC: Request to Handle Payment, Actor: Payment Gateway
+UC: Get Payment Approval, Actor: Payment Gateway
+UC: Issue a Receipt, Actor: Client
+UC: Join to the Club, Actor: Client
+I: Client-Member
+UC: Choose Parking Lots, Actor: Member, Incl: Choose Parking Lots-Join to the Club
+UC: Get Benefits, Actor: Member, Ext: Request to Handle Payment-Get Benefits
+UC: Generate Annual Summary Report, Actor: Administrator
+UC: Generate Customer Club Growth Report, Actor: Administrator

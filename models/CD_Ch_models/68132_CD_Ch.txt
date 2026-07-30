@@ -1,0 +1,143 @@
+@startuml
+left to right direction
+class Customer {
+    -customerID : int
+    -customerName : String
+    -phoneNumber : String
+    -deliveryAddress : String
+    -email : String
+    -firstContactDate : Date
+}
+
+class Order {
+    -orderID : int
+    -orderDate : Date
+    -orderStatus : OrderStatus 
+    -shipmentDate : Date
+    -orderType : OrderType
+}
+class UrgentOrder {
+    -priorityLevel : PriorityLevel
+    -expectedDeliveryTime : Time
+}
+class JointOrders {
+  -jointOrdersID : int
+  -mainCustomerID : Customer
+  +JointOrders(JointOrders idJoint, Order idOrder)
+}
+
+enum OrderStatus {
+    InProcess
+    Dispatched
+    Deliverd
+    Paid
+    Suspended
+    Canceled
+}
+enum OrderType {
+    Regular
+    Urgent
+}
+enum PriorityLevel {
+    1
+    2
+    3
+    4
+    5
+}
+
+class Employee {
+    -employeeID : int
+    -employeeName : String
+    -phoneNumber : String
+    -officeAddress : String
+    -email : String
+    -employmentStartDate : Date
+}
+class SalesStaff {
+    +placeOrder(Customer cust) 
+    +GenerateUnproductiveEmployeeReport() : String <<JSON>>
+    +GenerateWineRecoReport(String foodName, String occassion, String wintType) : String <<JSON>>
+}
+class MarketingEmployee {
+    +updateWineInfo() : void
+    +updateWinePrice(Wine wine,double price) : void
+}
+class Wine {
+    -wineID : int
+    -wineName : String
+    -occasion : String
+    -season : Season
+    -location : Location
+    -productionYear : int
+    -pricePerBottle : double
+    -wineType : String 
+    -description : String
+    -sweetnessLevel : SweetnessLevel
+    -productImage : String
+}
+class WineOrdered {
+    -quantity : int
+}
+
+enum Season {
+    Spring
+    Summer
+    Autumn
+    Winter
+}
+enum Location {
+    Indoor
+    Outdoor
+}
+
+enum SweetnessLevel {
+    Dry
+    Semi-dry
+    Semi-sweet
+    Sweet
+}
+
+class Manufacturer {
+    -manufacturerID : int
+    -manufacturerName : String
+    -phoneNumber : String
+    -address : String
+    -email : String
+    +receiveXMLOfProducers()
+}
+class wineStored{
+  -numberOfbottles
+  +currenInvReport() : String <<JSON>>
+
+}
+
+class StorageLocation {
+    -locationCellar : int
+    -locationName : String
+}
+
+class FoodPairings {
+    -foodName : String
+    -recipeURL : String
+}
+
+Employee <|-- (SalesStaff ,MarketingEmployee) : (Complete and  disjoint)
+Order <|-up- UrgentOrder : (Overlapping)
+Order "*" o-up- "1 buyer" Customer
+Order "*" o-down- "1" SalesStaff : assigned
+Wine "1..*" -right- "1" Manufacturer : produced by
+Wine "1" *-up- "0..5" FoodPairings 
+Wine "1" o--> "1..*" wineStored 
+wineStored "0..*" --> "1" StorageLocation
+Order "1" o--> "1..*" WineOrdered 
+WineOrdered "0..*"--> "1" Wine
+Order "1" *--> "1" JointOrders
+JointOrders "*" o-left- "1" Customer
+Order .up. OrderStatus
+Order .up. OrderType
+UrgentOrder .. PriorityLevel
+Wine .. Season
+Wine .. Location
+Wine .. SweetnessLevel
+@enduml

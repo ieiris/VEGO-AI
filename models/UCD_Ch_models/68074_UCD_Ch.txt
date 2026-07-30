@@ -1,0 +1,102 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' Actor definitions
+actor "Sales Staff" as sales
+actor "Marketing Staff" as marketing
+actor "Customer" as customer
+actor "Gefen System" as gefen
+
+note "Customer includes both regular customers\nand employees placing orders" as N3
+N3 .. customer
+
+rectangle "Cheers System" {
+  ' Order Management
+  package "Order Management" {
+    usecase "Place Order" as UC0
+    usecase "Place Regular Order" as UC1
+    usecase "Place Urgent Order" as UC2
+    usecase "View Order Status" as UC3
+    usecase "Update Order Status" as UC4
+  }
+
+  ' Customer Management
+  package "Customer Management" {
+    usecase "Manage Customer Information" as UC5
+    usecase "Place Joint Order" as UC6
+  }
+
+  ' Inventory Management
+  package "Inventory Management" {
+    usecase "Update Wine Information" as UC7
+    usecase "Manage Wine Types" as UC8
+    usecase "Update Storage Location" as UC9
+    usecase "Track Inventory Levels" as UC10
+  }
+
+  ' Food & Occasion Management
+  package "Food & Occasion Management" {
+    usecase "Manage Food Pairings" as UC12
+    usecase "Manage Drinking Occasions" as UC13
+  }
+
+  ' Reporting
+  package "Reporting" {
+    usecase "Generate Unproductive Employees Report" as UC14
+    usecase "Generate Current Inventory Report" as UC15
+    usecase "Generate Wine Recommendation Report" as UC16
+  }
+
+  ' Data Integration
+  package "Data Integration" {
+    usecase "Import Producer Data" as UC17
+    usecase "Import Wine Data" as UC18
+    usecase "Export Inventory Data" as UC19
+  }
+
+  ' Wine Browsing
+  package "Wine Browsing" {
+    usecase "Browse Wines" as UC20
+  }
+}
+
+' Relationships
+sales --> UC0
+customer --> UC0
+UC1 --|> UC0
+UC2 --|> UC0
+
+sales --> UC3
+sales --> UC5
+sales --> UC14
+sales --> UC16
+sales --> UC20
+sales --> UC4   
+
+marketing --> UC7
+marketing --> UC8
+marketing --> UC9
+marketing --> UC12
+marketing --> UC13
+
+customer --> UC3
+customer --> UC20
+
+gefen --> UC17
+gefen --> UC18
+UC19 --> gefen  
+
+' Include relationships
+UC0 ..> UC10 : <<include>>
+
+' Extend relationships
+UC6 ..> UC1 : <<extend>>
+
+' Notes
+note "Only Marketing Staff can update wine information" as N1
+N1 .. UC7
+
+note "Gefen System interacts for importing and exporting data" as N2
+N2 .. gefen
+@enduml

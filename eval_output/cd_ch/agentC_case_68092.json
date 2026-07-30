@@ -1,0 +1,438 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68092",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model represents classes and relationships for managing inventory, customer information, and order processing, aligning with the Cheers system's business operations management focus.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "SalesEmployee class has operations like placing orders, indicating it is responsible for customer orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Order class includes attributes for order number, date, current status, and shipment date, aligning with the detailed order requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model does not describe external delivery management by 'GalGalim', focusing instead on internal operations only.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "RegularOrder class has methods to add joint customers and set the main customer, indicating an ability to handle joint orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Customer class includes attributes such as ID, name, phone number, delivery address, email, and date of first contact, satisfying customer attributes for orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "There is no explicit modeling indicating employees can order wines like regular customers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "UrgentOrder class includes priority handling, which aligns with the guideline for processing these orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "UrgentOrder class has attributes for priority and expected delivery time, matching required urgent order specifics.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "RegularOrder allows multiple customers, supporting conditions for minimizing delivery cost through combined orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "CustomerOrderDetail association class links customers to specific wines and quantities in an order, meeting tracking responsibilities.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Customer attributes such as ID, name, phone number, delivery address, and email are modeled; however, employees placing orders as customers are not explicitly illustrated.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Customer attributes are modeled, but employee orders under identical conditions are not specified."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "MarketingEmployee class has methods for updating wine info and types, indicating authorization for these tasks.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "SalesEmployee class features an operation for generating wine recommendation reports, implying they access wine info.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "WineType class has attributes for name and serial number, supporting wine type identification.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "WineType class is associated with FoodPairing, which includes recipe URLs and matches guideline expectations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "OccasionRecommendation class is linked to WineType, offering descriptions and conditions, fulfilling occasion recommendations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "GefenSystem class has operations related to importing manufacturer data, reflecting the need for monthly updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Attributes in the Manufacturer class cover full name, contact phone, address, and email, and have unique identifiers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "Wine class attributes include name, description, year, price, sweetness level, and image, covering all necessary details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Wine is associated with Manufacturer through a one-to-many relationship, fulfilling manufacturer-number distinction.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "MarketingEmployee operations for updating wine price and image cover modifications required.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "StorageLocation class has unique number and name, aligning with requirements for specific wine storage.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "InventoryRecord class associates wines with storage, showing multiple locations for wines and vice versa.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "InventoryRecord class operations for adjusting quantities reflect necessary inventory updates post-sale.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "System includes report classes: UnproductiveEmployeesReport, CurrentInventoryReportByWine, and WineRecommendationReport; aligning with specified reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The case model lacks any class, association, or relationship indicating that the external company 'GalGalim' is responsible for actual deliveries. It focuses solely on the internal processes of the Cheers system.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The guideline explicitly requires modeling the role of GalGalim in the delivery process. The absence of any mention of GalGalim in the UML class diagram does not fulfill this requirement."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The case model does not have a mechanism demonstrating that employees can order wines under the same conditions as regular customers. Although employees and customers are related through the Person class, no explicit attribute or association signifies order placement by employees.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model does not provide a subclass or attribute for employees to place orders like customers. Harmonizing this distinction within the model requires a clearer demonstration."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The attribute overlap between Customer and Employee under the Person class implies shared attributes, but no explicit functionality for employees ordering under identical customer conditions is modeled.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model shows overlapping attributes, yet fails to depict employees placing orders with identical conditions as regular customers through operational methods or associations."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The Person class is noted as overlapping and incomplete in the model.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The placement of this note suggests a deliberate design decision, perhaps intending that Person is an abstract class with overlapping characteristics shared by various person types such as Employee and Customer."
+    },
+    {
+      "fragment": "The Employee class is marked as disjoint and complete.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This ensures that instances of Employee are fully categorized into its subclasses, SalesEmployee and MarketingEmployee, indicating a complete partitioning among these categories."
+    },
+    {
+      "fragment": "The Order class is annotated as disjoint and complete.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This indicates that the Order class hierarchy is fully accounted for, meaning every order is either a RegularOrder or an UrgentOrder, with no overlap."
+    },
+    {
+      "fragment": "OccasionRecommendation has details about the location (indoor or outdoor) and season for wine consumption occasions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Including location and season attributes adds meaningful context for wine type recommendations that can enhance user experience, although not explicitly required by guidelines."
+    },
+    {
+      "fragment": "Wine has an operation getQuantityInStock().",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Providing a method to retrieve wine stock quantities encapsulates inventory logic within the Wine class, supporting better design practices."
+    },
+    {
+      "fragment": "The absence of explicit interface realizations.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "reason": "The design lacks clarity on interface implementation, which may cause confusion in distinguishing between interface contracts and class-implemented behaviors."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The Person class is noted as overlapping and incomplete in the model.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Employee class is marked as disjoint and complete.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Order class is annotated as disjoint and complete.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "OccasionRecommendation has details about the location (indoor or outdoor) and season for wine consumption occasions.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Wine has an operation getQuantityInStock().",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The absence of explicit interface realizations.",
+      "label": "Language Mistake",
+      "severity": "Low",
+      "base_score": -0.5,
+      "severity_modifier": 0.25,
+      "total_contribution": -0.25,
+      "note": ""
+    }
+  ],
+  "total_score": 22.75,
+  "max_score": 26.0,
+  "score_pct": 87.5,
+  "overall_assessment": "The case model effectively covers most guidelines, with minor areas needing explicit detailing or corrections."
+}

@@ -1,0 +1,39 @@
+# Domain base list — Class Diagram - Cheers
+# One ground-truth domain requirement per line. Used by Agent B to measure
+# guideline completeness. Lines starting with # and blank lines are ignored.
+#
+# Element type codes:
+#   C    = Class
+#   E    = Enumeration
+#   Attr = Attribute
+#   A    = Association          (format: A: ClassName-ClassName)
+#   AC   = Association Class    (format: AC: ClassName-ClassName-ClassName)
+#   I    = Inheritance          (format: I: Parent-Child)
+#   Comp = Composition          (format: Comp: Whole-Part)
+
+C: Order
+E: Order Status
+Attr: Order Status of Order
+A: Order-Employee
+C: Employee
+C: Customer
+I: Customer-Employee
+C: Urgent Order
+I: Order-Urgent Order
+A: Urgent Order-Customer
+C: Regular Order
+I: Order-Regular Order
+A: Regular Order-Customer
+AC: Regular Order-Wine-Customer
+C: Wine Type
+C: Food
+A: Food-Wine Type
+C: Occasion
+E: Location
+C: Manufacturer
+C: Wine
+E: Sweetness Level
+A: Wine-Manufacturer
+A: Wine-Wine Type
+C: Storage
+AC: Wine-Storage

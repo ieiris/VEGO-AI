@@ -1,0 +1,682 @@
+{
+  "skill_version": "1.0.0",
+  "language_name": "UML Use Case Diagram",
+  "domain_identifier": "parkwise",
+  "is_first_iteration": true,
+  "domain_segments": [
+    {
+      "index": 1,
+      "text": "For each parking lot, the system will store a unique number, name, address, and city.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 2,
+      "text": "An administrator will be responsible for updating these details in the system.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 3,
+      "text": "The system will hold the number of available spaces in each parking lot (0 if full).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 4,
+      "text": "A gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 5,
+      "text": "When a vehicle arrives, the system will get its data (from the gate sensor) and search the database for the corresponding vehicle number.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 6,
+      "text": "If the vehicle is found, the system will instruct the gate sensor to open the barrier.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 7,
+      "text": "If the barrier does not open, the client will have to follow the instructions displayed at the parking lot entrance.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 8,
+      "text": "These instructions guide the client to access the system and provide the required details, including first name, last name, mobile phone number, and three photos of the vehicle (front, rear, and side views).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 9,
+      "text": "Based on the uploaded photos, the system automatically extracts the vehicle’s details: number, type (as text), color, size (small, medium, or large), and weight (in kg).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 10,
+      "text": "The extraction photo-to-text module distinguishes among four predefined colors – white, black, silver, and blue – while all other colors are categorized as other.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 11,
+      "text": "If either the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 12,
+      "text": "At the end of these updates, the system will instruct the gate sensor to open the barrier.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 13,
+      "text": "After passing the barrier, the system will store the parking session information, including start time and vehicle details.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 14,
+      "text": "The client will drive the vehicle to a vacant conveyor, leave the vehicle in parking, take the key, and lock the vehicle.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 15,
+      "text": "The Conveyors’ Controller (CC) will scan the vehicle number, assign a conveyor and ask the system to run an optimization algorithm to find the nearest vacant space to the conveyor location.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 16,
+      "text": "The locations of both parking spaces and conveyors are represented by their floor number and their position on that floor as (x,y) coordinate.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 17,
+      "text": "Each parking space also has its size (small, medium, or large) to indicate which vehicles it can accommodate.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 18,
+      "text": "Each conveyor has a maximum vehicle weight it can transport.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 19,
+      "text": "Both the parking-space size and the conveyor’s weight capacity will be considered by the optimization algorithm.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 20,
+      "text": "After moving the vehicle to the designated parking space, the conveyors’ controller will update the system on parking completion and the final location of the operating conveyor.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 21,
+      "text": "The system will know at each moment where each vehicle is – on which conveyor or in which parking space.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 22,
+      "text": "An SMS message with the parking details will be sent to the client's phone.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 23,
+      "text": "This data is also available through the system UI, if the client enters his or her phone number.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 24,
+      "text": "Only at the end of the parking session, there is no need to store the conveyors that handle each vehicle (as long as the vehicle is in the lot, this information is important in case of problems).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 25,
+      "text": "For getting the vehicle back, the client types in the system UI the vehicle number, his or her phone number (for validation), and clicks \"end parking\".",
+      "status": "MAPPED"
+    },
+    {
+      "index": 26,
+      "text": "Upon requesting to end parking, a vacant conveyor (assigned by the conveyors’ controller) transfers the vehicle to the parking lot gate.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 27,
+      "text": "The client will be requested to pay via the system UI.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 28,
+      "text": "The payment amount will be calculated based on fixed price lists, sent yearly by the Integrated Rate Service (IRS) in a JSON format.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 29,
+      "text": "Each parking lot can adopt a different price list, which includes the price for the first hour, the price for each additional hour, and the price for a full day.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 30,
+      "text": "The system will maintain price history for each parking lot.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 31,
+      "text": "Payment is handled outside the system: the system will send a request to the external Payment Gateway (PG) with the client details and the payment amount;",
+      "status": "MAPPED"
+    },
+    {
+      "index": 32,
+      "text": "Once the payment is approved, the payment gateway will notify the system, which will instruct the gate sensor to open the gate.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 33,
+      "text": "The system will further issue a receipt at the client’s request.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 34,
+      "text": "The receipt will show the client, vehicle, and parking details, the overall number of hours, the price rate (according to the parking duration), and the final amount.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 35,
+      "text": "ParkWise also manages a client’s club.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 36,
+      "text": "Club members will get an automatic, fixed discount for all parking sessions.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 37,
+      "text": "Clients can register to the club through the system UI at any point of time.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 38,
+      "text": "Membership is free and remains active for life.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 39,
+      "text": "During registration, and at any time afterwards, the client can select preferred parking lots (the selection dates are stored for audit purposes).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 40,
+      "text": "The member’s first parking session in the registration month, in any of the selected parking lots, is free.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 41,
+      "text": "The administrator should be able to generate the following reports:",
+      "status": "MAPPED"
+    },
+    {
+      "index": 42,
+      "text": "Annual Summary Report – a yearly overview of all incomes of ParkWise.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 43,
+      "text": "The report will include a list of all parking lots, the total amount paid (per lot), and the number of vehicles in “other” colors which parked in the lot, in a given year.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 44,
+      "text": "The report will be ordered by parking lot’s city (descending order) and total amounts (ascending order).",
+      "status": "MAPPED"
+    },
+    {
+      "index": 45,
+      "text": "The report will be generated in both PDF and XML formats.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 46,
+      "text": "Customer Club Growth Report – a monthly overview of new and total club members.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 47,
+      "text": "The report includes, for each month in the current year, the number of customers who joined the club in that month, the cumulative total of active members by the end of the month, and the percentage of total growth compared to the previous month.",
+      "status": "MAPPED"
+    },
+    {
+      "index": 48,
+      "text": "The report will be ordered by month in ascending order.",
+      "status": "MAPPED"
+    }
+  ],
+  "templates_in_scope": [
+    {
+      "id": "T1",
+      "short_name": "Actor",
+      "description": "An Actor represents a role played by a user or any other system that interacts with the subject."
+    },
+    {
+      "id": "T2",
+      "short_name": "UseCase",
+      "description": "A Use Case represents a specific way of using a system by an actor. It is a list of actions or event steps."
+    },
+    {
+      "id": "T3",
+      "short_name": "SystemBoundary",
+      "description": "A System Boundary is used to define the scope of a system and to show the system as a separate entity within the use case diagram."
+    },
+    {
+      "id": "T4",
+      "short_name": "UseCase-Association-Actor",
+      "description": "An association between an Actor and a Use Case represents the interaction between them."
+    },
+    {
+      "id": "T5",
+      "short_name": "UseCase-Include-UseCase",
+      "description": "An Include relationship in UML represents the inclusion of the behavior described by another use case."
+    },
+    {
+      "id": "T6",
+      "short_name": "UseCase-Extend-UseCase",
+      "description": "An Extend relationship in UML is a directed relationship specifying how the behavior of a use case can be extended."
+    },
+    {
+      "id": "T7",
+      "short_name": "UseCase-Generalization-UseCase",
+      "description": "Generalization in UML is used to show that one use case is a specialization of another."
+    }
+  ],
+  "reference_guidelines": [
+    {
+      "id": "G1",
+      "guideline_name": "Store Parking Lot Information",
+      "description": "The system stores details about each parking lot, including unique identifier information.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.9,
+      "citation": "For each parking lot, the system will store a unique number, name, address, and city."
+    },
+    {
+      "id": "G2",
+      "guideline_name": "Administrator Updates Details",
+      "description": "An administrator interacts with the system to update parking lot details.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.8,
+      "citation": "An administrator will be responsible for updating these details in the system."
+    },
+    {
+      "id": "G3",
+      "guideline_name": "Store Available Spaces",
+      "description": "The system keeps track of the available spaces in each parking lot.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+    },
+    {
+      "id": "G4",
+      "guideline_name": "Gate Sensor Installation",
+      "description": "Gate sensors collect vehicle data upon entry and exit.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.7,
+      "citation": "A gate sensor (GS) will be installed at the entrance of each parking lot, identifying the arrival and departure of vehicles and sending the data to the system in real-time."
+    },
+    {
+      "id": "G5",
+      "guideline_name": "Vehicle Arrival Processing",
+      "description": "The system uses gate sensor data to verify vehicle records.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "When a vehicle arrives, the system will get its data (from the gate sensor) and search the database for the corresponding vehicle number."
+    },
+    {
+      "id": "G6",
+      "guideline_name": "Gate Sensor Barrier Control",
+      "description": "The system instructs the gate sensor to open barriers for recognized vehicles.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.7,
+      "citation": "If the vehicle is found, the system will instruct the gate sensor to open the barrier."
+    },
+    {
+      "id": "G7",
+      "guideline_name": "Client Instructions for Vehicle Entry",
+      "description": "Instructions are displayed to clients if the vehicle entry is not granted automatically.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "If the barrier does not open, the client will have to follow the instructions displayed at the parking lot entrance."
+    },
+    {
+      "id": "G8",
+      "guideline_name": "Client Data Entry for Vehicle Verification",
+      "description": "The system requires client input including personal and vehicle data for entry approval.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "These instructions guide the client to access the system and provide the required details, including first name, last name, mobile phone number, and three photos of the vehicle (front, rear, and side views)."
+    },
+    {
+      "id": "G9",
+      "guideline_name": "Automatic Vehicle Detail Extraction",
+      "description": "The system extracts and utilizes vehicle data from client-uploaded photos.",
+      "related_template_id": "T5",
+      "mapping_certainty": 0.6,
+      "citation": "Based on the uploaded photos, the system automatically extracts the vehicle’s details: number, type (as text), color, size (small, medium, or large), and weight (in kg)."
+    },
+    {
+      "id": "G10",
+      "guideline_name": "Vehicle Color Categorization",
+      "description": "The extraction module categorizes vehicle colors into predefined groups.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.6,
+      "citation": "The extraction photo-to-text module distinguishes among four predefined colors – white, black, silver, and blue – while all other colors are categorized as other."
+    },
+    {
+      "id": "G11",
+      "guideline_name": "Association Update for Vehicles and Clients",
+      "description": "The system updates the association between vehicles and clients in the database.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.8,
+      "citation": "If either the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client."
+    },
+    {
+      "id": "G12",
+      "guideline_name": "Final Barrier Opening",
+      "description": "The system instructs the gate sensor to open the barrier after updates.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.7,
+      "citation": "At the end of these updates, the system will instruct the gate sensor to open the barrier."
+    },
+    {
+      "id": "G13",
+      "guideline_name": "Parking Session Information Storage",
+      "description": "The system records the details of each parking session.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "After passing the barrier, the system will store the parking session information, including start time and vehicle details."
+    },
+    {
+      "id": "G14",
+      "guideline_name": "Client Vehicle Processing After Entry",
+      "description": "Client actions related to vehicle processing and conveyor assignment.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "The client will drive the vehicle to a vacant conveyor, leave the vehicle in parking, take the key, and lock the vehicle."
+    },
+    {
+      "id": "G15",
+      "guideline_name": "Conveyors’ Controller Operation",
+      "description": "The Conveyors’ Controller handles scanning and conveyor assignment for vehicles.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "The Conveyors’ Controller (CC) will scan the vehicle number, assign a conveyor and ask the system to run an optimization algorithm to find the nearest vacant space to the conveyor location."
+    },
+    {
+      "id": "G16",
+      "guideline_name": "Parking Space and Conveyor Location Representation",
+      "description": "Locations of parking spaces and conveyors are defined by specific coordinates.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The locations of both parking spaces and conveyors are represented by their floor number and their position on that floor as (x,y) coordinate."
+    },
+    {
+      "id": "G17",
+      "guideline_name": "Parking Space Size Specification",
+      "description": "Parking spaces are specified by size to indicate vehicle accommodation.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "Each parking space also has its size (small, medium, or large) to indicate which vehicles it can accommodate."
+    },
+    {
+      "id": "G18",
+      "guideline_name": "Conveyor’s Weight Capacity",
+      "description": "Each conveyor's weight capacity is a factor in vehicle transport.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "Each conveyor has a maximum vehicle weight it can transport."
+    },
+    {
+      "id": "G19",
+      "guideline_name": "Optimization Algorithm Considerations",
+      "description": "Space size and conveyor weight limit inform the optimization algorithm.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Both the parking-space size and the conveyor’s weight capacity will be considered by the optimization algorithm."
+    },
+    {
+      "id": "G20",
+      "guideline_name": "System Update After Vehicle Movement",
+      "description": "Post-vehicular movement, the system updates on completion and location.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "After moving the vehicle to the designated parking space, the conveyors’ controller will update the system on parking completion and the final location of the operating conveyor."
+    },
+    {
+      "id": "G21",
+      "guideline_name": "Vehicle Location Management",
+      "description": "System tracking of vehicle location within parking infrastructure.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The system will know at each moment where each vehicle is – on which conveyor or in which parking space."
+    },
+    {
+      "id": "G22",
+      "guideline_name": "Client Notification via SMS",
+      "description": "Clients receive SMS notifications containing parking details.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.7,
+      "citation": "An SMS message with the parking details will be sent to the client's phone."
+    },
+    {
+      "id": "G23",
+      "guideline_name": "System UI Data Access",
+      "description": "Parking details accessible via system UI upon client input.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "This data is also available through the system UI, if the client enters his or her phone number."
+    },
+    {
+      "id": "G24",
+      "guideline_name": "Non-retention of Conveyor Information Post-Parking",
+      "description": "System doesn't retain conveyor handling information after the parking session.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Only at the end of the parking session, there is no need to store the conveyors that handle each vehicle (as long as the vehicle is in the lot, this information is important in case of problems)."
+    },
+    {
+      "id": "G25",
+      "guideline_name": "Vehicle Retrieval by Client",
+      "description": "Clients retrieve vehicles by interacting with the system UI.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "For getting the vehicle back, the client types in the system UI the vehicle number, his or her phone number (for validation), and clicks \"end parking\"."
+    },
+    {
+      "id": "G26",
+      "guideline_name": "Conveyor Utilization During Retrieval",
+      "description": "Vacant conveyors are used for vehicle retrieval to the parking lot gate.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Upon requesting to end parking, a vacant conveyor (assigned by the conveyors’ controller) transfers the vehicle to the parking lot gate."
+    },
+    {
+      "id": "G27",
+      "guideline_name": "Payment Process",
+      "description": "Clients complete payment through the system UI.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "The client will be requested to pay via the system UI."
+    },
+    {
+      "id": "G28",
+      "guideline_name": "Rate Calculation Based on IRS Data",
+      "description": "The system calculates payment rates based on data from IRS.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "The payment amount will be calculated based on fixed price lists, sent yearly by the Integrated Rate Service (IRS) in a JSON format."
+    },
+    {
+      "id": "G29",
+      "guideline_name": "Parking Lot-Specific Price Lists",
+      "description": "Each parking lot can adopt different pricing structures for services.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Each parking lot can adopt a different price list, which includes the price for the first hour, the price for each additional hour, and the price for a full day."
+    },
+    {
+      "id": "G30",
+      "guideline_name": "Historical Price Data Maintenance",
+      "description": "The system maintains a record of price history for each lot.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The system will maintain price history for each parking lot."
+    },
+    {
+      "id": "G31",
+      "guideline_name": "External Handling of Payment Procedures",
+      "description": "Payment is processed through an external Payment Gateway (PG).",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.6,
+      "citation": "Payment is handled outside the system: the system will send a request to the external Payment Gateway (PG) with the client details and the payment amount;"
+    },
+    {
+      "id": "G32",
+      "guideline_name": "Payment Verification and Gate Barrier Access",
+      "description": "The system opens the gate barrier post payment approval.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.7,
+      "citation": "Once the payment is approved, the payment gateway will notify the system, which will instruct the gate sensor to open the gate."
+    },
+    {
+      "id": "G33",
+      "guideline_name": "Receipt Issuance Upon Request",
+      "description": "Clients can request a receipt showing full transaction details.",
+      "related_template_id": "T4",
+      "mapping_certainty": 0.7,
+      "citation": "The system will further issue a receipt at the client’s request."
+    },
+    {
+      "id": "G34",
+      "guideline_name": "Content Details of Issued Receipt",
+      "description": "Receipts include a detailed breakdown of transaction particulars.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "The receipt will show the client, vehicle, and parking details, the overall number of hours, the price rate (according to the parking duration), and the final amount."
+    },
+    {
+      "id": "G35",
+      "guideline_name": "Management of Client Club",
+      "description": "ParkWise manages a club providing discounts to its members.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "ParkWise also manages a client’s club."
+    },
+    {
+      "id": "G36",
+      "guideline_name": "Club Member Parking Discounts",
+      "description": "Club members receive discounts for parking services.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Club members will get an automatic, fixed discount for all parking sessions."
+    },
+    {
+      "id": "G37",
+      "guideline_name": "Client Club Registration",
+      "description": "Clients can register to a club via the system UI.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Clients can register to the club through the system UI at any point of time."
+    },
+    {
+      "id": "G38",
+      "guideline_name": "Club Membership Details",
+      "description": "Membership in the club is free and perpetual.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Membership is free and remains active for life."
+    },
+    {
+      "id": "G39",
+      "guideline_name": "Client Selection of Preferred Parking Lots",
+      "description": "Clients can specify preferred lots with data stored for audits.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "During registration, and at any time afterwards, the client can select preferred parking lots (the selection dates are stored for audit purposes)."
+    },
+    {
+      "id": "G40",
+      "guideline_name": "Free First Session for Club Members",
+      "description": "Club members enjoy a free session at selected lots in the registration month.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "The member’s first parking session in the registration month, in any of the selected parking lots, is free."
+    },
+    {
+      "id": "G41",
+      "guideline_name": "Report Generation Capabilities",
+      "description": "Administrators can generate reports on company metrics.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "The administrator should be able to generate the following reports:"
+    },
+    {
+      "id": "G42",
+      "guideline_name": "Annual Summary Report Content",
+      "description": "Yearly summary includes financial and demographic data.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Annual Summary Report – a yearly overview of all incomes of ParkWise."
+    },
+    {
+      "id": "G43",
+      "guideline_name": "Details of Annual Report",
+      "description": "The annual reports outline critical financial metrics for each lot.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The report will include a list of all parking lots, the total amount paid (per lot), and the number of vehicles in “other” colors which parked in the lot, in a given year."
+    },
+    {
+      "id": "G44",
+      "guideline_name": "Sorting of Report Data",
+      "description": "Data in reports is systematically ordered for easy analysis.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The report will be ordered by parking lot’s city (descending order) and total amounts (ascending order)."
+    },
+    {
+      "id": "G45",
+      "guideline_name": "Report Format Options",
+      "description": "Reports can be generated and exported in PDF and XML formats.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The report will be generated in both PDF and XML formats."
+    },
+    {
+      "id": "G46",
+      "guideline_name": "Customer Club Growth Report Overview",
+      "description": "Monthly report focuses on club membership statistics.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.7,
+      "citation": "Customer Club Growth Report – a monthly overview of new and total club members."
+    },
+    {
+      "id": "G47",
+      "guideline_name": "Club Growth Report Details",
+      "description": "Monthly reports provide insights into membership growth patterns.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The report includes, for each month in the current year, the number of customers who joined the club in that month, the cumulative total of active members by the end of the month, and the percentage of total growth compared to the previous month."
+    },
+    {
+      "id": "G48",
+      "guideline_name": "Sorting Order of Club Growth Report",
+      "description": "Club growth data is sorted by month for temporal analysis.",
+      "related_template_id": "T2",
+      "mapping_certainty": 0.8,
+      "citation": "The report will be ordered by month in ascending order."
+    }
+  ],
+  "questions_to_language_advisor": [
+    {
+      "id": "Q_lang_001",
+      "target_agent": "language_advisor",
+      "related_template_ids": [
+        "T5"
+      ],
+      "question": "Does the Include relationship fit the automatic vehicle detail extraction based on uploaded photos, or should this be another relationship type?"
+    }
+  ],
+  "questions_to_domain_advisor": []
+}

@@ -1,0 +1,192 @@
+//Final-UMLClasDiagram
+@startuml
+class Employee  {
+  - id: Integer
+  - name: String
+  - phoneNumber: String
+  - officeAddress: String
+  - email: String
+  - employmentStartDate: Date
+}
+
+class MarketingEmployee extends Employee {
+  + updateWineInformation(wine: Wine): void
+  + updateWineType(wine: Wine, wineType: WineType): void
+  + modifyPriceDetails(wine: Wine, price: Double): void
+  + modifyProductImage(wine: Wine, productImage: String): void
+  + linkwineTothierTypes(wine: Wine): void
+}
+
+class SalesEmployee extends Employee {
+  + generateUnproductiveEmployeesReport(startDate: Date, endDate: Date): void
+  + generateWineRecommendationReportForCustomer(customer: Customer): List<Wine>
+  +brows availble wines(): List<Wine>
+}
+
+' Add the {disjoint, incomplete} constraint
+note right of Employee
+  {disjoint, incomplete}
+end note
+
+class Customer {
+  - id: Integer
+  - name: String
+  - phoneNumber: String
+  - deliveryAddress: String
+  - email: String
+  - dateOfFirstContact: Date
+  - orderId: Integer
+}
+
+class Order {
+  - orderNumber: Integer
+  - orderDate: Date
+  - currentStatus: OrderStatus
+  - shipmentDate: Date
+  - assignedEmployee: Employee
+  -MainCustomer: Customer
+}
+
+class UrgentOrder extends Order {
+  - priorityLevel: PriorityLevel
+  - expectedDeliveryTime: Date
+}
+
+class RegularOrder extends Order {
+
+}
+
+' Add the {disjoint, complete} constraint between Order, RegularOrder, and UrgentOrder
+note right of Order
+  {disjoint, complete}
+end note
+
+class OrderItem {
+  - orderNumber: Integer
+  - wineCatalogeNumber: Integer
+  - quantity: Integer
+}
+
+class Wine {
+  - catalogNumber: String
+  - manufacturerUniqueautoId: Integer
+  - name: String
+  - WinetypeSerialnum: Integer
+  - description: String
+  - productionYear: Integer
+  - pricePerBottle: Double
+  - sweetnessLevel: SweetnessLevel
+  - productImage: String
+
+}
+
+class Manufacturer {
+  - UniqueautoId: Integer
+  - fullName: String
+  - contactPhoneNumber: Integer
+  - address: String
+  - email: String
+}
+
+class StorageLocation {
+  - name: String
+  - uniqueNumber: String
+}
+
+class Inventory <<association class>>{
+  - wineCatalogeId: Integer
+  - storageLocationUID: String
+  - quantity: Integer
+}
+
+class WineType {
+  - SerialNumber: Integer
+  - name: String
+ 
+}
+class FoodPairing{
+- dishName: String
+  - Recipes: String
+  -WineTypeSerialNum: Integer
+}
+
+class Occasion {
+  - id: Integer
+  - name: String
+  - description: String
+  - season: String
+  - location: LocationType
+}
+
+' Association Class between Wine and Occasion
+class WineOccasion <<association class>> {
+  - wineCategoryNumber: Integer
+  - occasionId: Integer
+}
+class GefenSystem {
+  + processMonthlyWineData(xmlData: String): void
+  + processWeeklyPurchaseUpdates(xmlData: String): void
+  + sendInventoryDataToGefen(inventoryData: JSONObject): void
+}
+
+' Association Class between Customer and RegularOrder
+class JointOrder <<association class>> {
+  - orderId: Integer
+  - customerId: Integer
+}
+
+' Enumerations
+class OrderStatus << (E, #8DD3C7) Enumeration >> {
+  - IN_PROCESS
+  - DISPATCHED
+  - DELIVERED
+  - PAID
+  - SUSPENDED
+  - CANCELED
+}
+
+class PriorityLevel << (E, #8DD3C7) Enumeration >> {
+  - LEVEL_1
+  - LEVEL_2
+  - LEVEL_3
+  - LEVEL_4
+  - LEVEL_5
+}
+
+class LocationType << (E, #8DD3C7) Enumeration >> {
+  - INDOOR
+  - OUTDOOR
+}
+
+class SweetnessLevel << (E, #8DD3C7) Enumeration >> {
+  - DRY
+  - SEMI_DRY
+  - SEMI_SWEET
+  - SWEET
+}
+
+
+
+' Relationships with association class
+WineType "1" -- "0..*" WineOccasion : categorizes
+Occasion "1" -- "0..*" WineOccasion : categorizes
+Customer "1" -- "*" JointOrder : partOfJointOrder
+RegularOrder "1" -- "*" JointOrder: typeof
+
+' Other Relationships
+SalesEmployee "1" -- "*" Order : places
+Customer "1" -- "*" UrgentOrder : orders
+Order *-- OrderItem : contains
+OrderItem "*" -- "1" Wine : includes
+Wine "*" -- "1" Manufacturer : producedBy
+Wine "1" - "*" Inventory : storedIn
+Inventory "*" - "1" StorageLocation : locatedAt
+Wine o-- WineType : belongsTo
+Order ..> OrderStatus 
+UrgentOrder ..> PriorityLevel 
+Wine ..> SweetnessLevel 
+Occasion ..> LocationType
+WineType "1"--"*" FoodPairing: recommends
+GefenSystem "1" -- "*" Manufacturer : updates
+GefenSystem "1" -- "*" Wine : providesDetails
+@enduml

@@ -1,0 +1,333 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70249",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "ParkingLot class has attributes for a unique lot identifier, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class does not explicitly list an attribute for available spaces.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Each Vehicle is associated with a single Client, indicated through a one-to-many relationship between Client and Vehicle.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "ParkingSession class includes attributes such as startTime and vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class includes an attribute for size, indicating capacity for vehicle accommodation.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class has a maxWeightKg attribute to define its vehicle transport capacity.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "There is no explicit mention of storing conveyors that handle vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "PriceList class associated with ParkingLot describes pricing for the first hour, additional hours, and full day.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "ClubMembership class is associated with the Client class, indicating management of memberships.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The guideline is mentioned, though the UML does not detail the discount mechanism.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Discount for club members is implied but not shown in class attributes or relationships."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "ParkingSession has an attribute isFreeSession, indicating consideration of free sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "AnnualSummaryReportService class is intended to generate reports including incomes overview, matching the report generation requirement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "AnnualLotSummary class includes year, totalAmountPaid, and otherColorVehiclesCount, aligning with report contents.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "No UML detail found for sorting Annual Summary Report by city and total amounts.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "AnnualSummaryReportService class has methods to export reports in PDF and XML formats.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "There is no explicit representation for the Customer Club Growth Report in the UML.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "No UML class details monthly memberships, cumulative totals, and growth rates.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No explicit evidence of ordering the Customer Club Growth Report by month in ascending order.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G2",
+      "evidence": "There is no explicit attribute in the ParkingLot class detailing available spaces, but the relation between ParkingLot and ParkingSpace implicitly allows tracking of occupied spaces by checking isOccupied attribute in ParkingSpace. The lack of an explicit attribute might suggest that tracking is indirectly performed through associated ParkingSpace instances.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the direct attribute is missing, the existing structure allows implicit determination of availability through related ParkingSpaces."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The AnnualSummaryReportService class responsible for generating reports may potentially sort by accessing the city attribute of associated ParkingLots, but there is no explicit operation mentioned for such sorting.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The class relates to the correct objects where sorting keys are present, but lacks explicit operations that enforce sorting order."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Customer club growth is partially indicated through association of the Client class with the ClubMembership class. However, no specific class or method represents a monthly growth report.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The class structure captures club membership but lacks specific reporting functionality."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Association between Client and ClubMembership indicates potential tracking of membership counts, but no capacity for reporting monthly new membership numbers and growth percentage explicitly.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While club memberships are tracked individually, summarized reporting capacities are not present."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The relationship between Client and PreferredLotSelection allows each client to associate multiple preferred lot selections, with each selection linked to one parking lot.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This fragment supports client preferences for parking lots, which provides additional personalisation and flexibility, aligning with domain intentions."
+    },
+    {
+      "fragment": "The class PreferredLotSelection includes attributes for a selectionId and selectionDate, indicating when a client chose a specific parking lot as preferred.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This structure aligns with guideline intentions to track client's preferred lot selections and audit trail, enhancing the personalisation feature."
+    },
+    {
+      "fragment": "VehiclePhoto class manages photos associated with vehicles with attributes for photoId, viewType, and filePath.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Capturing photos of vehicles offers additional verification and documentation, which can enhance security and operational records within the domain context."
+    },
+    {
+      "fragment": "The class AnnualSummaryReportService offers methods to export the annual summary in both PDF and XML formats.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Providing export functionality in multiple formats like PDF and XML adds versatility to the report generation process, accommodating different digital environments and needs."
+    },
+    {
+      "fragment": "The mapping of parking lot to numerous parking sessions and price lists implies entity-level associations that assist in coordinating and managing multiple concurrent aspects of the system.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The association reflects realistic operational requirements in managing parking sessions and pricing per lot, supporting comprehensive system functionality."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Scored based on potential found improving existing mapping."
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Scored based on potential found improving existing mapping."
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Scored based on potential found improving existing mapping."
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Scored based on potential found improving existing mapping."
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The relationship between Client and PreferredLotSelection allows each client to associate multiple preferred lot selections, with each selection linked to one parking lot.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The class PreferredLotSelection includes attributes for a selectionId and selectionDate, indicating when a client chose a specific parking lot as preferred.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "VehiclePhoto class manages photos associated with vehicles with attributes for photoId, viewType, and filePath.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The class AnnualSummaryReportService offers methods to export the annual summary in both PDF and XML formats.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The mapping of parking lot to numerous parking sessions and price lists implies entity-level associations that assist in coordinating and managing multiple concurrent aspects of the system.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 15.5,
+  "max_score": 18.0,
+  "score_pct": 86.1,
+  "overall_assessment": "The case model effectively satisfies most of the relevant guidelines, with minor areas for improvement in explicit operations and reporting functionalities."
+}

@@ -1,0 +1,72 @@
+@startuml
+actor Customer as c
+actor Employee as e
+actor "Sales Staff" as ss
+actor "Marketing Employee" as me
+actor "Gefen System" as gs
+actor "Inventory Employee" as is
+
+e <|-- ss
+e <|-- me
+
+left to right direction
+rectangle Cheers {
+    usecase "Order Wine" as UC1
+    usecase "Joint Order" as UC2
+    usecase "View Wine Information" as UC3
+    usecase "Place Customer Orders" as UC4
+    usecase UC5 [
+    Mark Order as Urgent/Regular
+    ---
+    <b>Extension Point
+    Order marked as Urgent
+    ]
+    usecase "Browse available wines" as UC6
+    usecase "Set Delivery Time" as UC7
+    usecase "Set Priority Level" as UC8
+    usecase "Generate Wine Recommendation Report" as UC9
+    usecase "Generate Unproductive Employees Report" as UC10
+    usecase "Update Wine Information and Types" as UC11
+    usecase "Modify Product Images" as UC12
+    usecase "Modify Price Details" as UC13
+    usecase "Link Wines to Their Types" as UC14
+    usecase "Recommend Occasions Suitable for\n Drinking Each Wine Type" as UC15
+    usecase "Send a monthly XML Data Regarding Wine Producers\n and the Wines They Produce" as UC16
+    usecase "Send Weekly Updates on the \nQuantity of Wine Purchased" as UC17
+    usecase "Generate Current Inventory Report" as UC18
+    usecase "Update Inventory After Sale" as UC19
+    usecase "Send report to Gefen system every weekend" as UC20
+}
+
+c --> UC1
+UC2 -r-> UC1 : <<extend>>
+
+
+e --> UC1
+e --> UC3
+
+ss --> UC4
+UC6 --> UC4 : <<extend>>
+UC4 --> UC5 : <<include>>
+
+
+UC7 -d-> UC5 : <<extend>>
+UC8 -d-> UC5 : <<extend>>
+
+ss --> UC9
+ss --> UC10
+
+me --> UC11
+UC12 -u-> UC11 : <<extend>>
+UC13 -u-> UC11 : <<extend>>
+UC11 -d-> UC14 : <<include>>
+
+me --> UC15
+
+gs --> UC16
+gs --> UC17
+
+is --> UC18
+is --> UC19
+UC18 -d-> UC20 : <<include>>
+@enduml

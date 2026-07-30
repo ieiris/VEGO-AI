@@ -1,0 +1,170 @@
+@startuml
+enum Status {
+    IN_PROCESS
+    DISPATCHED
+    DELIVERED
+    PAID
+    SUSPENDED
+    CANCELED
+}
+
+enum PriorityLevel {
+    1
+    2
+    3
+    4
+    5
+}
+
+enum SweetnessLevel {
+    DRY
+    SEMI_DRY
+    SEMI_SWEET
+    SWEET
+}
+
+abstract class Human {
+    - name: String
+    - phoneNumber: String
+    - email: String
+    - address: String
+}
+
+class System {
+    + generateReports(): void
+}
+
+class Order {
+    - orderNumber: longInt
+    - orderDate: Date
+    - status: Status
+    - shipmentDate: Date
+    - assignedEmployee : SalesStaff
+    + placeOrder(): void
+    + recordCustomerInformation(): void
+}
+
+class UrgentOrder {
+    - priorityLevel: PriorityLevel
+    - expectedDeliveryTime: Date
+}
+
+class RegularOrder {
+    - mainCustomer: Customer
+}
+
+Order <|-- UrgentOrder : {complete, disjoint}
+Order <|-- RegularOrder
+
+class Customer {
+    - customerID: String
+    - dateOfFirstContact: Date
+    + placeOrder(): void
+}
+
+class Employee {
+    - employeeID: String
+    - officeAddress: String
+    - employmentStartDate: Date
+    + viewWineInformation(): void
+}
+
+class SalesStaff {
+    + placingCustomerOrder(): void
+    + trackEmployeeDetails(): void
+    + browsingAvailableWines(): void
+    + generateCurrentInventoryReport(): void
+    + generateWineRecommendationReport(): void
+    + generateUnproductiveEmployeeReport(): void
+}
+
+class MarketingEmployee {
+    + recommendedOccasion(): String
+    + linkWine(): void
+    + updatingWineInformation(): void
+    + providingGeneralDescription(): void
+    + managingWineProducts(): void
+}
+
+class CustomerRegularOrder {
+    - customerID: String
+    - orderNumber: String
+    - specificWine: String
+    - quantities: int
+}
+
+class Wine {
+    - wineSerialNumber: longInt
+    - wineType: String
+    - name: String
+    - description: String
+    - productionYear: Integer
+    - pricePerBottle: double
+    - sweetnessLevel: SweetnessLevel
+    - productImage: URL
+    - catalogNumber: longInt
+    - manufacturerNumber: longInt
+}
+
+class FoodPairing {
+    - dishName: String
+    - URL1: URL
+    - URL2: URL
+    - URL3: URL
+    - URL4: URL
+    - URL5: URL
+}
+
+class Manufacturer {
+    - manufacturerNumber: longInt
+    - fullName: String
+    - contactPhoneNumber: String
+    - address: String
+    - email: String
+}
+
+class StorageLocation {
+    - uniqueNumber: longInt
+    - locationName: String
+    + inventoryUpdate(): void
+}
+
+class WineStorageLocation {
+    -numberOfBottles: int
+}
+
+class Gefen {
+    + sendXMLData(): void
+    + weeklyUpdates(): String
+}
+
+Human <|-- Employee : {complete, disjoint}
+Human <|-- Customer : {complete, disjoint}
+Employee <|-- SalesStaff : {incomplete, disjoint}
+Employee <|-- MarketingEmployee : {incomplete, disjoint}
+
+System "1" -- "0.." Order
+System "1" -- "0.." Human
+System "1" -- "0.." Wine
+
+Wine "1" -- "1" Manufacturer : produced by
+Wine "0.." o-- "0..*" StorageLocation
+Wine "1" -- "0..*" FoodPairing : includes
+
+Wine ..> WineStorageLocation : "{linking table}"
+StorageLocation ..> WineStorageLocation : "{linking table}"
+
+Customer "*" -- "0..*" RegularOrder : "places"
+Customer "1" -- "0..*" UrgentOrder  : "places"
+Customer ..> CustomerRegularOrder : "{linking table}"
+RegularOrder ..> CustomerRegularOrder : "{linking table}"
+
+SalesStaff "1" -- "0..*" RegularOrder : "assigned to"
+SalesStaff "1" -- "0..*" UrgentOrder : "assigned to"
+
+System "1" -- "1" Gefen : integrates with
+
+Order ..> Status : uses
+UrgentOrder ..> PriorityLevel : uses
+Wine ..> SweetnessLevel : uses
+@enduml

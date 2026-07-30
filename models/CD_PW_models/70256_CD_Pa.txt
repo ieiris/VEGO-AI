@@ -1,0 +1,144 @@
+@startuml
+\
+title ParkWise System - Class Diagram
+
+left to right direction
+skinparam classAttributeIconSize 0
+
+' ===============================
+' CLASSES
+' ===============================
+
+class ParkingLot {
+    +int lotNumber
+    +string name
+    +string address
+    +string city
+    +numAvaSpaces
+    +int availableSpaces
+
+    +generateAnnualSummary(year : int)
+}
+
+class ParkingSpace {
+    +spaceId
+    +floor
+    +size : ParkingSpaceSize
+    +pos x
+    +pos y
+    +isVacant
+}
+
+enum ParkingSpaceSize {
+    small
+    medium
+    large
+}
+
+class Conveyor {
+    +conveyorId
+    +floor
+    +pos x
+    +pos y
+    +maxWeight
+    +isVacant
+}
+
+class PriceList {
+    +priceListId
+    +firstHourPrice
+    +additionalHourPrice
+    +fullDayPrice
+    +year 
+}
+
+class Client {
+    +clientId
+    +firstName
+    +lastName
+    +phoneNumber
+}
+
+class Membership {
+    +membershipNum
+    +membershipStartDate
+    +discountPercent
+    +isActive
+}
+
+class PreferredLotSelection {
+    +selectionNum
+    +selectionDate
+}
+
+class Vehicle {
+    +vehicleNumber
+    +type
+    +weight
+    +vehSize : VehicleSize
+    +vehColor : VehicleColor
+    +photoFront
+    +photoRear
+    +photoRightSide
+    +photoLeftSide
+}
+
+enum VehicleSize {
+    small
+    medium
+    large
+}
+
+enum VehicleColor {
+    black
+    white
+    silver
+    blue
+    other
+}
+
+class ParkingSession {
+    +sessionId
+    +date
+    +startTime
+    +endTime
+    +totalHours
+    +finalAmount
+    +isFree
+}
+
+
+class Payment {
+    +paymentId
+    +amount
+    +paymentTime    
+    +isApproved
+}
+
+' ===============================
+' RELATIONSHIPS
+' ===============================
+
+ParkingLot "1" *-- " * " ParkingSpace
+ParkingLot "1" -- " * " Conveyor
+ParkingLot "1" -- " * " PriceList
+ParkingLot "1" -- " * " ParkingSession
+
+Client "1" *-- "0..1" Membership
+Client "1" -- " * " Vehicle
+
+Client "1" -- " * " PreferredLotSelection
+PreferredLotSelection "*" -- "1" ParkingLot
+
+
+Vehicle .. VehicleSize
+Vehicle .. VehicleColor
+
+Vehicle "1" -- "*" ParkingSession
+ParkingSpace "1" -- "*" ParkingSession
+ParkingSpace .. ParkingSpaceSize
+ParkingSession "1" -- "0..1" Payment
+Conveyor  --  ParkingSession
+Client"1" --"*"ParkingSession
+
+@enduml

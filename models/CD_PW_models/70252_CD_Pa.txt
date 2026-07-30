@@ -1,0 +1,195 @@
+#Final Code
+
+@startuml
+skinparam classAttributeIconSize 0
+
+' ===== Enums =====
+enum VehicleSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum VehicleColor {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+enum SessionStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+' ===== Core domain =====
+class ParkingLot {
+  +lotId: int
+  +name: String
+  +address: String
+  +city: String
+  +availableSpaces: int
+}
+
+class ParkingSpace {
+  +spaceId: int
+  +floor: int
+  +x: int
+  +y: int
+  +size: VehicleSize
+  +occupied: boolean
+}
+
+class Conveyor {
+  +conveyorId: int
+  +floor: int
+  +x: int
+  +y: int
+  +maxWeightKg: double
+}
+
+class Vehicle {
+  +vehicleNumber: String
+  +type: String
+  +color: VehicleColor
+  +size: VehicleSize
+  +weightKg: double
+}
+
+class Client {
+  +clientId: int
+  +firstName: String
+  +lastName: String
+  +phone: String
+}
+
+class ParkingSession {
+  +sessionId: int
+  +startTime: DateTime
+  +endTime: DateTime
+  +status: SessionStatus
+  +totalHours: double
+}
+
+' ===== Pricing & payments =====
+class PriceList {
+  +priceListId: int
+  +validFrom: Date
+  +validTo: Date
+  +firstHourPrice: double
+  +extraHourPrice: double
+  +fullDayPrice: double
+}
+
+class Payment {
+  +paymentId: int
+  +amount: double
+  +time: DateTime
+  +status: PaymentStatus
+}
+
+' ===== Club (Association Class) =====
+class ClubMembership {
+  +membershipId: int
+  +registrationDate: Date
+  +discountPercent: double
+}
+
+' Association class לקשר "מועדון–חניון מועדף"
+class PreferredLot {
+  +selectionDate: Date
+}
+
+' ===== Interfaces & realizations =====
+interface IPaymentGateway {
+  +requestPayment(amount: double)
+}
+
+interface IIRSService {
+  +sendPriceList(json: String)
+}
+
+interface ISystemUI {
+  +startParking()
+  +endParking()
+}
+
+interface IReportService {
+  +generateAnnualSummary(year: int)
+  +generateClubGrowthReport(year: int)
+}
+
+class ExternalPaymentGateway
+class IRSAdapter
+class WebSystemUI
+class ReportGenerator
+
+ExternalPaymentGateway ..|> IPaymentGateway
+IRSAdapter ..|> IIRSService
+WebSystemUI ..|> ISystemUI
+ReportGenerator ..|> IReportService
+
+' ===== Gate / conveyors external components =====
+class GateSensor
+class ConveyorsController
+
+' ===== Associations (business rules) =====
+' חניון – מקומות חניה, מסועים, היסטוריית מחירים, חניות
+ParkingLot "1" -- "many" ParkingSpace
+ParkingLot "1" -- "many" Conveyor
+ParkingLot "1" -- "many" ParkingSession
+ParkingLot "1" -- "many" PriceList
+
+' לקוח – רכבים וחניות
+Client "1" -- "many" Vehicle   : owns >
+Client "1" -- "many" ParkingSession
+
+' כל רכב שייך בדיוק ללקוח אחד
+Vehicle "1" -- "1" Client
+
+' חניה – רכב, מקום חניה, תשלום
+Vehicle "1" -- "many" ParkingSession
+ParkingSession "1" -- "1" Vehicle
+ParkingSession "1" -- "1" ParkingSpace
+ParkingSession "1" -- "0..1" Payment
+
+' מידע על מסועים בזמן החניה
+ParkingSession "0..*" -- "0..*" Conveyor
+
+' מועדון – לכל לקוח 0 או 1 חברות
+Client "1" -- "0..1" ClubMembership
+
+' ===== Association class PreferredLot =====
+' ClubMembership–ParkingLot עם מאפיין selectionDate
+ClubMembership "1" -- "many" PreferredLot
+PreferredLot "1" -- "1" ParkingLot
+
+' ===== Dependencies (שימוש חד־כיווני) =====
+ReportGenerator ..> ParkingLot
+ReportGenerator ..> ParkingSession
+ReportGenerator ..> Client
+
+WebSystemUI ..> Client
+WebSystemUI ..> ParkingSession
+WebSystemUI ..> Payment
+
+GateSensor ..> ParkingLot
+GateSensor ..> Vehicle
+GateSensor ..> ParkingSession
+
+ConveyorsController ..> Conveyor
+ConveyorsController ..> ParkingSpace
+ConveyorsController ..> ParkingSession
+
+ExternalPaymentGateway ..> Payment
+IRSAdapter ..> PriceList
+
+@enduml

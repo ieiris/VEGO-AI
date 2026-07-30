@@ -1,0 +1,174 @@
+@startuml
+!define CLASS_ENTITY #E2E2E2
+!define ENUM_ENTITY #CCCCFF
+
+class "Employee" as employee << (C,#E2E2E2) >>
+{
+  - id: Integer
+  - name: String
+  - phoneNumber: String
+  - officeAddress: String
+  - email: String
+  - employmentStartDate: Date
+  + viewWines()
+}
+
+class "SalesStaff" as salesStaff << (C,#E2E2E2) >>
+{
+  - salesTarget: Double
+  + placeOrder()
+  + generateUnproductiveEmployeesReport()
+  + generateWineRecommendationReportForCustomers()
+  + updateInventoryAfterSale()
+}
+
+class "MarketingEmployees" as marketingEmployees << (C,#E2E2E2) >>
+{
+  - marketingRole: String
+  + manageWineInformation()
+  + updateWineQuantity()
+  + recommendOccasionsForWine()
+  + manageStorageLocations()
+}
+
+class "Customer" as customer << (C,#E2E2E2) >>
+{
+  - id: Integer
+  - name: String
+  - phoneNumber: String
+  - deliveryAddress: String
+  - email: String
+  - firstContactDate: Date
+}
+
+class "Order" as order << (C,#E2E2E2) >>
+{
+  - orderNumber: Integer
+  - orderDate: Date
+  - status: OrderStatus
+  - shipmentDate: Date
+  - assignedEmployeeId: Integer
+  - customerId: Integer
+  + updateOrderStatus()
+}
+
+class "Wine" as wine << (C,#E2E2E2) >>
+{
+  - id: Integer
+  - name: String
+  - description: String
+  - productionYear: Integer
+  - pricePerBottle: Double
+  - sweetnessLevel: SweetnessLevel
+  - productImage: String
+  - manufacturerNumber: Integer
+  - catalogNumber: Integer
+  + updateWineQuantity()
+}
+
+class "WineOrder" as wineOrder << (C,#E2E2E2) >>
+{
+  - orderId: Integer
+  - wineId: Integer
+  - quantity: Integer
+}
+
+class "WineType" as wineType << (C,#E2E2E2) >>
+{
+  - id: Integer
+  - name: String
+  - serialNumber: String
+}
+
+class "FoodPairing" as foodPairing << (C,#E2E2E2) >>
+{
+  - id: Integer
+  - dishName: String
+  - recipeUrls: List<String>
+  - wineTypeId: Integer
+}
+
+class "RecommendedOccasion" as recommendedOccasion << (C,#E2E2E2) >>
+{
+  - id: Integer
+  - occasion: String
+  - description: String
+  - season: Season
+  - location: Location
+  - marketingEmployeeId: Integer
+  - wineTypeId: Integer
+}
+
+class "Manufacturer" as manufacturer << (C,#E2E2E2) >>
+{
+  - id: Integer
+  - fullName: String
+  - contactPhoneNumber: String
+  - address: String
+  - email: String
+}
+
+class "StorageLocation" as storageLocation << (C,#E2E2E2) >>
+{
+  - id: Integer
+  - locationNumber: Integer
+  - name: String
+}
+
+class "WineStorage" as wineStorage << (C,#E2E2E2) >>
+{
+  - wineId: Integer
+  - storageLocationId: Integer
+  - quantity: Integer
+}
+
+enum "OrderStatus" as orderStatus << (E,#CCCCFF) >>
+{
+  IN_PROCESS
+  DISPATCHED
+  DELIVERED
+  PAID
+  SUSPENDED
+  CANCELED
+}
+
+enum "SweetnessLevel" as sweetnessLevel << (E,#CCCCFF) >>
+{
+  DRY
+  SEMI_DRY
+  SEMI_SWEET
+  SWEET
+}
+
+enum "Season" as season << (E,#CCCCFF) >>
+{
+  SPRING
+  SUMMER
+  AUTUMN
+  WINTER
+}
+
+enum "Location" as location << (E,#CCCCFF) >>
+{
+  INDOOR
+  OUTDOOR
+}
+
+employee <|-- salesStaff
+employee <|-- marketingEmployees
+salesStaff "1" -- "0..*" order
+customer "1" --* "1..*" order
+order "1" --* "1..*" wine
+(order, wine) .. wineOrder
+wine "1" -- "1" manufacturer
+wine "1" -- "0..*" foodPairing
+wineType "1" --* "1" wine
+recommendedOccasion "1" --* "1" marketingEmployees
+recommendedOccasion "1" --* "1" wineType
+recommendedOccasion -- season
+recommendedOccasion -- location
+order -- orderStatus
+wine -- sweetnessLevel
+wine "0..*" -- "0..*" storageLocation
+(wine, storageLocation) .. wineStorage
+@enduml

@@ -1,0 +1,165 @@
+@startuml
+' Order and Subclasses
+abstract class Order {
+    - order_number : String
+    - order_date : Date
+    - current_status : OrderStatusEnum
+    - shipment_date : Date
+    + update_status(new_status : OrderStatusEnum)
+    + update_inventory()  // Method to update inventory after order
+}
+
+enum OrderStatusEnum {
+    in_process
+    dispatched
+    delivered
+    paid
+    suspended
+    canceled
+}
+
+class RegularOrder {
+    - is_joint : Boolean
+    + is_joint_order() : Boolean
+}
+
+class UrgentOrder {
+    - priority_level : Integer
+    - expected_delivery_time : DateTime
+    + set_priority(level : Integer)
+    + set_expected_delivery(time : DateTime)
+}
+
+Order <|-- RegularOrder : {disjoint, complete}
+Order <|-- UrgentOrder : {disjoint, complete}
+
+' Customer Class
+class Customer {
+    - customer_id : String
+    - name : String
+    - phone_number : String
+    - delivery_address : String
+    - email : String
+    - first_contact_date : Date
+}
+
+' Association Class for RegularOrder and Customer
+class RegularOrderCustomer {
+    - main_customer : Boolean
+}
+
+RegularOrder "1" --> "1..*" RegularOrderCustomer
+RegularOrderCustomer "0..*" --> "1" Customer
+
+' Employee and Subclasses
+abstract class Employee {
+    - employee_id : String
+    - name : String
+    - phone_number : String
+    - office_address : String
+    - email : String
+    - employment_start_date : Date
+    + update_employee_info(phone : String, email : String)
+    + as_customer() : Customer
+    + view_available_wines() : List<Wine>  // Method to view available wines
+}
+
+class MarketingEmployee {
+    + update_wine_info(wine : Wine)
+}
+
+class SalesEmployee {
+    + place_customer_order(order : Order)
+    + generate_sales_report(period : DateRange)
+}
+
+Employee <|-- MarketingEmployee : {disjoint, complete}
+Employee <|-- SalesEmployee : {disjoint, complete}
+
+SalesEmployee "1" --> "0..*" Order : "assigned_employee"
+
+' Wine and Related Classes
+class Wine {
+    - catalog_number : String
+    - name : String
+    - production_year : Integer
+    - price_per_bottle : Float
+    - sweetness_level : Enum
+    - product_image : URL
+    + update_price(new_price : Float)
+    + update_product_image(image_url : URL)
+}
+
+class WineType {
+    - suggested_occasion : Occasion
+    - serial_number : String
+    - food_pairings : FoodPairing
+}
+
+class OrderWine {
+    - quantity : Integer
+    + update_quantity(new_quantity : Integer)
+}
+
+class StorageLocation {
+    - location_number : String
+    - name : String
+    + store_wine(wine : Wine, quantity : Integer)
+    + get_inventory() : Map<Wine, Integer>
+}
+
+' Aggregations and Associations
+Order "1" o-- "1..*" OrderWine
+OrderWine "0..*" --> "1" Wine
+Wine --> WineType : "has type"
+Wine o-- StorageLocation : "stored in"
+
+' Manufacturer Class
+class Manufacturer {
+    - manufacturer_id : String
+    - name : String
+    - phone_number : String
+    - address : String
+    - email : String
+    + update_contact_info(phone : String, email : String)
+}
+
+Wine --> Manufacturer : "produced by"
+
+' New Association
+UrgentOrder "0..*" --> "1" Customer
+
+' Link from Order to OrderStatusEnum
+Order  -->  OrderStatusEnum : "current_status"
+
+' Occasion Class
+class Occasion {
+    - description : String
+    - season : Season
+    - location : String
+}
+
+' Season Enum
+enum Season {
+    spring
+    summer
+    fall
+    winter
+}
+
+Occasion "1" --> "1" WineType : "suggested_occasion"
+Season ..> Occasion
+
+' FoodPairing Class
+class FoodPairing {
+    - name : String
+    - URL1 : URL
+    - URL2 : URL
+    - URL3 : URL
+    - URL4 : URL
+    - URL5 : URL
+}
+
+WineType "1" --> "1" FoodPairing : "food_pairings"
+
+@enduml

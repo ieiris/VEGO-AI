@@ -1,0 +1,59 @@
+@startuml
+left to right direction
+
+actor "Sales Staff" as sales
+actor "Marketing Employee" as marketing
+actor "External Company: GalGalim" as galgalim
+actor "Customer" as customer
+actor "Gefen System" as GefenSystem
+
+rectangle UseCases {
+    usecase "Place Customer Order" as UC01
+    usecase "Handle Urgent Order" as UC18
+    usecase "Handle Regular Order" as UC19
+    usecase "Update Wine Information and Types" as UC02
+    usecase "Link Wines to Types" as UC09
+    usecase "Modify Price Details and Product Images" as UC10
+    usecase "Store Manufacturer Information" as UC11
+    usecase "Manage Inventory Locations" as UC12
+    usecase "View Wine Information" as UC03
+    usecase "Place Joint Order" as UC07
+    usecase "Receive Wine Recommendations" as UC08
+    usecase "Produce Unproductive Employees Report" as UC04
+    usecase "Generate Inventory Report" as UC05
+    usecase "Generate Wine Recommendation Report" as UC06
+    usecase "Facilitate Order Delivery" as UC14
+    usecase "Monthly XML Data Transmission" as UC15
+    usecase "Weekly Quantity Updates" as UC16
+    usecase "Receive Inventory Report" as UC17
+}
+
+sales --> UC01
+sales --> UC03
+sales --> UC04
+sales --> UC05
+sales --> UC06
+marketing --> UC02
+marketing --> UC09
+marketing --> UC10
+marketing --> UC11
+marketing --> UC12
+
+customer --> UC03
+customer --> UC07
+customer --> UC08
+customer --> UC18
+customer --> UC19
+
+galgalim --> UC14
+
+GefenSystem --> UC15 : Sends Data
+GefenSystem --> UC16 : Provides Updates
+GefenSystem <-- UC17 : Receives Report
+
+UC01 ..> UC18 : <<include>>
+UC01 ..> UC19 : <<include>>
+UC01 ..> UC14 : <<include>>
+UC05 ..> UC03 : <<include>>
+UC05 .> UC17 : <<extend>>
+@enduml

@@ -1,0 +1,516 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68156",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model involves managing inventory, customers, and orders, suggesting the key operations managed within the Cheers system.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "Sales staff place, modify, and cancel orders as shown by associations with related use cases.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "Ordering details are implied within the use cases like Place Order, which encompass categorization based on naming but do not explicitly detail all parts.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model lacks explicit details related to order categorization specifics like order status and shipment details."
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "No mention of delivery being managed by an external entity, GalGalim, which indicates it's outside the system's scope.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "Joint orders tracking is not depicted explicitly as the use cases do not show customer joint order interactions.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "There's a lack of explicit representation for recording customer details in the listed use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Employees placed orders but are not specifically segregated into a separate use case.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Although orders by employees are allowed, there is no specific use case denoted for this scenario in the system."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Urgent orders are mentioned but not clearly depicted with specific priority or customer constraints.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "No explicit reference to urgent orders processing with the conditions specified."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "Handling of regular orders by combining customer selections into joint orders is not depicted.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The recording of detailed customer information for orders isn't explicitly represented in use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "Employees can place orders, but the depiction of them doing so under the same conditions isn't explicit.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "There is no specific indication that employees can place orders under the same conditions as customers."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Marketing employees are linked to update wine details, showing authority in system interactions related to wine information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Marketing and Sales employees have different roles related to updates and viewing access respectively.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Update Wine Details use case encompasses wine data management but lacks specific classification mechanisms mentioned.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The use case refers to updates but does not fully capture the classification specifics of wine types."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Wine Recommendations may be inferred from wine updates but are unclear in the system's details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Recommendation occasions are not explicitly a focus in the diagram."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Import Data from Gefen indicates system boundary interactions for data reception from Gefen.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Weekly updates for purchased quantities aren’t explicitly depicted as a specific use case.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Storage of manufacturer info isn't directly shown in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "Details for capturing general wine details are not explicitly indicated in model use cases.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "The system does not showcase use case for differentiating wines by identifiers like manufacturer numbers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "Linking wines to types is generally present but specific operations like modifying are implied rather than explicitly shown.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The ability to link and modify details seems partly captured in the Update Wine Details use case."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "Tracking storage locations based on unique IDs is not demonstrated clearly.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "There is a general statement about inventory management updates but not specifically about storage location tracking.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While Manage Inventory addresses updates, tracking specific storage locations is unclear."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "Inventory update mention in Manage Inventory matches broadly but isn't detailed post-sale.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Post-sale updates are implied but lack concrete representation in use cases."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "There is a defined use case generating unproductive employee reports based on order performance.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "Generating Current Inventory Report reflects inventory level tracking and involves interfacing with Gefen.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "Wine recommendation reports are linked to marketing activities but are somewhat unspecific on customer preference matching.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "There is reference to Generate Wine Recommendation Report but lacking clarity on preference integration."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G3",
+      "evidence": "The use cases 'Place Order,' 'Cancel Order,' and 'Modify Order' do suggest an ordering process, which includes basic categorization but lacks specific details like order status or assignment to an employee.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The naming and presence of order-related use cases imply categorization aspects but lack explicit detail on status and assignment, remaining consistent with previous assessments."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "There is no explicit representation showing that joint orders can be tracked, such as which customers within an order requested specific wines.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model doesn’t present joint orders or multi-customer involvement in any use case, firmly keeping this guideline unsatisfied."
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The 'ViewOrderHistory' use case provides some capability for viewing past orders, implying the system has some record of customer details, yet it is insufficiently detailed.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While 'ViewOrderHistory' suggests historical record inclusion, it doesn't explicitly state that this includes the specifics of customer details as required by the guideline."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "Both 'Customer' and 'Sales Employee' can interface with use cases for placing orders, somewhat implying shared conditions for ordering.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The shared interaction of sales employees and customers with order-related use cases indicates similar ordering capabilities but lacks explicit confirmation."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "A note specifies that urgent orders can only involve one customer, inferring some prioritization, though priority levels or delivery timelines aren't depicted.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While there is mention of urgency constraints for orders, full priority and timeline specifics are omitted."
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The model includes a general order use case with no differentiation or detail to accommodate combined customer selection processes typical for regular orders.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Lacking explicit representation of regular orders collectively among customers means this guideline remains unsatisfied."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The roles depicted in the 'Place Order' and related use cases suggest that there's an interaction which potentially records customer details during the process.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The implication of capturing information exists but is not comprehensively detailed with specific types of customer information as outlined."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "Sales employees can use the same use cases to place, modify, or cancel orders similar to customers, implying similar conditions for transaction execution.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "There's a lack of explicit acknowledgement but operational parity is suggested through system interaction allowance."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The 'Update Wine Details' use case suggests management and therefore classification tasks implied without explicitly defining wine type classifications.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "General reference to updating aspects may connect, but precise type classification mechanisms are absent."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Indirectly referenced through 'Generate Wine Recommendation Report,' suggesting influences on recommendations perhaps linked to occasions.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While updating details and generating reports incorporate elements of suggestion linkage, specific occasion details remain unspoken for."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The 'ImportDataFromGefen' use case deals with external data integration, possibly covering some routine updates on purchases, but lacks direct mention of this specific function.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "It generally aligns with receipt of data updates but specifics of purchased quantity tracking each week are not distinctly mentioned."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No identified use case specifically discusses storing manufacturer-related information, failing to meet the storage specifics required by the guideline.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The present elements don't cover manufacturer info storage, making the full satisfying of the guideline absent."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The 'Update Wine Details' use case, while suggesting wine information interaction, does not capture the comprehensive set of details like production year or pricing.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Without indicating extensive detailing of wine attributes, this remains unsatisfied, warranting a more explicit dedicated case."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "No apparent use case specializes in the differentiation of wines by identifiers like catalog or manufacturer numbers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The system doesn’t explicitly show functionality related to tracking wine identifiers, reaffirming its unsatisfactory state."
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "The potentiality for linking wines to types generally through 'Update Wine Details' may exist but isn't expressly demonstrated for modification capacities.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Indications exist for general updates, but clear and precise actions for type linking/modification are not expressly conveyed, leaving partial satisfaction."
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "The model indicates general inventory management but does not show tracking by unique storage locations.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Without specified logging and managing of wines at distinct locations, the guideline outcome remains deviating."
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "General mention of inventory updates post-process could imply tracking, but explicit evidence of tracking inventory levels by storage location is missing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "It seems to lean toward broad management rather than deliberate actions to monitor precise storage allocation, keeping it partial."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The 'Inventory updates after an order' note may suggest post-sale updates, but without use case presence, clarity, or solid evidence to support post-sale action.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The implication is there for updates post-sales but lacks detailed expression in use cases, limiting full satisfaction."
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "The 'Generate Wine Recommendation Report' implies connections to customer preferences but does not fully detail the process or link to such functions.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The reporting capability suggests preference incorporation but misses articulation for visually linking how these are tailored specifically."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "Interaction between Actors and the Gefen System through Import and Export use cases.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The inclusion of the Gefen System actor with its interaction suggests proper data integration points crucial for system functioning, though it is not explicitly required by the guidelines."
+    },
+    {
+      "fragment": "Note stating 'Urgent orders can only have one customer.'",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The note offers additional clarity on the constraint related to 'Urgent orders,' aligning with domain understanding without being directly required by any specific guideline."
+    },
+    {
+      "fragment": "Notes indicating the relationship and impact between various use cases such as inventory updates.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These notes enrich the understanding of interactions and dependencies between use cases, offering valuable insights without conflicting with the guidelines."
+    },
+    {
+      "fragment": "The overall structure displaying Actors like Customer, Sales Employee, Marketing Employee, and Gefen System.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The presence of these actors represents valid and necessary components to demonstrate the roles interacting with the system, enhancing clarity."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "The naming and presence of order-related use cases imply categorization aspects but lack explicit detail on status and assignment, remaining consistent with previous assessments."
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "While 'ViewOrderHistory' suggests historical record inclusion, it doesn't explicitly state that this includes the specifics of customer details as required by the guideline."
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "The shared interaction of sales employees and customers with order-related use cases indicates similar ordering capabilities but lacks explicit confirmation."
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "While there is mention of urgency constraints for orders, full priority and timeline specifics are omitted."
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "The implication of capturing information exists but is not comprehensively detailed with specific types of customer information as outlined."
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "There's a lack of explicit acknowledgement but operational parity is suggested through system interaction allowance."
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "General reference to updating aspects may connect, but precise type classification mechanisms are absent."
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "While updating details and generating reports incorporate elements of suggestion linkage, specific occasion details remain unspoken for."
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "It generally aligns with receipt of data updates but specifics of purchased quantity tracking each week are not distinctly mentioned."
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Indications exist for general updates, but clear and precise actions for type linking/modification are not expressly conveyed, leaving partial satisfaction."
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "It seems to lean toward broad management rather than deliberate actions to monitor precise storage allocation, keeping it partial."
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "The implication is there for updates post-sales but lacks detailed expression in use cases, limiting full satisfaction."
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "The reporting capability suggests preference incorporation but misses articulation for visually linking how these are tailored specifically."
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Interaction between Actors and the Gefen System through Import and Export use cases.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Note stating 'Urgent orders can only have one customer.'",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Notes indicating the relationship and impact between various use cases such as inventory updates.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The overall structure displaying Actors like Customer, Sales Employee, Marketing Employee, and Gefen System.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 14.0,
+  "max_score": 27.0,
+  "score_pct": 51.9,
+  "overall_assessment": "The case model partially meets domain guidelines, with many guidelines satisfied or partially satisfied but several still not addressed."
+}

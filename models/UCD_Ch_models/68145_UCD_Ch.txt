@@ -1,0 +1,103 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+
+' Define Actors
+actor "Sales Staff" as SalesStaff
+actor "Marketing Employees" as MarketingEmployees
+actor "Gefen System" as GefenSystem
+actor "GalGalim (Delivery Company)" as GalGalim
+
+' Use Case Definitions
+usecase "Place Orders" as PlaceOrders
+usecase "Manage Inventory" as ManageInventory
+usecase "Generate Reports" as GenerateReports
+usecase "Update Wine Details" as UpdateWineDetails
+usecase "Data Integration" as DataIntegration
+usecase "Manage Customer Details" as ManageCustomerDetails
+usecase "Track Order Status" as TrackOrderStatus
+usecase "Notify GalGalim for Delivery" as NotifyGalGalim
+
+' Sub-use Cases for Place Orders
+usecase "Regular Orders\n(Multiple Customers)" as RegularOrders
+usecase "Urgent Orders\n(Single Customer, Priority, Expected Delivery Time)" as UrgentOrders
+usecase "Joint Orders\n(Shared Wine Selection)" as JointOrders
+usecase "Track Customer Contributions" as TrackContributions
+usecase "Update Inventory After Sale" as UpdateInventory
+
+' Sub-use Cases for Manage Inventory
+usecase "Track Wine Locations\n(e.g., Cellar, Refrigerator)" as TrackWineLocations
+usecase "Update Bottle Counts\nAfter Sales" as UpdateBottleCounts
+usecase "Alert Low Inventory\nLevels" as LowInventoryAlerts
+
+' Sub-use Cases for Update Wine Details
+usecase "Update Wine Types\n(e.g., Red, White, Sparkling)" as UpdateWineTypes
+usecase "Manage Food Pairings\n(Recipes, Dish Names)" as ManageFoodPairings
+usecase "Recommend Occasions\n(e.g., Marriage Proposal)" as RecommendOccasions
+usecase "Update Prices and Images" as UpdatePricesImages
+
+' Sub-use Cases for Generate Reports
+usecase "Unproductive Employees Report\n(Urgent < 2, Regular < 4 Orders)" as UnproductiveEmployeesReport
+usecase "Current Inventory Report\n(Sent to Gefen, JSON)" as InventoryReport
+usecase "Wine Recommendation Report\n(Customer Preferences)" as WineRecommendationReport
+
+' Sub-use Cases for Data Integration
+usecase "Import Producer Data\n(XML)" as ImportProducerData
+usecase "Update Purchase Quantities\n(Weekly Updates)" as UpdatePurchaseQuantities
+
+' Sub-use Cases for Track Order Status
+usecase "Order In Process" as OrderInProcess
+usecase "Order Dispatched" as OrderDispatched
+usecase "Order Delivered" as OrderDelivered
+usecase "Order Paid" as OrderPaid
+usecase "Order Suspended" as OrderSuspended
+usecase "Order Canceled" as OrderCanceled
+
+' Relationships: Actors to Use Cases
+SalesStaff --> PlaceOrders : Places
+SalesStaff --> ManageCustomerDetails : Manages
+SalesStaff --> TrackOrderStatus : Tracks
+SalesStaff --> GenerateReports : Generates
+MarketingEmployees --> ManageInventory : Manages
+MarketingEmployees --> UpdateWineDetails : Updates
+GefenSystem --> DataIntegration : Provides Data
+GefenSystem <-- GenerateReports : Receives Inventory Reports
+PlaceOrders --> NotifyGalGalim : Notifies for Delivery
+GalGalim <-- NotifyGalGalim : Receives Notification
+
+' Relationships: Place Orders
+PlaceOrders --> RegularOrders : <<include>>
+PlaceOrders --> UrgentOrders : <<extend>>
+PlaceOrders --> JointOrders : <<include>>
+JointOrders --> TrackContributions : <<include>>
+PlaceOrders --> UpdateInventory : <<include>>
+
+' Relationships: Manage Inventory
+ManageInventory --> TrackWineLocations : <<include>>
+ManageInventory --> UpdateBottleCounts : <<include>>
+ManageInventory --> LowInventoryAlerts : <<include>>
+
+' Relationships: Update Wine Details
+UpdateWineDetails --> UpdateWineTypes : <<include>>
+UpdateWineDetails --> ManageFoodPairings : <<include>>
+UpdateWineDetails --> RecommendOccasions : <<include>>
+UpdateWineDetails --> UpdatePricesImages : <<include>>
+
+' Relationships: Generate Reports
+GenerateReports --> UnproductiveEmployeesReport : <<include>>
+GenerateReports --> InventoryReport : <<include>>
+GenerateReports --> WineRecommendationReport : <<include>>
+
+' Relationships: Data Integration
+DataIntegration --> ImportProducerData : <<include>>
+DataIntegration --> UpdatePurchaseQuantities : <<include>>
+
+' Relationships: Track Order Status
+TrackOrderStatus --> OrderInProcess : <<include>>
+TrackOrderStatus --> OrderDispatched : <<include>>
+TrackOrderStatus --> OrderDelivered : <<include>>
+TrackOrderStatus --> OrderPaid : <<include>>
+TrackOrderStatus --> OrderSuspended : <<include>>
+TrackOrderStatus --> OrderCanceled : <<include>>
+
+@enduml

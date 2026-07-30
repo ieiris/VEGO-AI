@@ -1,0 +1,63 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Class Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Class",
+      "fragment_description": "A class is a blueprint for objects, encapsulating attributes and operations relevant to the model domain.",
+      "involved_constructs": "Class"
+    },
+    {
+      "id": "T2",
+      "short_name": "Class-Association-Class",
+      "fragment_description": "An association represents a relationship between two classes, depicting how instances of each class are related.",
+      "involved_constructs": "Class | Association | Class"
+    },
+    {
+      "id": "T3",
+      "short_name": "Class-Aggregation-Class",
+      "fragment_description": "An aggregation is a special form of association representing a whole-part relationship where the part can exist independently of the whole.",
+      "involved_constructs": "Class | Aggregation | Class"
+    },
+    {
+      "id": "T4",
+      "short_name": "Class-Composition-Class",
+      "fragment_description": "A composition indicates a strong whole-part relationship between classes where the part cannot exist independently of the whole.",
+      "involved_constructs": "Class | Composition | Class"
+    },
+    {
+      "id": "T5",
+      "short_name": "Class-Generalization-Class",
+      "fragment_description": "A generalization connects a subclass with a superclass, representing an inheritance relationship where the subclass inherits attributes and operations of the superclass.",
+      "involved_constructs": "Class | Generalization | Class"
+    },
+    {
+      "id": "T6",
+      "short_name": "Class-Dependency-Class",
+      "fragment_description": "A dependency shows that a change in the supplier class may affect the client class, indicating a usage relationship.",
+      "involved_constructs": "Class | Dependency | Class"
+    },
+    {
+      "id": "T7",
+      "short_name": "Attribute",
+      "fragment_description": "An attribute is a named property of a class that provides information about the class instances.",
+      "involved_constructs": "Attribute"
+    },
+    {
+      "id": "T8",
+      "short_name": "Operation",
+      "fragment_description": "An operation is a function or a service that can be performed by an object of the class.",
+      "involved_constructs": "Operation"
+    }
+  ],
+  "agent1_capabilities": [
+    "What constitutes a UML Class?",
+    "How do associations relate two classes?",
+    "What is the difference between an aggregation and a composition in UML Class Diagrams?",
+    "How does generalization work between two classes in UML?",
+    "How is dependency shown between UML classes?",
+    "What attributes can a UML class have?",
+    "What operations can be performed by a UML class?"
+  ]
+}

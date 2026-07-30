@@ -1,0 +1,396 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "cheers",
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "canonical_citation": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery.",
+      "run1_guideline_id": "G1",
+      "run1_guideline_name": "Define the Cheers system's purpose",
+      "run1_guideline": {
+        "description": "The system's purpose and scope can be represented as a system boundary, emphasizing the key operations managed within the scope.",
+        "related_template_id": "T8",
+        "mapping_certainty": 0.7,
+        "citation": "\"The 'Cheers' system is being developed by 'Wine Ha'Emek,' a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery.\""
+      },
+      "run2_guideline_id": "G1",
+      "run2_guideline_name": "Cheers System Overview",
+      "run2_guideline": {
+        "description": "The segment describes the purpose of the Cheers system, aligning with defining the system's scope, actors, and use cases.",
+        "related_template_id": "T8",
+        "mapping_certainty": 0.8,
+        "citation": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery."
+      },
+      "run3_guideline_id": "G1",
+      "run3_guideline_name": "System Development Purpose",
+      "run3_guideline": {
+        "description": "This segment outlines the purpose of the 'Cheers' system and its key operations, fitting under the system boundary since it defines the scope of the system.",
+        "related_template_id": "T8",
+        "mapping_certainty": 0.8,
+        "citation": "The \"Cheers\" system is being developed by \"Wine Ha'Emek,\" a wine trading company, to manage key business operations, including inventory management, customer management, and order processing and delivery."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": null,
+      "match_confidence": "None",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C2",
+      "canonical_citation": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee.",
+      "run1_guideline_id": "G2",
+      "run1_guideline_name": "Role of sales staff in placing orders",
+      "run1_guideline": {
+        "description": "Sales staff are actors who interact with the system to place customer orders.",
+        "related_template_id": "T1",
+        "mapping_certainty": 0.9,
+        "citation": "\"The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee.\""
+      },
+      "run2_guideline_id": "G2",
+      "run2_guideline_name": "Order Placement Responsibility",
+      "run2_guideline": {
+        "description": "Identifies sales staff as actors responsible for placing customer orders, implying an association between actors and use cases.",
+        "related_template_id": "T1",
+        "mapping_certainty": 0.9,
+        "citation": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee."
+      },
+      "run3_guideline_id": "G2",
+      "run3_guideline_name": "Sales Staff Responsibilities",
+      "run3_guideline": {
+        "description": "The sales staff act as an actor responsible for interacting with the system to place orders, corresponding to the Actor template.",
+        "related_template_id": "T1",
+        "mapping_certainty": 1.0,
+        "citation": "The sales staff are responsible for placing customer orders, with each order being assigned to a specific employee."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Place Order, Actor: Sales",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C3",
+      "canonical_citation": "Orders can be categorized as either regular or urgent and include the following details: order number, order date, current status (in process, dispatched, delivered, paid, suspended, or canceled), shipment date, and the assigned employee's information (ID, name, phone number, office address, email, and employment start date).",
+      "run1_guideline_id": "G3",
+      "run1_guideline_name": "Order details and categorization",
+      "run1_guideline": {
+        "description": "Represents a functional requirement of the system to categorize and detail orders, which can be depicted as use cases.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "\"Orders can be categorized as either regular or urgent and include the following details: order number, order date, current status (in process, dispatched, delivered, paid, suspended, or canceled), shipment date, and the assigned employee's information (ID, name, phone number, office address, email, and employment start date).\""
+      },
+      "run2_guideline_id": "G3",
+      "run2_guideline_name": "Order Information",
+      "run2_guideline": {
+        "description": "Describes the details of orders, potentially implying a use case related to order handling and categorization.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "Orders can be categorized as either regular or urgent and include the following details: order number, order date, current status (in process, dispatched, delivered, paid, suspended, or canceled), shipment date, and the assigned employee's information (ID, name, phone number, office address, email, and employment start date)."
+      },
+      "run3_guideline_id": "G3",
+      "run3_guideline_name": "Order Details",
+      "run3_guideline": {
+        "description": "This segment describes the use case where orders are made, indicating detailed functional requirements of the system.",
+        "related_template_id": "T2",
+        "mapping_certainty": 1.0,
+        "citation": "Orders can be categorized as either regular or urgent and include the following details: order number, order date, current status (in process, dispatched, delivered, paid, suspended, or canceled), shipment date, and the assigned employee's information (ID, name, phone number, office address, email, and employment start date)."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": null,
+      "match_confidence": "None",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C4",
+      "canonical_citation": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system.",
+      "run1_guideline_id": "G4",
+      "run1_guideline_name": "Role of GalGalim in order delivery",
+      "run1_guideline": {
+        "description": "GalGalim's role as an external company is outside the system's scope, which defines the system boundary.",
+        "related_template_id": "T8",
+        "mapping_certainty": 0.7,
+        "citation": "\"The actual delivery of orders is managed by an external company, called 'GalGalim,' and falls outside the scope of the current system.\""
+      },
+      "run2_guideline_id": "G4",
+      "run2_guideline_name": "Order Delivery Management",
+      "run2_guideline": {
+        "description": "Indicates that delivery management is external, which suggests a system boundary for the Cheers system.",
+        "related_template_id": "T8",
+        "mapping_certainty": 0.85,
+        "citation": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system."
+      },
+      "run3_guideline_id": "G4",
+      "run3_guideline_name": "External Delivery Company",
+      "run3_guideline": {
+        "description": "The segment specifies an external entity not interacting with the system directly, hence it describes a boundary, linking to the SystemBoundary.",
+        "related_template_id": "T8",
+        "mapping_certainty": 0.8,
+        "citation": "The actual delivery of orders is managed by an external company, called \"GalGalim,\" and falls outside the scope of the current system."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": null,
+      "match_confidence": "None",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C5",
+      "canonical_citation": "To minimize delivery costs, customers can place joint orders.",
+      "run1_guideline_id": "G5",
+      "run1_guideline_name": "Tracking joint customer orders",
+      "run1_guideline": {
+        "description": "The requirement to track joint orders represents a functional requirement and can be depicted as a use case.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "\"Orders may consist of multiple wines in different quantities. To minimize delivery costs, customers can place joint orders. In such cases, the system must track which wines and quantities have been ordered by each customer.\""
+      },
+      "run2_guideline_id": "G6",
+      "run2_guideline_name": "Joint Order Minimization",
+      "run2_guideline": {
+        "description": "Mentions joint orders for cost minimization, indicating a use case for processing combined customer orders.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "To minimize delivery costs, customers can place joint orders."
+      },
+      "run3_guideline_id": "G6",
+      "run3_guideline_name": "Joint Orders for Cost Minimization",
+      "run3_guideline": {
+        "description": "The system allows customers to place joint orders to minimize delivery costs, mapping to a use case demonstrating system requirements.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "To minimize delivery costs, customers can place joint orders."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": null,
+      "match_confidence": "None",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C6",
+      "canonical_citation": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company.",
+      "run1_guideline_id": "G6",
+      "run1_guideline_name": "Recording customer information",
+      "run1_guideline": {
+        "description": "Recording customer information is a system function and can be depicted as a use case.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "\"For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company.\""
+      },
+      "run2_guideline_id": "G8",
+      "run2_guideline_name": "Customer Information Tracking",
+      "run2_guideline": {
+        "description": "Details the tracking of customer information for each order, indicating a use case related to customer management.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company."
+      },
+      "run3_guideline_id": "G8",
+      "run3_guideline_name": "Customer Information Recording",
+      "run3_guideline": {
+        "description": "The system records customer details for each order, signifying a use case related to data management.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "For each customer in an order, the system records their ID, name, phone number, delivery address, email, and the date of first contact with the company."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": null,
+      "match_confidence": "None",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C7",
+      "canonical_citation": "Company employees are allowed to order wines under the same conditions as regular customers.",
+      "run1_guideline_id": "G7",
+      "run1_guideline_name": "Employee orders",
+      "run1_guideline": {
+        "description": "The ability for employees to order under the same conditions as regular customers is a use case within the system.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.7,
+        "citation": "\"Company employees are allowed to order wines under the same conditions as regular customers.\""
+      },
+      "run2_guideline_id": "G9",
+      "run2_guideline_name": "Employee Order Privileges",
+      "run2_guideline": {
+        "description": "Indicates that employees can order wines similar to regular customers, implying a generalization relationship.",
+        "related_template_id": "T7",
+        "mapping_certainty": 0.6,
+        "citation": "Company employees are allowed to order wines under the same conditions as regular customers."
+      },
+      "run3_guideline_id": "G9",
+      "run3_guideline_name": "Order Conditions for Employees",
+      "run3_guideline": {
+        "description": "Company employees may place orders like regular customers. This represents a use case where employee actions mirror customer interactions.",
+        "related_template_id": "T2",
+        "mapping_certainty": 1.0,
+        "citation": "Company employees are allowed to order wines under the same conditions as regular customers."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": null,
+      "match_confidence": "None",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C8",
+      "canonical_citation": "Only employees in the marketing department are authorized to update wine information and types.",
+      "run1_guideline_id": "G12",
+      "run1_guideline_name": "Marketing department privileges",
+      "run1_guideline": {
+        "description": "Represents a use case where only marketing department employees are actors who can update wine information.",
+        "related_template_id": "T1",
+        "mapping_certainty": 0.7,
+        "citation": "\"Only employees in the marketing department are authorized to update wine information and types.\""
+      },
+      "run2_guideline_id": "G16",
+      "run2_guideline_name": "Wine Information Management",
+      "run2_guideline": {
+        "description": "Authorizes only marketing employees to update wine information, indicating role-based access within a use case.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "Only employees in the marketing department are authorized to update wine information and types."
+      },
+      "run3_guideline_id": "G16",
+      "run3_guideline_name": "Marketing Employee Authorizations",
+      "run3_guideline": {
+        "description": "Only marketing employees can update wine information, relating to an actor's exclusive responsibility within the system.",
+        "related_template_id": "T1",
+        "mapping_certainty": 0.9,
+        "citation": "Only employees in the marketing department are authorized to update wine information and types."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Update Wine Information, Actor: Marketing",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C9",
+      "canonical_citation": "Monthly system updates will include XML data regarding wine producers and the wines they produce.",
+      "run1_guideline_id": "G16",
+      "run1_guideline_name": "Monthly data reception",
+      "run1_guideline": {
+        "description": "Integrating data from the 'Gefen' system describes an interface use case, demonstrating system boundaries.",
+        "related_template_id": "T8",
+        "mapping_certainty": 0.7,
+        "citation": "\"At the start of each month, the system will receive XML data from another system, called 'Gefen,' regarding wine producers and the wines they produce.\""
+      },
+      "run2_guideline_id": "G23",
+      "run2_guideline_name": "Monthly System Updates",
+      "run2_guideline": {
+        "description": "Mentions monthly XML data updates regarding producers, relevant to updating inventory management use cases.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.75,
+        "citation": "At the start of each month, the system will receive XML data from another system, called \"Gefen,\" regarding wine producers and the wines they produce."
+      },
+      "run3_guideline_id": "G23",
+      "run3_guideline_name": "Data Integration with Gefen",
+      "run3_guideline": {
+        "description": "Receiving data from Gefen system indicates a use case scenario of integrating data regarding producers and their wines.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "At the start of each month, the system will receive XML data from another system, called \"Gefen,\" regarding wine producers and the wines they produce."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Import Producers and Wines, Actor: Gefen",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C10",
+      "canonical_citation": "(1) Unproductive Employees Report: Generated by a sales employee, this report takes a time period as a parameter and displays the personal information of employees who placed fewer than 2 urgent orders OR fewer than 4 regular orders within that period;",
+      "run1_guideline_id": "G25",
+      "run1_guideline_name": "Generating employee productivity report",
+      "run1_guideline": {
+        "description": "A use case describing the generation of reports on unproductive employees based on their performance.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "\"The 'Cheers' system will also generate the following reports: (1) Unproductive Employees Report: Generated by a sales employee, this report takes a time period as a parameter and displays the personal information of employees who placed fewer than 2 urgent orders OR fewer than 4 regular orders within that period;\""
+      },
+      "run2_guideline_id": "G33",
+      "run2_guideline_name": "Unproductive Employees Report",
+      "run2_guideline": {
+        "description": "Describes report generation for employee productivity, suggesting a use case for sales performance analysis.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "(1) Unproductive Employees Report: Generated by a sales employee, this report takes a time period as a parameter and displays the personal information of employees who placed fewer than 2 urgent orders OR fewer than 4 regular orders within that period;"
+      },
+      "run3_guideline_id": "G33",
+      "run3_guideline_name": "Report Generation",
+      "run3_guideline": {
+        "description": "Generating different reports maps to several use cases where system actions fulfill reporting requirements for management.",
+        "related_template_id": "T2",
+        "mapping_certainty": 1.0,
+        "citation": "The \"Cheers\" system will also generate the following reports: (1) Unproductive Employees Report: Generated by a sales employee, this report takes a time period as a parameter and displays the personal information of employees who placed fewer than 2 urgent orders OR fewer than 4 regular orders within that period; (2) Current Inventory Report by Wine: This report provides the inventory levels of all wines and is sent to the Gefen system in JSON format every weekend to assist with restocking preparations; (3) Wine Recommendation Report for Customers: Produced by a sales employee, this report returns a list of available wines that match the customer's preferences based on food, occasion, and wine type."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Generate Unproductive Employees Report, Actor: Sales",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C11",
+      "canonical_citation": "(2) Current Inventory Report by Wine: This report provides the inventory levels of all wines and is sent to the Gefen system in JSON format every weekend to assist with restocking preparations;",
+      "run1_guideline_id": "G26",
+      "run1_guideline_name": "Inventory report generation for restocking",
+      "run1_guideline": {
+        "description": "Represents a use case to generate reports on inventory levels and send them in JSON format.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "\"(2) Current Inventory Report by Wine: This report provides the inventory levels of all wines and is sent to the Gefen system in JSON format every weekend to assist with restocking preparations;\""
+      },
+      "run2_guideline_id": "G34",
+      "run2_guideline_name": "Current Inventory Report",
+      "run2_guideline": {
+        "description": "Elaborates on inventory reporting sent to another system, indicating a use case for facilitating restocking.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "(2) Current Inventory Report by Wine: This report provides the inventory levels of all wines and is sent to the Gefen system in JSON format every weekend to assist with restocking preparations;"
+      },
+      "run3_guideline_id": "G33",
+      "run3_guideline_name": "Report Generation",
+      "run3_guideline": {
+        "description": "Generating different reports maps to several use cases where system actions fulfill reporting requirements for management.",
+        "related_template_id": "T2",
+        "mapping_certainty": 1.0,
+        "citation": "The \"Cheers\" system will also generate the following reports: (1) Unproductive Employees Report: Generated by a sales employee, this report takes a time period as a parameter and displays the personal information of employees who placed fewer than 2 urgent orders OR fewer than 4 regular orders within that period; (2) Current Inventory Report by Wine: This report provides the inventory levels of all wines and is sent to the Gefen system in JSON format every weekend to assist with restocking preparations; (3) Wine Recommendation Report for Customers: Produced by a sales employee, this report returns a list of available wines that match the customer's preferences based on food, occasion, and wine type."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Generate Current Inventory Report, Actor: Gefen",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C12",
+      "canonical_citation": "(3) Wine Recommendation Report for Customers: Produced by a sales employee, this report returns a list of available wines that match the customer's preferences based on food, occasion, and wine type.",
+      "run1_guideline_id": "G27",
+      "run1_guideline_name": "Wine recommendation report",
+      "run1_guideline": {
+        "description": "A use case for generating a wine recommendation report matching customer preferences.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "\"(3) Wine Recommendation Report for Customers: Produced by a sales employee, this report returns a list of available wines that match the customer's preferences based on food, occasion, and wine type.\""
+      },
+      "run2_guideline_id": "G35",
+      "run2_guideline_name": "Wine Recommendation Report",
+      "run2_guideline": {
+        "description": "Details the process and criteria for generating wine recommendations for customers.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "(3) Wine Recommendation Report for Customers: Produced by a sales employee, this report returns a list of available wines that match the customer's preferences based on food, occasion, and wine type."
+      },
+      "run3_guideline_id": "G33",
+      "run3_guideline_name": "Report Generation",
+      "run3_guideline": {
+        "description": "Generating different reports maps to several use cases where system actions fulfill reporting requirements for management.",
+        "related_template_id": "T2",
+        "mapping_certainty": 1.0,
+        "citation": "The \"Cheers\" system will also generate the following reports: (1) Unproductive Employees Report: Generated by a sales employee, this report takes a time period as a parameter and displays the personal information of employees who placed fewer than 2 urgent orders OR fewer than 4 regular orders within that period; (2) Current Inventory Report by Wine: This report provides the inventory levels of all wines and is sent to the Gefen system in JSON format every weekend to assist with restocking preparations; (3) Wine Recommendation Report for Customers: Produced by a sales employee, this report returns a list of available wines that match the customer's preferences based on food, occasion, and wine type."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "UC: Generate Wine Recommendation Report, Actor: Sales",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    }
+  ],
+  "unassigned_base_guidelines": [
+    "UC: View Wine Information, Actor: Employee",
+    "Ext: Place Order-View Wine Information",
+    "UC: Recommend Occasions, Actor: Marketing",
+    "UC: Import Wine Quantities, Actor: Gefen"
+  ]
+}

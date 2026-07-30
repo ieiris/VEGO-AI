@@ -1,0 +1,178 @@
+ex1_CD_FINAL_2025_nar.txt
+@startuml
+' ===========================
+' Classes and Attributes
+' ===========================
+class Employee {
+    - employeeID: int
+    - name: String
+    - phone: String
+    - email: String
+    - officeAddress: String
+    - startDate: Date
+}
+
+class SalesEmployee {
+    + placeOrder()
+    + placeRegularOrder()
+    + placeJointOrder()
+    + placeUrgentOrder()
+    + specifyDeliveryTime(time: Date): void
+    + specifyPriorityLevels(level: PriorityLevel): void
+    + generateUnproductiveEmployeeReport(timePeriod: DateRange): Report
+    + generateWineRecommendationReport(customerPreferences: Preferences): List<Wine>
+    + viewWineData()
+}
+
+class MarketingEmployee {
+    + updateWineInformation()
+    + updateWineType()
+    + linkWinesToTypes()
+    + modifyProductImages()
+    + modifyPrice()
+    + recommendWineForOccasions()
+    + viewWineData()
+}
+
+class Customer {
+    - customerID: int
+    - name: String
+    - phone: String
+    - deliveryAddress: String
+    - email: String
+    - firstContactDate: Date
+}
+
+class Order {
+    - orderID: int
+    - orderDate: Date
+    - shipmentDate: Date
+    - status: DeliveryStatus
+    - employeeID: int
+    - customerID: int
+}
+
+class RegularOrder {
+    - mainCustomerID: int
+    - jointCustomers: List<Customer>
+}
+
+class UrgentOrder {
+    - priorityLevel: PriorityLevel
+    - deliveryTime: Date
+}
+
+class OrderDetails {
+    - orderID: int
+    - wineID: int
+    - quantity: int
+}
+
+class Wine {
+    - wineID: int
+    - wineName: String
+    - serialNumber: String
+    - description: String
+    - productionYear: int
+    - pricePerBottle: float
+    - productImage: Image
+    - sweetnessLevel: SweetnessLevel
+    - manufacturerID: int
+    - wineTypeID: int
+    - season: Season
+}
+
+class WineType {
+    - wineTypeID: int
+    - typeName: String
+    - foodPairings: String
+    - recipeLinks: List<URL>
+}
+
+class Manufacturer {
+    - manufacturerID: int
+    - name: String
+    - phone: String
+    - address: String
+    - email: String
+}
+
+class StorageLocation {
+    - locationID: int
+    - name: String
+}
+
+class WineInventory {
+    - wineID: int
+    - locationID: int
+    - quantity: int
+}
+
+class GefenSystem {
+    + sendXMLDataMonthly()
+    + provideWeeklyQuantityUpdate()
+    + receiveInventoryReport()
+    + importWineDataFromXML(xmlFile: File): void
+    + exportInventoryReportToJSON(): File
+}
+
+enum SweetnessLevel {
+    DRY
+    SEMI_DRY
+    SEMI_SWEET
+    SWEET
+}
+
+enum DeliveryStatus {
+    IN_PROCESS
+    DISPATCHED
+    DELIVERED
+    PAID
+    SUSPENDED
+    CANCELED
+}
+
+enum Season {
+    WINTER
+    SPRING
+    SUMMER
+    AUTUMN
+}
+
+enum PriorityLevel {
+    LEVEL_1
+    LEVEL_2
+    LEVEL_3
+    LEVEL_4
+    LEVEL_5
+}
+
+' ===========================
+' Relationships
+' ===========================
+Employee <|-- SalesEmployee
+Employee <|-- MarketingEmployee
+
+Order --> Customer : "Placed By"
+Order --> Employee : "Managed By"
+Order --> DeliveryStatus : "Has Status"
+
+Order <|-- RegularOrder
+Order <|-- UrgentOrder
+
+OrderDetails --> Order : "Belongs To"
+OrderDetails --> Wine : "Includes"
+
+Wine --> Manufacturer : "Produced By"
+Wine --> WineType : "Has Type"
+Wine --> SweetnessLevel : "Has Sweetness"
+Wine --> Season : "Suitable For"
+
+WineInventory --> Wine : "Tracks Stock"
+WineInventory --> StorageLocation : "Stored In"
+
+UrgentOrder --> PriorityLevel : "Has Priority"
+
+GefenSystem --> Wine : "Updates Quantities"
+GefenSystem --> Manufacturer : "Sends Data"
+@enduml

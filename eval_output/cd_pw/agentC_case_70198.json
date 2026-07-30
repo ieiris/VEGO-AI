@@ -1,0 +1,384 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70198",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes attributes for a unique identifier, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "No attribute in the ParkingLot class explicitly tracks available spaces.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The model shows an association between Client and Vehicle classes ensuring each vehicle is linked to exactly one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class includes attributes like startTime, confirming storage of session start time and other related information.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class contains a size attribute to indicate suitability for different vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class has a maxWeightKg attribute reflecting its capacity to transport vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The relationship between Conveyor and ParkingSession indicates that conveyor handling is noted during sessions but not necessarily after.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "Each ParkingLot can have multiple associated PriceList entries, indicating different pricing for durations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The ClubMembership class relates to the Client class, indicating management of client club memberships.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "No explicit attribute in the model describes discounts for club members.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "There is no explicit evidence for free initial parking sessions for club members in their registration month.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "Administration-related details and reports are not explicitly covered in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Reports including income details per parking lot and vehicle color counts are not explicitly detailed in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The model does not specify ordering of reports by city and total amount.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The model lacks evidence of report format generation (PDF or XML).",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "There is no direct evidence of managing customer club growth reports in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Descriptions of monthly member additions and cumulative totals are not reflected in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No evidence in the model shows report ordering by months.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G2",
+      "evidence": "The case model does not have a direct attribute for tracking available spaces in the ParkingLot class.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No attributes represent the available parking spaces within the ParkingLot class. The attribute should be explicitly included for compliance."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The ClubMembership and ParkingSession classes exist but lack specific attributes relating to automatic discounts for club members.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No specific attribute in the model provides for an automatic discount mechanism for club members in parking sessions."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The ClubMembership association with Client suggests club membership, but no evidence is found for free parking sessions during the registration month.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There is nothing explicit in the model that satisfies the requirement of offering a free parking session for club members in their registration month."
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The model defines classes related to parking and clients but does not include operations or classes specific to generating or managing report content.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The details necessary for report generation as described in the guideline are not present in the model."
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Classes like ParkingLot, Vehicle, and Payment relate to elements referenced in the report, but explicit methods or data structures for report matters, especially relative to color counts, are absent.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Model lacks specific mechanisms or attributes that would calculate or store the counts of specific vehicle colors as needed by the report."
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Though the UML covers various classes, there is no functionality or attribute reflecting the ordering of report contents by city and amount.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No elements in the model dictate or influence sorting methodology as required by the guideline."
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "There is no indication in the UML model of handling different report formats such as PDF and XML.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The model does not reflect a representation of output formats for the reports that are mandated."
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "There are no elements present that manage characteristics of monthly reports on club member growth.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "No classes or associations in the existing model align with producing reports for tracking new and total club members as stipulated."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "While clients and memberships are represented, no aspects of monthly metrics or cumulative reportage are apparent.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Model does not depict the processes outlined for monthly tracking of club membership growth."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The lack of ordering mechanism in the UML class model hinder proper month sequencing in reports.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The case model does not incorporate any framework for handling chronological order as demanded."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The Client class contains attributes like clientId, firstName, lastName, and phoneNumber.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These attributes are typical for a client entity and add useful details even though they are not explicitly required by the guidelines."
+    },
+    {
+      "fragment": "Vehicle class comprises vehicleNumber, type, color, size, and weightKg as attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These attributes provide a comprehensive view of the vehicle which is relevant for operations within a parking system, though not directly covered by the guidelines."
+    },
+    {
+      "fragment": "ParkingSpace class includes attributes like spaceId, floor, x and y coordinates, size, and isOccupied status.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The attributes accurately capture the realistic considerations for managing parking spaces and are appropriate for the domain."
+    },
+    {
+      "fragment": "The Payment class contains attributes such as paymentId, paymentTime, amount, status, and method.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These attributes enable the handling of payments in a detailed manner which is beneficial for the parking system."
+    },
+    {
+      "fragment": "Class ClubMembership only contains membershipId and registrationDate attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While these attributes are rudimentary for membership tracking, they provide a foundation that could be expanded."
+    },
+    {
+      "fragment": "The class PreferredParkingLot has selectionDate attribute, implying preference history tracking for clients.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The model tracks when a parking lot was marked as preferred, which can be relevant for analysis even if not mandated."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The Client class contains attributes like clientId, firstName, lastName, and phoneNumber.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Vehicle class comprises vehicleNumber, type, color, size, and weightKg as attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "ParkingSpace class includes attributes like spaceId, floor, x and y coordinates, size, and isOccupied status.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Payment class contains attributes such as paymentId, paymentTime, amount, status, and method.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Class ClubMembership only contains membershipId and registrationDate attributes.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The class PreferredParkingLot has selectionDate attribute, implying preference history tracking for clients.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 10.0,
+  "max_score": 18.0,
+  "score_pct": 55.6,
+  "overall_assessment": "The case model satisfies the primary guidelines related to class definitions but lacks several operational aspects and detailing for full guideline compliance."
+}

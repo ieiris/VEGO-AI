@@ -1,0 +1,59 @@
+@startuml
+left to right direction
+actor "עובד מכירות" as SalesRep
+actor "לקוח" as Customer
+actor "עובד שיווק" as MarketingRep
+actor "עובד" as Employee
+actor "מערכת גפן" as GefenSystem
+
+usecase "ניהול הזמנות" as ManageOrders
+usecase "ביצוע הזמנה " as DoOrdeer
+usecase "בחירת סוג הזמנה רגילה " as ChooseTypeOrderUrgent
+usecase "בחירת סוג הזמנה דחופה " as ChooseTypeOrderRegular
+usecase "בחירת רמת דחיפות הזמנה וזמן אספקה רצוי" as ChoosePriority
+usecase "בחירת לקוח ראשי" as ChooseMainCustomer
+usecase "בחירת סוג וכמות יין" as ChooseTypeAndCount
+usecase "ציפיה במידע של ייו" as ViewWineInfo
+usecase "עדכון מלאי" as UpdateCount
+usecase "בדיקת זמיניות יין" as CheckWine
+usecase "הפקת דוח עובדים לא פרודוקטיבים" as ReportEmployee
+usecase "הפקת דוח המלצות" as Recomandation
+usecase "עדכון מידע על יין וסוג" as UpdateWineInfo
+usecase "עדכון מחיר ותמונה" as UpdatePriceAndPhoto
+usecase "המלצה עבור אירוע מתאים " as RecomendForWine
+usecase "תיאור כללי עבור אירוע ,מיקום ,עונה" as InfoWine
+usecase "שליחת דוח מלאי יין" as ImportReport
+usecase "שליחת נתוני xml" as ExportInfo
+
+
+SalesRep -- ManageOrders
+ManageOrders --> CheckWine : <<include>>
+SalesRep -- Recomandation
+SalesRep -- ReportEmployee
+
+
+Customer -- DoOrdeer
+DoOrdeer --> ChooseTypeOrderUrgent : <<include>>
+DoOrdeer <-- UpdateCount : <<extend>>
+DoOrdeer --> ChooseTypeOrderRegular : <<include>>
+ChooseTypeOrderRegular --> ChoosePriority : <<include>>
+ChooseTypeOrderUrgent <-- ChooseMainCustomer : <<extend>>
+ChooseTypeOrderUrgent <-- ChooseTypeAndCount : << extend >>
+
+Employee -- ViewWineInfo
+Employee -- DoOrdeer
+
+MarketingRep -- UpdateWineInfo
+UpdateWineInfo <-- UpdatePriceAndPhoto: <<extend>>
+MarketingRep -- RecomendForWine
+RecomendForWine --> InfoWine : <<include>>
+
+GefenSystem <-- ImportReport
+GefenSystem -- ExportInfo
+
+SalesRep -|> Employee
+MarketingRep -|> Employee
+
+
+
+@enduml

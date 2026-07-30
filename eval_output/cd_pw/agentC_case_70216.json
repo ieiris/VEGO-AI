@@ -1,0 +1,276 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70216",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes attributes like id, name, address, and city, which aligns with storing unique number, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class has an attribute called availableSpaces to represent the number of available spaces in the lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The association between Customer and Vehicle ensures that each vehicle is linked to one customer, as evidenced by the 1-to-1 relationship from Vehicle to Customer.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class includes attributes for startTime and is associated with a Vehicle, ensuring that parking session information is stored.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpot class has a size attribute indicating small, medium, or large, which aligns with specifying accommodation suitability for vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class includes maxWeight, aligning with the need to define a maximum vehicle weight the conveyor can transport.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "ParkingSession has an optional association with Conveyor, indicating that conveyors handling vehicles are not tracked for all sessions, especially at the end.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The ParkingSession is linked to a PriceList, modeling different price lists for each parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "A Membership class linked to Customer represents the management of a client club.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The case model lacks details on how club management functions fully operate."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "ParkingSession has an isFirstFreeSession attribute, which could be linked to discounts for club members.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The model specifies free sessions, but a fixed discount mechanism is not explicitly detailed."
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The isFirstFreeSession attribute in ParkingSession suggests the possibility of free initial sessions for new club members.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The ReportManager class has an operation for generateAnnualSummaryReport, which relates to generating yearly overviews for ParkWise.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The report generator in ReportManager considers parking lot details, including vehicle colors, aligning with requirements for the annual summary.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The specification of ordering in the ReportManager's annual summary aligns with city and payment amount ordering.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Generate reports in PDF and XML forms as per the operations available in ReportManager, matching the required formats.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Operations in ReportManager can be linked to providing monthly growth overviews as required in guidelines.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "ReportManager includes report contents like new club members, satisfying the monthly growth overview requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Ordering by months in ReportManager's reports aligns with requirements for ordering customer growth reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G9",
+      "evidence": "The model contains a Membership class associated with Customer, indicating a basic structure for managing client membership status. However, explicit club functions like managing benefits or club-specific events are missing.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The existing framework denotes membership but lacks detailed club operation functionalities like rewards or special events."
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The ParkingSession class has an attribute isFirstFreeSession, which suggests some form of a special mechanism for parking sessions. However, a generic discount attribute is absent.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the special treatment for first sessions can imply potential for discounts, an explicit fixed discount system is not clearly indicated in the case model."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The system allows for three vehicle photos to be associated with each vehicle, categorized by view types like front, rear, and side.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This adds detail by providing a visual record of vehicles, which may aid in vehicle tracking and validation processes not explicitly outlined in the guidelines."
+    },
+    {
+      "fragment": "The RateService provides price list information in a JSON format.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "While not explicitly required, this representation integrates external system operations through JSON, which aligns with real-world system interactions."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The system allows for three vehicle photos to be associated with each vehicle, categorized by view types like front, rear, and side.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The RateService provides price list information in a JSON format.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 18.0,
+  "max_score": 19.0,
+  "score_pct": 94.7,
+  "overall_assessment": "The case model exhibits strong compliance with the domain guidelines, effectively covering most guidelines with robust evidence and an innovative approach."
+}

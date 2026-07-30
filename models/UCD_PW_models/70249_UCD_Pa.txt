@@ -1,0 +1,140 @@
+@startuml
+left to right direction
+skinparam usecaseBorderColor #000000
+skinparam usecaseBackgroundColor #F8F8F8
+skinparam rectangleBorderColor #000000
+skinparam ActorStyle stickman
+
+' -------------------------------
+' Actors
+' -------------------------------
+actor Client as C
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors Controller (CC)" as CC
+actor Admin as A
+actor "Payment Gateway (PG)" as PG
+actor IRS
+actor "SMS Service" as SMS
+
+' -------------------------------
+' System Boundary
+' -------------------------------
+rectangle "ParkWise System" {
+
+    ' ===== CLIENT FUNCTIONS =====
+    rectangle "Client Functions" {
+
+        usecase "Join Customer Club" as UC_JoinClub
+        usecase "End Parking Session" as UC_End
+        usecase "Access System\n(Phone Number)" as UC_Access
+        usecase "View Parking Details" as UC_ViewParking
+        usecase "Register Client" as UC_Register
+        usecase "Upload Vehicle Photos" as UC_Photos
+        usecase "Select Preferred Lots" as UC_SelectLots
+        usecase "Pay for Parking" as UC_Pay
+
+        usecase "Extract Vehicle Details\nFrom Photos" as UC_Extract
+        usecase "Associate Vehicle\nWith Client" as UC_Associate
+    }
+
+    ' ===== GATE & ARRIVAL =====
+    rectangle "Gate & Arrival Handling" {
+
+        usecase "Verify Vehicle Number" as UC_VerifyVehicle
+        usecase "Open Barrier" as UC_OpenGate
+        usecase "Detect Arrival/Departure" as UC_Detect
+    }
+
+    ' ===== ADMIN FUNCTIONS =====
+    rectangle "Admin Functions" {
+
+        usecase "Upload Price List JSON" as UC_UploadPrice
+        usecase "Update Parking Lot Details" as UC_UpdateLots
+        usecase "Generate Annual Summary Report\n[PDF + XML]" as UC_AnnualReport
+        usecase "Generate Club Growth Report" as UC_ClubGrowthReport
+    }
+
+    ' ===== CONVEYOR OPERATIONS =====
+    rectangle "Conveyor Operations" {
+
+        usecase "Retrieve Vehicle To Gate" as UC_Retrieve
+        usecase "Assign Conveyor" as UC_Assign
+        usecase "Move Vehicle To Space" as UC_Move
+        usecase "Find Nearest Suitable\nParking Space" as UC_Optimize
+        usecase "Scan Vehicle Number" as UC_Scan
+
+        ' new improvement UCs
+        usecase "Update Vehicle Location" as UC_UpdateLocation
+        usecase "Send SMS Notification" as UC_SendSMS
+    }
+
+    ' ===== PAYMENT HANDLING =====
+    rectangle "Payment Handling" {
+
+        usecase "Issue Receipt" as UC_Receipt
+        usecase "Process Payment Request" as UC_ProcessPayment
+    }
+}
+
+' -------------------------------
+' Relationships (Actors → Use Cases)
+' -------------------------------
+
+' Client
+C --> UC_JoinClub
+C --> UC_End
+C --> UC_Access
+C --> UC_ViewParking
+C --> UC_Register
+C --> UC_Photos
+C --> UC_SelectLots
+C --> UC_Pay
+
+' Gate Sensor
+GS --> UC_Detect
+GS --> UC_OpenGate
+
+' Admin
+A --> UC_UploadPrice
+A --> UC_UpdateLots
+A --> UC_AnnualReport
+A --> UC_ClubGrowthReport
+
+' Conveyors Controller
+CC --> UC_Retrieve
+CC --> UC_Assign
+CC --> UC_Move
+CC --> UC_Scan
+
+' External systems
+IRS --> UC_UploadPrice
+PG --> UC_ProcessPayment
+SMS --> UC_SendSMS
+
+' -------------------------------
+' INCLUDE / EXTEND LOGIC
+' -------------------------------
+
+' Photos → Extract → Associate
+UC_Photos --> UC_Extract        : <<include>>
+UC_Extract --> UC_Associate     : <<include>>
+
+' Verify → Open Barrier
+UC_VerifyVehicle --> UC_OpenGate : <<include>>
+
+' Assign conveyor → scan & optimize
+UC_Assign --> UC_Optimize       : <<include>>
+UC_Assign --> UC_Scan           : <<include>>
+
+' Move vehicle → update location → send SMS
+UC_Move --> UC_UpdateLocation   : <<include>>
+UC_UpdateLocation --> UC_SendSMS : <<include>>
+
+' End parking → retrieve vehicle & pay
+UC_End --> UC_Retrieve          : <<include>>
+UC_End --> UC_Pay               : <<include>>
+
+' Payment → gateway & optional receipt
+UC_Pay --> UC_ProcessPayment    : <<include>>
+UC_Pay --> UC_Receipt           : <<extend>>
+@enduml

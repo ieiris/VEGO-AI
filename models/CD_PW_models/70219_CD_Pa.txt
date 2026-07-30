@@ -1,0 +1,151 @@
+@startuml
+' Layout and Styling Settings
+skinparam linetype ortho
+skinparam nodesep 150
+skinparam ranksep 120
+skinparam padding 2
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+    FontSize 13
+}
+
+' ---------------------------------------------------------
+' 1. Class Definitions
+' ---------------------------------------------------------
+
+class "ParkWiseSystem" as System {
+    + generateAnnualSummaryReport()
+    + generateClubGrowthReport()
+}
+
+class "Administrator" as Administrator {
+    - adminID
+    - name
+    + updateParkingLotDetails(lotID)
+    + requestAnnualReport()
+    + requestClubGrowthReport()
+}
+
+class "ParkingLot" as ParkingLot {
+    - lotID
+    - name
+    - city
+    - address
+    - availableSpaces
+    + calculateAnnualIncome()
+    + countOtherColorVehicles()
+}
+
+class "Client" as Client {
+    - clientID
+    - firstName
+    - lastName
+    - phone
+    - isClubMember
+    - joinDate
+    + registerToClub()
+}
+
+class "ParkingSpace" as ParkingSpace {
+    - spaceID
+    - floor
+    - coordinates_XY
+    - size: Size
+}
+
+class "Conveyor" as Conveyor {
+    - conveyorID
+    - maxWeight
+}
+
+class "GateSensor" as GateSensor {
+    - sensorID
+    + openGate()
+}
+
+class "PriceList" as PriceList {
+    - listID
+    - year
+    - prices
+}
+
+class "Vehicle" as Vehicle {
+    - licensePlate
+    - type
+    - weight
+    - color: Color
+    + extractDetailsFromPhoto()
+}
+
+class "ParkingSession" as ParkingSession {
+    - sessionID
+    - entryTime
+    - exitTime
+    - totalAmount
+    + calculateFinalCost()
+}
+
+class "Size" as EnumSize <<enumeration>> {
+    SMALL
+    MEDIUM
+    LARGE
+}
+
+class "Color" as EnumColor <<enumeration>> {
+    WHITE
+    BLACK
+    SILVER
+    BLUE
+    OTHER
+}
+
+' ---------------------------------------------------------
+' 2. Layout Structure (Hidden Links)
+' ---------------------------------------------------------
+System -[hidden]down- ParkingLot
+System -[hidden]down- Client
+Administrator -[hidden]right- System 
+Client -[hidden]right- ParkingLot
+
+ParkingLot -[hidden]down- ParkingSpace
+ParkingSpace -[hidden]right- Conveyor
+Conveyor -[hidden]right- GateSensor
+GateSensor -[hidden]right- PriceList
+
+' ---------------------------------------------------------
+' 3. Relationships
+' ---------------------------------------------------------
+
+' System Composition
+System "1" *-- "*" Client
+System "1" *-- "*" ParkingLot
+
+' Administrator Relationships
+Administrator "1" -- "*" ParkingLot : manages/updates >
+Administrator ..> System : generates reports >
+
+' Client & Vehicle
+Client "1" -left- "*" Vehicle : owns >
+
+' ParkingLot Components (Composition)
+ParkingLot "1" *-- "*" ParkingSpace
+ParkingLot "1" *-- "*" Conveyor
+ParkingLot "1" *-- "*" GateSensor
+
+' ParkingLot & PriceList (Many-to-Many as requested)
+ParkingLot "*" -- "*" PriceList : uses >
+
+' Parking Session (The Connector)
+Vehicle ..> EnumColor
+Vehicle ..> EnumSize
+ParkingSpace ..> EnumSize
+
+Vehicle "1" <-- "*" ParkingSession
+ParkingSession "*" --> "1" ParkingLot
+ParkingSession ..> PriceList : based on >
+
+' Client Preferences
+Client "*" .right. "*" ParkingLot : < prefers
+@enduml

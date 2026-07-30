@@ -1,0 +1,390 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70223",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model lacks a class representing a parking lot with unique attributes such as number, name, address, and city.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "There is no class or attribute in the case model representing the number of available spaces in each parking lot.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The case model maps vehicles to optimization requests, but lacks any mention of client association.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "OptimizationRequest logs requestTime and vehicleID without specifying a start time or other parking session details.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Partial mapping with request time; start time not explicitly mentioned."
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class includes a size attribute indicating accommodation capacity for various vehicle sizes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class specifies a max weight attribute, corresponding to the guideline's weight capacity requirement.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "OptimizationRequest involves conveyors but does not address specific storage of conveyors post-parking session.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Some relevant elements present but end-of-session process not clear."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The case model includes no attributes or references to price lists tailored per parking lot.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "There is no class in the case model dedicated to client clubs for managing member data.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The model does not include any special discounts or membership conditions for club members.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "There is no evidence in the model that references free parking sessions for new club members.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "There is no class or attribute related to generating an Annual Summary Report of incomes.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "No discernible connections concerning parkings, payments, or specific vehicle color reports in the case model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "There is no ordering or mention within the case model concerning report sorting by city or payment.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The case model does not specify how Annual Summary Reports should be formatted.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "No class or attributes are specified for the management of a Customer Club Growth Report.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The case model does not detail monthly customer join-data or maintain cumulative member growth figures.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There is no evident chronological ordering of monthly customer growth data in the case model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G1",
+      "evidence": "There is no class or attributes representing parking lot details such as unique number, name, address, and city in the current system of classes described.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The case model lacks any representation of an attribute or a class to capture the number of available spaces in a parking lot distinctly, separate from the ParkingSpace occupancy status.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "While the Vehicle class is associated with OptimizationRequest, there is no direct association to suggest that each Vehicle is linked to a Client.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The OptimizationRequest class partially covers the requirement by logging request time which can be associated as a start time, but it lacks other detailed session information.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Request time may represent start time implicitly, but standalone detailed session info is absent."
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The optimization mechanism involving conveyors is considered, but there is no explicit mention of the process pertaining to conveyors at the end of parking sessions.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Some references to conveyors in the optimization process; however, end-of-session details are missing."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "No representation of a price list per parking lot is present in the class attributes or relationships within the case model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "A class dedicated to managing a client club with member data is not present in the current model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The case model lacks implementation of discounts specific to club members or conditions pertaining to membership.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The model does not show any elements which provide for a free parking benefit for new club members.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "There are no elements in the model related to the generation of annual summary reports concerning income.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The model does not include any mechanisms or attributes for summarizing vehicle color reports or payments per parking lot.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Ordering mechanisms for reports specifically by city and payment are absent in the current model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Format generation for the annual summary report in PDF or XML is not represented in the model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The model lacks any intricate mechanism for tracking new or cumulative club member data.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Monthly customer join-data or cumulative member growth recording mechanisms are not present.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Chronological ordering of customer growth data by month is not documented in existing class relationships or attributes.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The ParkingSpace class has attributes for position (posX and posY), which determine the specific location of each parking space within a floor of the lot.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This adds detail to each parking space's precise localization, which is not explicitly required by the guidelines but can aid in optimization processes."
+    },
+    {
+      "fragment": "The class OptimizationRequest has an attribute for a score, presumably used to determine the optimal parking space based on certain criteria.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The addition of a scoring mechanism for optimization requests aligns with overall business logic and allows for a more flexible optimization algorithm."
+    },
+    {
+      "fragment": "The Conveyor class includes an attribute for its status, which could denote operational or non-operational states among others.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Tracking the status of a conveyor can add robustness to vehicle handling and scheduling processes, even though such a paradigm is not specified in the guidelines."
+    },
+    {
+      "fragment": "OptimizationLog captures timestamps for logging events related to the optimization process.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This can be useful for auditing and tracking optimization processing times, aiding in identifying performance bottlenecks."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The ParkingSpace class has attributes for position (posX and posY), which determine the specific location of each parking space within a floor of the lot.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The class OptimizationRequest has an attribute for a score, presumably used to determine the optimal parking space based on certain criteria.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The Conveyor class includes an attribute for its status, which could denote operational or non-operational states among others.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "OptimizationLog captures timestamps for logging events related to the optimization process.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 5.5,
+  "max_score": 18.0,
+  "score_pct": 30.6,
+  "overall_assessment": "The case model meets a few guidelines and contains useful alternatives, but overall compliance is low."
+}

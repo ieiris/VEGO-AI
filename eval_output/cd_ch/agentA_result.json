@@ -1,0 +1,441 @@
+{
+  "run_outputs": [
+    {
+      "skill_version": "1.1.0",
+      "language_name": "UML Class Diagram",
+      "guidelines": [
+        {
+          "id": "T1",
+          "short_name": "Class(contents)",
+          "fragment_description": "A Class can contain attributes and operations. This fragment includes all features that are considered part of the class's definition.",
+          "involved_constructs": "Class"
+        },
+        {
+          "id": "T2",
+          "short_name": "Attribute",
+          "fragment_description": "An Attribute is a defining property of a Class, specifying a named slot within which a value of a specified type may be stored.",
+          "involved_constructs": "Attribute"
+        },
+        {
+          "id": "T3",
+          "short_name": "Operation",
+          "fragment_description": "An Operation is a behavioral feature of a Class that represents a functional service or computation.",
+          "involved_constructs": "Operation"
+        },
+        {
+          "id": "T4",
+          "short_name": "Class-Association-Class",
+          "fragment_description": "An Association represents a relationship between two classes, indicating that objects of one class are connected to objects of another class.",
+          "involved_constructs": "Class | Association | Class"
+        },
+        {
+          "id": "T5",
+          "short_name": "Class-Generalization-Class",
+          "fragment_description": "Generalization is a relationship that indicates that one Class inherits from another Class, showing a hierarchy between the two.",
+          "involved_constructs": "Class | Generalization | Class"
+        },
+        {
+          "id": "T6",
+          "short_name": "Class-Dependency-Class",
+          "fragment_description": "A Dependency indicates that a change in one class may affect another class, reflecting a usage or implementation relationship.",
+          "involved_constructs": "Class | Dependency | Class"
+        },
+        {
+          "id": "T7",
+          "short_name": "Class-Aggregation-Class",
+          "fragment_description": "Aggregation is a type of association that indicates a whole-part relationship between two classes.",
+          "involved_constructs": "Class | Aggregation | Class"
+        },
+        {
+          "id": "T8",
+          "short_name": "Class-Composition-Class",
+          "fragment_description": "Composition is a strong form of aggregation signifying a whole-part relationship, where the part is existentially dependent on the whole.",
+          "involved_constructs": "Class | Composition | Class"
+        }
+      ],
+      "agent1_capabilities": [
+        "What is the structure of a Class in a UML Class Diagram?",
+        "How does an Association relationship connect two Classes?",
+        "What distinguishes a Generalization from other relationships in UML Class Diagrams?",
+        "How is a Dependency between two Classes represented?",
+        "What are the different types of relationships that can exist between two Classes?"
+      ]
+    },
+    {
+      "skill_version": "1.1.0",
+      "language_name": "UML Class Diagram",
+      "guidelines": [
+        {
+          "id": "T1",
+          "short_name": "Class(contents)",
+          "fragment_description": "A Class fragment represents a UML Class specification, including its name, attributes, and operations.",
+          "involved_constructs": "Class | Attribute, Operation"
+        },
+        {
+          "id": "T2",
+          "short_name": "Class-Association-Class",
+          "fragment_description": "An Association represents a relationship between two UML Classes. It may include roles, multiplicities, and navigability.",
+          "involved_constructs": "Class | Association | Class"
+        },
+        {
+          "id": "T3",
+          "short_name": "Class-Aggregation-Class",
+          "fragment_description": "An Aggregation is a special form of association that represents a whole-part relationship between two UML Classes.",
+          "involved_constructs": "Class | Aggregation | Class"
+        },
+        {
+          "id": "T4",
+          "short_name": "Class-Composition-Class",
+          "fragment_description": "A Composition is a strong form of aggregation that implies ownership and a whole-part relationship between two UML Classes.",
+          "involved_constructs": "Class | Composition | Class"
+        },
+        {
+          "id": "T5",
+          "short_name": "Class-Generalization-Class",
+          "fragment_description": "Generalization represents an inheritance relationship between a more general class and a more specific class.",
+          "involved_constructs": "Class | Generalization | Class"
+        },
+        {
+          "id": "T6",
+          "short_name": "Interface(contents)",
+          "fragment_description": "An Interface fragment details a UML Interface specification, including its name and operations.",
+          "involved_constructs": "Interface | Operation"
+        },
+        {
+          "id": "T7",
+          "short_name": "Class-Realization-Interface",
+          "fragment_description": "A Realization relationship indicates that a class implements the operations defined by an interface.",
+          "involved_constructs": "Class | Realization | Interface"
+        }
+      ],
+      "agent1_capabilities": [
+        "What is the role of an Association in a UML Class Diagram?",
+        "How is inheritance represented in UML Class Diagrams?",
+        "What are the differences between Aggregation and Composition in UML Class Diagrams?",
+        "How do you model a class implementing an interface in UML?",
+        "What elements can a UML Class include?"
+      ]
+    },
+    {
+      "skill_version": "1.1.0",
+      "language_name": "UML Class Diagram",
+      "guidelines": [
+        {
+          "id": "T1",
+          "short_name": "Class",
+          "fragment_description": "A Class represents a blueprint of objects containing attributes and operations specific to the object type it models.",
+          "involved_constructs": "Class"
+        },
+        {
+          "id": "T2",
+          "short_name": "Class-Association-Class",
+          "fragment_description": "An Association represents a relationship between two classes, indicating that objects of one class can be related to objects of the other class through a defined link.",
+          "involved_constructs": "Class | Association | Class"
+        },
+        {
+          "id": "T3",
+          "short_name": "Class-Aggregation-Class",
+          "fragment_description": "An Aggregation represents a whole-part relationship between two classes where one class is a container and the other class is a part.",
+          "involved_constructs": "Class | Aggregation | Class"
+        },
+        {
+          "id": "T4",
+          "short_name": "Class-Composition-Class",
+          "fragment_description": "A Composition represents a strong whole-part relationship between two classes, indicating that the part cannot exist independently of the whole.",
+          "involved_constructs": "Class | Composition | Class"
+        },
+        {
+          "id": "T5",
+          "short_name": "Class-Generalization-Class",
+          "fragment_description": "A Generalization represents an inheritance relationship between a more general superclass and more specific subclasses.",
+          "involved_constructs": "Class | Generalization | Class"
+        },
+        {
+          "id": "T6",
+          "short_name": "Class-Realization-Interface",
+          "fragment_description": "A Realization defines a relationship where a class implements the behavior specified by an interface.",
+          "involved_constructs": "Class | Realization | Interface"
+        },
+        {
+          "id": "T7",
+          "short_name": "Class-Dependency-Class",
+          "fragment_description": "A Dependency indicates that a change in one class (supplier) may require changes to the other class (client).",
+          "involved_constructs": "Class | Dependency | Class"
+        },
+        {
+          "id": "T8",
+          "short_name": "Interface",
+          "fragment_description": "An Interface defines a set of operations that specify a contract for implementing classes but contains no implementation itself.",
+          "involved_constructs": "Interface"
+        },
+        {
+          "id": "T9",
+          "short_name": "Class-Attribute",
+          "fragment_description": "An Attribute is a stored property or data value of a class, representing characteristics shared by all instances of the class.",
+          "involved_constructs": "Class | Attribute"
+        },
+        {
+          "id": "T10",
+          "short_name": "Class-Operation",
+          "fragment_description": "An Operation is a function or service that a class can provide, representing behavior of the objects within the class.",
+          "involved_constructs": "Class | Operation"
+        }
+      ],
+      "agent1_capabilities": [
+        "What are the core components of a UML class?",
+        "How are classes associated with one another in UML?",
+        "What differentiates aggregation from composition in UML diagrams?",
+        "How does generalization work in UML class diagrams?",
+        "Can you explain the relationship between a class and an interface in UML?",
+        "What role does an attribute play in defining a class in UML?",
+        "How does UML depict operations within classes?"
+      ]
+    }
+  ],
+  "mapping": {
+    "skill_version": "1.0.0",
+    "language_name": "UML Class Diagram",
+    "clusters": [
+      {
+        "cluster_id": "C1",
+        "canonical_description": "A UML Class defines the structure of objects with specified attributes and operations.",
+        "run1_guideline_id": "T1",
+        "run1_short_name": "Class(contents)",
+        "run2_guideline_id": "T1",
+        "run2_short_name": "Class(contents)",
+        "run3_guideline_id": "T1",
+        "run3_short_name": "Class",
+        "similarity_score": 0.9,
+        "base_assignment": "classes",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C2",
+        "canonical_description": "An Association indicates a relationship between two classes, showing how objects are connected.",
+        "run1_guideline_id": "T4",
+        "run1_short_name": "Class-Association-Class",
+        "run2_guideline_id": "T2",
+        "run2_short_name": "Class-Association-Class",
+        "run3_guideline_id": "T2",
+        "run3_short_name": "Class-Association-Class",
+        "similarity_score": 1.0,
+        "base_assignment": "associations",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C3",
+        "canonical_description": "An Aggregation is a special form of association representing a whole-part relationship between classes.",
+        "run1_guideline_id": "T7",
+        "run1_short_name": "Class-Aggregation-Class",
+        "run2_guideline_id": "T3",
+        "run2_short_name": "Class-Aggregation-Class",
+        "run3_guideline_id": "T3",
+        "run3_short_name": "Class-Aggregation-Class",
+        "similarity_score": 1.0,
+        "base_assignment": "aggregation relations",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C4",
+        "canonical_description": "A Composition involves a strong whole-part relationship where the part is dependent on the whole class.",
+        "run1_guideline_id": "T8",
+        "run1_short_name": "Class-Composition-Class",
+        "run2_guideline_id": "T4",
+        "run2_short_name": "Class-Composition-Class",
+        "run3_guideline_id": "T4",
+        "run3_short_name": "Class-Composition-Class",
+        "similarity_score": 1.0,
+        "base_assignment": "composition relations",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C5",
+        "canonical_description": "Generalization implies an inheritance relationship from a general superclass to more specific subclasses.",
+        "run1_guideline_id": "T5",
+        "run1_short_name": "Class-Generalization-Class",
+        "run2_guideline_id": "T5",
+        "run2_short_name": "Class-Generalization-Class",
+        "run3_guideline_id": "T5",
+        "run3_short_name": "Class-Generalization-Class",
+        "similarity_score": 1.0,
+        "base_assignment": "inheritance relations",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C6",
+        "canonical_description": "A Dependency indicates that a change in one class could require adjustments in a dependent class.",
+        "run1_guideline_id": "T6",
+        "run1_short_name": "Class-Dependency-Class",
+        "run2_guideline_id": null,
+        "run2_short_name": null,
+        "run3_guideline_id": "T7",
+        "run3_short_name": "Class-Dependency-Class",
+        "similarity_score": 0.66,
+        "base_assignment": null,
+        "match_confidence": "None"
+      },
+      {
+        "cluster_id": "C7",
+        "canonical_description": "An Interface specifies a contract in terms of operations without implementing them.",
+        "run1_guideline_id": null,
+        "run1_short_name": null,
+        "run2_guideline_id": "T6",
+        "run2_short_name": "Interface(contents)",
+        "run3_guideline_id": "T8",
+        "run3_short_name": "Interface",
+        "similarity_score": 0.75,
+        "base_assignment": "interfaces",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C8",
+        "canonical_description": "A Realization defines how a class implements the operations of an interface.",
+        "run1_guideline_id": null,
+        "run1_short_name": null,
+        "run2_guideline_id": "T7",
+        "run2_short_name": "Class-Realization-Interface",
+        "run3_guideline_id": "T6",
+        "run3_short_name": "Class-Realization-Interface",
+        "similarity_score": 0.75,
+        "base_assignment": "realization relations",
+        "match_confidence": "Medium"
+      },
+      {
+        "cluster_id": "C9",
+        "canonical_description": "An Attribute is a named property of a class representing its data value.",
+        "run1_guideline_id": "T2",
+        "run1_short_name": "Attribute",
+        "run2_guideline_id": null,
+        "run2_short_name": null,
+        "run3_guideline_id": "T9",
+        "run3_short_name": "Class-Attribute",
+        "similarity_score": 0.75,
+        "base_assignment": "attributes",
+        "match_confidence": "High"
+      },
+      {
+        "cluster_id": "C10",
+        "canonical_description": "An Operation is a function or service that a class can execute.",
+        "run1_guideline_id": "T3",
+        "run1_short_name": "Operation",
+        "run2_guideline_id": null,
+        "run2_short_name": null,
+        "run3_guideline_id": "T10",
+        "run3_short_name": "Class-Operation",
+        "similarity_score": 0.75,
+        "base_assignment": "operations",
+        "match_confidence": "High"
+      }
+    ]
+  },
+  "metrics": {
+    "skill_version": "1.0.0",
+    "overall_agreement": 0.8333,
+    "per_run_metrics": [
+      {
+        "run": 1,
+        "true_positives": 7,
+        "false_positives": 1,
+        "false_negatives": 2,
+        "precision": 0.875,
+        "recall": 0.7778,
+        "f1": 0.8235
+      },
+      {
+        "run": 2,
+        "true_positives": 7,
+        "false_positives": 0,
+        "false_negatives": 2,
+        "precision": 1.0,
+        "recall": 0.7778,
+        "f1": 0.875
+      },
+      {
+        "run": 3,
+        "true_positives": 9,
+        "false_positives": 1,
+        "false_negatives": 0,
+        "precision": 0.9,
+        "recall": 1.0,
+        "f1": 0.9474
+      }
+    ],
+    "reachable_base_count": 9
+  },
+  "best_run_index": 2,
+  "best_template": {
+    "skill_version": "1.1.0",
+    "language_name": "UML Class Diagram",
+    "guidelines": [
+      {
+        "id": "T1",
+        "short_name": "Class",
+        "fragment_description": "A Class represents a blueprint of objects containing attributes and operations specific to the object type it models.",
+        "involved_constructs": "Class"
+      },
+      {
+        "id": "T2",
+        "short_name": "Class-Association-Class",
+        "fragment_description": "An Association represents a relationship between two classes, indicating that objects of one class can be related to objects of the other class through a defined link.",
+        "involved_constructs": "Class | Association | Class"
+      },
+      {
+        "id": "T3",
+        "short_name": "Class-Aggregation-Class",
+        "fragment_description": "An Aggregation represents a whole-part relationship between two classes where one class is a container and the other class is a part.",
+        "involved_constructs": "Class | Aggregation | Class"
+      },
+      {
+        "id": "T4",
+        "short_name": "Class-Composition-Class",
+        "fragment_description": "A Composition represents a strong whole-part relationship between two classes, indicating that the part cannot exist independently of the whole.",
+        "involved_constructs": "Class | Composition | Class"
+      },
+      {
+        "id": "T5",
+        "short_name": "Class-Generalization-Class",
+        "fragment_description": "A Generalization represents an inheritance relationship between a more general superclass and more specific subclasses.",
+        "involved_constructs": "Class | Generalization | Class"
+      },
+      {
+        "id": "T6",
+        "short_name": "Class-Realization-Interface",
+        "fragment_description": "A Realization defines a relationship where a class implements the behavior specified by an interface.",
+        "involved_constructs": "Class | Realization | Interface"
+      },
+      {
+        "id": "T7",
+        "short_name": "Class-Dependency-Class",
+        "fragment_description": "A Dependency indicates that a change in one class (supplier) may require changes to the other class (client).",
+        "involved_constructs": "Class | Dependency | Class"
+      },
+      {
+        "id": "T8",
+        "short_name": "Interface",
+        "fragment_description": "An Interface defines a set of operations that specify a contract for implementing classes but contains no implementation itself.",
+        "involved_constructs": "Interface"
+      },
+      {
+        "id": "T9",
+        "short_name": "Class-Attribute",
+        "fragment_description": "An Attribute is a stored property or data value of a class, representing characteristics shared by all instances of the class.",
+        "involved_constructs": "Class | Attribute"
+      },
+      {
+        "id": "T10",
+        "short_name": "Class-Operation",
+        "fragment_description": "An Operation is a function or service that a class can provide, representing behavior of the objects within the class.",
+        "involved_constructs": "Class | Operation"
+      }
+    ],
+    "agent1_capabilities": [
+      "What are the core components of a UML class?",
+      "How are classes associated with one another in UML?",
+      "What differentiates aggregation from composition in UML diagrams?",
+      "How does generalization work in UML class diagrams?",
+      "Can you explain the relationship between a class and an interface in UML?",
+      "What role does an attribute play in defining a class in UML?",
+      "How does UML depict operations within classes?"
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+@startuml
+skinparam actorStyle awesome
+left to right direction
+
+actor Client        as A_Client
+actor ClubMember    as A_Club
+actor Administrator as A_Admin
+
+A_Client <|-- A_Club
+
+actor "Gate Sensor (GS)"              as A_GS
+actor "Conveyors' Controller (CC)"    as A_CC
+actor "Payment Gateway (PG)"          as A_PG
+actor "Integrated Rate Service (IRS)" as A_IRS
+actor "SMS Gateway"                   as A_SMS
+
+rectangle "ParkWise System" as SYS {
+
+  rectangle "Client & Club Functions" as R_Client {
+    usecase "Start Parking\nSession"         as UC_Start
+    usecase "Provide Client\nand Vehicle Data" as UC_Data
+    usecase "Client Follows\nInstructions"     as UC_Instructions
+    usecase "View Parking\nDetails"          as UC_View
+    usecase "End Parking\nSession"           as UC_End
+    usecase "Pay for\nParking"               as UC_Pay
+    usecase "Request\nReceipt"               as UC_Receipt
+
+    usecase "Manage Preferred\nParking Lots"  as UC_Pref
+    usecase "Receive\nSpecial Price"         as UC_Special
+  }
+
+  rectangle "Administration" as R_Admin {
+    usecase "Maintain Parking\nLot Data"       as UC_Maintain
+    usecase "Adopt/Update Price\nList per Lot" as UC_Price
+    usecase "Generate Annual\nSummary Report"  as UC_Annual
+    usecase "Generate Club\nGrowth Report"     as UC_Growth
+  }
+
+  rectangle "Parking Equipment" as R_Equip {
+    usecase "Report Vehicle\nArrival/Departure"     as UC_Report
+    usecase "Open Gate"                             as UC_Open
+    usecase "Request Parking\nSpace Allocation"     as UC_Space
+    usecase "Update Parking\nCompletion + Location" as UC_Update
+    usecase "Request Vehicle\nRetrieval Conveyor"   as UC_Retrieve
+  }
+
+  rectangle "External Services" as R_Ext {
+    usecase "Send SMS\nNotification"  as UC_SMS
+    usecase "Process Payment\nRequest" as UC_Process
+    usecase "Notify Payment\nResult"   as UC_Notify
+    usecase "Provide Yearly\nPrice Lists" as UC_PriceList
+  }
+}
+
+A_Client --> UC_Start
+A_Client --> UC_Data
+A_Client --> UC_View
+A_Client --> UC_End
+A_Client --> UC_Pay
+A_Client --> UC_Receipt
+
+A_Club --> UC_Pref
+A_Club --> UC_Special
+
+A_Admin --> UC_Maintain
+A_Admin --> UC_Price
+A_Admin --> UC_Annual
+A_Admin --> UC_Growth
+
+A_GS  --> UC_Report
+A_GS  --> UC_Open
+
+A_CC  --> UC_Space
+A_CC  --> UC_Update
+A_CC  --> UC_Retrieve
+
+A_SMS --> UC_SMS
+
+A_PG  --> UC_Process
+A_PG  --> UC_Notify
+
+A_IRS --> UC_PriceList
+
+UC_Start  --> UC_Data  : <<include>>
+UC_End    --> UC_Pay   : <<include>>
+UC_Update --> UC_SMS   : <<include>>
+
+UC_Process --> UC_Open : <<extend>>
+
+' REQUIRED EXTEND RELATIONSHIP
+UC_Data --> UC_Instructions : <<extend>>
+@enduml

@@ -1,0 +1,102 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' --- Actors ---
+actor Administrator
+actor Client
+actor "Club Member" as Member
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors' Controller (CC)" as CC
+actor "Payment Gateway (PG)" as PG
+actor "Integrated Rate Service (IRS)" as IRS
+
+' --- Inheritance ---
+Client <|-- Member
+
+rectangle "ParkWise Information System" {
+
+    ' --- Administrative Use Cases ---
+    usecase "Update Parking Lot Details" as UC_UpdateLot
+    usecase "Generate Annual Summary Report" as UC_RepAnnual
+    usecase "Generate Customer Club Growth Report" as UC_RepGrowth
+
+    ' --- Entry Process ---
+    usecase "Handle Vehicle Arrival" as UC_Arrival
+    usecase "Open Barrier" as UC_OpenBarrier
+    usecase "Register/Update Client & Vehicle" as UC_Register
+    usecase "Extract Details from Photos" as UC_Extract
+
+    ' --- Parking Process ---
+    usecase "Optimize Parking Space" as UC_Optimize
+    usecase "Update Parking Location" as UC_UpdateLoc
+    usecase "View Parking Status" as UC_ViewStatus
+    usecase "Send SMS Notification" as UC_SMS
+
+    ' --- Exit & Payment Process ---
+    usecase "Request End Parking" as UC_EndParking
+    usecase "Handle Vehicle Departure" as UC_Departure
+    usecase "Process Payment" as UC_Pay
+    usecase "Calculate Payment Amount" as UC_CalcPay
+    usecase "Issue Receipt" as UC_Receipt
+
+    ' --- Club Management ---
+    usecase "Join Customer Club" as UC_JoinClub
+    usecase "Select Preferred Lots" as UC_SelectPref
+
+    ' --- System Setup ---
+    usecase "Update Price Lists" as UC_UpdatePrices
+
+    ' ==========================================
+    '              RELATIONSHIPS
+    ' ==========================================
+
+    ' --- Admin ---
+    Administrator --> UC_UpdateLot
+    Administrator --> UC_RepAnnual
+    Administrator --> UC_RepGrowth
+
+    ' --- Entry ---
+    GS --> UC_Arrival
+    ' Automatic entry triggers barrier
+    UC_Arrival ..> UC_OpenBarrier : <<include>>
+    
+    ' Client Manual Entry
+    Client --> UC_Register
+    UC_Register ..> UC_Extract : <<include>>
+
+    ' --- Parking Logic ---
+    CC --> UC_Optimize
+    CC --> UC_UpdateLoc
+    UC_UpdateLoc ..> UC_SMS : <<include>>
+    
+    Client --> UC_ViewStatus
+
+    ' --- Club Logic ---
+    Client --> UC_JoinClub
+    Member --> UC_SelectPref
+    UC_SelectPref .up.> UC_JoinClub : <<extend>>
+
+    ' --- Exit ---
+    Client --> UC_EndParking
+    ' MANDATORY LINK: System instructs CC to retrieve car
+    UC_EndParking --> CC : "Trigger Retrieval"
+    
+    ' Departure triggers barrier
+    GS --> UC_Departure
+    UC_Departure ..> UC_OpenBarrier : <<include>>
+
+    ' --- Payment ---
+    Client --> UC_Pay
+    UC_Pay ..> UC_CalcPay : <<include>>
+    
+    ' Association
+    UC_Pay -- PG 
+    
+    ' Extension
+    UC_Receipt .up.> UC_Pay : <<extend>> \n(Condition: Client requests receipt)
+
+    ' --- External Updates ---
+    IRS --> UC_UpdatePrices
+}
+@enduml

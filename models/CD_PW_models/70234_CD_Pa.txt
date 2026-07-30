@@ -1,0 +1,206 @@
+@startuml
+left to right direction
+skinparam classAttributeIconSize 0
+
+' =======================
+' Enumerations
+' =======================
+enum VehicleColor {
+  WHITE
+  BLACK
+  SILVER
+  BLUE
+  OTHER
+}
+
+enum ParkingSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum PaymentStatus {
+  APPROVED
+  DECLINED
+}
+
+enum ReportFormat {
+  PDF
+  XML
+}
+
+enum RateType {
+  FIRST_HOUR
+  ADDITIONAL_HOUR
+  FULL_DAY
+}
+
+' =======================
+' Core domain classes
+' =======================
+class ParkWiseCompany {
+  +companyName : String
+  +generateAnnualSummary(year : int, format : ReportFormat) : AnnualSummaryReport
+}
+
+class ParkingLot {
+  +lotId : int
+  +name : String
+  +address : String
+  +city : String
+  +availableSpaces : int
+
+  +calculateTotalAmount(year : int) : double
+  +countOtherColorVehicle(year : int) : int
+  +createAnnualSummaryRow(year : int) : AnnualLotSummaryRow
+}
+
+class GateSensor {
+  +sensorId : String
+  +status : String
+}
+
+class Client {
+  +clientId : int
+  +firstName : String
+  +lastName : String
+  +mobilePhone : String
+}
+
+class Vehicle {
+  +vehicleNumber : String
+  +type : String
+  +color : VehicleColor
+  +size : ParkingSize
+  +weightKg : double
+}
+
+class VehiclePhoto {
+  +photoId : int
+  +type : String
+}
+
+class ParkingSpace {
+  +spaceId : int
+  +floor : int
+  +posX : int
+  +posY : int
+  +size : ParkingSize
+}
+
+class Conveyor {
+  +conveyorId : int
+  +floor : int
+  +posX : int
+  +posY : int
+  +maxWeightKg : double
+}
+
+class ParkingSession {
+  +sessionId : int
+  +startTime : DateTime
+  +endTime : DateTime
+  +isFree : boolean
+  +amountToPay : double
+  +totalHours : double
+  +isActive : boolean
+}
+
+' =======================
+' Pricing, payment, receipt
+' =======================
+class PriceList {
+  +priceListId : int
+  +year : int
+  +firstHourPrice : double
+  +additionalHourPrice : double
+  +fullDayPrice : double
+}
+
+class LotPriceHistory {
+  +historyId : int
+  +fromDate : Date
+  +toDate : Date
+}
+
+class Payment {
+  +paymentId : int
+  +amount : double
+  +status : PaymentStatus
+  +paymentTime : DateTime
+  +rateType : RateType
+}
+
+class Receipt {
+  +receiptId : int
+  +issueTime : DateTime
+}
+
+' =======================
+' Client club & preferences
+' =======================
+class ClubMembership {
+  +memberId : int
+  +registrationDate : Date
+}
+
+class PreferredParkingLotSelection {
+  +selectionId : int
+  +selectionDate : Date
+}
+
+' =======================
+' Reporting
+' =======================
+class AnnualSummaryReport {
+  +reportId : int
+  +year : int
+  +format : ReportFormat
+
+  +exportToPdf() : void
+  +exportToXml() : void
+}
+
+class AnnualLotSummaryRow {
+  +rowId : int
+  +totalAmount : double
+  +otherColorVehiclesCount : int
+}
+
+' =======================
+' Associations & multiplicities
+' =======================
+
+ParkWiseCompany "1" -- "1..*" ParkingLot
+
+ParkingLot "1" o-- "1" GateSensor
+ParkingLot "1" o-- "*" ParkingSpace
+ParkingLot "1" o-- "*" Conveyor
+ParkingLot "1" o-- "*" ParkingSession
+ParkingLot "1" o-- "*" PriceList
+ParkingLot "1" o-- "0..*" LotPriceHistory
+
+PriceList "1" o-- "0..*" LotPriceHistory
+
+Client "1..1" o-- "0..1" ClubMembership
+Client "1" o-- "0..*" Vehicle
+
+Client "1" -- "0..*" ParkingSession
+
+Vehicle "1..1" -- "3..3" VehiclePhoto
+Vehicle "1" -- "0..*" ParkingSession
+
+Vehicle "1" --> "1" Client
+
+ParkingSession "0..1" o-- "1" ParkingSpace
+ParkingSession "0..1" o-- "1" Conveyor
+
+ParkingSession "1" o-- "0..1" Payment
+ParkingSession "1" o-- "0..1" Receipt
+
+ClubMembership "1" o-- "0..*" PreferredParkingLotSelection
+PreferredParkingLotSelection "1" o-- "1" ParkingLot
+
+AnnualSummaryReport "1" *-- "1..*" AnnualLotSummaryRow
+ParkingLot "1" -- "0..*" AnnualLotSummaryRow
+@enduml

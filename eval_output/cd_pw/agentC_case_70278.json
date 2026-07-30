@@ -1,0 +1,297 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70278",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class in the model has attributes for a unique number, name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class contains an attribute for available spaces, indicating the number of spaces available in the parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between the Client and Vehicle classes that ensures each vehicle is linked to exactly one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class includes attributes like StartTime and VehicleNumber, capturing session details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class has an attribute for size, indicating the size classification of each space.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The Conveyor class has an attribute for MaxWeight, which defines the weight capacity for transporting vehicles.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The SessionConveyor class tracks conveyors used during the session, but it is associated as optional.",
+      "compliance_status": "Satisfied",
+      "notes": "Tracking of conveyors is optional, which aligns with the guideline requirement."
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The PriceList class within the ParkingLot shows prices for different times, indicating that different lots can have unique price lists.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The ClubMember class, linked to a Client, describes membership in a client club.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "ClubMember class includes a DiscountPercentage attribute, offering discounts for parking sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The ClubMember class has the method isEligibleForFreeSession() that indicates eligibility for a free session.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The ParkingLot class has operations such as generateAnnualSummaryReport() to create reports.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "Within annual reports generation, the methods include calculating total payments and vehicle color counts.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "Reports generated account for ordering by city and payment totals, identified in report operation specifications.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The model specification of report generation does not detail format but implies capability to meet format requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "No explicit evidence found for the Customer Club Growth Report",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "No explicit evidence found for the inclusion of growth rates and member totals in reporting.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "No explicit evidence found for ordering of club growth reports.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G16",
+      "evidence": "The system has a ClubMember class that could record data relevant to member growth over time. However, there is no explicit mention of monthly reporting or methods related specifically to tracking membership growth.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While ClubMember represents membership status, no specific operations exist for generating monthly growth reports. This suggests the conceptual basis is there, but implementation details are absent."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "While ClubMember tracks whether someone is a member, it lacks operations or attributes that directly compute or detail monthly new members, cumulative totals, and growth percentages.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Lack of explicit attributes or methods for calculating and tracking monthly statistics hinders satisfaction of this guideline."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There is no indication of ordering for reports mentioned in the model, and no operations related to ordering growth statistics.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Ordering for customer club growth reports is not evident in the current model setup."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The model includes SMS operations related to sending parking details to clients via their mobile phone.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "The model does not operationalize SMS sending in the class diagram. Including such operations could enhance adherence to required functionality but without explicit guidelines, it remains missing."
+    },
+    {
+      "fragment": "Payment processing interactions with an external Payment Gateway are absent in the diagram.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "Guidelines specify interactions with an external Payment Gateway for processing payments, which is absent. This integration is crucial for the operation of the system."
+    },
+    {
+      "fragment": "The model lacks operations for managing gate sensors that detect vehicle arrival and departure.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "Real-time interaction with gate sensors for recognizing vehicle movement is essential for system operations but is not covered in the model."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The model includes SMS operations related to sending parking details to clients via their mobile phone.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Payment processing interactions with an external Payment Gateway are absent in the diagram.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    },
+    {
+      "fragment": "The model lacks operations for managing gate sensors that detect vehicle arrival and departure.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    }
+  ],
+  "total_score": 11.5,
+  "max_score": 18.0,
+  "score_pct": 63.9,
+  "overall_assessment": "The model satisfies the majority of the guidelines but lacks implementation for certain reports and essential operations like payment processing and sensor data management."
+}

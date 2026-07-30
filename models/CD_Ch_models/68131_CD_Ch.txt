@@ -1,0 +1,178 @@
+@startuml
+title "Cheers System Database Relationships with Enums"
+
+' Classes for Employees and Customers
+class Employee {
+    + employeeID: int
+    + name: string
+    + phoneNumber: string
+    + officeAddress: string
+    + email: string
+    + startDate: Date
+    + department: string
+}
+
+class SalesEmployee {
+    + employeeID: int
+    + placeOrder(order: Order)
+    + generateReport(reportType: string)
+    + generateUnproductiveEmployeesReport(timePeriod: string)
+    + generateWineRecommendationReport(food: string, occasion: string, wineType: WineType)
+}
+
+class MarketingEmployee {
+    + employeeID: int
+    + updateWineInfo(wine: Wine)
+    + linkWineToType(wine: Wine, wineType: WineType)
+}
+
+Employee <|-- SalesEmployee : 1..1
+Employee <|-- MarketingEmployee : 1..1
+
+class Customer {
+    + customerID: int
+    + name: string
+    + phoneNumber: string
+    + deliveryAddress: string
+    + email: string
+    + firstContactDate: Date
+}
+
+' Classes for Orders
+class Order {
+    + orderNumber: int
+    + orderDate: Date
+    + status: OrderStatus
+    + shipmentDate: Date
+    + assignedEmployeeID: int
+    + OrderUrgency: OrderUrgency
+}
+
+class UrgentOrder {
+    + orderID: int
+    + priorityLevel: int
+    + expectedDeliveryTime: string
+}
+
+class RegularOrder {
+    + orderID: int
+}
+
+Order <|-- UrgentOrder : 1..1
+Order <|-- RegularOrder : 1..1
+
+' Classes for Wines, Storage, and Manufacturers
+class Wine {
+    + serialNumber: int
+    + wineName: string
+    + catalogNumber: int
+    + description: string
+    + productionYear: int
+    + pricePerBottle: float
+    + sweetness: SweetnessLevel
+    + productImage: string
+    + manufacturerNumber: int
+}
+
+class WineType {
+    + serialNumber: int
+    + typeName: string
+    + foodPairings: string
+    + recipeLinks: string
+    + inventoryLevel: int
+}
+
+class Occasion {
+    + occasionNumber: int
+    + description: string
+    + season: string
+    + location: OccasionLocation
+}
+
+class StorageLocation {
+    + locationNumber: int
+    + locationName: string
+}
+
+class Manufacturer {
+    + manufacturerID: int
+    + name: string
+    + phoneNumber: string
+    + address: string
+    + email: string
+}
+
+' Association Tables (Many-to-Many Relationships)
+class Order_Wine {
+    + orderNumber: int
+    + catalogNumber: int
+    + quantity: int
+}
+
+class Wine_StorageLocation {
+    + catalogNumber: int
+    + locationNumber: int
+}
+
+class JointOrder {
+    + orderNumber: int
+    + customerID: int
+}
+
+class Occasion_WineType {
+    + serialNumber: int
+    + occasionNumber: int
+}
+
+' Enums for Sweetness Level, Occasion Location, Order Status, and Order Urgency
+enum SweetnessLevel {
+    Dry
+    SemiDry
+    SemiSweet
+    Sweet
+}
+
+enum OccasionLocation {
+    Indoor
+    Outdoor
+}
+
+enum OrderStatus {
+    InProcess
+    Dispatched
+    Delivered
+    Paid
+    Suspended
+    Canceled
+}
+
+enum OrderUrgency {
+    Urgent
+    Regular
+}
+
+' Relationships
+Manufacturer "1" --> "*" Wine : produces
+Wine "*" --> "*" Order : included in
+WineType "1" --> "*" Wine : has type
+Wine "*" --> "*" StorageLocation : stored in
+Wine "1" --> "*" Wine_StorageLocation : has
+StorageLocation "1" --> "*" Wine_StorageLocation : holds
+Wine "1" --> "*" Order_Wine : included in
+Order "1" --> "*" Order_Wine : contains
+Customer "*" --> "*" Order : places
+Customer "1" --> "*" JointOrder : participates in
+Order "1" --> "*" JointOrder : has
+Order "1" --> "1" UrgentOrder : is
+Order "1" --> "1" RegularOrder : is
+SalesEmployee "1" --> "*" Order : assigned to
+WineType "*" --> "*" Occasion : suitable for
+WineType "1" --> "*" Occasion_WineType : associated with
+Occasion "1" --> "*" Occasion_WineType : associated with
+
+' Enum Connections
+Wine --> SweetnessLevel : sweetness
+Occasion --> OccasionLocation : location
+Order --> OrderStatus : status
+Order --> OrderUrgency : urgency
+@enduml

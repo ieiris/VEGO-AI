@@ -1,0 +1,353 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70264",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The ParkingLot class includes attributes for uniqueNumber, name, street, and city, indicating it contains information about the parking lot identity and location.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The ParkingLot class includes an attribute `availableSpaces` which displays the number of available spaces in the parking lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is a direct relationship between Vehicle and Client classes, ensuring each vehicle is associated with a single client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The ParkingSession class contains attributes like startTime and vehicleNumber to capture parking session details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The ParkingSpace class has an attribute size, defining the space suitability for vehicle accommodation.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class contains an attribute maxWeightCapacity, defining the weight limit for vehicle transport.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "ParkingSession class has a relationship to Conveyor showing vehicles may be transported by a conveyor, but there is no permanent storage of conveyor data after the session.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The ParkingLot class is associated with PriceList that includes pricing details for different durations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The Client class can have a ClubMembership defining relations indicating membership management.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The ClubMembership class has a discount attribute, indicating fixed discounts for members on parking sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The ClubMembership class has a method isEligibleForFreeParking, representing a free parking session for new club members in the registration month.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The Administrator class has operations for generating annual summary reports concerning the incomes of ParkWise.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The generateAnnualSummaryReport function relates to guidelines indicating the inclusion of payment and vehicle count data.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "There are notes on generating reports with ordered data, ensuring criteria like city and total amounts are considered.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "Notes associated with the Administrator class suggest generating reports in PDF and XML formats.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "Administrator class includes methods for generating reports; this pertains to club growth and member insights.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Details regarding monthly report insights for club growth and member analytics are covered in class definitions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The guidelines state ordering for monthly growth report aligns with ascending month order, as described.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [],
+  "uncovered_fragments": [
+    {
+      "fragment": "Administrator responsible for generating specific reports, with formats PDF and XML.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The addition of specific report formats and responsibilities adds clarity and detail to the Administrator's role within the system."
+    },
+    {
+      "fragment": "ParkWise class methods like registerClient and addParkingLot.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These actions support the management functions of the ParkWise system, aligning with expected operations for a client management system."
+    },
+    {
+      "fragment": "Interface definitions for IGateSensor, IConveyorController, IPaymentGateway, and IIntegratedRateService.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "Interfaces allow for modularity and extensibility in system integration, crucial for interacting with different subsystems like sensors and payment gateways."
+    },
+    {
+      "fragment": "ParkingSession methods endSession and generateReceipt.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These methods logically extend functionalities necessary for handling parking operations and documentation (receipts) in the parking management system."
+    },
+    {
+      "fragment": "Receipt class attributes like vehicleNumber and finalAmount.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The Receipt class captures necessary details for billing documentation, enhancing system accountability and transaction tracking."
+    },
+    {
+      "fragment": "Specific attributes within Vehicle class, such as color and weight.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "These attributes are useful for detailed profiling of vehicles, relevant for various system operations like space allocation and optimization."
+    },
+    {
+      "fragment": "ParkingLot link to IIntegratedRateService interface.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This linkage facilitates the acquisition of pricing data, adhering to system requirements for dynamic rate adjustment."
+    },
+    {
+      "fragment": "Enumeration for Size and Color.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The use of enumerations standardizes attribute values, ensuring consistency in assigning sizes and colors to vehicles and spaces."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "Administrator responsible for generating specific reports, with formats PDF and XML.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "ParkWise class methods like registerClient and addParkingLot.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Interface definitions for IGateSensor, IConveyorController, IPaymentGateway, and IIntegratedRateService.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "ParkingSession methods endSession and generateReceipt.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Receipt class attributes like vehicleNumber and finalAmount.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Specific attributes within Vehicle class, such as color and weight.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "ParkingLot link to IIntegratedRateService interface.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "Enumeration for Size and Color.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 21.0,
+  "max_score": 18.0,
+  "score_pct": 116.7,
+  "overall_assessment": "The case model exceeds expectations, fully satisfying all domain guidelines and providing additional valuable modelling alternatives."
+}

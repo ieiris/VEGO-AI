@@ -1,0 +1,181 @@
+@startuml
+enum SweetnessLevel {
+DRY
+SEMI-DRY
+SEMI-SWEET
+SWEET
+}
+
+enum Location {
+INDOOR
+OUTDOOR
+}
+
+enum Season {
+SUMMER
+AUTUMN
+SPRING
+WINTER 
+}
+
+enum Status {
+IN-PROCESS 
+DISPATCHED
+DELIVERED
+PAID
+SUSPENDED
+CANCELED
+}
+
+enum PriorityLevel {
+1
+2
+3
+4
+5
+}
+
+class Order {
+ +String orderNum
+ +Date orderDate
+ +Status status
+ +Date shipmentDate
+ +Employee assignedEmployee
+ +Customer customerInfo
+ +String orderType
+}
+
+class JointOrder extends Order {
+ +Customer mainCustomer
+}
+
+class UrgentOrder extends Order {
+ +PriorityLevel priorityLevel
+ +Date expectedDeliveryTime
+}
+
+class Employee {
+ +String employeeId
+ +String firstName
+ +String lastName
+ +String phoneNum
+ +String officeAddress
+ +String email
+ +Date employeeStartDate
+ +String role 
+
+}
+
+class MarketingStaff extends Employee {
+ +ExportJSONReport() : HashMap<Wines,int>
+ +ImportXMLData() : void
+}
+class SalesStaff extends Employee {
+ +placeOrder() : Order 
+ +placeUrgentOrder() : UrgentOrder
+ +placeJointOrder() : JointOrder
+ +GenerateUnproductivityReport() : List<Employee>
+}
+
+class Customer { 
+ +String customerId
+ +String customerFName
+ +String customerLName
+ +String phoneNum
+ +String deliveryAddress
+ +String email
+ +Date dateOfFirstContact
+}
+
+class Wine {
+ +String manufacturerNum
+ +String catalogNum
+ +String wineName
+ +List<String> pairingRecipes
+ +String wineDesc
+ +int productionYear
+ +float pricePerBottle
+ +SweetnessLevel sweetnessLevel
+ +Occasion occasion
+ +Image productImage
+}
+
+class Manufacturer {
+ +String manuId
+ +String fullName
+ +String contactPhoneNum
+ +String address
+ +String email
+ }
+
+class Storage {
+ +String storageId
+ +String storageName
+ +updatesStorage() : void
+}
+
+class Occasion {
+ +String occasionId
+ +String occasionName
+ +String description 
+ +Season season 
+ +Location location
+}
+
+class Gefen{
+ importData() : void
+ ExportXMLData() : void
+}
+
+class WinesPerOrder {
+ +String manufacturerNum
+ +String catalogNum
+ +String orderNum
+ +int quantity
+} 
+
+class CustomerOrder {
+ +String customerId
+ +String orderNum
+ +String employeeId
+ +int quantity
+}
+
+class WinesPerStorage {
+ +String manufacturerNum
+ +String catalogNum
+ +String  storageId
+}
+
+class WineTypeOccasion {
+ +String typeSN
+ +String typeName
+ +String occasionId
+}
+
+class WineType {
+ +String typeSN
+ +String typeName
+}
+
+SalesStaff "1" *-- "many" Order : " Places an " 
+Manufacturer "1" *--  "many" Wine : " Produces"
+Gefen --> MarketingStaff : " Sends XML Data " 
+MarketingStaff --> Gefen : " Weekly Sends a JSON Report "
+Order --> Storage : " Updates Storage After Each Order "
+Occasion ..> Location : <<uses>>
+Wine ..> SweetnessLevel : <<uses>>
+UrgentOrder ..> PriorityLevel : <<uses>>
+Order ..> Status : <<uses>>
+Occasion ..> Season : <<uses>>
+Gefen -- Manufacturer : "Gathers Data From"
+Wine "1" -- "..*" WinesPerOrder
+WinesPerOrder "..*" -- "1" Order
+Customer "1" -- "..*" CustomerOrder
+CustomerOrder "..*" -- "1"  Order
+Wine "1" -- " ..*" WinesPerStorage
+WinesPerStorage "..*" -- "1" Storage
+WineType "1" -- "..*" WineTypeOccasion
+WineTypeOccasion "..*" -- "1" Occasion
+Wine "many" -- "1" WineType 
+@enduml

@@ -1,0 +1,342 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "70200",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "ParkingLot class defines unique attributes like lot number, lot name, address, and city.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "ParkingLot class includes an attribute for available spaces.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "There is an association between Client and Vehicle classes, ensuring each vehicle is owned by exactly one client.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "ParkingSession class includes attributes for storing start time and vehicle details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "ParkingSpace class has an attribute to represent parking space sizes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "Conveyor class defines a maximum vehicle weight attribute.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "ParkingSession class references Conveyor through the currentConveyorID but doesn't persist it after session end.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "PriceRate class linked to ParkingLot allows for unique pricing terms per lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "ClubMembership class is implemented, indicating management of client club.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "ClubMembership class has an attribute for a discount amount applicable to parking sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "ParkingSession class has an isFreeSession attribute, suggesting handling free sessions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "AnnualSummaryReportService includes methods for generating an annual report of parking lot incomes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "LotAnnualSummaryEntry class includes information about total income and vehicle color counts per lot.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "sortByCityAndAmount method in AnnualSummaryReportService defines ordering by city and total amount.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "exportReportToPDF and exportReportToXML methods enable report generation in both formats.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The mention of Customer Club Growth Report but not specifically structured in the diagram.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The report is mentioned but not further detailed or structured, indicating potential oversight of specifics."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The mention of Customer Club Growth Report but not specifically structured in the diagram.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The report is hinted at but lacks detailed breakdowns for monthly specifics and growth data handling."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Mention of ordering by month but unclear without report structure in diagram.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Intention is clear, but lacking corroborating structural details in diagram."
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G16",
+      "evidence": "The case model mentions the need for a Customer Club Growth Report but lacks specific details, making it unclear how exactly new and total club members are tracked monthly.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Without a class or method defining the specifics of the Customer Club Growth Report, this requirement is not fully addressed in the diagram."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "There is no observable structure or implementation of a Customer Club Growth Report in the provided entities or any mentioned attributes representing monthly new and total members.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The diagram does not contain any data class or method reflecting the collection or processing of monthly growth data concerning club members."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "Although the intent to order the report by month is suggested, the implementation details are not shown in the class diagram, such as methods or attributes defining this specific ordering mechanism.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "There are no attributes, methods, or operations defined in the model to suggest how the Customer Club Growth Report's ordering is operationalized."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The Administrator is mentioned as responsible for updating details about parking lots, but no class or method reflects this responsibility.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Lack of an operational class or method for administrative responsibilities is a domain requirement that is not represented."
+    },
+    {
+      "fragment": "Gate sensors are not represented, including the real-time data transmission to the system.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "Key functionality of vehicle detection and communication is missing, contradicting domain needs for operational completeness."
+    },
+    {
+      "fragment": "The optimization algorithm for assigning conveyors is unrepresented.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Transportation optimization is an integral domain functionality that is not depicted, affecting operation handling."
+    },
+    {
+      "fragment": "Sending an SMS to the client's phone with parking details is not reflected in any class or method.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Communication of parking details is essential for user interaction and is necessary for operational completeness."
+    },
+    {
+      "fragment": "The use of an external payment gateway to process payment requests and responses is omitted.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "reason": "Handling payments is crucial to business operations, and its absence implies a severe incompleteness in handling post-parking processes."
+    },
+    {
+      "fragment": "Selection and storage of preferred parking lots by clients is not represented.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "reason": "Client preferences are necessary for personalizing experiences and managing selections; this lack affects domain accuracy."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The Administrator is mentioned as responsible for updating details about parking lots, but no class or method reflects this responsibility.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Gate sensors are not represented, including the real-time data transmission to the system.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    },
+    {
+      "fragment": "The optimization algorithm for assigning conveyors is unrepresented.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "Sending an SMS to the client's phone with parking details is not reflected in any class or method.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    },
+    {
+      "fragment": "The use of an external payment gateway to process payment requests and responses is omitted.",
+      "label": "Domain Mistake",
+      "severity": "High",
+      "base_score": -1.0,
+      "severity_modifier": -0.5,
+      "total_contribution": -1.5,
+      "note": ""
+    },
+    {
+      "fragment": "Selection and storage of preferred parking lots by clients is not represented.",
+      "label": "Domain Mistake",
+      "severity": "Medium",
+      "base_score": -1.0,
+      "severity_modifier": 0.0,
+      "total_contribution": -1.0,
+      "note": ""
+    }
+  ],
+  "total_score": 12.0,
+  "max_score": 18.0,
+  "score_pct": 66.7,
+  "overall_assessment": "The case model meets several guidelines effectively but misses key domain functionalities and operational details."
+}

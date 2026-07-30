@@ -1,0 +1,65 @@
+@startuml
+!define RECTANGLE roundcorner
+left to right direction
+
+actor "Employee" as employee
+actor "Sales Staff" as sales
+actor "Marketing Employee" as marketing
+actor "Customer" as customer
+actor "Gefen System" as gefen
+actor "GalGalim" as GalGalim
+
+employee <|-- sales
+employee <|-- marketing
+
+rectangle "Cheers System" {
+    usecase "Manage Customer Information" as UC2
+    usecase "placing customer orders" as UC10
+    usecase "Track Order Details" as UC16
+   
+    usecase "View Wine Information" as UC18
+    usecase "Update Wine Information" as UC17
+    usecase "Recommend occasions per wine type" as UC20
+    usecase "Generate Unproductive Employees Report" as UC23
+    usecase "Generate Wine Recommendation Report" as UC25
+    usecase "Update order status" as UC26
+
+    
+    employee -- UC18
+
+    sales-- UC2
+    sales-- UC10
+    sales-- UC16
+    sales-- UC23
+    sales-- UC25
+    
+    
+    marketing -- UC17
+    marketing -- UC20
+
+    customer -- UC2
+    customer -- UC16
+
+    usecase "Receive XML Data" as UC30
+    usecase "Generate Current Inventory Report by Wine" as UC31
+    gefen -- UC30 
+    gefen -- UC31
+
+    usecase "Process Urgent Order" as UC11
+    usecase "Set Priority Level" as UC14
+    usecase "Specify Expected Delivery Time" as UC15
+    UC10 <.down. UC11 : <<extends>>
+    UC10 <.down. UC18 : <<extends>>
+    UC11 .down.> UC14 : <<includes>>
+    UC11 .down.> UC15 : <<includes>>
+
+
+    usecase "Joint Orders" as UC12
+    usecase "Set main Customer" as UC21
+    UC10 <.down. UC12 : <<extends>>
+    UC12 .down.> UC21 : <<includes>>
+    GalGalim -- UC26
+    sales -- UC26
+   
+}
+@enduml

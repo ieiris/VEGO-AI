@@ -1,0 +1,111 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+skinparam defaultFontSize 18
+skinparam usecaseFontSize 18
+skinparam actorFontSize 20
+skinparam rectangle {
+  BorderColor black
+  RoundCorner 15
+}
+
+actor Administrator as Admin
+actor Client
+actor "Gate Sensor" as GS
+actor "Conveyors Controller" as CC
+
+' Move Payment Gateway farther right for cleaner arrows
+actor "Payment Gateway" as PG 
+
+' Move IRS higher to reduce clutter
+actor "Integrated Rate Service" as IRS 
+
+rectangle "ParkWise Information System" {
+
+  rectangle "Arrival & Registration" {
+    usecase "Detect Vehicle Arrival" as UC_Arrive
+    usecase "Identify Vehicle" as UC_Identify
+    usecase "Register Client & Vehicle" as UC_Reg
+    usecase "Photo Upload &\nVehicle Extraction" as UC_Photo
+    usecase "Open Entrance Barrier" as UC_OpenEnter
+    usecase "Create Parking Session" as UC_CreateSession
+  }
+
+  rectangle "Parking Allocation" {
+    usecase "Assign Parking Space" as UC_Assign
+    usecase "Run Optimization Algorithm" as UC_Optim
+    usecase "Update Vehicle Location" as UC_Update
+    usecase "Send Parking SMS" as UC_SMS
+  }
+
+  rectangle "Vehicle Retrieval" {
+    usecase "Request Vehicle Pickup" as UC_ReqPickup
+    usecase "Calculate Parking Fee" as UC_Fee
+    usecase "Request Payment" as UC_Payment
+    usecase "Issue Receipt" as UC_Receipt
+
+    ' Move Exit Barrier LOWER so arrow to GS does not cross payment arrow
+    usecase "Open Exit Barrier" as UC_OpenExit #line.dotted
+  }
+
+  rectangle "Client Club" {
+    usecase "Client Club Registration" as UC_ClubReg
+    usecase "Manage Preferred Lots" as UC_ClubPrefs
+  }
+
+  rectangle "Reports" {
+    usecase "Annual Summary Report" as UC_Report1
+    usecase "Customer Club Growth Report" as UC_Report2
+  }
+
+  rectangle "Price Lists" {
+    usecase "Import Price List" as UC_ImportPrice
+    usecase "Maintain Price History" as UC_History
+  }
+
+  rectangle "Parking Lot Management" {
+    usecase "Manage Parking Lots" as UC_LotMgmt
+  }
+}
+
+Admin --> UC_LotMgmt
+Admin --> UC_Report1
+Admin --> UC_Report2
+
+Client --> UC_Reg
+Client --> UC_ReqPickup
+Client --> UC_ClubReg
+Client --> UC_ClubPrefs
+
+GS --> UC_Arrive
+
+' Space the exit-barrier command DOWNWARDS for cleaner visuals
+UC_OpenEnter --> GS
+UC_OpenExit -down-> GS
+
+CC --> UC_Assign
+CC --> UC_Update
+
+IRS --> UC_ImportPrice
+
+' CLEANED: PG arrows no longer collide with exit barrier arrow
+UC_Payment -right-> PG
+PG -down-> UC_OpenExit
+
+UC_Arrive --> UC_Identify : <<include>>
+UC_Identify --> UC_OpenEnter : <<include>>
+UC_OpenEnter --> UC_CreateSession : <<include>>
+
+UC_Reg --> UC_Photo : <<include>>
+UC_Reg -[#blue,dashed]-> UC_Identify : <<extend>>
+
+UC_Assign --> UC_Optim : <<include>>
+UC_Update --> UC_SMS : <<include>>
+
+UC_ReqPickup --> UC_Fee : <<include>>
+UC_Fee --> UC_Payment : <<include>>
+UC_Payment --> UC_Receipt : <<include>>
+
+UC_ImportPrice --> UC_History : <<include>>
+
+@enduml

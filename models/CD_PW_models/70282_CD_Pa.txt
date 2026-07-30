@@ -1,0 +1,124 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 80
+skinparam ranksep 60
+skinparam handwritten false
+
+' --- 1. SYSTEM (LEFT) ---
+class ParkWiseSystem <<Singleton>> {
+    + updateLotDetails()
+    + extractVehicleDetails()
+    + runOptimization()
+    + generateReports()
+}
+
+' --- 2. RESOURCES / PARKING LOT (CENTER) ---
+class ParkingLot {
+    - lotNumber: int
+    - name: String
+    - city: String
+    - availableSpaces: int
+}
+
+class ParkingSpace {
+    - size: Size
+    - isOccupied: boolean
+    - location: Location
+}
+
+class Conveyor {
+    - maxWeight: double
+    - location: Location
+}
+
+class PriceList {
+    - effectiveDate: Date
+    - prices: Map
+}
+
+' --- 3. PEOPLE / CLIENT (RIGHT) ---
+class Client {
+    - firstName: String
+    - lastName: String
+    - phone: String
+    + register()
+}
+
+class ClubMember {
+    - membershipDate: Date
+    - memberID: int
+}
+
+class Vehicle {
+    - licensePlate: String
+    - type: String
+    - color: VehicleColor
+    - weight: double
+}
+
+' --- 4. TRANSACTION / SESSION (BOTTOM) ---
+class ParkingSession {
+    - startTime: DateTime
+    - endTime: DateTime
+    - finalAmount: double
+    + endSession()
+}
+
+class Receipt {
+    - finalAmount: double
+    - dateIssued: DateTime
+}
+
+class PreferredLotSelection {
+    - selectionDate: Date
+}
+
+' --- DATA TYPES (Floating) ---
+enum VehicleColor {
+    WHITE, BLACK, SILVER, BLUE, OTHER
+}
+enum Size {
+    SMALL, MEDIUM, LARGE
+}
+
+' ==========================================
+' RELATIONS & LAYOUT
+' ==========================================
+
+' 1. FORCE HORIZONTAL LAYOUT (System -> Lot -> Client)
+' This invisible line forces the three main blocks to sit side-by-side
+ParkWiseSystem -[hidden]right- ParkingLot
+ParkingLot -[hidden]right- Client
+
+' 2. SYSTEM CONNECTIONS (The "Comb" shape from the left)
+ParkWiseSystem "1" *-- "0..*" ParkingLot
+ParkWiseSystem "1" *-- "0..*" Client
+
+' 3. PARKING LOT COMPOSITION (Vertical dropping down)
+ParkingLot "1" *-- "0..*" ParkingSpace
+ParkingLot "1" *-- "0..*" Conveyor
+ParkingLot "1" *-- "1..*" PriceList
+
+' 4. CLIENT HIERARCHY (Vertical dropping down)
+Client <|-- ClubMember : {disjoint, incomplete}
+Client "1" -- "1..*" Vehicle : owns >
+
+' 5. THE SESSION (Connecting the Middle and Right columns at the bottom)
+ParkingLot "1" -- "0..*" ParkingSession : hosts >
+Vehicle "1" -- "0..*" ParkingSession : history >
+
+' Session Details
+ParkingSession "0..1" --> "1" ParkingSpace : occupies >
+ParkingSession "0..1" --> "0..1" Conveyor : on >
+ParkingSession *-- Receipt
+
+' 6. ASSOCIATION CLASS (Dashed line logic)
+' This connects the Member (Right) to the Lot (Center)
+(ClubMember, ParkingLot) .. PreferredLotSelection
+
+' 7. ENUM CONNECTIONS (Keep them close)
+ParkingSpace ..> Size
+Vehicle ..> VehicleColor
+
+@enduml

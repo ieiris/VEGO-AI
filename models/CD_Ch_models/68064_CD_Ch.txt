@@ -1,0 +1,162 @@
+@startuml
+class Customer {
+  - id: string {primary key}
+  - name: string
+  - phoneNumber: string
+  - deliveryAddress: string
+  - email: string
+  - dateOfFirstContact: date
+  - order group : integer
+  + placeOrder(Order order)
+  + viewOrderHistory()
+}
+
+class Employee {
+  - id: string {primary key}
+  - name: string
+  - phoneNumber: string
+  - officeAddress: string
+  - email: string
+  - employmentStartDate: date
+  + viewOrderHistory()
+}
+
+class SalesStaff extends Employee {
+  - id: string {primary key}
+  + assignOrder(Order order)
+  + updateOrderStatus(Order order)
+  + generateUnproductiveEmployeeReport (Date date)
+  + generateRocpmmendedWineReport ()
+}
+
+class MarketingEmployee extends Employee {
+  - id: string {primary key}
+  + updateWineInformation(Wine wine)
+  + recommendWine(Occasion occasion)
+}
+
+class Order {
+  - orderNumber: integer {primary key}
+  - orderDate: date
+  - currentStatus: string
+  - shipmentDate: date
+  - assignedEmployeeID: string
+  - customer: Customer
+  + getOrderId()
+  + getOrderDate()
+  + getOrderStatus()
+}
+
+class UrgentOrder extends Order {
+  - orderNumber : integer {primary key}
+  - priorityLevel: integer
+  - expectedDeliveryTime: date
+  + getPriorityLevel()
+  + getExpectedDeliveryTime()
+}
+
+class RegularOrder extends Order {
+  - orderNumber : integer {primary key}
+  - orderGroup : integer
+  - mainCustomerID: string
+  + getOrderGroup()
+  + getMainCustomer()
+}
+
+class OrderItem {
+  - orderNumber: integer {primary key}
+  - WineCatalogNumber : integer {primary key}
+  - ManufacturerIdentifier : string {primary key}
+  - quantity: integer
+  + getOrderItemQuantity()
+  + getOrderItemWine()
+}
+
+class Wine {
+  - manufacturerIdentifier: string {primary key}
+  - catalogNumber : integer {primary key}
+  - name: string
+  - description: string
+  - producingYear: integer
+  - pricePerBottle: decimal
+  - sweetnessLevel: string
+  - image: string
+  - wineType: WineType
+  - quantityPurchased: integer
+  + getWineName()
+  + getWineDescription()
+  + getWinePrice()
+  + importFromGefen(xmlData: String)
+}
+
+class Manufacturer {
+  - uniqueIdentifier: string {primary key}
+  - Name: string
+  - contactPhoneNumber: string
+  - address: string
+  - email: string
+  + getManufacturerName()
+  + getManufacturerContactInfo()
+}
+
+class WineType {
+  - uniqueCode : integer {primary key}
+  - name: string
+  - recommendedOccasionUniqueCode : integer
+  + getWineTypeName()
+  + getWineTypeSerialNumber()
+}
+
+class FoodPairing {
+  - uniqueCode : {primary key}
+  - name: string
+  - WineTypeUniqueCode : integer
+  + getFoodPairingName()
+  + getFoodPairingDescription()
+}
+
+class Occasion {
+  - uniqueCode : integer {primary key}
+  - description: string
+  - season: string
+  - location: string
+  + getOccasionDescription()
+  + getOccasionSeason()
+  + getOccasionLocation()
+}
+
+class StorageLocation {
+  - uniqueNumber: integer {primary key}
+  - name: string
+  + getStorageLocationName()
+  + getStorageLocationUniqueNumber()
+  + exportInventoryToGefen(): JSON
+}
+
+class QuantityPerLocation {
+  - storageLocationUniqueNumber: integer {primary key}
+  - wineManufacturerIdentifier: string {primary key}
+  - wineCatalogNumber : integer {primary key}
+  - quantity : integer
+  + getQuantityPerWinePerLocation()
+}
+
+class recipeUrls {
+  - recipeUniqueCode : integer {primaryKey}
+  - recipeLink : url
+  - foodPairingUniqueCode : integer
+}
+
+Customer "1..*"--"1" Order
+Employee "1..*"--"1" Order
+SalesStaff "1"--"0..*" Order
+Order "1"--"1..*" OrderItem
+OrderItem "0..*"--"1" Wine
+Wine "1"--"1" Manufacturer
+Wine "0..*"--"1" WineType
+WineType "1"--"1..*" FoodPairing
+FoodPairing "1"--"5..*" recipeUrls
+Wine "0..*"--"1..*" StorageLocation
+Occasion "1"--"0..*" WineType
+(StorageLocation, Wine) .. QuantityPerLocation
+@enduml

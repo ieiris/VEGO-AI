@@ -1,0 +1,178 @@
+@startuml
+class Employee {
+  - EmployeeID: integer
+  - name: String
+  - phoneNumber: String
+  - officeAddress: String
+  - email: String
+  - employmentStartDate: Date
+
+  
+}
+
+class MarketingEmployee extends Employee {
+ 
+
+
+}
+
+class SalesStaff extends Employee {
+ 
++ placeOrder(): Order
++ generateUnproductiveEmployeeReport(timePeriod: Date): String
++ calculateNumOfOrders()
+
+  
+}
+
+class Order {
+  - orderNumber: integer
+  - orderDate: Date
+  - Currentstatus: OrderStatus
+  - shipmentDate: Date
+  - assignedEmployeeInformation: SalesStaff
+
+}
+
+enum OrderStatus << (E, #8DD3C7) Enumeration >> {
+  IN_PROCESS
+  DISPATCHED
+  DELIVERED
+  PAID
+  SUSPENDED
+  CANCELED
+}
+
+class UrgentOrder extends Order {
+  - priorityLevel: PriorityLevels
+  - expectedDeliveryTime: Date
+}
+
+enum PriorityLevels << (E, #8DD3C7) Enumeration >>{
+ - 1
+ - 2
+ - 3
+ - 4
+ - 5
+}
+
+
+class RegularOrder extends Order{
+ 
+}
+
+class Wine {
+  - name: String
+  - description: String
+  - productionYear: integer
+  - pricePerBottle: double
+  - manufacturerNumber: integer
+  - catalogNumber: integer
+  - sweetnessLevel: SweetnessLevel
+  - productImage: String
+}
+
+class WineLocation{ 
+ - quantity : integer
+}
+
+
+class wineType{
+  - name: String
+  - serialNumber: integer
+  - dishName: String
+  - recipesLinks: String
+}
+
+enum SweetnessLevel << (E, #8DD3C7) Enumeration >>{
+  DRY
+  SEMI_DRY
+  SEMI_SWEET
+  SWEET
+}
+
+
+
+class StorageLocation {
+  - number: integer
+  - name: String
+
+ 
+}
+
+class Manfacturer {
+  - fullName: String
+  - contactPhoneNumber: String
+  - address: String
+  - email: String
+  - uniqueAutomaticIdentifier: String
+} 
+
+class Customer{
+  - CustomerID: integer
+  - name: String
+  - phoneNumber: String
+  - DeliveryAddress: String
+  - email: String
+  - DateOfFirstContactWithTheCompany: Date
+
+} 
+
+enum Locations << (E, #8DD3C7) Enumeration >>{
+  - indoor
+  - outdoor
+
+}
+
+enum Seasons << (E, #8DD3C7) Enumeration >>{
+ - Spring
+ - Winter
+ - Summer
+ - Autumn
+}
+
+class Occasion{
+  - name: String
+  - description: String
+  - season: Seasons
+  - location: Locations
+}
+
+Class Gefen {
+ + sendXMLData()
+ + reciveJsonForamt()
+}
+
+
+class OrderWine{
+ - quantity: integer
+}
+
+RegularOrder "1..*" --* "1..*" Customer
+UrgentOrder "1..*" --* "1" Customer
+Wine "1..*" -- "1..*" StorageLocation
+Wine "1..*" --* "1" Manfacturer
+Order "0..*" -- "1" SalesStaff
+Order "1..*" -- "1..*" Wine 
+Wine "1..*" --* "1..*" Occasion
+Gefen "1" -- "1..*" Manfacturer
+Wine "1..*" -- "1" wineType 
+
+
+OrderWine ..> Order
+OrderWine ..> Wine
+WineLocation ..> StorageLocation
+WineLocation ..> Wine
+UrgentOrder ..> PriorityLevels  
+Wine ..> SweetnessLevel 
+Order ..> OrderStatus 
+Occasion ..> Locations 
+Occasion ..> Seasons 
+
+note "{complete, disjoint}" as N1
+N1 .. Order
+
+note "{complete, disjoint}" as N2
+N2 .. Employee
+
+@enduml

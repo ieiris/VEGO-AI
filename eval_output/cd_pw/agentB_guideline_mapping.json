@@ -1,0 +1,152 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "parkwise",
+  "clusters": [
+    {
+      "cluster_id": "C1",
+      "canonical_citation": "For each parking lot, the system will store a unique number, name, address, and city.",
+      "run1_guideline_id": "G1",
+      "run1_guideline_name": "Parking lot class attributes",
+      "run1_guideline": {
+        "description": "Defines a class for parking lot with unique number, name, address, and city as attributes.",
+        "related_template_id": "T7",
+        "mapping_certainty": 1.0,
+        "citation": "For each parking lot, the system will store a unique number, name, address, and city."
+      },
+      "run2_guideline_id": "G1",
+      "run2_guideline_name": "Parking Lot Class",
+      "run2_guideline": {
+        "description": "Represents a parking lot with attributes such as unique number, name, address, and city.",
+        "related_template_id": "T1",
+        "mapping_certainty": 1.0,
+        "citation": "For each parking lot, the system will store a unique number, name, address, and city."
+      },
+      "run3_guideline_id": "G2",
+      "run3_guideline_name": "Parking Lot Information",
+      "run3_guideline": {
+        "description": "Describes the attributes of each parking lot stored in the system.",
+        "related_template_id": "T7",
+        "mapping_certainty": 1.0,
+        "citation": "For each parking lot, the system will store a unique number, name, address, and city."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "C: Parking Lot",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C2",
+      "canonical_citation": "The system will hold the number of available spaces in each parking lot (0 if full).",
+      "run1_guideline_id": "G2",
+      "run1_guideline_name": "Available spaces attribute in Parking lot",
+      "run1_guideline": {
+        "description": "Specifies that the parking lot class includes an attribute for the number of available spaces.",
+        "related_template_id": "T7",
+        "mapping_certainty": 1.0,
+        "citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+      },
+      "run2_guideline_id": "G3",
+      "run2_guideline_name": "Parking Lot Spaces Attribute",
+      "run2_guideline": {
+        "description": "Holds the number of available spaces in each parking lot.",
+        "related_template_id": "T7",
+        "mapping_certainty": 1.0,
+        "citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+      },
+      "run3_guideline_id": "G4",
+      "run3_guideline_name": "Availability Monitoring",
+      "run3_guideline": {
+        "description": "Monitors the number of available spaces in each parking lot.",
+        "related_template_id": "T7",
+        "mapping_certainty": 1.0,
+        "citation": "The system will hold the number of available spaces in each parking lot (0 if full)."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "Attr: Available Spaces of Parking Lot",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C3",
+      "canonical_citation": "If either the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client.",
+      "run1_guideline_id": "G3",
+      "run1_guideline_name": "Vehicle-Client Association",
+      "run1_guideline": {
+        "description": "There is an association ensuring that each vehicle is linked to exactly one client.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.9,
+        "citation": "If the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client."
+      },
+      "run2_guideline_id": "G11",
+      "run2_guideline_name": "Vehicle-Client Association Update",
+      "run2_guideline": {
+        "description": "Updates database to ensure each vehicle is associated with one client.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "If either the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client."
+      },
+      "run3_guideline_id": "G12",
+      "run3_guideline_name": "Client-Vehicle Association",
+      "run3_guideline": {
+        "description": "Ensures each vehicle is associated with exactly one client in the database.",
+        "related_template_id": "T2",
+        "mapping_certainty": 0.8,
+        "citation": "If either the vehicle or the client is found in the database, the system will update the associations to ensure that each vehicle will be associated with exactly one client."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "A (1:m): Client-Vehicle",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    },
+    {
+      "cluster_id": "C4",
+      "canonical_citation": "After passing the barrier, the system will store the parking session information, including start time and vehicle details.",
+      "run1_guideline_id": "G4",
+      "run1_guideline_name": "Parking Session Information",
+      "run1_guideline": {
+        "description": "Attributes related to a parking session, such as start time, and vehicle details.",
+        "related_template_id": "T7",
+        "mapping_certainty": 1.0,
+        "citation": "After passing the barrier, the system will store the parking session information, including start time and vehicle details."
+      },
+      "run2_guideline_id": "G13",
+      "run2_guideline_name": "Parking Session Data Logging",
+      "run2_guideline": {
+        "description": "Logs the start time and details of the parking session.",
+        "related_template_id": "T7",
+        "mapping_certainty": 0.9,
+        "citation": "After passing the barrier, the system will store the parking session information, including start time and vehicle details."
+      },
+      "run3_guideline_id": "G14",
+      "run3_guideline_name": "Parking Session Information",
+      "run3_guideline": {
+        "description": "Captures parking session details post the vehicle passing the barrier.",
+        "related_template_id": "T7",
+        "mapping_certainty": 1.0,
+        "citation": "After passing the barrier, the system will store the parking session information, including start time and vehicle details."
+      },
+      "citation_match_score": 1.0,
+      "base_assignment": "A: Parking Session-Vehicle",
+      "match_confidence": "High",
+      "disjointness_notes": null
+    }
+  ],
+  "unassigned_base_guidelines": [
+    "C: Client",
+    "C: Vehicle",
+    "Attr: Photos of Vehicle",
+    "E: Color",
+    "E: Size",
+    "C: Parking Session",
+    "C: Location",
+    "I: Location-Space",
+    "I: Location-Conveyor",
+    "C: Space",
+    "C: Conveyor",
+    "A (m:2): Parking Session-Conveyor",
+    "Comp: Parking Lot-Space",
+    "C: Price List",
+    "A: Parking Lot-Price List",
+    "AC: Client-Parking Lot"
+  ]
+}

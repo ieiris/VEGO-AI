@@ -1,0 +1,55 @@
+@startuml
+!define MAIN_ENTITY #E2E2E2
+!define ACTOR_ENTITY #CCCCFF
+!define USE_CASE_ENTITY #CCFFCC
+
+left to right direction
+
+actor "Employee" as employee << (A,#CCCCFF) >>
+actor "Sales Staff" as sales_staff << (A,#CCCCFF) >>
+actor "Marketing Department" as marketing_department << (A,#CCCCFF) >>
+
+rectangle "Cheers" {
+  usecase "Place Order" as place_order << (U,#CCFFCC) >>
+  usecase "Place Regular Order" as place_regular_order << (U,#CCFFCC) >>
+  usecase "Place Urgent Order" as place_urgent_order << (U,#CCFFCC) >>
+  usecase "Manage Wine Information" as manage_wine_info << (U,#CCFFCC) >>
+  usecase "Update Wine Quantity" as update_wine_quantity << (U,#CCFFCC) >>
+  usecase "Generate Reports" as generate_reports << (U,#CCFFCC) >>
+  usecase "Generate Unproductive Employees Report" as generate_unproductive_report << (U,#CCFFCC) >>
+  usecase "Generate Wine Recommendation Report for Customers" as generate_recommendation_report << (U,#CCFFCC) >>
+  usecase "View Wines" as view_wines << (U,#CCFFCC) >>
+  usecase "Delivery of Orders" as delivery_orders << (U,#CCFFCC) >>
+  usecase "Recommend Occasions for Wine" as recommend_occasions << (U,#CCFFCC) >>
+  usecase "Receive Wine Producer Data" as receive_wine_producer_data << (U,#CCFFCC) >>
+  usecase "Receive Weekly Quantity Updates" as receive_weekly_quantity_updates << (U,#CCFFCC) >>
+  usecase "Manage Storage Locations" as manage_storage_locations << (U,#CCFFCC) >>
+  usecase "Update Inventory After Sale" as update_inventory_after_sale << (U,#CCFFCC) >>
+  usecase "Generate Inventory Report" as generate_inventory_report << (U,#CCFFCC) >>
+}
+
+actor "GalGalim" as galgalim << (A,#CCCCFF) >>
+actor "Gefen" as gefen << (A,#CCCCFF) >>
+
+employee <|-- sales_staff
+employee <|-- marketing_department
+employee -- view_wines
+sales_staff -- place_order
+place_order <|-- place_regular_order
+place_order <|-- place_urgent_order
+sales_staff -- generate_reports
+generate_reports ..> generate_unproductive_report : include
+generate_reports ..> generate_recommendation_report : include
+sales_staff -- update_inventory_after_sale
+marketing_department -- manage_wine_info
+manage_wine_info ..> update_wine_quantity : include
+marketing_department -- recommend_occasions
+marketing_department -- manage_storage_locations
+gefen -- receive_wine_producer_data
+gefen -- receive_weekly_quantity_updates
+gefen -- generate_inventory_report : JSON format every weekend
+note "GalGalim manages the actual delivery of orders" as N1
+galgalim -- N1
+N1 -- delivery_orders
+
+@enduml

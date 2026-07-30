@@ -1,0 +1,127 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Administrator
+actor "Gate Sensor (GS)" as GS
+actor Client
+actor "Conveyors Controller (CC)" as CC
+actor "Integrated Rate Service (IRS)" as IRS
+actor "Payment Gateway (PG)" as PG
+
+rectangle "ParkWise System" {
+
+    usecase "Update Parking Lot Details" as UC_UpdateLot
+    usecase "Assign Price List\nto Parking Lot" as UC_AssignPriceList
+    usecase "Generate Customer Club\nGrowth Report" as UC_ClubReport
+    usecase "Generate Annual\nSummary Report" as UC_AnnualReport
+
+    usecase "Maintain Parking Lot\nPrice History" as UC_PriceHistory
+
+    usecase "Handle Gate Events\nand Space Availability" as UC_ManageGate
+
+    usecase "Search Vehicle\nRecord" as UC_SearchVehicle
+    usecase "Open Gate" as UC_OpenGate
+
+    usecase "Provide Client and\nVehicle Information" as UC_ProvideInfo
+    usecase "Extract Vehicle Data\nFrom Photos" as UC_ExtractPhotoData
+    usecase "Update Vehicle-Client\nAssociation" as UC_UpdateAssociation
+
+    usecase "Create Parking\nSession" as UC_CreateSession
+
+    UC_ManageGate --> UC_SearchVehicle : <<include>>
+
+    UC_SearchVehicle ..> UC_OpenGate : <<extend>>\n[known vehicle & linked client]
+    UC_SearchVehicle ..> UC_ProvideInfo : <<extend>>\n[vehicle not found or not linked]
+
+    UC_ProvideInfo --> UC_ExtractPhotoData : <<include>>
+    UC_ProvideInfo --> UC_UpdateAssociation : <<include>>
+
+    UC_UpdateAssociation --> UC_OpenGate : <<include>>
+    UC_OpenGate --> UC_CreateSession : <<include>>
+
+    usecase "Park Vehicle\nUsing Conveyor" as UC_ParkConveyor
+    usecase "Retrieve Vehicle\nUsing Conveyor" as UC_RetrieveConveyor
+
+    CC --> UC_ParkConveyor
+    CC --> UC_RetrieveConveyor
+
+    usecase "Track Vehicle\nLocation" as UC_TrackLocation
+
+    UC_ParkConveyor --> UC_TrackLocation : <<include>>
+    UC_RetrieveConveyor --> UC_TrackLocation : <<include>>
+
+    usecase "Send Parking Details\nvia SMS" as UC_SendSMS
+    UC_CreateSession --> UC_SendSMS : <<include>>
+
+    usecase "View Parking\nDetails" as UC_ViewParking
+
+    usecase "End Parking\nRequest" as UC_EndParking
+    usecase "Provide Vehicle and\nPhone Details" as UC_ProvideEndDetails
+
+    UC_EndParking --> UC_ProvideEndDetails : <<include>>
+
+    usecase "Request Vehicle\nRetrieval" as UC_RequestRetrieval
+    usecase "Update Retrieval\nCompletion" as UC_UpdateRetrieval
+
+    UC_EndParking --> UC_RequestRetrieval : <<include>>
+    UC_RequestRetrieval --> UC_RetrieveConveyor : <<include>>
+    CC --> UC_UpdateRetrieval
+
+    usecase "Make Payment" as UC_MakePayment
+    usecase "Calculate Parking\nFee" as UC_CalcFee
+    usecase "Update Price List" as UC_UpdatePriceList
+    usecase "Handle Payment\nFailure" as UC_PaymentFailure
+
+    UC_EndParking --> UC_MakePayment : <<include>>
+    UC_MakePayment --> UC_CalcFee : <<include>>
+    UC_PaymentFailure ..> UC_MakePayment : <<extend>>\n[payment not approved]
+
+    IRS --> UC_UpdatePriceList
+    UC_UpdatePriceList --> UC_PriceHistory : <<include>>
+    UC_AssignPriceList --> UC_PriceHistory : <<include>>
+
+    usecase "Request Payment\nAuthorization" as UC_RequestPayment
+    usecase "Handle Payment\nConfirmation" as UC_PaymentConfirm
+
+    UC_MakePayment --> UC_RequestPayment : <<include>>
+    PG --> UC_RequestPayment
+
+    PG --> UC_PaymentConfirm
+    UC_PaymentConfirm --> UC_OpenGate : <<include>>
+
+    usecase "Issue Receipt" as UC_IssueReceipt
+
+    Client --> UC_IssueReceipt
+    UC_IssueReceipt ..> UC_PaymentConfirm : <<extend>>\n[payment approved]
+    UC_IssueReceipt --> UC_CalcFee : <<include>>
+
+    usecase "Register to\nClient Club" as UC_RegisterClub
+    usecase "Select Preferred\nParking Lots" as UC_SelectLots
+    usecase "Store Lot Selection\nDate" as UC_StoreLotDate
+    usecase "Apply Membership\nDiscount" as UC_ApplyDiscount
+    usecase "Apply First-Month\nFree Parking" as UC_FirstMonthFree
+
+    Client --> UC_RegisterClub
+    UC_RegisterClub ..> UC_SelectLots : <<extend>>
+
+    Client --> UC_SelectLots
+    UC_SelectLots --> UC_StoreLotDate : <<include>>
+
+    UC_ApplyDiscount ..> UC_CalcFee : <<extend>>\n[client is club member]
+    UC_FirstMonthFree ..> UC_CalcFee : <<extend>>\n[first parking session in registration month\nAND in preferred lot]
+}
+
+Administrator --> UC_UpdateLot
+Administrator --> UC_AssignPriceList
+Administrator --> UC_ClubReport
+Administrator --> UC_AnnualReport
+
+GS --> UC_ManageGate
+GS --> UC_OpenGate
+
+Client --> UC_ProvideInfo
+Client --> UC_ViewParking
+Client --> UC_EndParking
+Client --> UC_MakePayment
+@enduml

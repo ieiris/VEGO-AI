@@ -1,0 +1,420 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68065",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The case model includes a class 'CheersSystem' which indicates a system for managing orders, inventory, and customer information, aligning with the purpose of the 'Cheers' system as described.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The 'SalesEmployee' class includes methods to place orders, aligning with the role of sales staff placing customer orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The 'Order' class includes attributes for order categorization details and assignment to employees, matching the guideline's description.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "The guideline states that delivery is done by 'GalGalim,' which is marked outside the scope of 'Cheers' and not represented, thus lacking direct evidence.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "In the 'RegularOrder' class, there is an attribute for managing a list of customers and methods to track the wines and quantities ordered by each customer.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The 'Customer' class details customer ID, name, phone number, address, email, and the date of first contact, as specified.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "'Employee' class includes a method to make orders, suggesting employees can order wines under similar conditions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The 'UrgentOrder' class has attributes for priority level and expected delivery time, aligned with urgent order processing needs.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The 'RegularOrder' class supports combining orders from multiple customers, tracking wines and quantities, consistent with regular order handling.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The 'Customer' class records detailed information for every order, as expected by this guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The generic 'Employee' class with an order placement method suggests all employees can place orders under the same conditions as customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The 'MarketingEmployee' class has methods to update wine information which suggests exclusivity in privilege.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The 'Employee' class having only a view method for wines, and the 'SalesEmployee' can browse wines, reflecting differentiated access levels.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The 'WineType' class describes wine classification with serial numbers, names, and additional attributes such as food pairings and links.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The 'MarketingEmployee' class recommendations for occasions through 'recommendWineOccasions()' method reflects the guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The 'CheersSystem' class contains a method to import information from 'Gefen,' aligned closely with receiving external data.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "There is no explicit detail on receiving weekly updates in the case model.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "The 'Manufacture' class includes manufacturer details and unique identifiers, matching the guideline description.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The 'Wine' class captures detailed characteristics like name, description, year, and product image for each wine.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "The 'Wine' class uses catalog and manufacturer numbers to distinguish wines, consistent with guideline specifications.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "The 'MarketingEmployee' class represents privileges to modify wine types, pricing, and images, fulfilling this guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "The 'StorageLocation' and 'WineStorageLocation' classes help track the placement of wines based on their storage location.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The wine to storage location association class tracks the number of bottles per location, aligning with inventory tracking requirements.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The 'WineStorageLocation' class includes a method to update the bottle count, which may imply after-sales, but it's not explicit.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Lacks explicit details on updating inventory right after a sale."
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "Sales employees have a specific method for generating an employee productivity report.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "The 'CheersSystem' class contains a method to export inventory reports in JSON, aligning with report generation for restocking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "Sales employees have methods to generate wine recommendations from customer preferences, directly satisfying this guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G4",
+      "evidence": "The 'CheersSystem' class and associations do not reflect any relationship or reference to an external company managing delivery, like 'GalGalim'. This aspect is not integrated or depicted, so no evidence can be found.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The case model currently lacks any components that indicate how delivery by an external company is addressed or documented as being outside the scope of the system."
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "Upon further review, the 'CheersSystem' class has no explicit representation or indication within the methods that address receiving weekly updates on quantities from manufacturers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The requirement for obtaining weekly inventory updates is not reflected within the current attributes or operations of the designed classes, including 'CheersSystem'."
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The 'WineStorageLocation' class contains a method to update the bottle count in a storage location. While this may suggest inventory adjustments, it still does not specifically state updating inventory post-sales.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "There is a generic provision for updating storage counts, which implies changes, yet lacks direct linkage or trigger from a sales transaction completing."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The class 'Report' which includes a method named 'generate()'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The 'Report' class and its 'generate()' method could potentially facilitate the reporting functionalities detailed in other guidelines. Thus, it complements the system’s capabilities even if not directly outlined."
+    },
+    {
+      "fragment": "The enum 'Location' with values 'inside' and 'outside'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "The 'Location' enum is relevant and enhances the system by providing context for wine occasions or storage, aligning with guideline G15 related to locations for wine consumption."
+    },
+    {
+      "fragment": "The enum 'Season' with values 'autum', 'summer', 'winter', 'spring'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This enum adds detail to the recommendations for wine occasions by considering seasonal contexts, as implied in wine recommendations (G15)."
+    },
+    {
+      "fragment": "The method 'updateBottleCountWine' in the 'CheersSystem' class.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "reason": "The method name suggests it updates the bottle count of a wine but lacks context or relation to inventory updates post-sales, creating potential confusion."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The class 'Report' which includes a method named 'generate()'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The enum 'Location' with values 'inside' and 'outside'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The enum 'Season' with values 'autum', 'summer', 'winter', 'spring'.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The method 'updateBottleCountWine' in the 'CheersSystem' class.",
+      "label": "Language Mistake",
+      "severity": "Medium",
+      "base_score": -0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": -0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 24.5,
+  "max_score": 27.0,
+  "score_pct": 90.7,
+  "overall_assessment": "The case model shows strong compliance with the guidelines, addressing nearly all requirements effectively, with minor room for improvement."
+}

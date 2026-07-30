@@ -1,0 +1,396 @@
+{
+  "skill_version": "1.0.0",
+  "case_id": "68074",
+  "existing_mapping": [
+    {
+      "guideline_id": "G1",
+      "evidence": "The system boundary is defined for the \"Cheers System,\" encompassing order, customer, inventory management, and reporting within the \"Cheers System\" boundary.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G2",
+      "evidence": "The \"Sales Staff\" actor is associated with placing orders through the \"Place Order\" use case.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G3",
+      "evidence": "The use cases \"Place Regular Order\" and \"Place Urgent Order\" represent order categorization.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G4",
+      "evidence": "There is no mention of GalGalim, indicating it is handled outside the current system.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G5",
+      "evidence": "The \"Place Joint Order\" use case extends the \"Place Regular Order\" use case for joint order tracking.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G6",
+      "evidence": "The \"Manage Customer Information\" use case captures customer-related details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G7",
+      "evidence": "The note explains that employees can be customers and place orders under similar conditions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G8",
+      "evidence": "The \"Place Urgent Order\" use case prioritizes processing specific orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G9",
+      "evidence": "The \"Place Regular Order\" allows for combination of customer selections, as it is the base use case extended by \"Place Joint Order.\"",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G10",
+      "evidence": "The \"Manage Customer Information\" use case is applicable for recording customer information for orders.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G11",
+      "evidence": "The note clarifies employees' ability to order wines similarly to regular customers.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G12",
+      "evidence": "The note states that only \"Marketing Staff\" can update wine information, indicating restrictions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G13",
+      "evidence": "The marketing and sales staff have different capabilities regarding wine information update and browsing.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G14",
+      "evidence": "The use case \"Manage Wine Types\" indicates functionality for managing wine attributes.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G15",
+      "evidence": "The use case \"Manage Drinking Occasions\" involves marketing staff recommending occasions.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G16",
+      "evidence": "The \"Import Producer Data\" use case allows for data reception from the \"Gefen System.\"",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G17",
+      "evidence": "The \"Import Wine Data\" use case pertains to updating purchase quantities.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The update frequency is not explicitly mentioned in the case model."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There are no explicit use cases detailing manufacturer information storage.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The use case \"Update Wine Information\" suggests detail capture, but specifics are omitted.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "Details on data captured for each wine are not explicit."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "There are no specific use cases mapping to distinct wine identifiers.",
+      "compliance_status": "Not-Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G21",
+      "evidence": "The \"Manage Wine Types\" aligns with linking wines to types and maintaining details.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G22",
+      "evidence": "The \"Update Storage Location\" use case pertains to tracking storage locations.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G23",
+      "evidence": "The use case \"Track Inventory Levels\" fits inventory tracking functionality.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G24",
+      "evidence": "The \"Include\" relationship between \"Place Order\" and \"Track Inventory Levels\" includes sales-related updates.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G25",
+      "evidence": "The \"Generate Unproductive Employees Report\" use case meets the guideline.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G26",
+      "evidence": "The \"Generate Current Inventory Report\" communicates inventory status to 'Gefen'.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    },
+    {
+      "guideline_id": "G27",
+      "evidence": "The \"Generate Wine Recommendation Report\" satisfies customer preferences reporting.",
+      "compliance_status": "Satisfied",
+      "notes": ""
+    }
+  ],
+  "potential_found": [
+    {
+      "guideline_id": "G17",
+      "evidence": "The 'Import Wine Data' use case suggests that the system integrates updates about wines, which can potentially include purchase quantities. However, the specificity of weekly updates is not denoted in the described use cases.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "The systematic update frequency (weekly) is still not explicitly captured in the case model, but the inclusion of 'Import Wine Data' covers part of the requirement."
+    },
+    {
+      "guideline_id": "G18",
+      "evidence": "There is no direct mention of storing manufacturer information use cases. 'Import Producer Data' could imply some level of storing, but it doesn't explicitly confirm storing all required manufacturer details.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "The use case 'Import Producer Data' implies an interaction with data related to producers, but no explicit use case describing the storage of detailed information (such as contact details) is present."
+    },
+    {
+      "guideline_id": "G19",
+      "evidence": "The 'Update Wine Information' use case indicates modifying wine data, yet does not specifically elaborate on the detail level required per wine as stated in the guideline.",
+      "compliance_status": "Partially-Satisfied",
+      "notes": "While the 'Update Wine Information' hints at data being captured, it does not specify items like production year, price, or sweetness level clearly as required."
+    },
+    {
+      "guideline_id": "G20",
+      "evidence": "No evidence in the case model specifically distinguishes between wines by manufacturer or catalog number.",
+      "compliance_status": "Not-Satisfied",
+      "notes": "Omissions exist concerning distinguishing features of wine identifiers within the outlined use cases or data models."
+    }
+  ],
+  "uncovered_fragments": [
+    {
+      "fragment": "The \"Browse Wines\" use case allows sales staff and customers to view available wines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This use case provides additional functionality that enhances user interactions, consistent with the sales and customer roles."
+    },
+    {
+      "fragment": "The \"Export Inventory Data\" use case involves sending inventory data to the 'Gefen System.'",
+      "label": "Alternative",
+      "severity": "N/A",
+      "reason": "This use case serves a necessary integration function that supports external system communication, aligning with inventory management processes."
+    }
+  ],
+  "compliance_contributions": [
+    {
+      "guideline_id": "G1",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G2",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G3",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G4",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G5",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G6",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G7",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G8",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G9",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G10",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G11",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G12",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G13",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G14",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G15",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G16",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G17",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Improved from Not-Satisfied in existing mapping to Partially-Satisfied in potential found"
+    },
+    {
+      "guideline_id": "G18",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": "No improvement in potential found"
+    },
+    {
+      "guideline_id": "G19",
+      "compliance_status": "Partially-Satisfied",
+      "score": 0.5,
+      "note": "Consistency between both existing mapping and potential found"
+    },
+    {
+      "guideline_id": "G20",
+      "compliance_status": "Not-Satisfied",
+      "score": 0.0,
+      "note": "No improvement in potential found"
+    },
+    {
+      "guideline_id": "G21",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G22",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G23",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G24",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G25",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G26",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    },
+    {
+      "guideline_id": "G27",
+      "compliance_status": "Satisfied",
+      "score": 1.0,
+      "note": ""
+    }
+  ],
+  "fragment_contributions": [
+    {
+      "fragment": "The \"Browse Wines\" use case allows sales staff and customers to view available wines.",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    },
+    {
+      "fragment": "The \"Export Inventory Data\" use case involves sending inventory data to the 'Gefen System.'",
+      "label": "Alternative",
+      "severity": "N/A",
+      "base_score": 0.5,
+      "severity_modifier": 0.0,
+      "total_contribution": 0.5,
+      "note": ""
+    }
+  ],
+  "total_score": 25.0,
+  "max_score": 27.0,
+  "score_pct": 92.6,
+  "overall_assessment": "The use case model effectively covers the majority of the domain guidelines, with only a few areas needing explicit detailing."
+}

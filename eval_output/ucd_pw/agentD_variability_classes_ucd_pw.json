@@ -1,0 +1,80 @@
+{
+  "skill_version": "1.0.0",
+  "domain_identifier": "parkwise",
+  "variability_classifications": [
+    {
+      "pattern_id": "P1",
+      "classification": "Occasional Variability",
+      "justification": "Pattern P1 indicates issues with implementing guideline G10 related to vehicle color categorization. The deviation appears to be an oversight or difficulty in implementing the color categorization as predefined in the guidelines.",
+      "evidence": "G10 | \"The extraction photo-to-text module distinguishes among four predefined colors – white, black, silver, and blue – while all other colors are categorized as other.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P2",
+      "classification": "Occasional Variability",
+      "justification": "Pattern P2 suggests that there are challenges in meeting guideline G16 on adequately mapping or documenting the representation of parking space and conveyor locations. This reflects a partial satisfaction of the guideline, which is a deviation from expected behavior.",
+      "evidence": "G16 | \"The locations of both parking spaces and conveyors are represented by their floor number and their position on that floor as (x,y) coordinate.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P3",
+      "classification": "Occasional Variability",
+      "justification": "Pattern P3 shows consistent issues with implementing the SMS notification guideline G22, suggesting it is an error or omission in implementing the guideline.",
+      "evidence": "G22 | \"An SMS message with the parking details will be sent to the client's phone.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": false,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P4",
+      "classification": "Substantial Variability",
+      "justification": "Pattern P4 represents an alternative fragment concerning the IRS actor and price list management, which is a valid alternative modeling choice consistent with domain logic and not contradictory to existing guidelines.",
+      "evidence": "EXACT, VERBATIM excerpt from Domain Description: \"The payment amount will be calculated based on fixed price lists, sent yearly by the Integrated Rate Service (IRS) in a JSON format.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": true,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P5",
+      "classification": "Substantial Variability",
+      "justification": "Involving the Conveyor's Controller as an alternative reflects an expansion of an actor's role beyond explicit guidelines, consistent with domain expectations.",
+      "evidence": "G15 | \"The Conveyors’ Controller (CC) will scan the vehicle number, assign a conveyor and ask the system to run an optimization algorithm to find the nearest vacant space to the conveyor location.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": true,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P6",
+      "classification": "Substantial Variability",
+      "justification": "The use of alternative modes for providing vehicle parking details (UI or SMS) is not specified in the guidelines but represents a practical and consistent modeling choice.",
+      "evidence": "G23 | \"This data is also available through the system UI, if the client enters his or her phone number.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": true,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P7",
+      "classification": "Substantial Variability",
+      "justification": "Pattern P7 indicates that generating annual summary reports with detailed representations is a valid extension of system functionality not explicitly outlined in guidelines.",
+      "evidence": "G42 | \"Annual Summary Report – a yearly overview of all incomes of ParkWise.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": true,
+      "requires_human_review": false
+    },
+    {
+      "pattern_id": "P8",
+      "classification": "Substantial Variability",
+      "justification": "Pattern P8 reflects modeling choices that use generalization for client and club member relationships, which provides a clear and consistent structure while not being directly specified in guidelines.",
+      "evidence": "EXACT, VERBATIM excerpt from Domain Description: \"ParkWise also manages a client’s club.\"",
+      "confidence": "High",
+      "flag_for_guidelines_update": true,
+      "requires_human_review": false
+    }
+  ],
+  "questions_to_language_advisor": [],
+  "questions_to_domain_advisor": []
+}

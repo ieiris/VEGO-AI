@@ -1,0 +1,61 @@
+{
+  "skill_version": "1.1.0",
+  "language_name": "UML Use Case Diagram",
+  "guidelines": [
+    {
+      "id": "T1",
+      "short_name": "Actor",
+      "fragment_description": "An Actor is a primary construct representing a role played by a user or external system that interacts with the system.",
+      "involved_constructs": "Actor"
+    },
+    {
+      "id": "T2",
+      "short_name": "UseCase",
+      "fragment_description": "A Use Case is a primary construct that describes a sequence of actions performed by the system that yields a valuable result to an Actor.",
+      "involved_constructs": "UseCase"
+    },
+    {
+      "id": "T3",
+      "short_name": "Actor-Association-UseCase",
+      "fragment_description": "An Association is a relationship construct that connects an Actor to a Use Case, indicating that the Actor participates in the Use Case.",
+      "involved_constructs": "Actor | Association | UseCase"
+    },
+    {
+      "id": "T4",
+      "short_name": "UseCase-Includes-UseCase",
+      "fragment_description": "An 'Include' relationship is a directed relationship between Use Cases that specifies that the behavior of the included Use Case is inserted into the behavior of the including Use Case.",
+      "involved_constructs": "UseCase | Includes | UseCase"
+    },
+    {
+      "id": "T5",
+      "short_name": "UseCase-Extends-UseCase",
+      "fragment_description": "An 'Extend' relationship is a directed relationship that specifies how and when the behavior of the extending use case can be inserted into the extended use case.",
+      "involved_constructs": "UseCase | Extends | UseCase"
+    },
+    {
+      "id": "T6",
+      "short_name": "UseCase-Generalization-UseCase",
+      "fragment_description": "A Generalization relationship is a relationship construct where a child use case inherits the behavior and properties of a parent use case.",
+      "involved_constructs": "UseCase | Generalization | UseCase"
+    },
+    {
+      "id": "T7",
+      "short_name": "Subsystem",
+      "fragment_description": "A Subsystem is a primary construct that acts as a grouping mechanism for use cases, representing a module or collection of functionalities.",
+      "involved_constructs": "Subsystem"
+    },
+    {
+      "id": "T8",
+      "short_name": "Subsystem-Containment-UseCase",
+      "fragment_description": "A Containment relationship groups Use Cases within a Subsystem, indicating that the Use Cases are part of the Subsystem.",
+      "involved_constructs": "Subsystem | Containment | UseCase"
+    }
+  ],
+  "agent1_capabilities": [
+    "What is the role of an Actor in a UML Use Case Diagram?",
+    "How does an 'Include' relationship work between two Use Cases?",
+    "What does a Generalization relationship signify in a UML Use Case Diagram?",
+    "How can a Use Case be part of a Subsystem?",
+    "What is the difference between 'Extend' and 'Include' relationships in UML?"
+  ]
+}

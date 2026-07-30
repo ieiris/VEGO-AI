@@ -1,0 +1,122 @@
+@startuml
+
+!define UML2 usecase
+
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Galgalim System" as Galgalim
+
+actor "Customer" as Customer
+actor "Employee" as Employee
+
+Customer <|-- Employee
+
+actor "Sales Employee" as Sales
+actor "Marketing Employee" as Marketing
+
+Employee <|-- Sales
+Employee <|-- Marketing
+
+
+
+
+actor "Gefen System" as Gefen
+
+
+
+
+
+rectangle "Cheers System" {
+    usecase U_PlaceOrder as "Place Customer Order
+    --
+    <<Extension Point>>
+    Not defined as urgent order
+    Wine Available in the Inventory"
+    usecase U_UrgentOrder as "Place Urgent Order"
+    usecase U_DefinePriority as "Define Priority Level"
+    usecase U_DefineDeliveryTime as "Define Expected Delivery Time"
+    usecase U_JointOrders as "Join to another order"
+    usecase U_RegisterCustomer as "Register as Customer
+    --
+    <<Extension Point>>
+    Have an order"
+    usecase U_FetchOrderStatus as "Fetch Order Status"
+    usecase U_ChangeWineInfo as "Change Wine Information
+    --
+    <<Extension Point>>
+    Need to change product image in the catalog
+    Need to change wine price in the catalog"
+    usecase U_ChangeWinePrice as "Change Wine Price"
+    usecase U_ChangeWineImg as "Change Wine Product Images"
+    usecase U_ViewWines as "View Wines Catalog"
+    usecase U_RecommendOccasion as "Recommend Occasion"
+    usecase U_PairFood as "Pair Food
+    --
+    <<Extension Point>>
+    (less then 5 recipes)"
+    usecase U_RecommendSeason as "Recommend Season"
+    usecase U_RecommendLocation as "Recommend Location (Indoor/Outdoor)"
+    usecase U_FetchProducerData as "Fetch Wine Producer Data by Manufacturer"
+    usecase U_AddDishReceipe as "Add Dish Receipe"
+    usecase U_ReviewFetchedWineData as "Review Fetched Wine Data by Producer from Gefen
+    --
+    <<Extension Point>>
+    Want to add wine to catalog"
+    usecase U_AddWineToCatalog as "Add Wine to Catalog"
+    usecase U_TrackInventory as "Track Wine Inventory"
+    usecase U_UpdateInventory as "Update Wine Inventory"
+    usecase U_GenerateUnproductiveReport as "Generate Unproductive Employees Report"
+    usecase U_GenerateWineRecReport as "Generate Wine Recommendation Report"
+    
+
+}
+
+
+Sales -- U_PlaceOrder
+Sales -- U_TrackInventory
+Sales -- U_GenerateUnproductiveReport
+Sales -- U_GenerateWineRecReport
+
+
+Customer -- U_RegisterCustomer
+U_GenerateWineRecReport -- Customer
+
+
+Marketing -- U_ChangeWineInfo
+Marketing -- U_RecommendOccasion
+Marketing -- U_PairFood
+Marketing -- U_ReviewFetchedWineData
+U_ReviewFetchedWineData ..> U_AddWineToCatalog : <<extends>>
+
+
+Employee -- U_ViewWines
+
+Gefen -- U_FetchProducerData
+U_TrackInventory -- Gefen
+
+U_PlaceOrder -- Galgalim
+U_FetchOrderStatus -- Galgalim
+
+
+U_PlaceOrder ..> U_JointOrders : <<extends>>
+U_PlaceOrder <.. U_UpdateInventory : <<include>>
+
+U_RegisterCustomer <.. U_FetchOrderStatus : <<extends>>
+
+
+U_PlaceOrder <|-- U_UrgentOrder : <<generalization>>
+U_UrgentOrder ..> U_DefinePriority : <<include>>
+U_UrgentOrder ..> U_DefineDeliveryTime : <<include>>
+
+U_RecommendOccasion <.. U_RecommendSeason : <<includes>>
+U_RecommendOccasion <.. U_RecommendLocation : <<includes>>
+
+U_ChangeWineInfo ..> U_ChangeWineImg : <<extends>>
+U_ChangeWineInfo ..> U_ChangeWinePrice : <<extends>>
+
+U_PairFood ..> U_AddDishReceipe : <<extends>>
+
+
+@enduml

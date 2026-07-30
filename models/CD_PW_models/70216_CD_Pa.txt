@@ -1,0 +1,182 @@
+@startuml
+' ===================== ENUMS =====================
+
+enum VehicleColor {
+  White
+  Black
+  Silver
+  Blue
+  Other
+}
+
+enum Size {
+  Small
+  Medium
+  Large
+}
+
+enum Cartype {
+  Private
+  SUV
+  Motorcycle
+  Van
+  Truck
+}
+
+enum ViewType {
+  Front
+  Rear
+  Side
+}
+
+enum ParkingSessionStatus {
+  Planned
+  Completed
+}
+
+enum AppliedRate {
+  FirstHourPrice
+  AdditionalHourPrice
+  FullDayPrice
+}
+
+' ===================== CLASSES =====================
+
+class Customer {
+  id
+  firstName
+  lastName
+  phone
+}
+
+class Membership {
+  joinDate
+}
+
+class Vehicle {
+  plateNumber
+  type : Cartype
+  weight
+  color : VehicleColor
+  size : Size
+}
+
+class VehiclePhoto {
+  id
+  viewType : ViewType
+  imagePath
+}
+
+class PreferredParkingLot {
+  selectionDate
+}
+
+class ParkingSession {
+  id
+  startTime
+  endTime
+  totalHours
+  status : ParkingSessionStatus
+  appliedRate : AppliedRate
+  isFirstFreeSession : boolean
+}
+
+class ParkingLot {
+  id
+  name
+  address
+  city
+  availableSpaces
+}
+
+class ParkingSpot {
+  id
+  floor
+  positionX
+  positionY
+  size : Size
+}
+
+class Conveyor {
+  id
+  maxWeight
+  positionX
+  positionY
+  floor
+}
+
+class PriceList {
+  id
+  firstHourPrice
+  additionalHourPrice
+  fullDayPrice
+  effectiveDate
+}
+
+class PriceHistory {
+  id
+  appliedFrom
+  appliedTo
+}
+
+class RateService {
+}
+
+class ReportManager {
+  +generateAnnualSummaryReport(year : Integer)
+  +generateCustomerClubGrowthReport(year : Integer)
+}
+
+' ===================== NEW: RECEIPT =====================
+
+class Receipt {
+  id
+  issueDate
+  totalAmount
+}
+
+' ===================== RELATIONSHIPS =====================
+
+' Customer ↔ Membership
+Customer "1" -- "0..1" Membership
+
+' Customer ↔ Vehicle
+Customer "1" -- "0..*" Vehicle
+Vehicle "1" -- "1" Customer
+
+' Membership ↔ PreferredParkingLot
+Membership "1" -- "0..*" PreferredParkingLot
+PreferredParkingLot "1" -- "1" ParkingLot
+
+' Vehicle ↔ VehiclePhoto
+Vehicle "1" *-- "0..3" VehiclePhoto
+
+' Vehicle ↔ ParkingSession
+Vehicle "1" -- "0..*" ParkingSession
+ParkingSession "1" -- "1" Vehicle
+
+' ParkingSession relations
+ParkingSession "1" -- "1" ParkingSpot
+ParkingSession "1" -- "1" ParkingLot
+ParkingSession "1" -- "0..1" Conveyor
+ParkingSession "1" -- "1" PriceList
+
+' ParkingLot compositions
+ParkingLot "1" -- "0.." ParkingSpot
+ParkingLot "1" -- "0.." Conveyor
+
+' Price history
+ParkingLot "1" -- "0..*" PriceHistory
+PriceList "1" o-- "0..*" PriceHistory
+
+' External JSON service
+RateService ..> PriceList : "provides JSON"
+
+' ===================== RECEIPT RELATIONSHIPS =====================
+
+' Receipt includes client, vehicle and parking details:
+Receipt "1" -- "1" Customer
+Receipt "1" -- "1" Vehicle
+Receipt "1" -- "1" ParkingSession
+
+@enduml

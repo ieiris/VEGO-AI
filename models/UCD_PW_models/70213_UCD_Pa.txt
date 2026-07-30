@@ -1,0 +1,79 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+' Human Actors
+actor "Administrator" as Admin
+actor "Client" as Client
+
+' Hardware/System Actors
+actor "Gate Sensor" as GS <<System>>
+actor "Conveyors' Controller" as CC <<System>>
+
+' External Service Actors
+actor "Payment Gateway" as PG <<External>>
+' Change 2: IRS moved to the bottom of the list
+actor "Integrated Rate Service" as IRS <<External>>
+
+rectangle "ParkWise Information System" {
+
+    ' --- Part 1: Setup & Entry ---
+    usecase "Manage Parking Lot Details" as UC_ManageLots
+    usecase "Handle Vehicle Entry" as UC_Entry
+    usecase "Register Client / Vehicle" as UC_Register
+    usecase "Extract Vehicle Details\n(Photo-to-Text)" as UC_Extract
+
+    ' --- Part 2: Parking, Retrieval & Payment ---
+    usecase "Park Vehicle" as UC_Park
+    ' Change 1: Renamed to "Run Optimization Algorithm"
+    usecase "Run Optimization Algorithm" as UC_Optimize
+    usecase "Retrieve Vehicle / End Parking" as UC_Retrieve
+    usecase "Process Payment" as UC_Pay
+    usecase "Calculate Payment Amount" as UC_Calc
+    usecase "Issue Receipt" as UC_Receipt
+    usecase "Update Price Lists" as UC_UpdatePrice
+
+    ' --- Part 3: Club & Reports ---
+    usecase "Register for Club" as UC_ClubReg
+    usecase "Manage Preferred Lots" as UC_PrefLots
+    usecase "Generate Annual Summary Report" as UC_RepAnnual
+    usecase "Generate Club Growth Report" as UC_RepGrowth
+
+    ' --- Relationships ---
+
+    ' Administrator
+    Admin --> UC_ManageLots
+    Admin --> UC_RepAnnual
+    Admin --> UC_RepGrowth
+
+    ' Gate Sensor Flow
+    GS --> UC_Entry
+    UC_Entry <.. UC_Register : <<extend>>\n(If vehicle unknown)
+    UC_Register ..> UC_Extract : <<include>>
+    Client -- UC_Register
+
+    ' Conveyor Controller Flow
+    CC --> UC_Park
+    UC_Park ..> UC_Optimize : <<include>>
+
+    ' Client Retrieval & Payment Flow
+    Client --> UC_Retrieve
+    UC_Retrieve ..> UC_Pay : <<include>>
+    UC_Pay ..> UC_Calc : <<include>>
+    ' Change 3: Changed from extend to include
+    UC_Pay ..> UC_Receipt : <<include>>
+    
+    ' Payment Gateway connection
+    UC_Pay -- PG
+
+    ' Client Club Flow
+    Client --> UC_ClubReg
+    ' Restored original direct connection (ignored change 4)
+    Client --> UC_PrefLots
+
+    ' IRS Flow
+    IRS --> UC_UpdatePrice
+
+}
+
+@enduml

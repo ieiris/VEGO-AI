@@ -1,0 +1,56 @@
+final code for use case diagram: 
+@startuml
+!define MAIN_FONT_NAME Arial
+!define MAIN_FONT_SIZE 24
+!define TEXT_FONT_NAME Arial
+!define TEXT_FONT_SIZE 18
+
+title "Cheers System Use Case Diagram"
+
+actor "Sales Staff" as sales
+actor "Marketing Staff" as marketing
+actor "Customers" as customers
+actor "GalGalim" as galgalim <<external system>>
+actor "Gefen" as gefen <<external system>>
+
+usecase "Order Management" as (Order Management)
+usecase "Manage Wine Information" as (Manage Wine Information)
+usecase "View Wine Information" as (View Wine Information)
+usecase "Browse Available Wines" as (Browse Available Wines)
+usecase "Receive XML Data" as (Receive XML Data)
+usecase "Generate Reports" as (Generate Reports)
+usecase "Update Inventory" as (Update Inventory)
+usecase "Track Inventory" as (Track Inventory) <<include>>
+usecase "Deliver Order" as (Deliver Order)
+usecase "Place Urgent Order" as (Place Urgent Order)
+usecase "Place Regular Order" as (Place Regular Order)
+usecase "Specify Priority Level" as (Specify Priority Level) <<extension point>>
+usecase "Specify Expected Delivery Time" as (Specify Expected Delivery Time) <<extension point>>
+usecase "Unproductive Employees Report" as (Unproductive Employees Report) <<extension point>>
+usecase "Current Inventory Report" as (Current Inventory Report) <<extension point>>
+usecase "Wine Recommendation Report" as (Wine Recommendation Report) <<extension point>>
+usecase "Recommend Occasions" as (Recommend Occasions)
+
+sales -- (Order Management)
+customers -- (Order Management)
+(Order Management) <.. (Place Urgent Order) : extend
+(Order Management) <.. (Place Regular Order) : extend
+(Place Urgent Order) <.. (Specify Priority Level) : extend
+(Place Urgent Order) <.. (Specify Expected Delivery Time) : extend
+(Order Management) ..> (Update Inventory) : include
+sales -- (Track Inventory)
+marketing -- (Track Inventory)
+sales -- (View Wine Information)
+sales -- (Browse Available Wines)
+marketing -- (Manage Wine Information)
+marketing -- (Recommend Occasions)
+(Order Management) ..> (Deliver Order) : include
+gefen -- (Receive XML Data)
+sales -- (Generate Reports)
+(Generate Reports) <.. (Unproductive Employees Report) : extend
+(Generate Reports) <.. (Current Inventory Report) : extend
+(Generate Reports) <.. (Wine Recommendation Report) : extend
+galgalim -- (Deliver Order)
+customers -- (Deliver Order)
+
+@enduml

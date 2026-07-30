@@ -1,0 +1,67 @@
+@startuml
+!define COLOR般 #LightBlue
+!define COLOR startX #Green
+!define COLOR Acteur #Yellow
+!define COLOR UseCase #LightGray
+
+skinparam sequence {
+  ArrowColor #Black
+  ActorBorderColor #Black
+  LifeLineBorderColor #Black
+}
+
+skinparam usecase {
+  BackgroundColor #LightGray
+  BorderColor #Black
+}
+
+skinparam actor {
+  BackgroundColor #Yellow
+  BorderColor #Black
+}
+
+left to right direction
+
+actor "Sales Staff" as SalesStaff
+actor "Marketing Staff" as MarketingStaff
+actor "Employee" as Employee
+actor "Customer" as Customer
+actor "Gefen System" as GefenSystem
+
+usecase "Place Order" as (Place Order)
+usecase "Update Wine Information" as (Update Wine Information)
+usecase "Update Wine Type" as (Update Wine Type)
+usecase "Link Wine to Type" as (Link Wine to Type)
+usecase "Generate Reports" as (Generate Reports)
+usecase "Supplies monthly XML data" as (Supplies monthly XML data)
+usecase "Generate Current Inventory Report" as (Generate Current Inventory Report)
+usecase "Update Inventory After Sale" as (Update Inventory After Sale)
+
+SalesStaff --|> Employee
+MarketingStaff --|> Employee
+
+SalesStaff --> (Place Order)
+SalesStaff --> (Generate Reports)
+MarketingStaff --> (Update Wine Information)
+MarketingStaff --> (Update Wine Type)
+MarketingStaff --> (Link Wine to Type)
+GefenSystem --> (Receive Inventory Report)
+GefenSystem --> (Supplies monthly XML data)
+GefenSystem --> (Generate Current Inventory Report)
+(Generate Current Inventory Report) --> (Update Inventory After Sale)
+(Place Order) --> (Place Regular Order): <<extend>>
+(Place Order) --> (Place Urgent Order): <<extend>>
+(Place Regular Order) --> (Place Joint Order): <<extend>>
+(Place Urgent Order) --> (Specify Delivery Time): <<extend>>
+(Place Urgent Order) --> (Specify Priority Levels): <<extend>>
+
+(Update Wine Information) --> (Modify Product Images): <<extend>>
+(Update Wine Information) --> (Modify Price): <<extend>>
+
+(Update Wine Type) --> (Recommend Wine for Occasions): <<extend>>
+
+(Link Wine to Type) --> (Associate Wine with Type): <<extend>>
+
+(Generate Reports) --> (Unproductive Employees Report): <<extend>>
+(Generate Reports) --> (Wine Recommendation Report for Customers): <<extend>>
+@enduml

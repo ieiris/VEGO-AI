@@ -1,0 +1,66 @@
+@startuml
+!define RECTANGLE
+
+title Wine Ha'Emek - Use Case Diagram
+
+actor "Employees" as Employees
+actor "Sales Staff" as SalesStaff
+actor "Marketing Staff" as MarketingStaff
+actor "Customer" as Customer
+actor "System Gefen" as SystemGefen
+actor "GalGalim" as GalGalim
+
+SalesStaff <|-- Employees
+MarketingStaff <|-- Employees
+
+' Wine Management Use Cases
+usecase "Browse Catalog\n(View-Only)" as BrowseCatalog
+usecase "Update Wine Info\nand Types" as UpdateWineInfo
+usecase "Recommend Wine\nBased on Occasion" as RecommendWine
+usecase "Track Wine Storage\nand Inventory" as TrackStorage
+
+' Order Management Use Cases
+usecase "Place Orders" as PlaceOrder
+usecase "Urgent Order" as UrgentOrder
+usecase "Regular Order" as RegularOrder
+usecase "Joint Orders" as JointOrder
+
+' Report Generation Use Cases
+usecase "Generate Reports" as GenerateReports
+usecase "Unproductive Employees\nReport" as EmployeeReport
+usecase "Current Inventory\nReport" as InventoryReport
+usecase "Wine Recommendation\nReport" as WineReport
+
+' System Interaction Use Cases
+usecase "Send XML Data\nof Wine (Monthly)" as SendXMLWine
+usecase "Send XML Data\nof Quantities (Weekly)" as SendXMLQuantity
+usecase "Receive Current\nInventory Report" as ReceiveInventoryReport
+usecase "Deliver Orders" as DeliverOrders
+
+' Relationships for Wine Management
+SalesStaff --> BrowseCatalog
+MarketingStaff --> UpdateWineInfo
+MarketingStaff --> RecommendWine
+SalesStaff --> TrackStorage
+
+' Relationships for Order Management
+SalesStaff --> PlaceOrder
+PlaceOrder <|-- UrgentOrder : <<extends>>
+PlaceOrder <|-- RegularOrder : <<extends>>
+RegularOrder <|-- JointOrder : <<extends>>
+UrgentOrder <|-- JointOrder : <<extends>>
+Customer --> PlaceOrder
+
+' Relationships for Report Generation
+SalesStaff --> GenerateReports
+GenerateReports <|-- EmployeeReport : <<include>>
+GenerateReports <|-- InventoryReport : <<include>>
+GenerateReports <|-- WineReport : <<include>>
+
+' Relationships for System Interactions
+SystemGefen --> SendXMLWine
+SystemGefen --> SendXMLQuantity
+SystemGefen --> ReceiveInventoryReport
+GalGalim --> DeliverOrders
+DeliverOrders <-- PlaceOrder
+@enduml

@@ -1,0 +1,53 @@
+@startuml
+left to right direction
+
+actor Employee
+actor "Sales Staff" as SalesStaff
+actor "Marketing" as Marketing
+actor Customer
+actor Manufacturer
+actor "Gefen"
+actor "Galgalim"
+
+rectangle "Cheers System"{
+    (Make an Order)
+    (Choose regular/urgent order)
+    (View Wines Information)
+    (Place Customer Orders)
+    (Browse Available Wines)
+    (Update wine information and types)
+    (modify price details and product images)
+    (Recommend occasions suitable for each wine type)
+    (providing a general description of the occasion, along with the season and location)
+    (Link wine to their type)
+    (Providing XML about wine producers and the wine they produce)
+    (Provide quantity purchase)
+    (Manufacturer Wine)
+    (Manage Delivery)
+}
+
+Customer --> (Make an Order)
+Employee --> (Make an Order)
+
+(Make an Order) ..> (Choose regular/urgent order) : <<include>>
+
+Employee --> (View Wines Information)
+
+SalesStaff --> (Place Customer Orders)
+(Place Customer Orders) ..> (Browse Available Wines) : <<extends>>
+Employee <|-- SalesStaff
+
+Marketing --> (Update wine information and types)
+(Update wine information and types) ..> (modify price details and product images) : <<extends>>
+Marketing --> (Recommend occasions suitable for each wine type)
+(Recommend occasions suitable for each wine type) ..> (providing a general description of the occasion, along with the season and location) : <<extends>>
+Marketing --> (Link wine to their type)
+
+Employee <|-- Marketing
+
+Gefen --> (Providing XML about wine producers and the wine they produce)
+Gefen --> (Provide quantity purchase)
+Manufacturer --> (Manufacturer Wine)
+
+Galgalim --> (Manage Delivery)
+@enduml

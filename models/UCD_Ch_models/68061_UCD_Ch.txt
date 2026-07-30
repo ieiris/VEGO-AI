@@ -1,0 +1,61 @@
+FINAL Use Case Diagram
+
+@startuml
+' Define Actors
+actor "Sales Staff" as SalesStaff
+actor "Customer" as Customer
+actor "Marketing Employee" as MarketingEmployee
+actor "Gefen" as Gefen
+
+rectangle "Cheers System" {
+  usecase "Browse Wine" as BrowseWine
+  usecase "Place Customer Order" as PlaceOrder
+  usecase "Submit Order" as SubmitOrder
+  usecase "Urgent Order" as UrgentOrder
+  usecase "Regular Order" as RegularOrder
+  usecase "Joint Order" as JointOrder
+  usecase "Manage Wine Information" as ManageWineInfo
+  usecase "Link Wines to Types" as LinkWines
+  usecase "Recommend Occasions Suitable" as RecommendOccasions
+  usecase "send XML Data" as SendXML
+  usecase "Update Inventory" as UpdateInventory
+  usecase "Generate Unproductive Employees Report" as UnproductiveReport
+  usecase "Recive Weekly Inventory Report by Wine" as InventoryReport
+  usecase "Generate Wine Recommendation Report for Customers" as WineRecommendationReport
+  usecase "View Wine Information" as ViewWineInfo
+  usecase "Record Customer Information" as RecordCustomerInfo
+  usecase "Assign Order to Employee" as AssignOrderToEmployee
+}
+
+SalesStaff --|> Customer
+MarketingEmployee --|> Customer
+
+Customer --> BrowseWine
+SalesStaff --> PlaceOrder
+BrowseWine <|-- SubmitOrder : <<extends>>
+SubmitOrder ..> PlaceOrder : <<include>> 
+MarketingEmployee --> ViewWineInfo
+MarketingEmployee --> LinkWines
+Gefen --> SendXML
+Gefen --> InventoryReport
+SalesStaff --> UnproductiveReport
+SalesStaff --> WineRecommendationReport
+
+' ManageWineInfo 
+ViewWineInfo <|-- RecommendOccasions : <<extends>>
+ViewWineInfo <|-- ManageWineInfo : <<extends>>
+
+' Specialized Orders extend PlaceOrder
+PlaceOrder <|-- UrgentOrder : <<extends>>
+PlaceOrder <|-- RegularOrder : <<extends>>
+RegularOrder <|-- JointOrder : <<extends>>
+
+' UpdateInventory included by each specialized order
+UrgentOrder ..> UpdateInventory : <<include>>
+RegularOrder ..> UpdateInventory : <<include>>
+JointOrder ..> UpdateInventory : <<include>>
+
+' Include Record Customer Information and Assign Order to Employee when placing an order
+PlaceOrder ..> RecordCustomerInfo : <<include>>
+PlaceOrder ..> AssignOrderToEmployee : <<include>>
+@enduml

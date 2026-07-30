@@ -1,0 +1,54 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Client
+actor Administrator as Admin
+actor "Gate Sensor (GS)" as GS
+actor "Conveyors Controller (CC)" as CC
+actor "Integrated Rate Service (IRS)" as IRS
+actor "Payment Gateway (PG)" as PG
+
+rectangle "ParkWise System" {
+
+  ' ===== Client actions =====
+  Client -- (Start Parking Session)
+  Client -- (End Parking Session)
+  Client -- (Register to Client Club)
+  Client -- (View Parking Status)
+  Client -- (Request Receipt)
+
+  ' ===== Automated / system-driven =====
+  GS -- (Detect Vehicle Arrival)
+  GS -- (Open Barrier)
+
+  CC -- (Move Vehicle via Conveyor)
+
+  Admin -- (Manage Parking Lots)
+  Admin -- (Generate Annual Summary Report)
+  Admin -- (Generate Customer Club Growth Report)
+  Admin -- (Manage Price Lists)
+
+  ' ===== Included behavior =====
+  (Start Parking Session) .> (Identify Vehicle) : <<include>>
+  (Identify Vehicle) .> (Extract Vehicle Details) : <<include>>
+  (Move Vehicle via Conveyor) .> (Optimize Parking Space) : <<include>>
+
+  (End Parking Session) .> (Validate Client Identity) : <<include>>
+  (End Parking Session) .> (Process Payment) : <<include>>
+
+  ' ===== External services =====
+  (Manage Price Lists) .> IRS : <<external>>
+  (Process Payment) .> PG : <<external>>
+
+  ' ===== Conditional / extended behavior =====
+  (Manual Client Registration) ..> (Start Parking Session) : <<extend>>
+  (Manual Client Registration) ..> (Identify Vehicle) : <<extend>>
+
+  (Apply Club Discount) ..> (Process Payment) : <<extend>>
+  (Free First Club Session) ..> (Apply Club Discount) : <<extend>>
+
+  (Gate Failure Instructions) ..> (Open Barrier) : <<extend>>
+}
+
+@enduml
