@@ -456,14 +456,23 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
 
         if updated:
             self.refresh_all()
-            self.guidelines_updated.emit(self._data)
+            self._emit_guidelines_updated_deferred()
 
     def refresh_all(self) -> None:
         self.refresh_guidelines_table()
         self.refresh_segments_table()
 
     def refresh_guidelines_table(self) -> None:
-        """Refresh the guidelines table efficiently without repeated row insertion/repainting."""
+        """Refresh the guidelines table efficiently without repeated row insertion/repainting or losing selection/scroll."""
+        v_scroll = self.gl_table.verticalScrollBar().value()
+        h_scroll = self.gl_table.horizontalScrollBar().value()
+        selected_gid = None
+        curr_row = self.gl_table.currentRow()
+        if curr_row >= 0:
+            item_gid = self.gl_table.item(curr_row, 0)
+            if item_gid:
+                selected_gid = item_gid.text().strip()
+
         self.gl_table.setUpdatesEnabled(False)
         self.gl_table.blockSignals(True)
         try:
@@ -536,12 +545,12 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                     )
                     if s_name:
                         item_seg.setToolTip(
-                            f"[{seg}] {s_name}\\n"
+                            f"[{seg}] {s_name}\n"
                             "Click to navigate to Agent 1 and view segment mark."
                         )
                 elif seg:
                     item_seg.setToolTip(
-                        f"Template Segment {seg}\\n"
+                        f"Template Segment {seg}\n"
                         "Click to navigate to Agent 1 and view segment mark."
                     )
 
@@ -552,8 +561,16 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                 self.gl_table.setItem(row_idx, 2, item_seg)
                 self.gl_table.setItem(row_idx, 3, item_rat)
 
-            # Avoid expensive ResizeToContents on every refresh; the configured
-            # Stretch columns already provide a stable layout.
+            # Restore selection if row matching selected_gid exists
+            if selected_gid:
+                for r in range(self.gl_table.rowCount()):
+                    item = self.gl_table.item(r, 0)
+                    if item and item.text().strip() == selected_gid:
+                        self.gl_table.selectRow(r)
+                        break
+
+            self.gl_table.verticalScrollBar().setValue(v_scroll)
+            self.gl_table.horizontalScrollBar().setValue(h_scroll)
             self.gl_table.setUpdatesEnabled(True)
             self.gl_table.viewport().update()
         finally:
@@ -608,7 +625,16 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         self._update_timer.start(400)
 
     def refresh_segments_table(self) -> None:
-        """Refresh the segments table in one batch to keep the Qt event loop responsive."""
+        """Refresh the segments table in one batch to keep the Qt event loop responsive without losing scroll/selection."""
+        v_scroll = self.seg_table.verticalScrollBar().value()
+        h_scroll = self.seg_table.horizontalScrollBar().value()
+        selected_sid = None
+        curr_row = self.seg_table.currentRow()
+        if curr_row >= 0:
+            item_sid = self.seg_table.item(curr_row, 0)
+            if item_sid:
+                selected_sid = item_sid.text().strip()
+
         self.seg_table.setUpdatesEnabled(False)
         self.seg_table.blockSignals(True)
         try:
@@ -677,7 +703,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                 desc_body = str(g.get("description") or g.get("rule") or "")
                 citation = str(g.get("citation") or g.get("rationale") or "")
                 full_desc = (
-                    f"{desc_body}\\nCitation: {citation}"
+                    f"{desc_body}\nCitation: {citation}"
                     if citation
                     else desc_body
                 )
@@ -691,6 +717,15 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                 self.seg_table.setItem(row_idx, 1, QTableWidgetItem(name))
                 self.seg_table.setItem(row_idx, 2, QTableWidgetItem(desc))
 
+            if selected_sid:
+                for r in range(self.seg_table.rowCount()):
+                    item = self.seg_table.item(r, 0)
+                    if item and item.text().strip() == selected_sid:
+                        self.seg_table.selectRow(r)
+                        break
+
+            self.seg_table.verticalScrollBar().setValue(v_scroll)
+            self.seg_table.horizontalScrollBar().setValue(h_scroll)
             self.seg_table.setUpdatesEnabled(True)
             self.seg_table.viewport().update()
         finally:

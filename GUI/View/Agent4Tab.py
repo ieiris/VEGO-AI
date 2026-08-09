@@ -887,6 +887,11 @@ class PatternsResultPane(QWidget):
         if reference_guidelines:
             self._last_reference_guidelines = reference_guidelines
 
+        v_occ = self.occasional_scroll.verticalScrollBar().value()
+        v_sub = self.substantial_scroll.verticalScrollBar().value()
+        v_oth = self.other_scroll.verticalScrollBar().value()
+        cur_tab = self.tab_widget.currentIndex()
+
         self.clear()
 
         g_patterns = result.get("recurring_guideline_patterns", [])
@@ -934,6 +939,11 @@ class PatternsResultPane(QWidget):
 
         self._update_case_combo(all_cases)
         self._apply_filters()
+        if cur_tab >= 0 and cur_tab < self.tab_widget.count():
+            self.tab_widget.setCurrentIndex(cur_tab)
+        self.occasional_scroll.verticalScrollBar().setValue(v_occ)
+        self.substantial_scroll.verticalScrollBar().setValue(v_sub)
+        self.other_scroll.verticalScrollBar().setValue(v_oth)
 
     def show_classifications(
         self,
@@ -951,6 +961,11 @@ class PatternsResultPane(QWidget):
             reference_guidelines_obj = self._last_reference_guidelines
         else:
             self._last_reference_guidelines = reference_guidelines_obj
+
+        v_occ = self.occasional_scroll.verticalScrollBar().value()
+        v_sub = self.substantial_scroll.verticalScrollBar().value()
+        v_oth = self.other_scroll.verticalScrollBar().value()
+        cur_tab = self.tab_widget.currentIndex()
 
         self.clear()
 
@@ -1083,6 +1098,11 @@ class PatternsResultPane(QWidget):
         self._update_case_combo(all_cases)
         self._update_confidence_combo(all_confidences)
         self._apply_filters()
+        if cur_tab >= 0 and cur_tab < self.tab_widget.count():
+            self.tab_widget.setCurrentIndex(cur_tab)
+        self.occasional_scroll.verticalScrollBar().setValue(v_occ)
+        self.substantial_scroll.verticalScrollBar().setValue(v_sub)
+        self.other_scroll.verticalScrollBar().setValue(v_oth)
 
 
 class PatternsTab(QWidget):

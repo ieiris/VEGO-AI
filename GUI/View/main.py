@@ -581,11 +581,15 @@ class MainWindow(QMainWindow):
         self.theme_btn.setCursor(Qt.PointingHandCursor)
         self.theme_btn.clicked.connect(self._toggle_theme)
 
-        self.reload_btn = QPushButton("⚡ Auto-Reload Active")
+        self._auto_reload_enabled = False
+        self.reload_btn = QPushButton("⏸️ Auto-Reload Off")
         self.reload_btn.setFixedHeight(28)
-        self.reload_btn.setToolTip("Auto-reload is active: saving any .py code file automatically updates the UI!")
-        self.reload_btn.setStyleSheet("background: #1b5e20; color: #ffffff; font-weight: bold; border-radius: 4px;")
-        self.reload_btn.clicked.connect(self._restart_app)
+        self.reload_btn.setCheckable(True)
+        self.reload_btn.setChecked(False)
+        self.reload_btn.setCursor(Qt.PointingHandCursor)
+        self.reload_btn.setToolTip("Click to toggle automatic UI/code reloading on file changes (disabled by default to prevent constant UI refreshes).")
+        self.reload_btn.setStyleSheet("background: #4a4a6a; color: #ffffff; font-weight: bold; border-radius: 4px;")
+        self.reload_btn.toggled.connect(self._toggle_auto_reload)
 
         header_layout.addWidget(self.header_label, stretch=1)
         header_layout.addWidget(self.reload_btn)
@@ -794,18 +798,30 @@ class MainWindow(QMainWindow):
         self._json_loader.shutdown()
         super().closeEvent(event)
 
+    def _toggle_auto_reload(self, checked: bool) -> None:
+        self._auto_reload_enabled = checked
+        if checked:
+            self.reload_btn.setText("⚡ Auto-Reload Active")
+            self.reload_btn.setStyleSheet("background: #1b5e20; color: #ffffff; font-weight: bold; border-radius: 4px;")
+            self.statusBar().showMessage("Auto-reload enabled: file changes will update UI.", 3000)
+        else:
+            self.reload_btn.setText("⏸️ Auto-Reload Off")
+            self.reload_btn.setStyleSheet("background: #4a4a6a; color: #ffffff; font-weight: bold; border-radius: 4px;")
+            self.statusBar().showMessage("Auto-reload disabled: UI will not auto-refresh on file changes.", 3000)
+
     def _setup_code_watcher(self) -> None:
         self.code_watcher = QFileSystemWatcher(self)
         py_files = [str(p) for p in list(_VIEW_DIR.glob("*.py")) + list(_CONTROLLER_DIR.glob("*.py"))]
         if py_files:
             self.code_watcher.addPaths(py_files)
 
-
         self._reload_timer = QTimer(self)
         self._reload_timer.setSingleShot(True)
         self._reload_timer.timeout.connect(self._restart_app)
 
         def _on_file_changed(path: str):
+            if not getattr(self, "_auto_reload_enabled", False):
+                return
             if Path(path).exists():
                 try:
                     self.code_watcher.addPath(path)
@@ -855,10 +871,14 @@ class MainWindow(QMainWindow):
                     pass
 
     def _on_json_dir_changed(self, path: str) -> None:
+        if not getattr(self, "_auto_reload_enabled", False):
+            return
         self._watch_output_dir()
         self._json_sync_timer.start(500)
 
     def _on_json_file_changed(self, path: str) -> None:
+        if not getattr(self, "_auto_reload_enabled", False):
+            return
         if path.endswith(".json"):
             self._json_sync_timer.start(500)
 

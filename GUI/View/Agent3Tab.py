@@ -28,7 +28,7 @@ for _p in (_CONTROLLER_DIR, _MODEL_DIR):
 from agent_controllers import Agent3Controller
 
 
-from PySide6.QtCore import QByteArray, Qt, QThread, Signal
+from PySide6.QtCore import QByteArray, QTimer, Qt, QThread, Signal
 from PySide6.QtGui import QColor, QFont, QImage, QPixmap
 from PySide6.QtWidgets import (
     QComboBox,
@@ -244,10 +244,32 @@ class Agent3Tab(QWidget):
         # Tab 1: Code
         code_widget = QWidget()
         code_layout = QVBoxLayout(code_widget)
+
+        code_toolbar = QHBoxLayout()
+        btn_render_model = QPushButton("▶️ Render Diagram")
+        btn_save_model = QPushButton("💾 Save Model File")
+        self.model_status_label = QLabel("Live diagram update active")
+        self.model_status_label.setStyleSheet("color: #888888; font-size: 11px;")
+
+        btn_render_model.clicked.connect(self._manual_render_model)
+        btn_save_model.clicked.connect(self._save_model_file)
+
+        code_toolbar.addWidget(btn_render_model)
+        code_toolbar.addWidget(btn_save_model)
+        code_toolbar.addStretch(1)
+        code_toolbar.addWidget(self.model_status_label)
+        code_layout.addLayout(code_toolbar)
+
         self.model_text_edit = QPlainTextEdit()
         self.model_text_edit.setFont(QFont("Consolas", 11))
         code_layout.addWidget(self.model_text_edit)
         self.left_tabs.addTab(code_widget, "📄 Model Code (PlantUML / TXT)")
+
+        self._model_text_debounce_timer = QTimer(self)
+        self._model_text_debounce_timer.setSingleShot(True)
+        self._model_text_debounce_timer.setInterval(800)
+        self._model_text_debounce_timer.timeout.connect(self._on_model_text_user_edited)
+        self.model_text_edit.textChanged.connect(self._model_text_debounce_timer.start)
 
         # Tab 2: Diagram
         diag_widget = QWidget()
@@ -536,6 +558,43 @@ class Agent3Tab(QWidget):
         except Exception:
             self.reference_guidelines_map = {}
 
+    # ── Model Code Editing & Rendering Handlers ──
+
+    def _on_model_text_user_edited(self) -> None:
+        """Auto-render diagram when model text is edited by the user."""
+        text = self.model_text_edit.toPlainText().strip()
+        if text:
+            self._render_diagram(text)
+            self.model_status_label.setText("Diagram updated from edited code.")
+
+    def _manual_render_model(self) -> None:
+        """Manually trigger diagram render and switch to Diagram tab."""
+        text = self.model_text_edit.toPlainText().strip()
+        if text:
+            self._render_diagram(text)
+            self.left_tabs.setCurrentIndex(1)
+            self.model_status_label.setText("Diagram rendering triggered.")
+
+    def _save_model_file(self) -> None:
+        """Save edited model code back to the model file on disk."""
+        model_name = self.model_combo.currentText().strip()
+        m_dir = self.models_dir_edit.text().strip()
+        if not model_name or not m_dir:
+            QMessageBox.warning(self, "Missing Information", "No model or models directory selected.")
+            return
+        m_path = Path(m_dir) / model_name
+        if not m_path.exists():
+            candidates = list(Path(m_dir).glob(f"{model_name}*"))
+            if candidates:
+                m_path = candidates[0]
+        try:
+            m_path.write_text(self.model_text_edit.toPlainText(), encoding="utf-8")
+            QMessageBox.information(self, "Saved", f"Model file saved successfully to {m_path.name}.")
+            log_action("Agent3", "save_model_file", f"file={m_path.name}")
+            self.model_status_label.setText(f"Saved to {m_path.name}.")
+        except Exception as exc:
+            QMessageBox.critical(self, "Save Error", f"Failed to save model file: {exc}")
+
     # ── Selection Event Handlers ──
 
     def _on_model_selected(self, model_name: str) -> None:
@@ -554,10 +613,14 @@ class Agent3Tab(QWidget):
         if m_path.exists() and m_path.is_file():
             try:
                 content = m_path.read_text(encoding="utf-8")
+                self.model_text_edit.blockSignals(True)
                 self.model_text_edit.setPlainText(content)
+                self.model_text_edit.blockSignals(False)
                 self._render_diagram(content)
             except Exception as exc:
+                self.model_text_edit.blockSignals(True)
                 self.model_text_edit.setPlainText(f"Error reading model file: {exc}")
+                self.model_text_edit.blockSignals(False)
 
     def _on_aggregate_selected(self, agg_name: str) -> None:
         if not agg_name:
