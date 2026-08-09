@@ -1,0 +1,9 @@
+output
+__pycache__
+logs
+Cases
+dist
+build
+VEGO-AI-GUI.spec
+pysidedeploy.spec
+deployment
