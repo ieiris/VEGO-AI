@@ -1398,6 +1398,7 @@ class Agent4Tab(QWidget):
 
     classifications_updated = Signal(dict)
     navigate_to_case = Signal(str)   # emits case_id → main.py switches to Agent3Tab
+    navigate_to_guideline = Signal(str)   # emits guideline_id → main.py switches to Agent2Tab
 
     def __init__(self, config_panel: ConfigPanel, parent=None):
         super().__init__(parent)
@@ -1424,6 +1425,7 @@ class Agent4Tab(QWidget):
 
         self.patterns_tab.patterns_ready.connect(self._on_patterns_ready)
         self.patterns_tab.patterns_result_pane.case_link_clicked.connect(self.navigate_to_case)
+        self.patterns_tab.patterns_result_pane.guideline_link_clicked.connect(self.navigate_to_guideline)
 
     def _on_patterns_ready(self, result: dict) -> None:
         n_g = len(result.get("recurring_guideline_patterns", []))

@@ -372,6 +372,55 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         except Exception as exc:
             QMessageBox.critical(self, "Load Error", f"Failed to load file: {exc}")
 
+    def clear_mark_highlight(self) -> None:
+        """Reset any temporary background mark highlights on guidelines table rows."""
+        from PySide6.QtGui import QBrush
+        self.gl_table.blockSignals(True)
+        for row in range(self.gl_table.rowCount()):
+            for col in range(self.gl_table.columnCount()):
+                cell = self.gl_table.item(row, col)
+                if cell:
+                    cell.setBackground(QBrush())
+        self.gl_table.blockSignals(False)
+
+    def select_guideline(self, gid: str) -> None:
+        """Select, scroll to, and visually highlight a guideline row by ID in Agent 2."""
+        if not gid:
+            return
+        self.clear_mark_highlight()
+        target_row = -1
+        clean_gid = gid.strip().lower()
+
+        for r in range(self.gl_table.rowCount()):
+            cell = self.gl_table.item(r, 0)
+            if cell:
+                c_text = cell.text().strip().lower()
+                if (
+                    c_text == clean_gid
+                    or c_text == f"g_{clean_gid}"
+                    or c_text == f"g{clean_gid}"
+                    or c_text.replace("_", "") == clean_gid.replace("_", "")
+                    or (clean_gid.startswith("g") and c_text == clean_gid[1:])
+                    or (c_text.startswith("g") and clean_gid == c_text[1:])
+                ):
+                    target_row = r
+                    break
+
+        if target_row >= 0 and target_row < self.gl_table.rowCount():
+            self.gl_table.blockSignals(True)
+            self.gl_table.clearSelection()
+            self.gl_table.selectRow(target_row)
+            item = self.gl_table.item(target_row, 0)
+            if item:
+                self.gl_table.scrollToItem(item, QAbstractItemView.PositionAtCenter)
+            mark_color = QColor("#FFF59D")
+            for col in range(self.gl_table.columnCount()):
+                cell = self.gl_table.item(target_row, col)
+                if cell:
+                    cell.setBackground(mark_color)
+            self.gl_table.blockSignals(False)
+            QTimer.singleShot(2500, self.clear_mark_highlight)
+
     def _on_save_clicked(self) -> None:
         log_action("Agent2", "save_guidelines", f"guidelines_count={len((self._data.get('reference_guidelines') or []))}")
         self.save_requested.emit(self._data)
@@ -1383,3 +1432,7 @@ class Agent2Tab(QWidget):
 
     def receive_language_template(self, template: dict) -> None:
         self.guidelines_editor.receive_language_template(template)
+
+    def select_guideline(self, gid: str) -> None:
+        if hasattr(self, "guidelines_editor"):
+            self.guidelines_editor.select_guideline(gid)

@@ -218,9 +218,31 @@ class TemplateEditorWidget(QGroupBox):
         self.template_updated.emit(self._template)
         QMessageBox.information(self, "Saved", "Language template successfully saved to JSON files on disk.")
 
-    def load_template(self, template: dict) -> None:
+    def load_template(self, template: dict | str | list) -> None:
+        """Load Language Template from dict, JSON string, or list and automatically refresh table."""
+        if isinstance(template, str):
+            try:
+                template = json.loads(template)
+            except Exception:
+                template = {}
+        if isinstance(template, list):
+            template = {"guidelines": template}
         self._template = template if isinstance(template, dict) else {}
         self.refresh_table()
+
+    def _get_guidelines_list(self) -> list[dict]:
+        if not isinstance(self._template, dict):
+            return []
+        guidelines = (
+            self._template.get("guidelines")
+            or self._template.get("template_guidelines")
+            or self._template.get("reference_guidelines")
+            or self._template.get("segments")
+            or []
+        )
+        if isinstance(guidelines, list):
+            return [g for g in guidelines if isinstance(g, dict)]
+        return []
 
     def _get_guideline_by_row(self, row: int) -> tuple[int, dict | None]:
         if row < 0 or row >= self.table.rowCount():
@@ -229,42 +251,60 @@ class TemplateEditorWidget(QGroupBox):
         if not id_item:
             return -1, None
         target_gid = str(id_item.data(Qt.UserRole) or id_item.text().strip())
-        guidelines = self._template.get("guidelines", [])
-        if isinstance(guidelines, list):
-            for idx, g in enumerate(guidelines):
-                if isinstance(g, dict):
-                    gid = str(g.get("id") or g.get("guideline_id") or "")
-                    if gid == target_gid:
-                        return idx, g
+        guidelines = self._get_guidelines_list()
+        for idx, g in enumerate(guidelines):
+            gid = str(g.get("id") or g.get("guideline_id") or g.get("segment_id") or "")
+            if gid == target_gid:
+                return idx, g
         return -1, None
 
     def refresh_table(self) -> None:
+        """Automatically refresh table according to current JSON structure while preserving scroll & selection."""
+        v_scroll = self.table.verticalScrollBar().value()
+        h_scroll = self.table.horizontalScrollBar().value()
+        selected_gid = None
+        curr_row = self.table.currentRow()
+        if curr_row >= 0:
+            item_gid = self.table.item(curr_row, 0)
+            if item_gid:
+                selected_gid = item_gid.text().strip()
+
         self.table.setSortingEnabled(False)
         self.table.blockSignals(True)
-        guidelines = self._template.get("guidelines", []) or []
-        self.table.setRowCount(0)
-        for row_idx, g in enumerate(guidelines):
-            if not isinstance(g, dict):
-                continue
-            self.table.insertRow(row_idx)
-            gid = str(g.get("id", f"T{row_idx+1}"))
-            short_name = str(g.get("short_name") or g.get("construct_type") or "")
-            desc = str(g.get("fragment_description") or g.get("description") or "")
-            constructs = str(g.get("involved_constructs") or g.get("formal_definition") or "")
+        try:
+            guidelines = self._get_guidelines_list()
+            self.table.setRowCount(0)
+            for row_idx, g in enumerate(guidelines):
+                gid = str(g.get("id") or g.get("guideline_id") or g.get("segment_id") or f"T{row_idx+1}")
+                short_name = str(g.get("short_name") or g.get("construct_type") or g.get("name") or g.get("title") or "")
+                desc = str(g.get("fragment_description") or g.get("description") or g.get("rule_description") or g.get("text") or g.get("rule") or "")
+                constructs = str(g.get("involved_constructs") or g.get("formal_definition") or g.get("constructs") or "")
 
-            item_id = QTableWidgetItem(gid)
-            item_id.setData(Qt.UserRole, gid)
-            item_desc = QTableWidgetItem(desc)
-            item_desc.setToolTip(desc)
-            item_c = QTableWidgetItem(constructs)
-            item_c.setToolTip(constructs)
+                item_id = QTableWidgetItem(gid)
+                item_id.setData(Qt.UserRole, gid)
+                item_desc = QTableWidgetItem(desc)
+                item_desc.setToolTip(desc)
+                item_c = QTableWidgetItem(constructs)
+                item_c.setToolTip(constructs)
 
-            self.table.setItem(row_idx, 0, item_id)
-            self.table.setItem(row_idx, 1, QTableWidgetItem(short_name))
-            self.table.setItem(row_idx, 2, item_desc)
-            self.table.setItem(row_idx, 3, item_c)
-        self.table.blockSignals(False)
-        self.table.setSortingEnabled(True)
+                self.table.insertRow(row_idx)
+                self.table.setItem(row_idx, 0, item_id)
+                self.table.setItem(row_idx, 1, QTableWidgetItem(short_name))
+                self.table.setItem(row_idx, 2, item_desc)
+                self.table.setItem(row_idx, 3, item_c)
+
+            if selected_gid:
+                for r in range(self.table.rowCount()):
+                    item = self.table.item(r, 0)
+                    if item and item.text().strip() == selected_gid:
+                        self.table.selectRow(r)
+                        break
+
+            self.table.verticalScrollBar().setValue(v_scroll)
+            self.table.horizontalScrollBar().setValue(h_scroll)
+        finally:
+            self.table.blockSignals(False)
+            self.table.setSortingEnabled(True)
 
     def _on_table_item_changed(self, item: QTableWidgetItem) -> None:
         if self.table.signalsBlocked():
@@ -279,16 +319,20 @@ class TemplateEditorWidget(QGroupBox):
 
         if col == 0:
             g["id"] = text
+            g["guideline_id"] = text
             item.setData(Qt.UserRole, text)
         elif col == 1:
             g["short_name"] = text
             g["construct_type"] = text
+            g["name"] = text
         elif col == 2:
             g["fragment_description"] = text
             g["description"] = text
+            g["text"] = text
         elif col == 3:
             g["involved_constructs"] = text
             g["formal_definition"] = text
+            g["constructs"] = text
 
         self.template_updated.emit(self._template)
 

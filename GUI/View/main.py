@@ -73,7 +73,7 @@ from PySide6.QtWidgets import (
 
 
 APP_TITLE   = "VEGO-AI Pipeline GUI"
-APP_VERSION = "2.1"
+APP_VERSION = "2.1.1"
 APP_USER_MODEL_ID = "VEGOAI.PipelineGUI"
 
 
@@ -680,6 +680,7 @@ class MainWindow(QMainWindow):
         # Agent 4 patterns_ready is wired inside Agent4Tab.__init__
         self.agent4_tab.classifications_updated.connect(self._on_classifications_updated)
         self.agent4_tab.navigate_to_case.connect(self._navigate_to_agent3_case)
+        self.agent4_tab.navigate_to_guideline.connect(self._navigate_to_agent2_guideline)
         self.agent2_tab.navigate_to_template_segment.connect(self._navigate_to_agent1_segment)
 
         # Human Involvement save and continue pipeline signal connections
@@ -967,6 +968,16 @@ class MainWindow(QMainWindow):
         idx = self._agent_tab_index.get("agent1", 1)
         self.tabs.setCurrentIndex(idx)
         self.agent1_tab.select_guideline(seg_id)
+
+    def _navigate_to_agent2_guideline(self, gid: str) -> None:
+        """Switch to Agent 2 tab and highlight/select the target domain guideline by ID."""
+        if not gid:
+            return
+        log_action("App", "navigate_to_agent2_guideline", f"guideline={gid}")
+        idx = self._agent_tab_index.get("agent2", 2)
+        self.tabs.setCurrentIndex(idx)
+        if hasattr(self.agent2_tab, "select_guideline"):
+            self.agent2_tab.select_guideline(gid)
 
     # ------------------------------------------------------------------
     # Live agent-status updates during an orchestrator run
