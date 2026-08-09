@@ -6,7 +6,7 @@
 
 ## Structure
 
-Six folders:
+Seven folders:
 
 ```
 ├── analysis/       # Analyzed results by the experts, for Phases B to D
@@ -15,4 +15,5 @@ Six folders:
 ├── framework/      # Source code for the multi-agent pipeline (orchestrator and agents); Read the Readme for execution
 ├── inputs/         # Domain descriptions, language and domain bases, and scoring schema (ch, pw)
 └── models/         # Case models, organized by experimental condition (CD_Ch, CD_PW, UCD_Ch, UCD_PW)
+└── GUI /           # Graphic user interface for the multi-agent pipeline (orchestrator and agents)
 ```
