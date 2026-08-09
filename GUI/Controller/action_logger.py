@@ -52,14 +52,14 @@ def _get_logger() -> logging.Logger:
 
 
 def set_log_output_dir(dir_path: str | Path) -> None:
-    """Dynamically direct or add action log outputs into the specified output directory.
+    """Direct action log output to a single log file inside the specified output directory.
 
     Parameters
     ----------
     dir_path : str | Path
         The target output folder (e.g. "output/gui_run" or "output").
     """
-    global _logger
+    global _logger, _active_handler_paths
     if _logger is None:
         _logger = logging.getLogger(_LOGGER_NAME)
         _logger.setLevel(logging.INFO)
@@ -71,23 +71,26 @@ def set_log_output_dir(dir_path: str | Path) -> None:
     except OSError:
         return
 
-    # Standard log file inside the output directory
-    today = datetime.now().strftime("%Y-%m-%d")
-    log_file = out_dir / f"user_actions_{today}.log"
     main_file = out_dir / "user_actions.log"
+    str_path = str(main_file)
 
-    for target_path in (log_file, main_file):
-        str_path = str(target_path)
-        if str_path not in _active_handler_paths:
-            try:
-                handler = logging.FileHandler(target_path, encoding="utf-8")
-                handler.setFormatter(logging.Formatter("%(message)s"))
-                _logger.addHandler(handler)
-                _active_handler_paths.add(str_path)
-            except OSError:
-                pass
+    if str_path in _active_handler_paths and len(_logger.handlers) == 1:
+        return
 
-    _cleanup_old_logs(out_dir)
+    # Close and remove previous file handlers so we only log to ONE file
+    for handler in list(_logger.handlers):
+        if isinstance(handler, logging.FileHandler):
+            handler.close()
+            _logger.removeHandler(handler)
+    _active_handler_paths.clear()
+
+    try:
+        handler = logging.FileHandler(main_file, encoding="utf-8")
+        handler.setFormatter(logging.Formatter("%(message)s"))
+        _logger.addHandler(handler)
+        _active_handler_paths.add(str_path)
+    except OSError:
+        pass
 
 
 def _cleanup_old_logs(out_dir: Path) -> None:
