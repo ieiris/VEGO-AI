@@ -6,7 +6,7 @@ A PySide6 desktop application for the **VEGO-AI Multi-Agent Pipeline**, structur
 
 ## 🏗️ Project Architecture (MVC)
 
-The GUI codebase is organized into three distinct subdirectories:
+The GUI codebase is organized into distinct subdirectories:
 
 ```
 GUI/
@@ -14,8 +14,9 @@ GUI/
 │   ├── state.py                ← PipelineState snapshot store
 │   └── qa_registry.py           ← Thread-safe Q&A ID allocation registry
 │
-├── Controller/                 ← Business Logic & Agent Execution
-│   ├── agent_controllers.py    ← Unified Controller Facades (Agent1..4, Orchestrator, Config)
+├── Controller/                 ← Business Logic, Data Services & Controllers
+│   ├── main_controller.py      ← Main App Controller, AsyncJsonLoader & StatePersister
+│   ├── agent_controllers.py    ← Unified Controller Facades (MainController, Agent1..4, Orchestrator, Config)
 │   ├── orchestrator.py         ← End-to-end pipeline runner
 │   ├── agent1_language_advisor.py
 │   ├── agent2_domain_advisor.py
@@ -23,18 +24,22 @@ GUI/
 │   ├── agent4_variability_explorer.py
 │   ├── llm_client.py           ← Async LLM API client wrapper
 │   ├── prompt_loader.py        ← XML prompt template loader & formatter
-│   ├── action_logger.py        ← User action logger (writes to Controller/logs/)
+│   ├── action_logger.py        ← User action logger (writes to output folder)
 │   ├── run_config.json         ← Canonical execution configuration
 │   └── requirements.txt        ← Backend dependencies
 │
-└── View/                       ← User Interface Layer (PySide6)
-    ├── main.py                 ← Master window, theme engine, module loader
-    ├── OrchestratorTab.py      ← Tab 0: End-to-end pipeline launcher & live log stream
-    ├── Agent1Tab.py            ← Tab 1: Language Advisor (template builder & Q&A)
-    ├── Agent2Tab.py            ← Tab 2: Domain Advisor (guidelines builder & Q&A)
-    ├── Agent3Tab.py            ← Tab 3: Compliance Viewer & Human Involvement Editor
-    ├── Agent4Tab.py            ← Tab 4: Variability Explorer (probes, patterns, classify)
-    └── GUI_Common.py           ← Reusable UI controls (OutputPane, LabeledTextBox, LLMWorker)
+├── View/                       ← User Interface Layer (PySide6)
+│   ├── main.py                 ← Master window UI, theme engine, module loader
+│   ├── OrchestratorTab.py      ← Tab 0: End-to-end pipeline launcher & live log stream
+│   ├── Agent1Tab.py            ← Tab 1: Language Advisor (template builder & Q&A)
+│   ├── Agent2Tab.py            ← Tab 2: Domain Advisor (guidelines builder & Q&A)
+│   ├── Agent3Tab.py            ← Tab 3: Compliance Viewer & Human Involvement Editor
+│   ├── Agent4Tab.py            ← Tab 4: Variability Explorer (probes, patterns, classify)
+│   └── GUI_Common.py           ← Reusable UI controls (OutputPane, LabeledTextBox, LLMWorker)
+│
+└── output/                     ← Run Outputs & Action Logs
+    ├── gui_run/                ← Generated JSON outputs & pipeline state
+    └── user_actions.log        ← Pipe-delimited user action log with UI parameters
 ```
 
 ---
@@ -46,7 +51,7 @@ GUI/
 Ensure you have **Python 3.9+** (3.11+ recommended) installed.
 
 ```bash
-# Clone repository and navigate to GUI
+# Navigate to GUI directory
 cd GUI
 
 # Install dependencies
@@ -107,13 +112,13 @@ python -m View.main
 
 The application settings live in `Controller/run_config.json`. Key parameters include:
 
-- `"model"`: Model ID (e.g. `gpt-5.6`, `gpt-5-mini`).
+- `"model"`: Model ID (e.g. `gpt-4o`, `gpt-4o-mini`).
 - `"max_concurrent_cases"`: Maximum parallel threads for inspecting case models.
-- `"model_dirs"`: Dataset case paths for evaluation scenarios.
+- `"case_models_dir"`: Dataset case paths for evaluation scenarios.
 - `"output_dir"`: Default target folder for pipeline run output files.
 
 ---
 
 ## 📝 User Action Logging
 
-Every user interaction (button clicks, LLM prompt executions, file loads, and tab switches) is recorded pipe-delimited in daily log files located under `Controller/logs/user_actions_YYYY-MM-DD.log`.
+Every user interaction (button clicks, LLM prompt executions, file loads, pipeline runs, and tab switches) is recorded in pipe-delimited format inside the active `output/` folder (e.g. `output/user_actions.log` or `output/gui_run/user_actions.log`). Log entries capture all active UI configuration parameters (`output_dir`, `case_models_dir`, `language_name`, `domain_identifier`, `domain_description`, `model`, `base_url`, `min_recurrence_threshold`, `max_concurrent_cases`, `target_agent`).
