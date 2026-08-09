@@ -9,12 +9,29 @@ parses that file once and hands back a string.Template per prompt name, ready fo
 
 from __future__ import annotations
 
+import sys
 import xml.etree.ElementTree as ET
 from functools import lru_cache
 from pathlib import Path
 from string import Template
 
-_PROMPTS_PATH = Path(__file__).parent / "prompts.xml"
+def _resolve_prompts_path() -> Path:
+    candidates = [
+        Path(__file__).parent / "prompts.xml",
+        Path(__file__).parent / "Controller" / "prompts.xml",
+    ]
+    if hasattr(sys, "_MEIPASS"):
+        meipass = Path(sys._MEIPASS)
+        candidates.extend([
+            meipass / "Controller" / "prompts.xml",
+            meipass / "prompts.xml",
+        ])
+    for cand in candidates:
+        if cand.exists():
+            return cand
+    return candidates[0]
+
+_PROMPTS_PATH = _resolve_prompts_path()
 
 
 @lru_cache(maxsize=None)
