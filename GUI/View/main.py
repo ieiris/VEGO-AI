@@ -43,6 +43,7 @@ for _p in (_VIEW_DIR, _CONTROLLER_DIR, _MODEL_DIR):
         sys.path.insert(0, str(_p))
 
 from main_controller import MainController, AsyncJsonLoader, StatePersister
+from action_logger import log_action, set_log_output_dir
 
 
 
@@ -716,6 +717,7 @@ class MainWindow(QMainWindow):
         window while it's first shown."""
         output_dir = self.orchestrator_tab.output_dir.text().strip() or "output/gui_run"
         out_path = Path(output_dir)
+        set_log_output_dir(output_dir)
 
         # Keep the saved folders visible immediately — no file I/O needed.
         self.agent3_tab.output_dir_edit.setText(output_dir)

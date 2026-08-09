@@ -37,7 +37,7 @@ for _p in (_CONTROLLER_DIR, _MODEL_DIR):
 
 from agent_controllers import OrchestratorController
 from GUI_Common import ConfigPanel, LabeledTextBox, OutputPane
-from action_logger import log_action
+from action_logger import log_action, set_log_output_dir
 
 
 
@@ -345,11 +345,12 @@ class OrchestratorTab(QWidget):
         root_logger.addHandler(self._log_handler)
 
         config_path = Path.cwd() / "gui_run_config.json"  # only used to resolve relative paths
+        set_log_output_dir(output_dir)
+        log_action("Orchestrator", "pipeline_start", details=f"output_dir={output_dir}", params=cfg)
         self.worker = OrchestratorWorker(cfg, config_path, setting_id="gui_run")
         self.worker.succeeded.connect(self._on_success)
         self.worker.failed.connect(self._on_error)
         self.worker.start()
-        log_action("Orchestrator", "pipeline_start", f"target={target_agent}, language={name}, domain={cfg.get('domain_identifier','')}, output={output_dir}, model={cfg.get('model','')}")
 
     def _stop_pipeline(self) -> None:
         """Terminate the background pipeline worker thread."""
