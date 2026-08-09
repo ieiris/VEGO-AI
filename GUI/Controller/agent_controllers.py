@@ -29,6 +29,7 @@ import agent2_domain_advisor as a2
 import agent3_model_inspector as a3
 import agent4_variability_explorer as a4
 import orchestrator as orch
+from main_controller import MainController, AsyncJsonLoader, StatePersister
 
 
 class ConfigController:

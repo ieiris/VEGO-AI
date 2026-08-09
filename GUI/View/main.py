@@ -42,6 +42,8 @@ for _p in (_VIEW_DIR, _CONTROLLER_DIR, _MODEL_DIR):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
+from main_controller import MainController, AsyncJsonLoader, StatePersister
+
 
 
 # ---------------------------------------------------------------------------
@@ -78,105 +80,6 @@ def _asset_path(filename: str) -> Path:
     """Locate an asset both in development and in a PyInstaller bundle."""
     asset_root = Path(getattr(sys, "_MEIPASS", _VIEW_DIR.parent))
     return asset_root / "Assets" / filename
-
-
-import threading
-from concurrent.futures import ThreadPoolExecutor
-
-
-class _AsyncJsonLoader(QObject):
-    """Reads batches of JSON files off the GUI thread using a small pool of
-    worker threads, then delivers the results back on the GUI thread via a
-    Qt signal.
-
-    This object is created once (owned by MainWindow) and lives on the GUI
-    thread. Qt automatically marshals ``_result_ready.emit(...)`` calls made
-    from a worker thread into a queued delivery on the receiver's thread —
-    so ``callback`` below always runs safely on the GUI thread, even though
-    the actual file reads happen elsewhere. That's what keeps window
-    dragging, typing, and tab switches smooth even when the output folder
-    is large or sits on a slow/network drive.
-    """
-
-    _result_ready = Signal(object, dict)
-
-    def __init__(self, parent=None, max_workers: int = 2) -> None:
-        super().__init__(parent)
-        self._executor = ThreadPoolExecutor(
-            max_workers=max_workers, thread_name_prefix="json-load"
-        )
-        self._result_ready.connect(self._deliver)
-
-    def load(self, out_path: Path, filenames: list[str], callback) -> None:
-        """Read `filenames` under `out_path` in the background, then call
-        `callback(results)` — a dict of {filename: parsed_json_or_None} —
-        back on the GUI thread."""
-        self._executor.submit(self._read_files, out_path, list(filenames), callback)
-
-    def _read_files(self, out_path: Path, filenames: list[str], callback) -> None:
-        # Runs on a worker thread — must not touch any widgets.
-        import json
-
-        results: dict[str, object] = {}
-        for filename in filenames:
-            path = out_path / filename
-            data = None
-            if path.exists():
-                try:
-                    data = json.loads(path.read_text(encoding="utf-8"))
-                except (OSError, json.JSONDecodeError):
-                    data = None
-            results[filename] = data
-        self._result_ready.emit(callback, results)
-
-    def _deliver(self, callback, results: dict) -> None:
-        # Runs on the GUI thread (this object's home thread).
-        callback(results)
-
-    def shutdown(self) -> None:
-        self._executor.shutdown(wait=False)
-
-
-class _StatePersister:
-    """Coalesces reference-guideline / template JSON writes onto a
-    background thread so rapid edits in the GUI (typing in a table cell,
-    adding/deleting guidelines, merging variability classifications, etc.)
-    never block the GUI thread on disk I/O.
-
-    Jobs are keyed (e.g. "guidelines", "template"). Submitting a new job
-    under a key that's still waiting simply replaces it — only the most
-    recent edit needs to actually hit disk, so a burst of edits results in
-    exactly one write, not N.
-    """
-
-    def __init__(self) -> None:
-        self._lock = threading.Lock()
-        self._pending: dict[str, "callable"] = {}
-        self._wake = threading.Event()
-        self._thread = Thread(target=self._run, daemon=True)
-        self._thread.start()
-
-    def submit(self, key: str, job) -> None:
-        with self._lock:
-            self._pending[key] = job
-        self._wake.set()
-
-    def _run(self) -> None:
-        while True:
-            self._wake.wait()
-            with self._lock:
-                jobs = list(self._pending.values())
-                self._pending.clear()
-                self._wake.clear()
-            for job in jobs:
-                try:
-                    job()
-                except Exception:
-                    # Persistence is best-effort; a bad write must never
-                    # take down the background thread or the app.
-                    pass
-
-
 # ---------------------------------------------------------------------------
 # Dark-mode and Light-mode palettes
 # ---------------------------------------------------------------------------
@@ -711,8 +614,8 @@ class MainWindow(QMainWindow):
         self.agent1_tab = Agent1Tab(self.config_panel)
         self._report_startup_progress(96, "Building Agent 2...")
         self.agent2_tab = Agent2Tab(self.config_panel)
-        self._state_persister = _StatePersister()
-        self._json_loader = _AsyncJsonLoader(self)
+        self._state_persister = StatePersister()
+        self._json_loader = AsyncJsonLoader(self)
         self._report_startup_progress(97, "Building Compliance Viewer...")
         self.agent3_tab = Agent3Tab()
         self._report_startup_progress(98, "Building Variability Explorer...")
@@ -820,13 +723,7 @@ class MainWindow(QMainWindow):
         self.agent3_tab.models_dir_edit.setText(case_models_dir)
         self.statusBar().showMessage("Loading saved template & guidelines…")
 
-        filenames = [
-            "language_template.json",
-            "reference_guidelines.json",
-            "lang_qa_history.json",
-            "dom_qa_history.json",
-        ]
-        self._json_loader.load(out_path, filenames, self._on_initial_metadata_loaded)
+        MainController.load_initial_metadata(out_path, self._json_loader, self._on_initial_metadata_loaded)
 
     def _on_initial_metadata_loaded(self, results: dict) -> None:
         """Runs on the GUI thread once the background read finishes — safe
@@ -978,73 +875,21 @@ class MainWindow(QMainWindow):
         return dirs
 
     def _on_human_template_edited(self, template_dict: dict) -> None:
-        """Persist human template edits to pipeline_state.json & language_template.json
-        and unmark downstream phases. The disk write happens on a background
-        thread so editing the template never blocks the GUI."""
-        import json
-
-        formatted_json = json.dumps(template_dict, indent=2, ensure_ascii=False)
-
-        # Cheap, in-memory UI sync — keep this synchronous, it's just a text set.
+        """Persist human template edits via MainController and update UI views."""
+        formatted_json = MainController.save_human_template(
+            self._get_target_output_dirs(), template_dict, self._state_persister
+        )
+        # Cheap, in-memory UI sync
         self.agent2_tab.build_tab.receive_language_template(template_dict)
         self.agent4_tab.probe_tab.language_template.set(formatted_json)
 
-        target_dirs = self._get_target_output_dirs()
-
-        def _write_job() -> None:
-            for output_dir in target_dirs:
-                output_dir.mkdir(parents=True, exist_ok=True)
-                tmpl_file = output_dir / "language_template.json"
-                state_file = output_dir / "pipeline_state.json"
-                try:
-                    tmpl_file.write_text(formatted_json, encoding="utf-8")
-                    state = {}
-                    if state_file.exists():
-                        state = json.loads(state_file.read_text(encoding="utf-8"))
-                    state["language_template"] = template_dict
-                    completed = state.get("completed_phases", [])
-                    state["completed_phases"] = [p for p in completed if p in ("phase1",)]
-                    state_file.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
-                except OSError:
-                    pass
-
-        self._state_persister.submit("template", _write_job)
-        log_action("App", "template_save", f"guidelines_count={len(template_dict.get('guidelines', []))}")
-
-
     def _on_human_guidelines_edited(self, guidelines_dict: dict) -> None:
-        """Persist human reference-guideline edits to pipeline_state.json &
-        reference_guidelines.json and unmark downstream phases. The disk write
-        happens on a background thread so editing guidelines never blocks the GUI."""
-        import json
-
-        formatted_json = json.dumps(guidelines_dict, indent=2, ensure_ascii=False)
-
-        # Cheap, in-memory UI sync — keep this synchronous, it's just a text set.
+        """Persist human reference-guideline edits via MainController and update UI views."""
+        formatted_json = MainController.save_human_guidelines(
+            self._get_target_output_dirs(), guidelines_dict, self._state_persister
+        )
+        # Cheap, in-memory UI sync
         self.agent4_tab.probe_tab.reference_guidelines.set(formatted_json)
-
-        target_dirs = self._get_target_output_dirs()
-
-        def _write_job() -> None:
-            for output_dir in target_dirs:
-                output_dir.mkdir(parents=True, exist_ok=True)
-                gl_file = output_dir / "reference_guidelines.json"
-                state_file = output_dir / "pipeline_state.json"
-                try:
-                    gl_file.write_text(formatted_json, encoding="utf-8")
-                    state = {}
-                    if state_file.exists():
-                        state = json.loads(state_file.read_text(encoding="utf-8"))
-                    state["reference_guidelines"] = guidelines_dict
-                    completed = state.get("completed_phases", [])
-                    state["completed_phases"] = [p for p in completed if p in ("phase1", "phase2")]
-                    state_file.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
-                except OSError:
-                    pass
-
-        self._state_persister.submit("guidelines", _write_job)
-        gl_list = guidelines_dict.get("reference_guidelines") or guidelines_dict.get("guidelines") or []
-        log_action("App", "guidelines_save", f"guidelines_count={len(gl_list)}")
 
     def _on_classifications_updated(self, cl: dict) -> None:
         """Sync classification updates to Agent 2 and save updated guidelines to pipeline_state.json."""
@@ -1054,22 +899,8 @@ class MainWindow(QMainWindow):
                 self._on_human_guidelines_edited(self.agent2_tab.guidelines_editor._data)
 
     def _on_human_evaluation_edited(self, case_id: str, cv_map: dict, uf_map: dict) -> None:
-        """Persist human evaluation edits to pipeline_state.json and unmark Phase 4."""
-        import json
-        from pathlib import Path
-
-        for output_dir in self._get_target_output_dirs():
-            output_dir.mkdir(parents=True, exist_ok=True)
-            state_file = output_dir / "pipeline_state.json"
-            try:
-                state = {}
-                if state_file.exists():
-                    state = json.loads(state_file.read_text(encoding="utf-8"))
-                completed = state.get("completed_phases", [])
-                state["completed_phases"] = [p for p in completed if p in ("phase1", "phase2", "phase3")]
-                state_file.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
-            except OSError:
-                pass
+        """Persist human evaluation edits via MainController."""
+        MainController.save_human_evaluation(self._get_target_output_dirs(), case_id)
 
     def _continue_pipeline(self) -> None:
         """Switch to Orchestrator tab and execute pipeline from current state forward."""
@@ -1248,24 +1079,10 @@ class MainWindow(QMainWindow):
             if hasattr(self.agent2_tab, "qa_tab") and hasattr(self.agent2_tab.qa_tab, "domain_description"):
                 self.agent2_tab.qa_tab.domain_description.set(dom_desc)
 
-        # 2. Read pipeline_state.json + every individual output file in the
-        # background; _apply_phase_outputs runs once they're all in hand.
-        filenames = [
-            "pipeline_state.json",
-            "language_template.json",
-            "reference_guidelines.json",
-            "compliance_vectors.json",
-            "uncovered_fragments.json",
-            "deviation_patterns.json",
-            "variability_classifications.json",
-            "lang_qa_history.json",
-            "dom_qa_history.json",
-        ]
-
         def _on_loaded(results: dict) -> None:
             self._apply_phase_outputs(out_path, output_dir, dom_id, dom_desc, results)
 
-        self._json_loader.load(out_path, filenames, _on_loaded)
+        MainController.sync_phase_outputs(out_path, self._json_loader, _on_loaded)
 
     def _apply_phase_outputs(
         self,
@@ -1370,56 +1187,26 @@ class MainWindow(QMainWindow):
             if hasattr(self.agent2_tab, "load_qa_history"):
                 self.agent2_tab.load_qa_history(dom_qa)
 
-        # Reconstruct Prompt Previews for Agent 4 sub-tabs
-        # Probe Tab (Skill 4-0)
-        if guidelines and uncovered_fragments:
-            uf_list = list(uncovered_fragments.values()) if isinstance(uncovered_fragments, dict) else uncovered_fragments
-            try:
-                from agent4_variability_explorer import probe_for_missed_alternatives_prompt
-                p = probe_for_missed_alternatives_prompt(
-                    reference_guidelines=guidelines,
-                    uncovered_fragment_classifications=uf_list,
-                    domain_identifier=dom_id,
-                    language_template=template,
-                    domain_description=dom_desc,
-                )
-                _preview(self.agent4_tab.probe_tab, p)
-            except Exception:
-                pass
+        # Reconstruct Prompt Previews for Agent 4 sub-tabs via MainController
+        prompts = MainController.reconstruct_agent4_prompts(
+            template=template,
+            guidelines=guidelines,
+            compliance_vectors=compliance_vectors,
+            uncovered_fragments=uncovered_fragments,
+            deviation_patterns=deviation_patterns,
+            lang_qa=lang_qa,
+            dom_qa=dom_qa,
+            dom_id=dom_id,
+            dom_desc=dom_desc,
+            min_recurrence=self.orchestrator_tab.min_recurrence.value(),
+        )
 
-        # Identify Deviation Patterns Tab (Skill 4-1)
-        if compliance_vectors and uncovered_fragments and guidelines:
-            cv_list = list(compliance_vectors.values()) if isinstance(compliance_vectors, dict) else compliance_vectors
-            uf_list = list(uncovered_fragments.values()) if isinstance(uncovered_fragments, dict) else uncovered_fragments
-            try:
-                from agent4_variability_explorer import identify_deviation_patterns_prompt
-                p = identify_deviation_patterns_prompt(
-                    compliance_vectors=cv_list,
-                    uncovered_fragment_classifications=uf_list,
-                    reference_guidelines=guidelines,
-                    domain_identifier=dom_id,
-                    min_recurrence_threshold=self.orchestrator_tab.min_recurrence.value(),
-                )
-                _preview(self.agent4_tab.patterns_tab, p)
-            except Exception:
-                pass
-
-        # Classify Variability Tab (Skill 4-2)
-        if deviation_patterns and guidelines and dom_desc:
-            try:
-                from agent4_variability_explorer import classify_variability_prompt
-                p = classify_variability_prompt(
-                    deviation_patterns=deviation_patterns,
-                    reference_guidelines=guidelines,
-                    domain_description=dom_desc,
-                    domain_identifier=dom_id,
-                    lang_questions_answers=lang_qa or None,
-                    dom_questions_answers=dom_qa or None,
-                    is_first_iteration=True,
-                )
-                _preview(self.agent4_tab.classify_tab, p)
-            except Exception:
-                pass
+        if prompts.get("probe"):
+            _preview(self.agent4_tab.probe_tab, prompts["probe"])
+        if prompts.get("patterns"):
+            _preview(self.agent4_tab.patterns_tab, prompts["patterns"])
+        if prompts.get("classify"):
+            _preview(self.agent4_tab.classify_tab, prompts["classify"])
 
     # ------------------------------------------------------------------
     # Orchestrator → all tabs hand-off on finish
