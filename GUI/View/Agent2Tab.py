@@ -47,6 +47,7 @@ for _p in (_CONTROLLER_DIR, _MODEL_DIR):
         sys.path.insert(0, str(_p))
 
 from agent_controllers import Agent2Controller
+from agent2_domain_advisor import make_domain_question_id
 from GUI_Common import ConfigPanel, LabeledTextBox, LLMWorker, OutputPane, format_prompt_preview
 from action_logger import log_action
 
@@ -201,7 +202,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
     continue_pipeline_requested = Signal()
     template_segment_clicked = Signal(str)
 
-    def __init__(self, title: str = "Human Involvement — Manage Guidelines & Segments", parent=None):
+    def __init__(self, title: str = "Human Involvement — Manage Guidelines Segments", parent=None):
         super().__init__(title, parent)
         self._data: dict = {}
         self._language_template_map: dict = {}
@@ -313,7 +314,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         sub_tabs.addTab(seg_widget, "🧩 Domain Segments")
 
     def receive_language_template(self, template: dict) -> None:
-        """Store Language Template guidelines mapping for short_name hover tooltips."""
+        """Store Language Template guidelines mapping for short_name hover tooltips and unmap deleted template IDs."""
         self._language_template_map = {}
         if isinstance(template, dict):
             guidelines = template.get("guidelines", []) or []
@@ -324,7 +325,25 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                         if gid:
                             self._language_template_map[gid] = g
                             self._language_template_map[gid.lower()] = g
-        self.refresh_guidelines_table()
+
+        # Auto-unmap domain guidelines in Agent 2 referencing deleted template IDs
+        changed = False
+        ref_guidelines = self._data.get("reference_guidelines", [])
+        if isinstance(ref_guidelines, list) and self._language_template_map:
+            for g in ref_guidelines:
+                if isinstance(g, dict):
+                    seg_id = str(g.get("related_template_id") or g.get("target_segment") or "").strip()
+                    if seg_id and seg_id not in self._language_template_map and seg_id.lower() not in self._language_template_map:
+                        g["related_template_id"] = ""
+                        g["is_operationalized"] = False
+                        g["status"] = "UNMAPPED"
+                        changed = True
+
+        if changed:
+            self.refresh_all()
+            self.guidelines_updated.emit(self._data)
+        else:
+            self.refresh_guidelines_table()
 
     def _on_gl_table_cell_clicked(self, row: int, col: int) -> None:
         """If column 2 (Segment) is clicked, emit signal to navigate to Agent 1 tab."""

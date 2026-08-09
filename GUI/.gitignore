@@ -7,3 +7,5 @@ build
 VEGO-AI-GUI.spec
 pysidedeploy.spec
 deployment
+Controller/run_config.json
+run_config.json

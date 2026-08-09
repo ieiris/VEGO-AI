@@ -40,6 +40,7 @@ from PySide6.QtWidgets import (
 )
 
 from agent_controllers import Agent1Controller
+from agent1_language_advisor import make_language_question_id
 from GUI_Common import ConfigPanel, LabeledTextBox, LLMWorker, OutputPane, format_prompt_preview
 from action_logger import log_action
 
@@ -438,6 +439,7 @@ class Agent1Tab(QWidget):
         return self.template_editor.template_updated
 
     def _on_template_updated(self, template: dict) -> None:
+        self.status_label.setText("Auto-saved language template changes.")
         if hasattr(self, "qa_tab"):
             self.qa_tab.receive_language_template(template)
 

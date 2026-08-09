@@ -884,6 +884,7 @@ class MainWindow(QMainWindow):
         # Cheap, in-memory UI sync
         self.agent2_tab.build_tab.receive_language_template(template_dict)
         self.agent4_tab.probe_tab.language_template.set(formatted_json)
+        self.statusBar().showMessage("Language template auto-saved to disk.", 3000)
 
     def _on_human_guidelines_edited(self, guidelines_dict: dict) -> None:
         """Persist human reference-guideline edits via MainController and update UI views."""
