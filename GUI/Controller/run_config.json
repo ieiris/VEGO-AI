@@ -1,0 +1,84 @@
+{
+  "_comment": "run_config.json — configuration for the main framework pipeline.",
+
+  "api_key": "",
+  "_api_key_comment": "Leave null to read from OPENAI_API_KEY environment variable.",
+
+  "base_url": "",
+  "_base_url_comment": "OpenAI API base URL",
+
+  "model": "",
+  "_model_comment": "",
+
+  "log_level": "INFO",
+  "_log_level_comment": "DEBUG | INFO | WARNING | ERROR",
+
+  "interaction_log": "interaction_log.jsonl",
+
+  "min_recurrence_threshold": 1,
+  "max_concurrent_cases": 3,
+
+  "model_dirs": {
+    "_comment": [
+      "Central place to configure case model directories before running.",
+      "Paths are relative to this config file (framework/) or absolute.",
+      "Sibling layout:  parent/Implementations/v2/framework/  parent/Implementations/v2/eval/  parent/Dataset1_ModelEval/"
+    ],
+    "ucd_pw": "../../../Dataset1_ModelEval/xxParkWise/ParkWise-UseCaseDiagram/Cases",
+    "cd_pw":  "../../../Dataset1_ModelEval/xxParkWise/ParkWise-ClassDiagram/Cases",
+    "ucd_ch": "../../../Dataset1_ModelEval/vvCheers/Cheers-UseCaseDiagram/Cases",
+    "cd_ch":  "../../../Dataset1_ModelEval/vvCheers/Cheers-ClassDiagram/Cases"
+  },
+
+  "settings": [
+    {
+      "setting_id": "ucd_pw",
+      "_comment": "Use Case Diagram — ParkWise domain",
+      "language_name": "UML Use Case Diagram",
+      "language_reference_manual": "",
+      "language_formal_definition": "",
+      "domain_identifier": "parkwise",
+      "domain_description_file": "../inputs/pw/domain_description_ucd.txt",
+      "case_models_dir": "../../../Dataset1_ModelEval/xxParkWise/ParkWise-UseCaseDiagram/Cases",
+      "output_dir": "../output/ucd_pw"
+    },
+    {
+      "setting_id": "cd_pw",
+      "_comment": "Class Diagram — ParkWise domain",
+      "language_name": "UML Class Diagram",
+      "language_reference_manual": "",
+      "language_formal_definition": "",
+      "domain_identifier": "parkwise",
+      "domain_description_file": "../inputs/pw/domain_description.txt",
+      "case_models_dir": "../../../Dataset1_ModelEval/xxParkWise/ParkWise-ClassDiagram/Cases",
+      "output_dir": "../output/cd_pw"
+    },
+    {
+      "setting_id": "ucd_ch",
+      "_comment": "Use Case Diagram — Cheers domain",
+      "language_name": "UML Use Case Diagram",
+      "language_reference_manual": "",
+      "language_formal_definition": "",
+      "domain_identifier": "cheers",
+      "domain_description_file": "../inputs/ch/domain_description.txt",
+      "case_models_dir": "../../../Dataset1_ModelEval/vvCheers/Cheers-UseCaseDiagram/Cases",
+      "output_dir": "../output/ucd_ch"
+    },
+    {
+      "setting_id": "cd_ch",
+      "_comment": "Class Diagram — Cheers domain",
+      "language_name": "UML Class Diagram",
+      "language_reference_manual": "",
+      "language_formal_definition": "",
+      "domain_identifier": "cheers",
+      "domain_description_file": "../inputs/ch/domain_description.txt",
+      "case_models_dir": "../../../Dataset1_ModelEval/vvCheers/Cheers-ClassDiagram/Cases",
+      "output_dir": "../output/cd_ch"
+    }
+  ],
+  "_settings_comment": [
+    "Run all settings:   python orchestrator.py --config run_config.json",
+    "Run one setting:    python orchestrator.py --config run_config.json --setting ucd_pw",
+    "Valid setting IDs:  ucd_pw | cd_pw | ucd_ch | cd_ch"
+  ]
+}
