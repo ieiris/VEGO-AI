@@ -49,8 +49,9 @@ class LLMClient:
         api_key: str | None = None,
         model: str = MODEL,
         interaction_log: Path | None = None,
+        timeout: float = 120.0,
     ) -> None:
-        self._client = AsyncOpenAI(api_key=api_key)  # None → reads OPENAI_API_KEY env var
+        self._client = AsyncOpenAI(api_key=api_key, timeout=timeout)  # None → reads OPENAI_API_KEY env var
         self.model = model
         self._log_path = interaction_log
         if interaction_log:

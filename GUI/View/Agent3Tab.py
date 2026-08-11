@@ -75,7 +75,7 @@ class PlantUMLDiagramWorker(QThread):
         try:
             url = self._plantuml_url(self.puml_text)
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=15) as resp:
+            with urllib.request.urlopen(req, timeout=60) as resp:
                 raw_bytes = resp.read()
             self.image_loaded.emit(QByteArray(raw_bytes))
         except Exception as exc:
