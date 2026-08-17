@@ -16,7 +16,7 @@
   "interaction_log": "interaction_log.jsonl",
 
   "min_recurrence_threshold": 1,
-  "max_concurrent_cases": 3,
+  "max_concurrent_cases": 1,
 
   "model_dirs": {
     "_comment": [

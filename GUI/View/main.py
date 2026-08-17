@@ -3,10 +3,6 @@ main.py — VEGO-AI Pipeline GUI
 ================================
 Single-window application that hosts all agent tabs and the orchestrator.
 
-Run from the Visualizer directory (or anywhere):
-    python Visualizer/main.py
-    python Visualizer/main.py                    # same thing
-
 Tab layout
 ----------
   Orchestrator   — run the full end-to-end pipeline for any setting

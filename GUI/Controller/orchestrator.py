@@ -372,7 +372,7 @@ async def phase3_evaluate_cases(
         return
 
     cases: list[dict] = cfg["case_models"]
-    max_concurrent: int = cfg.get("max_concurrent_cases", 3)
+    max_concurrent: int = cfg.get("max_concurrent_cases", 1)
     sem = asyncio.Semaphore(max_concurrent)
 
     logger.info("=== Phase 3: Evaluating %d case model(s) (concurrency=%d) ===",

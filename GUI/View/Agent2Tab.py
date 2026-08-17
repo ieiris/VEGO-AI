@@ -1290,41 +1290,277 @@ class VerifyGuidelinesTab(QWidget):
         self.preview_btn.setEnabled(True)
 
 
-class DomainQATab(QWidget):
-    """Domain Q&A Viewer (Table only)."""
+def _extract_guideline_id(text: str) -> str | None:
+    """Extract guideline or segment identifier from evidence text."""
+    if not text:
+        return None
+    import re
+    m_dom = re.search(r'\b(G(?:_dom_|_)?\d+)\b', text, re.IGNORECASE)
+    if m_dom:
+        return m_dom.group(1)
+    m_tpl = re.search(r'\b(T(?:_lang_|_)?\d+)\b', text, re.IGNORECASE)
+    if m_tpl:
+        return m_tpl.group(1)
+    m_gen = re.search(r'\b([GT]\d+)\b', text, re.IGNORECASE)
+    if m_gen:
+        return m_gen.group(1)
+    m_seg = re.search(r'\b(S\d+)\b', text, re.IGNORECASE)
+    if m_seg:
+        return m_seg.group(1)
+    return None
 
-    def __init__(self, config_panel: ConfigPanel, parent=None):
+
+class DomainQATab(QWidget):
+    """Domain Q&A Viewer — Excel-like Table with stretching, tooltips, filtering, and copy support."""
+
+    guideline_clicked = Signal(str)
+
+    def __init__(self, config_panel: ConfigPanel | None = None, parent=None):
         super().__init__(parent)
         self.config_panel = config_panel
         self._questions: list[dict] = []
 
-        outer = QVBoxLayout(self)
+        # Compatibility attributes for main.py / pipeline checks
+        self.language_name = QLineEdit()
+        self.domain_identifier = QLineEdit()
+        self.domain_description = LabeledTextBox("")
+        self.reference_guidelines = LabeledTextBox("")
+        self.prompt_preview = OutputPane("")
+        self.output_pane = OutputPane("")
+        self.status_label = QLabel("")
+        self.preview_btn = QPushButton("Preview Prompt")
+        self.run_btn = QPushButton("Execute Prompt")
 
-        q_box = QGroupBox("Questions to ask")
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(6, 6, 6, 6)
+
+        q_box = QGroupBox("Domain Questions & Answers")
         q_layout = QVBoxLayout(q_box)
-        entry_row = QHBoxLayout()
+
+        # Top Bar: Add question, Filter, and Export/Copy
+        top_bar = QHBoxLayout()
         self.new_question = QLineEdit()
-        self.new_question.setPlaceholderText("Type a question and press Add / Enter")
+        self.new_question.setPlaceholderText("Type a question and press Add / Enter...")
         self.new_question.returnPressed.connect(self._add_question)
-        add_btn = QPushButton("Add")
-        remove_btn = QPushButton("Remove selected")
+        add_btn = QPushButton("➕ Add Question")
+        remove_btn = QPushButton("🗑️ Remove Selected")
         add_btn.clicked.connect(self._add_question)
         remove_btn.clicked.connect(self._remove_question)
-        entry_row.addWidget(self.new_question, stretch=1)
-        entry_row.addWidget(add_btn)
-        entry_row.addWidget(remove_btn)
-        q_layout.addLayout(entry_row)
 
+        self.filter_edit = QLineEdit()
+        self.filter_edit.setPlaceholderText("🔍 Filter table...")
+        self.filter_edit.setMaximumWidth(200)
+        self.filter_edit.textChanged.connect(self._apply_filter)
+
+        copy_btn = QPushButton("📋 Copy Table")
+        copy_btn.setToolTip("Copy all or selected rows to clipboard in Excel-compatible TSV format")
+        copy_btn.clicked.connect(self._copy_to_clipboard)
+
+        top_bar.addWidget(self.new_question, stretch=3)
+        top_bar.addWidget(add_btn)
+        top_bar.addWidget(remove_btn)
+        top_bar.addSpacing(10)
+        top_bar.addWidget(self.filter_edit, stretch=1)
+        top_bar.addWidget(copy_btn)
+        q_layout.addLayout(top_bar)
+
+        # Table setup
         self.table = QTableWidget(0, 6)
-        self.table.setHorizontalHeaderLabels(["ID", "Question", "Answer", "Evidence", "Justification", "Confidence"])
-        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        for i in range(1, 6):
-            self.table.horizontalHeader().setSectionResizeMode(i, QHeaderView.Stretch)
-        self.table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
-        q_layout.addWidget(self.table)
-        
+        headers = ["ID", "Question", "Answer", "Evidence", "Justification", "Confidence"]
+        self.table.setHorizontalHeaderLabels(headers)
+
+        # Header tooltips
+        header_tooltips = {
+            0: "Unique Question Identifier (e.g. Q_dom_001)",
+            1: "Domain Question asked by the inspector / orchestrator",
+            2: "Domain Advisor's Answer",
+            3: "Evidence & reference guidelines supporting the answer (Click to navigate)",
+            4: "Detailed reasoning and justification for the domain answer",
+            5: "Confidence score / assessment",
+        }
+        for col_idx, tip in header_tooltips.items():
+            header_item = self.table.horizontalHeaderItem(col_idx)
+            if header_item:
+                header_item.setToolTip(tip)
+
+        # Excel-like interactive stretching & column resizing
+        h_header = self.table.horizontalHeader()
+        for i in range(6):
+            h_header.setSectionResizeMode(i, QHeaderView.Interactive)
+        h_header.setStretchLastSection(True)
+        h_header.setSectionsMovable(True)
+        h_header.setHighlightSections(True)
+        h_header.setSortIndicatorShown(True)
+
+        v_header = self.table.verticalHeader()
+        v_header.setVisible(True)
+        v_header.setSectionResizeMode(QHeaderView.Interactive)
+        v_header.setDefaultSectionSize(32)
+
+        # Initial column widths
+        self.table.setColumnWidth(0, 110)
+        self.table.setColumnWidth(1, 280)
+        self.table.setColumnWidth(2, 280)
+        self.table.setColumnWidth(3, 190)
+        self.table.setColumnWidth(4, 250)
+        self.table.setColumnWidth(5, 110)
+
+        self.table.setShowGrid(True)
+        self.table.setAlternatingRowColors(True)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.table.setWordWrap(True)
+        self.table.horizontalHeader().sectionResized.connect(
+            lambda logicalIndex, oldSize, newSize: self.table.resizeRowsToContents()
+        )
+
+        qa_table_style = """
+            QTableWidget {
+                gridline-color: #3a3a52;
+                selection-background-color: #005fb8;
+                selection-color: #ffffff;
+                outline: none;
+            }
+            QTableWidget::item:selected {
+                background-color: #005fb8;
+                color: #ffffff;
+                font-weight: 500;
+            }
+            QTableWidget::item:selected:hover {
+                background-color: #004e98;
+                color: #ffffff;
+            }
+            QTableWidget::item:hover {
+                background-color: rgba(0, 95, 184, 0.15);
+            }
+            QHeaderView::section {
+                padding: 4px 6px;
+                font-weight: 600;
+            }
+        """
+        self.table.setStyleSheet(qa_table_style)
+
+        # Ctrl+C shortcut to copy to clipboard
+        from PySide6.QtGui import QKeySequence, QShortcut
+        self.copy_shortcut = QShortcut(QKeySequence.Copy, self.table)
+        self.copy_shortcut.activated.connect(self._copy_to_clipboard)
+
+        self.table.itemDoubleClicked.connect(self._show_question_detail)
+        self.table.cellClicked.connect(self._on_cell_clicked)
+
+        q_layout.addWidget(self.table, stretch=1)
         outer.addWidget(q_box, stretch=1)
+
+    def _on_cell_clicked(self, row: int, col: int) -> None:
+        if col == 3:  # Evidence column
+            item = self.table.item(row, col)
+            if not item:
+                return
+            text = item.text().strip()
+            gid = _extract_guideline_id(text)
+            if gid:
+                log_action("Agent2/QA", "click_evidence_guideline", f"gid={gid}")
+                self.guideline_clicked.emit(gid)
+
+    def _show_question_detail(self, item: QTableWidgetItem) -> None:
+        row = item.row()
+        qid_item = self.table.item(row, 0)
+        q = qid_item.data(Qt.UserRole) if qid_item else None
+        if not q and 0 <= row < len(self._questions):
+            q = self._questions[row]
+        if q:
+            dlg = QDialog(self)
+            qid_str = q.get("question_id") or q.get("id") or "Question"
+            dlg.setWindowTitle(f"Question Details — {qid_str}")
+            dlg.resize(620, 500)
+            d_layout = QVBoxLayout(dlg)
+
+            form = QFormLayout()
+
+            id_lbl = QLabel(f"<b>{qid_str}</b>")
+            form.addRow("Question ID:", id_lbl)
+
+            q_box = QPlainTextEdit(q.get("question", ""))
+            q_box.setReadOnly(True)
+            q_box.setMaximumHeight(80)
+            form.addRow("Question:", q_box)
+
+            a_box = QPlainTextEdit(q.get("answer", "") or "(Pending)")
+            a_box.setReadOnly(True)
+            a_box.setMaximumHeight(100)
+            form.addRow("Answer:", a_box)
+
+            e_box = QPlainTextEdit(q.get("evidence", ""))
+            e_box.setReadOnly(True)
+            e_box.setMaximumHeight(70)
+            form.addRow("Evidence:", e_box)
+
+            j_box = QPlainTextEdit(q.get("justification", ""))
+            j_box.setReadOnly(True)
+            j_box.setMaximumHeight(90)
+            form.addRow("Justification:", j_box)
+
+            c_lbl = QLabel(q.get("confidence", "") or "N/A")
+            form.addRow("Confidence:", c_lbl)
+
+            d_layout.addLayout(form)
+
+            btn_box = QDialogButtonBox(QDialogButtonBox.Close)
+            btn_box.rejected.connect(dlg.reject)
+            d_layout.addWidget(btn_box)
+
+            dlg.exec()
+
+    def _copy_to_clipboard(self) -> None:
+        """Copies table data in Tab-Separated Values (TSV) format to clipboard for direct pasting into Excel."""
+        selected_rows = sorted({idx.row() for idx in self.table.selectedIndexes()})
+        rows_to_copy = selected_rows if selected_rows else list(range(self.table.rowCount()))
+        if not rows_to_copy:
+            return
+
+        lines = []
+        # Header
+        headers = [
+            self.table.horizontalHeaderItem(c).text()
+            if self.table.horizontalHeaderItem(c)
+            else f"Col {c+1}"
+            for c in range(self.table.columnCount())
+        ]
+        lines.append("\t".join(headers))
+
+        for r in rows_to_copy:
+            if self.table.isRowHidden(r):
+                continue
+            row_vals = []
+            for c in range(self.table.columnCount()):
+                item = self.table.item(r, c)
+                txt = item.text().replace("\t", " ").replace("\n", " ") if item else ""
+                row_vals.append(txt)
+            lines.append("\t".join(row_vals))
+
+        tsv_data = "\n".join(lines)
+        from PySide6.QtGui import QGuiApplication
+        clipboard = QGuiApplication.clipboard()
+        if clipboard:
+            clipboard.setText(tsv_data)
+            self.status_label.setText(f"Copied {len(lines)-1} row(s) to clipboard in Excel format.")
+            QTimer.singleShot(2500, lambda: self.status_label.setText(""))
+
+    def _apply_filter(self, filter_text: str) -> None:
+        filter_text = filter_text.strip().lower()
+        for r in range(self.table.rowCount()):
+            if not filter_text:
+                self.table.setRowHidden(r, False)
+                continue
+            row_match = False
+            for c in range(self.table.columnCount()):
+                item = self.table.item(r, c)
+                if item and filter_text in item.text().lower():
+                    row_match = True
+                    break
+            self.table.setRowHidden(r, not row_match)
+        self.table.resizeRowsToContents()
 
     def receive_reference_guidelines(self, guidelines: dict) -> None:
         pass
@@ -1338,6 +1574,7 @@ class DomainQATab(QWidget):
                 qid = str(item.get("question_id") or item.get("id") or make_domain_question_id(idx))
                 self._questions.append({
                     "id": qid,
+                    "question_id": qid,
                     "question": str(item.get("question", "")),
                     "answer": str(item.get("answer", "")),
                     "evidence": str(item.get("evidence", "")),
@@ -1352,12 +1589,13 @@ class DomainQATab(QWidget):
             return
         qid = make_domain_question_id(len(self._questions) + 1)
         self._questions.append({
-            "id": qid, 
+            "id": qid,
+            "question_id": qid,
             "question": text,
             "answer": "",
             "evidence": "",
             "justification": "",
-            "confidence": ""
+            "confidence": "",
         })
         self._refresh_table()
         self.new_question.clear()
@@ -1367,22 +1605,67 @@ class DomainQATab(QWidget):
         selected_rows = sorted({idx.row() for idx in self.table.selectedIndexes()}, reverse=True)
         if not selected_rows:
             return
+        qids_to_remove = set()
         for row in selected_rows:
-            del self._questions[row]
+            qid_item = self.table.item(row, 0)
+            if qid_item:
+                qids_to_remove.add(qid_item.text().strip())
+        self._questions = [
+            q for q in self._questions
+            if (q.get("id") or q.get("question_id")) not in qids_to_remove
+        ]
         for idx, q in enumerate(self._questions, start=1):
-            q["id"] = make_domain_question_id(idx)
+            qid = make_domain_question_id(idx)
+            q["id"] = qid
+            q["question_id"] = qid
         self._refresh_table()
         log_action("Agent2/QA", "remove_question", f"removed_count={len(selected_rows)}")
 
     def _refresh_table(self) -> None:
+        self.table.setSortingEnabled(False)
         self.table.setRowCount(len(self._questions))
         for row, q in enumerate(self._questions):
-            self.table.setItem(row, 0, QTableWidgetItem(q.get("id", "")))
-            self.table.setItem(row, 1, QTableWidgetItem(q.get("question", "")))
-            self.table.setItem(row, 2, QTableWidgetItem(q.get("answer", "")))
-            self.table.setItem(row, 3, QTableWidgetItem(q.get("evidence", "")))
-            self.table.setItem(row, 4, QTableWidgetItem(q.get("justification", "")))
-            self.table.setItem(row, 5, QTableWidgetItem(q.get("confidence", "")))
+            qid = str(q.get("id") or q.get("question_id") or "")
+            q_text = str(q.get("question", ""))
+            ans = str(q.get("answer", ""))
+            ev = str(q.get("evidence", ""))
+            just = str(q.get("justification", ""))
+            conf = str(q.get("confidence", ""))
+
+            qid_item = QTableWidgetItem(qid)
+            qid_item.setData(Qt.UserRole, q)
+            qid_item.setToolTip(f"Question ID: {qid}")
+            self.table.setItem(row, 0, qid_item)
+
+            q_item = QTableWidgetItem(q_text)
+            q_item.setToolTip(q_text)
+            self.table.setItem(row, 1, q_item)
+
+            ans_item = QTableWidgetItem(ans if ans else "(Pending)")
+            ans_item.setToolTip(ans if ans else "Pending response from Domain Advisor")
+            self.table.setItem(row, 2, ans_item)
+
+            ev_item = QTableWidgetItem(ev)
+            gid = _extract_guideline_id(ev)
+            if gid:
+                ev_item.setToolTip(f"[{ev}]\nClick to navigate to Domain Guideline {gid}.")
+                ev_item.setForeground(QColor("#1565C0"))
+            else:
+                ev_item.setToolTip(ev)
+            self.table.setItem(row, 3, ev_item)
+
+            just_item = QTableWidgetItem(just)
+            just_item.setToolTip(just)
+            self.table.setItem(row, 4, just_item)
+
+            conf_item = QTableWidgetItem(conf)
+            conf_item.setToolTip(conf)
+            self.table.setItem(row, 5, conf_item)
+
+        self.table.setSortingEnabled(True)
+        self.table.resizeRowsToContents()
+        if self.filter_edit.text():
+            self._apply_filter(self.filter_edit.text())
 
 
 class Agent2Tab(QWidget):
@@ -1404,6 +1687,7 @@ class Agent2Tab(QWidget):
         self.subtabs.addTab(self.guidelines_editor, "🛠️ Domain Guidelines Editor")
 
         self.qa_tab = DomainQATab(config_panel=config_panel)
+        self.qa_tab.guideline_clicked.connect(self.select_guideline)
         self.subtabs.addTab(self.qa_tab, "❓ Questions & Answers")
 
         layout.addWidget(self.subtabs, stretch=1)
@@ -1434,5 +1718,6 @@ class Agent2Tab(QWidget):
         self.guidelines_editor.receive_language_template(template)
 
     def select_guideline(self, gid: str) -> None:
+        self.subtabs.setCurrentIndex(0)
         if hasattr(self, "guidelines_editor"):
             self.guidelines_editor.select_guideline(gid)

@@ -189,7 +189,7 @@ class OrchestratorTab(QWidget):
         row3.addWidget(QLabel("Max concurrent cases:"))
         self.max_concurrent = QSpinBox()
         self.max_concurrent.setRange(1, 50)
-        self.max_concurrent.setValue(3)
+        self.max_concurrent.setValue(1)
         row3.addWidget(self.max_concurrent)
         row3.addWidget(QLabel("Min recurrence threshold:"))
         self.min_recurrence = QSpinBox()
