@@ -261,18 +261,37 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
 
         self.gl_table = QTableWidget(0, 4)
         self.gl_table.setHorizontalHeaderLabels(["ID", "Description", "Segment", "Rationale"])
-        gl_header = self.gl_table.horizontalHeader()
-        gl_header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        gl_header.setSectionResizeMode(1, QHeaderView.Stretch)
-        gl_header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        gl_header.setSectionResizeMode(3, QHeaderView.Stretch)
+
+        # Excel-like interactive column resizing (matches Q&A table)
+        gl_h_header = self.gl_table.horizontalHeader()
+        for i in range(4):
+            gl_h_header.setSectionResizeMode(i, QHeaderView.Interactive)
+        gl_h_header.setStretchLastSection(True)
+        gl_h_header.setSectionsMovable(True)
+        gl_h_header.setHighlightSections(True)
+        gl_h_header.setSortIndicatorShown(True)
+
+        gl_v_header = self.gl_table.verticalHeader()
+        gl_v_header.setVisible(True)
+        gl_v_header.setSectionResizeMode(QHeaderView.Interactive)
+        gl_v_header.setDefaultSectionSize(32)
+
+        # Initial column widths
+        self.gl_table.setColumnWidth(0, 80)
+        self.gl_table.setColumnWidth(1, 340)
+        self.gl_table.setColumnWidth(2, 100)
+        self.gl_table.setColumnWidth(3, 260)
+
+        self.gl_table.setShowGrid(True)
+        self.gl_table.setAlternatingRowColors(True)
         self.gl_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.gl_table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.gl_table.setEditTriggers(QAbstractItemView.DoubleClicked | QAbstractItemView.EditKeyPressed)
         self.gl_table.setStyleSheet(table_style)
-        # Word wrapping + automatic row/column sizing is expensive for large JSON-derived tables.
-        self.gl_table.setWordWrap(False)
-        self.gl_table.setUpdatesEnabled(False)
+        self.gl_table.setWordWrap(True)
+        self.gl_table.horizontalHeader().sectionResized.connect(
+            lambda logicalIndex, oldSize, newSize: self.gl_table.resizeRowsToContents()
+        )
         self.gl_table.itemDoubleClicked.connect(lambda item: self._edit_guideline())
         self.gl_table.itemChanged.connect(self._on_gl_table_item_changed)
         self.gl_table.cellClicked.connect(self._on_gl_table_cell_clicked)
@@ -301,13 +320,36 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
 
         self.seg_table = QTableWidget(0, 3)
         self.seg_table.setHorizontalHeaderLabels(["Segment ID", "Type", "Description / Text"])
-        self.seg_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+
+        # Excel-like interactive column resizing (matches Q&A table)
+        seg_h_header = self.seg_table.horizontalHeader()
+        for i in range(3):
+            seg_h_header.setSectionResizeMode(i, QHeaderView.Interactive)
+        seg_h_header.setStretchLastSection(True)
+        seg_h_header.setSectionsMovable(True)
+        seg_h_header.setHighlightSections(True)
+        seg_h_header.setSortIndicatorShown(True)
+
+        seg_v_header = self.seg_table.verticalHeader()
+        seg_v_header.setVisible(True)
+        seg_v_header.setSectionResizeMode(QHeaderView.Interactive)
+        seg_v_header.setDefaultSectionSize(32)
+
+        # Initial column widths
+        self.seg_table.setColumnWidth(0, 100)
+        self.seg_table.setColumnWidth(1, 180)
+        self.seg_table.setColumnWidth(2, 400)
+
+        self.seg_table.setShowGrid(True)
+        self.seg_table.setAlternatingRowColors(True)
         self.seg_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.seg_table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.seg_table.setEditTriggers(QAbstractItemView.DoubleClicked | QAbstractItemView.EditKeyPressed)
         self.seg_table.setStyleSheet(table_style)
-        self.seg_table.setWordWrap(False)
-        self.seg_table.setUpdatesEnabled(False)
+        self.seg_table.setWordWrap(True)
+        self.seg_table.horizontalHeader().sectionResized.connect(
+            lambda logicalIndex, oldSize, newSize: self.seg_table.resizeRowsToContents()
+        )
         self.seg_table.itemDoubleClicked.connect(lambda item: self._edit_segment())
         seg_layout.addWidget(self.seg_table)
 
@@ -621,6 +663,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             self.gl_table.verticalScrollBar().setValue(v_scroll)
             self.gl_table.horizontalScrollBar().setValue(h_scroll)
             self.gl_table.setUpdatesEnabled(True)
+            self.gl_table.resizeRowsToContents()
             self.gl_table.viewport().update()
         finally:
             self.gl_table.blockSignals(False)
@@ -776,6 +819,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             self.seg_table.verticalScrollBar().setValue(v_scroll)
             self.seg_table.horizontalScrollBar().setValue(h_scroll)
             self.seg_table.setUpdatesEnabled(True)
+            self.seg_table.resizeRowsToContents()
             self.seg_table.viewport().update()
         finally:
             self.seg_table.blockSignals(False)

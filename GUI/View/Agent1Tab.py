@@ -179,17 +179,37 @@ class TemplateEditorWidget(QGroupBox):
 
         self.table = QTableWidget(0, 4)
         self.table.setHorizontalHeaderLabels(["ID", "Short Name", "Fragment Description", "Involved Constructs"])
-        header = self.table.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QHeaderView.Stretch)
+
+        # Excel-like interactive column resizing (matches Q&A table)
+        h_header = self.table.horizontalHeader()
+        for i in range(4):
+            h_header.setSectionResizeMode(i, QHeaderView.Interactive)
+        h_header.setStretchLastSection(True)
+        h_header.setSectionsMovable(True)
+        h_header.setHighlightSections(True)
+        h_header.setSortIndicatorShown(True)
+
+        v_header = self.table.verticalHeader()
+        v_header.setVisible(True)
+        v_header.setSectionResizeMode(QHeaderView.Interactive)
+        v_header.setDefaultSectionSize(32)
+
+        # Initial column widths
+        self.table.setColumnWidth(0, 80)
+        self.table.setColumnWidth(1, 160)
+        self.table.setColumnWidth(2, 320)
+        self.table.setColumnWidth(3, 260)
+
+        self.table.setShowGrid(True)
+        self.table.setAlternatingRowColors(True)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.setSelectionMode(QTableWidget.SingleSelection)
         self.table.setStyleSheet(table_style)
         self.table.setWordWrap(True)
         self.table.setSortingEnabled(True)
-        self.table.horizontalHeader().setSortIndicatorShown(True)
+        self.table.horizontalHeader().sectionResized.connect(
+            lambda logicalIndex, oldSize, newSize: self.table.resizeRowsToContents()
+        )
         self.table.itemDoubleClicked.connect(lambda item: self._edit_guideline())
         self.table.itemChanged.connect(self._on_table_item_changed)
         layout.addWidget(self.table)
