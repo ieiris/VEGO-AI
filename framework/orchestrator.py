@@ -195,39 +195,6 @@ async def _phase3_one_case(
             logger.info("Case %s already evaluated — skipping.", case_id)
             return
 
-        out_dir = state_path.parent
-        agg_file = out_dir / "aggregate" / f"{case_id}.json"
-        cv_file = out_dir / "compliance_vectors.json"
-
-        # If aggregate vector already exists on disk, do not run the agent method again
-        if agg_file.exists():
-            try:
-                agg_data = json.loads(agg_file.read_text(encoding="utf-8"))
-                state.compliance_vectors[case_id] = agg_data
-                uf_list = agg_data.get("uncovered_fragments", [])
-                state.uncovered_fragments[case_id] = {"uncovered_fragments": uf_list}
-                state.save(state_path)
-                logger.info("Case %s aggregate vector file exists on disk — skipping Agent 3 evaluation.", case_id)
-                return
-            except Exception:
-                pass
-
-        if cv_file.exists() and case_id not in state.compliance_vectors:
-            try:
-                cv_map = json.loads(cv_file.read_text(encoding="utf-8"))
-                if case_id in cv_map:
-                    state.compliance_vectors[case_id] = cv_map[case_id]
-                    uf_file = out_dir / "uncovered_fragments.json"
-                    if uf_file.exists():
-                        uf_map = json.loads(uf_file.read_text(encoding="utf-8"))
-                        if case_id in uf_map:
-                            state.uncovered_fragments[case_id] = uf_map[case_id]
-                    state.save(state_path)
-                    logger.info("Case %s compliance vector exists in compliance_vectors.json — skipping Agent 3 evaluation.", case_id)
-                    return
-            except Exception:
-                pass
-
         logger.info("  Case %s — skill 3-1: map_guidelines_to_model", case_id)
         agent1_caps = state.language_template.get("agent1_capabilities", [])
         # agent2_capabilities not formally defined in skill files; pass empty list
@@ -342,7 +309,7 @@ async def phase3_evaluate_cases(
         return
 
     cases: list[dict] = cfg["case_models"]
-    max_concurrent: int = cfg.get("max_concurrent_cases", 1)
+    max_concurrent: int = cfg.get("max_concurrent_cases", 3)
     sem = asyncio.Semaphore(max_concurrent)
 
     logger.info("=== Phase 3: Evaluating %d case model(s) (concurrency=%d) ===",
