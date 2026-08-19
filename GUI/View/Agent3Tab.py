@@ -37,6 +37,7 @@ from PySide6.QtWidgets import (
     QDoubleSpinBox,
     QFileDialog,
     QFormLayout,
+    QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
@@ -148,6 +149,37 @@ class ScoringSchemaDialog(QDialog):
         return self.sat_spin.value(), self.part_spin.value(), self.not_spin.value()
 
 
+class FeedbackDialog(QDialog):
+    """Resizable feedback editor with word-wrap and comfortable reading at any size."""
+
+    def __init__(self, gid: str, current_notes: str, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"Edit Feedback — {gid}")
+        self.resize(600, 300)
+        self.setMinimumSize(400, 200)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(8)
+
+        label = QLabel(f"Reviewer feedback for <b>{gid}</b>:")
+        label.setWordWrap(True)
+        layout.addWidget(label)
+
+        self.text_edit = QPlainTextEdit()
+        self.text_edit.setPlainText(current_notes)
+        self.text_edit.setLineWrapMode(QPlainTextEdit.WidgetWidth)  # word wrap
+        self.text_edit.setFont(QFont("Segoe UI", 10))
+        layout.addWidget(self.text_edit, stretch=1)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+    def get_text(self) -> str:
+        return self.text_edit.toPlainText()
+
+
 class Agent3Tab(QWidget):
     """
     Native PySide6 Agent 3 Tab: Compliance Visualizer & Interactive Human Involvement Editor.
@@ -233,9 +265,11 @@ class Agent3Tab(QWidget):
 
         # ── Main Splitter (Left: Code/Diagram, Right: Compliance Vector & Details) ──
         main_splitter = QSplitter(Qt.Horizontal)
+        main_splitter.setChildrenCollapsible(False)  # prevent panels from disappearing
 
         # ── Left Panel (Tabs: Code & Diagram) ──
         left_widget = QWidget()
+        left_widget.setMinimumWidth(200)  # always keep editor visible
         left_layout = QVBoxLayout(left_widget)
         left_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -307,10 +341,12 @@ class Agent3Tab(QWidget):
 
         # ── Right Panel (Splitter: Tree + Details + HITL Controls) ──
         right_widget = QWidget()
+        right_widget.setMinimumWidth(200)  # always keep compliance table visible
         right_layout = QVBoxLayout(right_widget)
         right_layout.setContentsMargins(0, 0, 0, 0)
 
         right_splitter = QSplitter(Qt.Vertical)
+        right_splitter.setChildrenCollapsible(False)  # prevent table/details from disappearing
 
         # Top Right: Compliance Vector Table
         table_box = QGroupBox("Compliance Vector & Summary")
@@ -347,13 +383,15 @@ class Agent3Tab(QWidget):
         self.tree_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
         self.tree_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.tree_table.setSelectionMode(QTableWidget.SingleSelection)
+        self.tree_table.setWordWrap(True)  # Excel-like wrap text inside cells
         self.tree_table.setStyleSheet(table_style)
         self.tree_table.itemSelectionChanged.connect(self._on_table_selection_changed)
         table_layout.addWidget(self.tree_table)
 
+        table_box.setMinimumHeight(120)
         right_splitter.addWidget(table_box)
 
-        # Bottom Right: Details & Human Involvement Controls
+        # Bottom Right: Details panel (in splitter)
         details_box = QGroupBox("Selected Item Details & Assessment")
         details_layout = QVBoxLayout(details_box)
 
@@ -362,16 +400,23 @@ class Agent3Tab(QWidget):
         self.details_text.setFont(QFont("Segoe UI", 10))
         details_layout.addWidget(self.details_text)
 
-        # ── Human Involvement Toolbar (3.3 CRUD) ──
-        hitl_box = QGroupBox("Human Involvement Controls (3.3)")
-        hitl_layout = QHBoxLayout(hitl_box)
+        details_box.setMinimumHeight(80)
+        right_splitter.addWidget(details_box)
 
-        btn_status = QPushButton("✏️ Change Status")
+        right_layout.addWidget(right_splitter, stretch=1)
+
+        # ── Human Involvement Toolbar (3.3 CRUD) ──
+        # Placed OUTSIDE the splitter so it is always visible at the bottom
+        hitl_box = QGroupBox("Human Involvement Controls (3.3)")
+        hitl_grid = QGridLayout(hitl_box)
+        hitl_grid.setSpacing(4)
+
+        btn_status   = QPushButton("✏️ Change Status")
         btn_feedback = QPushButton("💬 Edit Feedback")
-        btn_map = QPushButton("➕ Map Fragment")
-        btn_unmap = QPushButton("⛔ Unmap Fragment")
-        btn_continue = QPushButton("▶️ Continue Pipeline Run")
-        btn_save = QPushButton("💾 Save Changes")
+        btn_map      = QPushButton("➕ Map Fragment")
+        btn_unmap    = QPushButton("⛔ Unmap Fragment")
+        btn_continue = QPushButton("▶️ Continue Pipeline")
+        btn_save     = QPushButton("💾 Save Changes")
 
         btn_status.clicked.connect(self._hitl_change_status)
         btn_feedback.clicked.connect(self._hitl_update_feedback)
@@ -380,18 +425,19 @@ class Agent3Tab(QWidget):
         btn_continue.clicked.connect(lambda: self.continue_pipeline_requested.emit())
         btn_save.clicked.connect(self._save_hitl_changes)
 
-        hitl_layout.addWidget(btn_status)
-        hitl_layout.addWidget(btn_feedback)
-        hitl_layout.addWidget(btn_map)
-        hitl_layout.addWidget(btn_unmap)
-        hitl_layout.addWidget(btn_continue)
-        hitl_layout.addStretch(1)
-        hitl_layout.addWidget(btn_save)
+        # Row 0: Change Status | Edit Feedback | Continue Pipeline
+        # Row 1: Map Fragment  | Unmap Fragment | Save Changes
+        for col, btn in enumerate([btn_status, btn_feedback, btn_continue]):
+            hitl_grid.addWidget(btn, 0, col)
+        for col, btn in enumerate([btn_map, btn_unmap, btn_save]):
+            hitl_grid.addWidget(btn, 1, col)
 
-        details_layout.addWidget(hitl_box)
-        right_splitter.addWidget(details_box)
+        # Equal column widths
+        for col in range(3):
+            hitl_grid.setColumnStretch(col, 1)
 
-        right_layout.addWidget(right_splitter)
+        # Pin the controls bar to the bottom — never inside the splitter
+        right_layout.addWidget(hitl_box, stretch=0)
         main_splitter.addWidget(right_widget)
 
         main_splitter.setSizes([550, 650])
@@ -796,6 +842,9 @@ class Agent3Tab(QWidget):
         self._set_row_background(row, QColor("#e3f2fd"), font_bold=True)
         item_sum.setData(Qt.UserRole, ("summary", 0))
 
+        # Auto-resize all row heights to fit wrapped text content (Excel-like behaviour)
+        self.tree_table.resizeRowsToContents()
+
     def _set_row_background(self, row: int, color: QColor, font_bold: bool = False) -> None:
         for col in range(5):
             item = self.tree_table.item(row, col)
@@ -1049,6 +1098,7 @@ class Agent3Tab(QWidget):
             self._recalculate_score()
             self._populate_tree_table()
             log_action("Agent3", "change_status", f"guideline={gid}, new_status={new_st}")
+            self._save_hitl_changes()  # auto-save
 
     def _hitl_update_feedback(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()
@@ -1067,17 +1117,16 @@ class Agent3Tab(QWidget):
         gid = g.get("guideline_id", "")
         curr_notes = g.get("notes", "")
 
-        new_notes, ok = QInputDialog.getMultiLineText(
-            self, "Update Feedback", f"Enter reviewer feedback for {gid}:", curr_notes
-        )
-        if ok:
-            notes = new_notes.strip()
+        dlg = FeedbackDialog(gid, curr_notes, parent=self)
+        if dlg.exec() == QDialog.Accepted:
+            notes = dlg.get_text().strip()
             g["notes"] = notes
             for entry in self.current_raw_data.get("existing_mapping", []):
                 if entry.get("guideline_id") == gid:
                     entry["notes"] = notes
             self._populate_tree_table()
             log_action("Agent3", "update_feedback", f"guideline={gid}")
+            self._save_hitl_changes()  # auto-save
 
     def _hitl_map_fragment(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()
