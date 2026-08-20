@@ -151,6 +151,8 @@ def log_action(tab: str, action: str, details: str = "", params: Optional[Dict[s
                 parts.append(f"params=[{', '.join(p_items)}]")
 
         logger.info(" | ".join(parts))
+        for h in logger.handlers:
+            h.flush()
     except Exception:
         # Logging must never crash the application
         pass
