@@ -37,7 +37,7 @@ for _p in (_CONTROLLER_DIR, _MODEL_DIR):
 
 from agent_controllers import OrchestratorController
 from GUI_Common import ConfigPanel, LabeledTextBox, OutputPane
-from action_logger import log_action, set_log_output_dir
+from action_logger import log_action, set_log_output_dir, get_init_error
 
 
 
@@ -198,6 +198,9 @@ class OrchestratorTab(QWidget):
         row3.addWidget(self.min_recurrence)
         form.addLayout(row3)
 
+        # Update the log output directory whenever the field changes
+        self.output_dir.textChanged.connect(self._on_output_dir_changed)
+
         row4 = QHBoxLayout()
         row4.addWidget(QLabel("Run mode / Target agent:"))
         self.target_agent_combo = QComboBox()
@@ -274,8 +277,25 @@ class OrchestratorTab(QWidget):
     def _browse_output_dir(self) -> None:
         folder = QFileDialog.getExistingDirectory(self, "Select output folder")
         if folder:
-            self.output_dir.setText(folder)
+            self.output_dir.setText(folder)  # triggers textChanged → _on_output_dir_changed
             log_action("Orchestrator", "browse_output_dir", f"path={folder}")
+
+    def _on_output_dir_changed(self, new_path: str) -> None:
+        """Redirect action-log output whenever the output folder field changes.
+
+        Called both when the user types into the field and when _browse_output_dir
+        sets the text programmatically.
+        """
+        target = new_path.strip() or "output/gui_run"
+        set_log_output_dir(target)
+        err = get_init_error()
+        if err:
+            from PySide6.QtWidgets import QMessageBox
+            QMessageBox.warning(
+                self,
+                "⚠️ Action Log — Setup Failed",
+                f"{err}\n\nRequested log path: {target}",
+            )
 
     def _update_run_button_label(self) -> None:
         idx = self.target_agent_combo.currentIndex()

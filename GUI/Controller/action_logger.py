@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import logging
 import os
+import traceback
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, Optional, Set
@@ -31,6 +32,16 @@ _LOG_RETENTION_DAYS = 7
 
 _logger: Optional[logging.Logger] = None
 _active_handler_paths: Set[str] = set()
+_init_error: Optional[str] = None  # populated when log setup fails
+
+
+def get_init_error() -> Optional[str]:
+    """Return the last logging-setup error message, or None if all is well.
+
+    Callers (e.g. the GUI startup code) can query this after the application
+    starts and surface a visible warning to the user.
+    """
+    return _init_error
 
 
 def _get_logger() -> logging.Logger:
@@ -59,7 +70,7 @@ def set_log_output_dir(dir_path: str | Path) -> None:
     dir_path : str | Path
         The target output folder (e.g. "output/gui_run" or "output").
     """
-    global _logger, _active_handler_paths
+    global _logger, _active_handler_paths, _init_error
     if _logger is None:
         _logger = logging.getLogger(_LOGGER_NAME)
         _logger.setLevel(logging.INFO)
@@ -68,7 +79,14 @@ def set_log_output_dir(dir_path: str | Path) -> None:
     out_dir = Path(dir_path).resolve()
     try:
         out_dir.mkdir(parents=True, exist_ok=True)
-    except OSError:
+    except OSError as exc:
+        _init_error = (
+            f"Cannot create log directory '{out_dir}'.\n"
+            f"Reason: {exc}\n\n"
+            "Possible causes: insufficient permissions, read-only drive, "
+            "or antivirus blocking file creation.\n"
+            "User-action logging will be disabled for this session."
+        )
         return
 
     main_file = out_dir / "user_actions.log"
@@ -89,12 +107,20 @@ def set_log_output_dir(dir_path: str | Path) -> None:
         handler.setFormatter(logging.Formatter("%(message)s"))
         _logger.addHandler(handler)
         _active_handler_paths.add(str_path)
-    except OSError:
-        pass
+        _init_error = None  # clear any previous error on success
+    except OSError as exc:
+        _init_error = (
+            f"Cannot write to log file '{main_file}'.\n"
+            f"Reason: {exc}\n\n"
+            "Possible causes: insufficient permissions, file locked by "
+            "another process, or antivirus blocking write access.\n"
+            "User-action logging will be disabled for this session."
+        )
 
 
 def _cleanup_old_logs(out_dir: Path) -> None:
     """Remove log files older than _LOG_RETENTION_DAYS."""
+    global _init_error
     cutoff = datetime.now() - timedelta(days=_LOG_RETENTION_DAYS)
     try:
         for f in out_dir.glob("user_actions_*.log"):
@@ -103,10 +129,24 @@ def _cleanup_old_logs(out_dir: Path) -> None:
                 file_date = datetime.strptime(date_str, "%Y-%m-%d")
                 if file_date < cutoff:
                     f.unlink()
-            except (ValueError, OSError):
-                pass
-    except OSError:
-        pass
+            except ValueError as exc:
+                _init_error = (
+                    f"Could not parse date from log filename '{f.name}'.\n"
+                    f"Reason: {exc}\n"
+                    "The file was skipped during cleanup."
+                )
+            except OSError as exc:
+                _init_error = (
+                    f"Could not delete old log file '{f}'.\n"
+                    f"Reason: {exc}\n"
+                    "Possible cause: file is locked by another process."
+                )
+    except OSError as exc:
+        _init_error = (
+            f"Could not scan log directory '{out_dir}' for old log files.\n"
+            f"Reason: {exc}\n"
+            "Possible cause: insufficient permissions or directory does not exist."
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -153,6 +193,12 @@ def log_action(tab: str, action: str, details: str = "", params: Optional[Dict[s
         logger.info(" | ".join(parts))
         for h in logger.handlers:
             h.flush()
-    except Exception:
-        # Logging must never crash the application
-        pass
+    except Exception as exc:
+        # Logging must never crash the application, but we do record the error
+        # so the GUI can surface it to the user via get_init_error().
+        global _init_error
+        _init_error = (
+            f"Unexpected error while logging action '{action}' (tab: {tab}).\n"
+            f"Reason: {exc}\n\n"
+            f"{traceback.format_exc().strip()}"
+        )

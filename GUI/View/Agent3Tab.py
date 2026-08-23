@@ -56,7 +56,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from action_logger import log_action
+from action_logger import log_action, set_log_output_dir
 
 
 class PlantUMLDiagramWorker(QThread):
@@ -187,6 +187,7 @@ class Agent3Tab(QWidget):
 
     evaluation_updated = Signal(str, dict, dict)
     continue_pipeline_requested = Signal()
+    output_dir_changed = Signal(str)  # emitted whenever the output folder field changes
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -219,6 +220,7 @@ class Agent3Tab(QWidget):
         row1 = QHBoxLayout()
         row1.addWidget(QLabel("Output Folder:"))
         self.output_dir_edit = QLineEdit()
+        self.output_dir_edit.textChanged.connect(self.output_dir_changed.emit)
         row1.addWidget(self.output_dir_edit, stretch=1)
         btn_browse_output = QPushButton("Browse Output…")
         btn_browse_output.clicked.connect(self._browse_output_dir)
@@ -448,6 +450,8 @@ class Agent3Tab(QWidget):
     def receive_run_output(self, output_dir: str, case_models_dir: str | None = None) -> None:
         """Pre-fills folders when Orchestrator run completes."""
         self.output_dir_edit.setText(output_dir)
+        if output_dir:
+            set_log_output_dir(output_dir)
         if case_models_dir:
             self.models_dir_edit.setText(case_models_dir)
         self.refresh_file_lists()
@@ -476,6 +480,7 @@ class Agent3Tab(QWidget):
         folder = QFileDialog.getExistingDirectory(self, "Select Orchestrator Output Folder")
         if folder:
             self.output_dir_edit.setText(folder)
+            set_log_output_dir(folder)
             self.refresh_file_lists()
             log_action("Agent3", "browse_output_dir", f"path={folder}")
 
@@ -1097,7 +1102,7 @@ class Agent3Tab(QWidget):
                     entry["compliance_status"] = new_st
             self._recalculate_score()
             self._populate_tree_table()
-            log_action("Agent3", "change_status", f"guideline={gid}, new_status={new_st}")
+            log_action("Agent3", "change_status", f"guideline={gid} | old_status={curr} | new_status={new_st}")
             self._save_hitl_changes()  # auto-save
 
     def _hitl_update_feedback(self) -> None:
@@ -1125,7 +1130,7 @@ class Agent3Tab(QWidget):
                 if entry.get("guideline_id") == gid:
                     entry["notes"] = notes
             self._populate_tree_table()
-            log_action("Agent3", "update_feedback", f"guideline={gid}")
+            log_action("Agent3", "update_feedback", f"guideline={gid} | old_feedback={curr_notes!r} | new_feedback={notes!r}")
             self._save_hitl_changes()  # auto-save
 
     def _hitl_map_fragment(self) -> None:

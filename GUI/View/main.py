@@ -39,7 +39,7 @@ for _p in (_VIEW_DIR, _CONTROLLER_DIR, _MODEL_DIR):
         sys.path.insert(0, str(_p))
 
 from main_controller import MainController, AsyncJsonLoader, StatePersister
-from action_logger import log_action, set_log_output_dir
+from action_logger import log_action, set_log_output_dir, get_init_error
 
 
 
@@ -54,6 +54,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QMainWindow,
+    QMessageBox,
     QPushButton,
     QScrollArea,
     QSplashScreen,
@@ -69,7 +70,7 @@ from PySide6.QtWidgets import (
 
 
 APP_TITLE   = "VEGO-AI Pipeline GUI"
-APP_VERSION = "2.1.3"
+APP_VERSION = "2.1.4"
 APP_USER_MODEL_ID = "VEGOAI.PipelineGUI"
 
 
@@ -719,6 +720,9 @@ class MainWindow(QMainWindow):
         output_dir = self.orchestrator_tab.output_dir.text().strip() or "output/gui_run"
         out_path = Path(output_dir)
         set_log_output_dir(output_dir)
+        # Surface any logging setup error to the user via a dialog.
+        # We defer it with QTimer so the window is fully visible first.
+        QTimer.singleShot(200, self._check_log_init_error)
 
         # Keep the saved folders visible immediately — no file I/O needed.
         self.agent3_tab.output_dir_edit.setText(output_dir)
@@ -727,6 +731,16 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage("Loading saved template & guidelines…")
 
         MainController.load_initial_metadata(out_path, self._json_loader, self._on_initial_metadata_loaded)
+
+    def _check_log_init_error(self) -> None:
+        """Show a warning dialog if user-action logging could not be set up."""
+        err = get_init_error()
+        if err:
+            QMessageBox.warning(
+                self,
+                "⚠️ Action Log — Setup Failed",
+                f"{err}\n\nLog path: {self.orchestrator_tab.output_dir.text().strip() or 'output'}",
+            )
 
     def _on_initial_metadata_loaded(self, results: dict) -> None:
         """Runs on the GUI thread once the background read finishes — safe
@@ -840,6 +854,40 @@ class MainWindow(QMainWindow):
         
         self._watch_output_dir()
         self.orchestrator_tab.output_dir.textChanged.connect(self._watch_output_dir)
+
+        # ── Bidirectional output-folder sync ──────────────────────────────
+        # Guard flag prevents the two handlers from calling each other in a loop.
+        self._syncing_output_dir = False
+        self.orchestrator_tab.output_dir.textChanged.connect(self._on_orchestrator_output_dir_changed)
+        self.agent3_tab.output_dir_changed.connect(self._on_agent3_output_dir_changed)
+
+    def _on_orchestrator_output_dir_changed(self, new_path: str) -> None:
+        """Propagate Orchestrator output-folder changes → Agent 3 tab."""
+        if self._syncing_output_dir:
+            return
+        self._syncing_output_dir = True
+        try:
+            self.agent3_tab.output_dir_edit.blockSignals(True)
+            self.agent3_tab.output_dir_edit.setText(new_path)
+            self.agent3_tab.output_dir_edit.blockSignals(False)
+            if new_path.strip():
+                set_log_output_dir(new_path.strip())
+        finally:
+            self._syncing_output_dir = False
+
+    def _on_agent3_output_dir_changed(self, new_path: str) -> None:
+        """Propagate Agent 3 output-folder changes → Orchestrator tab."""
+        if self._syncing_output_dir:
+            return
+        self._syncing_output_dir = True
+        try:
+            self.orchestrator_tab.output_dir.blockSignals(True)
+            self.orchestrator_tab.output_dir.setText(new_path)
+            self.orchestrator_tab.output_dir.blockSignals(False)
+            if new_path.strip():
+                set_log_output_dir(new_path.strip())
+        finally:
+            self._syncing_output_dir = False
 
     def _watch_output_dir(self, *args) -> None:
         output_dir = self.orchestrator_tab.output_dir.text().strip() or "output/gui_run"
