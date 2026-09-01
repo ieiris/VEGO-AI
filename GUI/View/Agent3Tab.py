@@ -472,30 +472,35 @@ class FeedbackDialog(QDialog):
 # ---------------------------------------------------------------------------
 
 class GeneralNoteDialog(QDialog):
-    """Resizable general manual comment / note and score deduction editor for the overall solution/case."""
+    """Resizable general manual comment / note and score adjustment (factor / deduction) editor for the overall solution/case."""
 
     def __init__(
         self,
         case_id: str,
         current_notes: str,
-        current_deduction: float = 0.0,
+        current_adjustment: float = 0.0,
+        current_deduction: float | None = None,
         base_score: float = 0.0,
         parent=None,
     ):
         super().__init__(parent)
-        self.setWindowTitle(f"📝 General Solution Note & Score Deduction — Case {case_id}" if case_id else "📝 General Solution Note")
-        self.resize(650, 440)
-        self.setMinimumSize(460, 280)
+        self.setWindowTitle(f"📝 General Solution Note & Score Adjustment — Case {case_id}" if case_id else "📝 General Solution Note & Score Adjustment")
+        self.resize(680, 460)
+        self.setMinimumSize(480, 300)
 
         self._base_score = float(base_score)
+
+        # If current_deduction was explicitly passed instead of current_adjustment, convert it
+        if current_deduction is not None and current_deduction != 0.0 and current_adjustment == 0.0:
+            current_adjustment = -float(current_deduction)
 
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
 
         header_lbl = QLabel(
-            f"Enter general manual comments / evaluation notes and manual score deduction for case <b>{case_id}</b>:"
+            f"Enter general manual comments / evaluation notes and manual score adjustment (factor / deduction) for case <b>{case_id}</b>:"
             if case_id else
-            "Enter general manual comments / evaluation notes and manual score deduction for the solution:"
+            "Enter general manual comments / evaluation notes and manual score adjustment (factor / deduction) for the solution:"
         )
         header_lbl.setWordWrap(True)
         header_lbl.setStyleSheet("font-size: 12px; color: #263238;")
@@ -508,9 +513,9 @@ class GeneralNoteDialog(QDialog):
         self.text_edit.setFont(QFont("Segoe UI", 10))
         layout.addWidget(self.text_edit, stretch=1)
 
-        # ── Score Deduction Section ──
-        deduct_box = QGroupBox("Manual Score Deduction")
-        deduct_box.setStyleSheet("""
+        # ── Score Adjustment Section ──
+        adj_box = QGroupBox("Manual Score Adjustment (Factor / Deduction)")
+        adj_box.setStyleSheet("""
             QGroupBox {
                 font-weight: bold;
                 color: #37474F;
@@ -526,66 +531,92 @@ class GeneralNoteDialog(QDialog):
                 padding: 0 4px;
             }
         """)
-        deduct_layout = QVBoxLayout(deduct_box)
-        deduct_layout.setSpacing(8)
-        deduct_layout.setContentsMargins(10, 10, 10, 10)
+        adj_layout = QVBoxLayout(adj_box)
+        adj_layout.setSpacing(8)
+        adj_layout.setContentsMargins(10, 10, 10, 10)
 
         input_row = QHBoxLayout()
-        input_row.setSpacing(10)
+        input_row.setSpacing(8)
 
-        deduct_lbl = QLabel("Deduct from score (%):")
-        deduct_lbl.setStyleSheet("font-size: 12px; font-weight: normal; color: #37474F;")
-        input_row.addWidget(deduct_lbl)
+        adj_lbl = QLabel("Adjustment (%):")
+        adj_lbl.setStyleSheet("font-size: 12px; font-weight: normal; color: #37474F;")
+        input_row.addWidget(adj_lbl)
 
-        self.deduction_spin = QDoubleSpinBox()
-        self.deduction_spin.setRange(0.0, 100.0)
-        self.deduction_spin.setSingleStep(1.0)
-        self.deduction_spin.setDecimals(1)
-        self.deduction_spin.setSuffix(" %")
-        self.deduction_spin.setFixedWidth(100)
-        self.deduction_spin.setValue(max(0.0, float(current_deduction)))
-        self.deduction_spin.setStyleSheet("""
-            QDoubleSpinBox {
-                padding: 4px 8px;
-                font-size: 12px;
-                font-weight: bold;
-                color: #C62828;
-                border: 1px solid #B0BEC5;
-                border-radius: 4px;
-                background: #FFFFFF;
-            }
-        """)
-        input_row.addWidget(self.deduction_spin)
+        self.adjustment_spin = QDoubleSpinBox()
+        self.adjustment_spin.setRange(-100.0, 100.0)
+        self.adjustment_spin.setSingleStep(1.0)
+        self.adjustment_spin.setDecimals(1)
+        self.adjustment_spin.setSuffix(" %")
+        self.adjustment_spin.setFixedWidth(110)
+        self.adjustment_spin.setValue(float(current_adjustment))
+        input_row.addWidget(self.adjustment_spin)
 
-        btn_reset_deduct = QPushButton("Reset (0%)")
-        btn_reset_deduct.setFixedWidth(80)
-        btn_reset_deduct.setStyleSheet("""
+        # Preset Quick Buttons
+        btn_factor10 = QPushButton("+10% Factor")
+        btn_factor5 = QPushButton("+5% Factor")
+        btn_reset = QPushButton("Reset (0%)")
+        btn_deduct5 = QPushButton("−5% Deduct")
+        btn_deduct10 = QPushButton("−10% Deduct")
+
+        btn_factor10.setStyleSheet("""
             QPushButton {
-                background: #ECEFF1;
-                color: #455A64;
-                border: 1px solid #CFD8DC;
-                border-radius: 4px;
-                padding: 4px 8px;
-                font-size: 11px;
+                background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9;
+                border-radius: 4px; padding: 4px 6px; font-size: 11px; font-weight: bold;
             }
-            QPushButton:hover {
-                background: #CFD8DC;
-            }
+            QPushButton:hover { background: #C8E6C9; }
         """)
-        btn_reset_deduct.clicked.connect(lambda: self.deduction_spin.setValue(0.0))
-        input_row.addWidget(btn_reset_deduct)
+        btn_factor5.setStyleSheet("""
+            QPushButton {
+                background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9;
+                border-radius: 4px; padding: 4px 6px; font-size: 11px;
+            }
+            QPushButton:hover { background: #C8E6C9; }
+        """)
+        btn_reset.setStyleSheet("""
+            QPushButton {
+                background: #ECEFF1; color: #455A64; border: 1px solid #CFD8DC;
+                border-radius: 4px; padding: 4px 6px; font-size: 11px;
+            }
+            QPushButton:hover { background: #CFD8DC; }
+        """)
+        btn_deduct5.setStyleSheet("""
+            QPushButton {
+                background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2;
+                border-radius: 4px; padding: 4px 6px; font-size: 11px;
+            }
+            QPushButton:hover { background: #FFCDD2; }
+        """)
+        btn_deduct10.setStyleSheet("""
+            QPushButton {
+                background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2;
+                border-radius: 4px; padding: 4px 6px; font-size: 11px; font-weight: bold;
+            }
+            QPushButton:hover { background: #FFCDD2; }
+        """)
+
+        btn_factor10.clicked.connect(lambda: self.adjustment_spin.setValue(10.0))
+        btn_factor5.clicked.connect(lambda: self.adjustment_spin.setValue(5.0))
+        btn_reset.clicked.connect(lambda: self.adjustment_spin.setValue(0.0))
+        btn_deduct5.clicked.connect(lambda: self.adjustment_spin.setValue(-5.0))
+        btn_deduct10.clicked.connect(lambda: self.adjustment_spin.setValue(-10.0))
+
+        input_row.addWidget(btn_factor10)
+        input_row.addWidget(btn_factor5)
+        input_row.addWidget(btn_reset)
+        input_row.addWidget(btn_deduct5)
+        input_row.addWidget(btn_deduct10)
         input_row.addStretch(1)
 
-        deduct_layout.addLayout(input_row)
+        adj_layout.addLayout(input_row)
 
         self.preview_lbl = QLabel()
         self.preview_lbl.setStyleSheet("font-size: 11px; color: #546E7A;")
-        deduct_layout.addWidget(self.preview_lbl)
+        adj_layout.addWidget(self.preview_lbl)
 
-        self.deduction_spin.valueChanged.connect(self._update_preview)
-        self._update_preview(self.deduction_spin.value())
+        self.adjustment_spin.valueChanged.connect(self._update_preview)
+        self._update_preview(self.adjustment_spin.value())
 
-        layout.addWidget(deduct_box)
+        layout.addWidget(adj_box)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self.accept)
@@ -593,30 +624,64 @@ class GeneralNoteDialog(QDialog):
         layout.addWidget(buttons)
 
     def _update_preview(self, val: float) -> None:
+        # Dynamic spinbox styling
+        if val > 0:
+            self.adjustment_spin.setStyleSheet("""
+                QDoubleSpinBox {
+                    padding: 4px 8px; font-size: 12px; font-weight: bold;
+                    color: #2E7D32; border: 1px solid #81C784; border-radius: 4px; background: #E8F5E9;
+                }
+            """)
+        elif val < 0:
+            self.adjustment_spin.setStyleSheet("""
+                QDoubleSpinBox {
+                    padding: 4px 8px; font-size: 12px; font-weight: bold;
+                    color: #C62828; border: 1px solid #E57373; border-radius: 4px; background: #FFEBEE;
+                }
+            """)
+        else:
+            self.adjustment_spin.setStyleSheet("""
+                QDoubleSpinBox {
+                    padding: 4px 8px; font-size: 12px; font-weight: normal;
+                    color: #37474F; border: 1px solid #B0BEC5; border-radius: 4px; background: #FFFFFF;
+                }
+            """)
+
         if self._base_score > 0:
-            final_score = max(0.0, min(100.0, self._base_score - val))
+            final_score = max(0.0, min(100.0, self._base_score + val))
             color = "#2E7D32" if final_score >= 75 else "#F57C00" if final_score >= 50 else "#C62828"
             if val > 0:
                 self.preview_lbl.setText(
                     f"Base Score: <b>{self._base_score:.1f}%</b> &nbsp;➔&nbsp; "
-                    f"Manual Deduction: <span style='color:#C62828;'><b>−{val:.1f}%</b></span> &nbsp;➔&nbsp; "
+                    f"Factor (Bonus): <span style='color:#2E7D32;'><b>+{val:.1f}%</b></span> &nbsp;➔&nbsp; "
+                    f"Final Score: <span style='color:{color};'><b>{final_score:.1f}%</b></span>"
+                )
+            elif val < 0:
+                self.preview_lbl.setText(
+                    f"Base Score: <b>{self._base_score:.1f}%</b> &nbsp;➔&nbsp; "
+                    f"Manual Deduction: <span style='color:#C62828;'><b>{val:.1f}%</b></span> &nbsp;➔&nbsp; "
                     f"Final Score: <span style='color:{color};'><b>{final_score:.1f}%</b></span>"
                 )
             else:
                 self.preview_lbl.setText(
-                    f"Base Score: <b>{self._base_score:.1f}%</b> &nbsp;➔&nbsp; Final Score: <b>{self._base_score:.1f}%</b> (no deduction)"
+                    f"Base Score: <b>{self._base_score:.1f}%</b> &nbsp;➔&nbsp; Final Score: <b>{self._base_score:.1f}%</b> (no manual adjustment)"
                 )
         else:
             if val > 0:
-                self.preview_lbl.setText(f"Manual Deduction: <span style='color:#C62828;'><b>−{val:.1f}%</b></span>")
+                self.preview_lbl.setText(f"Factor (Bonus): <span style='color:#2E7D32;'><b>+{val:.1f}%</b></span>")
+            elif val < 0:
+                self.preview_lbl.setText(f"Manual Deduction: <span style='color:#C62828;'><b>{val:.1f}%</b></span>")
             else:
-                self.preview_lbl.setText("No manual deduction applied.")
+                self.preview_lbl.setText("No manual adjustment applied.")
 
     def get_text(self) -> str:
         return self.text_edit.toPlainText()
 
+    def get_adjustment(self) -> float:
+        return float(self.adjustment_spin.value())
+
     def get_deduction(self) -> float:
-        return float(self.deduction_spin.value())
+        return -float(self.adjustment_spin.value())
 
 
 
@@ -2224,18 +2289,29 @@ class Agent3Tab(QWidget):
         max_pts = total_g * self.sat_weight if total_g > 0 else 1.0
         base_pct = (pts / max_pts * 100.0) if max_pts > 0 else 0.0
 
-        deduction = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
+        deduction_val = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
+        adjustment = float(
+            self.current_raw_data.get(
+                "score_adjustment",
+                self.current_raw_data.get("manual_adjustment", -deduction_val)
+            ) or 0.0
+        )
         raw_pct = self.current_raw_data.get("score_pct")
         if raw_pct is not None:
             try:
                 pct = float(raw_pct)
             except (ValueError, TypeError):
-                pct = max(0.0, base_pct - deduction)
+                pct = max(0.0, min(100.0, base_pct + adjustment))
         else:
-            pct = max(0.0, base_pct - deduction)
+            pct = max(0.0, min(100.0, base_pct + adjustment))
 
-        deduct_str = f" [−{deduction:g}% manual deduction]" if deduction > 0 else ""
-        score_info = f"Score: {pct:.1f}% ({pts:g}/{total_g} pts){deduct_str} — Click for full details" if total_g > 0 else "Click to view case score & assessment"
+        if adjustment > 0:
+            adj_str = f" [+{adjustment:g}% factor]"
+        elif adjustment < 0:
+            adj_str = f" [{adjustment:g}% manual deduction]"
+        else:
+            adj_str = ""
+        score_info = f"Score: {pct:.1f}% ({pts:g}/{total_g} pts){adj_str} — Click for full details" if total_g > 0 else "Click to view case score & assessment"
 
         gen_notes = self.current_raw_data.get(
             "general_notes",
@@ -2247,13 +2323,15 @@ class Agent3Tab(QWidget):
         self.tree_table.setItem(row, 4, QTableWidgetItem(""))
 
         note_display = []
-        if deduction > 0:
-            note_display.append(f"[−{deduction:g}% deduction]")
+        if adjustment > 0:
+            note_display.append(f"[+{adjustment:g}% factor]")
+        elif adjustment < 0:
+            note_display.append(f"[{adjustment:g}% deduction]")
         if gen_notes:
             note_display.append(gen_notes)
         note_text = " ".join(note_display)
 
-        item_gen_note = QTableWidgetItem(f"📝 {note_text}" if note_text else "Double-click to add general note / deduction")
+        item_gen_note = QTableWidgetItem(f"📝 {note_text}" if note_text else "Double-click to add general note / adjustment")
         if note_text:
             item_gen_note.setForeground(QColor("#4A148C"))
             f = item_gen_note.font()
@@ -2391,15 +2469,21 @@ class Agent3Tab(QWidget):
         max_pts = total_g * self.sat_weight if total_g > 0 else 1.0
         base_pct = (pts / max_pts * 100.0) if max_pts > 0 else 0.0
 
-        deduction = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
+        deduction_val = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
+        adjustment = float(
+            self.current_raw_data.get(
+                "score_adjustment",
+                self.current_raw_data.get("manual_adjustment", -deduction_val)
+            ) or 0.0
+        )
         raw_pct = self.current_raw_data.get("score_pct")
         if raw_pct is not None:
             try:
                 pct = float(raw_pct)
             except (ValueError, TypeError):
-                pct = max(0.0, base_pct - deduction)
+                pct = max(0.0, min(100.0, base_pct + adjustment))
         else:
-            pct = max(0.0, base_pct - deduction)
+            pct = max(0.0, min(100.0, base_pct + adjustment))
 
         overall = self.current_raw_data.get("overall_assessment", "")
         if not overall:
@@ -2429,12 +2513,17 @@ class Agent3Tab(QWidget):
             self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
         )
         notes_badge = f" &nbsp;|&nbsp; <span style='background:#EDE7F6; color:#4A148C; padding:1px 6px; border-radius:3px; font-size:10px;'>📝 {gen_notes[:50]}{'…' if len(gen_notes)>50 else ''}</span>" if gen_notes else ""
-        deduct_badge = f" &nbsp;<span style='background:#FFEBEE; color:#C62828; padding:1px 6px; border-radius:3px; font-size:10px; font-weight:bold;'>−{deduction:g}% deduction</span>" if deduction > 0 else ""
+        if adjustment > 0:
+            adj_badge = f" &nbsp;<span style='background:#E8F5E9; color:#2E7D32; padding:1px 6px; border-radius:3px; font-size:10px; font-weight:bold;'>+{adjustment:g}% factor</span>"
+        elif adjustment < 0:
+            adj_badge = f" &nbsp;<span style='background:#FFEBEE; color:#C62828; padding:1px 6px; border-radius:3px; font-size:10px; font-weight:bold;'>{adjustment:g}% deduction</span>"
+        else:
+            adj_badge = ""
 
         return (
             f"{cid_part}"
             f"Score: <b><span style='color:{pct_color};'>{pct:.1f}%</span></b>"
-            f"{deduct_badge}"
+            f"{adj_badge}"
             f" ({n_sat}✓ {n_part}~ {n_not}✗ / {total_g}){uf_part}"
             f" &nbsp;|&nbsp; <span style='color:{overall_color};'><b>{overall}</b></span>"
             f"{notes_badge}"
@@ -2508,7 +2597,13 @@ class Agent3Tab(QWidget):
             n_sat  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
             n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Partially-Satisfied", "Partial"))
             n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
-            deduction = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
+            deduction_val = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
+            adjustment = float(
+                self.current_raw_data.get(
+                    "score_adjustment",
+                    self.current_raw_data.get("manual_adjustment", -deduction_val)
+                ) or 0.0
+            )
             gen_notes = self.current_raw_data.get(
                 "general_notes",
                 self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
@@ -2517,8 +2612,10 @@ class Agent3Tab(QWidget):
                 f"✓ {n_sat} Satisfied &nbsp; ~ {n_part} Partial &nbsp; ✗ {n_not} Not-Satisfied"
                 f" &nbsp; | &nbsp; {len(self.uncovered_data)} uncovered fragments"
             )
-            if deduction > 0:
-                extra += f" &nbsp; | &nbsp; <span style='color:#C62828;'><b>Manual Deduction:</b> −{deduction:g}%</span>"
+            if adjustment > 0:
+                extra += f" &nbsp; | &nbsp; <span style='color:#2E7D32;'><b>Factor:</b> +{adjustment:g}%</span>"
+            elif adjustment < 0:
+                extra += f" &nbsp; | &nbsp; <span style='color:#C62828;'><b>Manual Deduction:</b> {adjustment:g}%</span>"
             if gen_notes:
                 extra += f" &nbsp; | &nbsp; 📝 <b>General Note:</b> <i>{gen_notes}</i>"
             self._update_summary_bar(extra)
@@ -2670,17 +2767,30 @@ class Agent3Tab(QWidget):
                 not_c += 1
 
         base_pct = (actual / total_possible * 100.0) if total_possible > 0 else 0.0
-        deduction = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
-        final_pct = max(0.0, min(100.0, base_pct - deduction))
+        deduction_val = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
+        adjustment = float(
+            self.current_raw_data.get(
+                "score_adjustment",
+                self.current_raw_data.get("manual_adjustment", -deduction_val)
+            ) or 0.0
+        )
+        final_pct = max(0.0, min(100.0, base_pct + adjustment))
 
         self.current_raw_data["score_pct"] = round(final_pct, 1)
         self.current_raw_data["base_score_pct"] = round(base_pct, 1)
-        self.current_raw_data["score_deduction"] = round(deduction, 1)
-        self.current_raw_data["manual_deduction"] = round(deduction, 1)
+        self.current_raw_data["score_adjustment"] = round(adjustment, 1)
+        self.current_raw_data["manual_adjustment"] = round(adjustment, 1)
+        self.current_raw_data["score_deduction"] = round(-adjustment, 1)
+        self.current_raw_data["manual_deduction"] = round(-adjustment, 1)
 
-        deduct_msg = f" (Deduction: −{deduction:g}%)" if deduction > 0 else ""
+        if adjustment > 0:
+            adj_msg = f" (Factor: +{adjustment:g}%)"
+        elif adjustment < 0:
+            adj_msg = f" (Deduction: {adjustment:g}%)"
+        else:
+            adj_msg = ""
         self.status_label.setText(
-            f"Recalculated Score: {final_pct:.1f}%{deduct_msg} | Satisfied: {sat_c}, Partially: {part_c}, Not-Satisfied: {not_c}"
+            f"Recalculated Score: {final_pct:.1f}%{adj_msg} | Satisfied: {sat_c}, Partially: {part_c}, Not-Satisfied: {not_c}"
         )
 
     def _hitl_change_status(self) -> None:
@@ -2743,7 +2853,7 @@ class Agent3Tab(QWidget):
             self._save_hitl_changes()  # auto-save
 
     def _hitl_edit_general_note(self) -> None:
-        """Add or edit general manual comment/review and score deduction for the overall solution/case."""
+        """Add or edit general manual comment/review and score adjustment (factor / deduction) for the overall solution/case."""
         if not self.current_raw_data and not self.compliance_data:
             QMessageBox.warning(self, "No Case", "Select or load a case first before adding a general note.")
             return
@@ -2753,22 +2863,30 @@ class Agent3Tab(QWidget):
             "general_notes",
             self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
         )
-        curr_deduction = float(
+        deduction_val = float(
             self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0
+        )
+        curr_adjustment = float(
+            self.current_raw_data.get(
+                "score_adjustment",
+                self.current_raw_data.get("manual_adjustment", -deduction_val)
+            ) or 0.0
         )
         base_score = self._calc_base_score_pct()
 
-        dlg = GeneralNoteDialog(cid, curr_notes, current_deduction=curr_deduction, base_score=base_score, parent=self)
+        dlg = GeneralNoteDialog(cid, curr_notes, current_adjustment=curr_adjustment, base_score=base_score, parent=self)
         if dlg.exec() == QDialog.Accepted:
             notes = dlg.get_text().strip()
-            deduction = dlg.get_deduction()
+            adjustment = dlg.get_adjustment()
             self.current_raw_data["general_notes"] = notes
             self.current_raw_data["reviewer_notes"] = notes
-            self.current_raw_data["score_deduction"] = deduction
-            self.current_raw_data["manual_deduction"] = deduction
+            self.current_raw_data["score_adjustment"] = adjustment
+            self.current_raw_data["manual_adjustment"] = adjustment
+            self.current_raw_data["score_deduction"] = -adjustment
+            self.current_raw_data["manual_deduction"] = -adjustment
             self._recalculate_score()
             self._populate_tree_table()
-            log_action("Agent3", "update_general_note", f"case_id={cid} | deduction={deduction}% | old_note={curr_notes!r} | new_note={notes!r}")
+            log_action("Agent3", "update_general_note", f"case_id={cid} | adjustment={adjustment:+g}% | old_note={curr_notes!r} | new_note={notes!r}")
             self._save_hitl_changes()  # auto-save
 
     def _on_table_cell_double_clicked(self, row: int, col: int) -> None:
