@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8"?>
+<?xml version="1.2" encoding="UTF-8"?>
 <!--
   VEGO-AI Framework — Master System Prompt Library.
 
@@ -255,6 +255,11 @@ CONSTRAINTS:
   ambiguity) must have a corresponding Q_dom question in questions_to_domain_advisor asking
   for clarification from the domain perspective.
 - skill_version must be set to "$skill_version".
+- Identify the exact matching element name(s) in the model:
+   - For Class Diagrams: list the exact Class name(s), e.g. ["Customer"], ["Order", "RegularOrder"]
+   - For Use Case Diagrams: list the Actor and Use Case name(s), e.g. ["Actor: Customer", "UC: Place Order"]
+   - For State Machine Diagrams: list the exact State name(s), e.g. ["Order Classification", "In Transit"]
+   - For Activity Diagrams: list the exact Action step(s), e.g. [":Verify order;"]
 
 OUTPUT FORMAT:
 Return only the JSON block below. No prose, explanation, or markdown wrapping before or after it.
@@ -281,7 +286,8 @@ Return only the JSON block below. No prose, explanation, or markdown wrapping be
       "related_template_id": "T1",
       "mapping_certainty": 0.95,
       "citation": "<EXACT, VERBATIM excerpt of the segement -- DO NOT PARAPHRASE>",
-      "change_note": "Updated following Q_lang_001: <what changed and why>  (update iterations only)"
+      "change_note": "Updated following Q_lang_001: <what changed and why>  (update iterations only)",
+      "matched_elements": ["<exact model element name(s), e.g. 'Customer', 'PaymentPending', or 'Actor: Customer / UC: Place Order'>"],
     }
   ],
   "questions_to_language_advisor": [
@@ -519,12 +525,17 @@ INSTRUCTIONS:
 For each guideline in the reference guidelines:
 1. Search the case model for matching fragments.
 2. If a match is found, describe the fragment in your OWN words (do NOT copy verbatim snippets).
-3. Match the described fragment against the guideline's description field to confirm alignment.
-4. Assign a compliance status:
+3. Identify the exact matching element name(s) in the model:
+   - For Class Diagrams: list the exact Class name(s), e.g. ["Customer"], ["Order", "RegularOrder"]
+   - For Use Case Diagrams: list the Actor and Use Case name(s), e.g. ["Actor: Customer", "UC: Place Order"]
+   - For State Machine Diagrams: list the exact State name(s), e.g. ["Order Classification", "In Transit"]
+   - For Activity Diagrams: list the exact Action step(s), e.g. [":Verify order;"]
+4. Match the described fragment against the guideline's description field to confirm alignment.
+5. Assign a compliance status:
      Satisfied           -- clear and complete evidence found
      Partially-Satisfied -- incomplete or ambiguous evidence
      Not-Satisfied       -- no evidence found
-5. Add notes explaining partial satisfaction where applicable.
+6. Add notes explaining partial satisfaction where applicable.
 
 After processing all guidelines, compute coverage_summary counts.
 
@@ -545,7 +556,9 @@ Return only the JSON block below. No prose, explanation, or markdown wrapping be
       "evidence": "<description of the match in your own words>",
       "reference_guideline": "<relevant citation from the domain description>",
       "compliance_status": "Satisfied | Partially-Satisfied | Not-Satisfied",
-      "notes": "<explanation of partial satisfaction, or empty string>"
+      "notes": "<explanation of partial satisfaction, or empty string>",
+      "matched_elements": ["<exact model element name(s), e.g. 'Customer', 'PaymentPending', or 'Actor: Customer / UC: Place Order'>"],
+      "citation": "<citation from the domain description>"
     }
   ],
   "coverage_summary": {
@@ -614,7 +627,7 @@ Return only the JSON block below. No prose, explanation, or markdown wrapping be
       "evidence": "<description of the alternative match in your own words>",
       "reference_guideline": "<relevant citation from the domain description>",
       "compliance_status": "Satisfied | Partially-Satisfied | Not-Satisfied",
-      "notes": "<justification of why this alternative satisfies the guideline>"
+      "notes": "<justification of why this alternative satisfies the guideline>",
     }
   ],
   "resolution_summary": {
@@ -682,6 +695,11 @@ For each fragment in the case model not accounted for in the compliance vector:
 5. If uncertain, raise clarifying questions using global Q IDs:
    - Q_lang_NNN for language_advisor
    - Q_dom_NNN  for domain_advisor
+6. Identify the exact matching element name(s) in the model:
+   - For Class Diagrams: list the exact Class name(s), e.g. ["Customer"], ["Order", "RegularOrder"]
+   - For Use Case Diagrams: list the Actor and Use Case name(s), e.g. ["Actor: Customer", "UC: Place Order"]
+   - For State Machine Diagrams: list the exact State name(s), e.g. ["Order Classification", "In Transit"]
+   - For Activity Diagrams: list the exact Action step(s), e.g. [":Verify order;"]
 
 CONSTRAINTS:
 - Uncovered fragments must be grounded in the Case Model only.
@@ -700,7 +718,8 @@ Return only the JSON block below. No prose, explanation, or markdown wrapping be
       "fragment": "<description in your own words>",
       "label": "Alternative | Domain Mistake | Language Mistake",
       "severity": "High | Medium | Low | N/A",
-      "reason": "<brief justification>"
+      "reason": "<brief justification>",
+      "matched_elements": ["<exact model element name(s), e.g. 'Customer', 'PaymentPending', or 'Actor: Customer / UC: Place Order'>"],
     }
   ],
   "questions_to_language_advisor": [

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import urllib.request
 import zlib
 import sys
@@ -29,7 +30,8 @@ from agent_controllers import Agent3Controller
 
 
 from PySide6.QtCore import QByteArray, QTimer, Qt, QThread, Signal
-from PySide6.QtGui import QColor, QFont, QImage, QPixmap
+from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap
+from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -60,55 +62,211 @@ from action_logger import log_action, set_log_output_dir
 
 
 class PlantUMLDiagramWorker(QThread):
-    """Asynchronously fetches PlantUML PNG diagram from plantuml.com server."""
+    """Asynchronously fetches PlantUML diagram with multi-tier failover and error recovery.
+
+    If a 400 Bad Request or syntax error occurs on annotated PUML, it automatically
+    sanitizes the code, strips conflicting annotations, and retries across Kroki and
+    official PlantUML servers until a valid diagram is produced.
+    """
 
     image_loaded = Signal(QByteArray)
     error = Signal(str)
 
-    def __init__(self, puml_text: str, parent=None):
+    def __init__(self, puml_text: str, raw_puml_text: str | None = None, parent=None):
         super().__init__(parent)
         self.puml_text = puml_text
+        self.raw_puml_text = raw_puml_text or puml_text
 
     def run(self):
-        if not self.puml_text.strip():
+        if not self.puml_text or not self.puml_text.strip():
             self.error.emit("No model text provided.")
             return
+
+        # Prepare progressive candidate texts:
+        # Candidate 1: Annotated text as requested
+        # Candidate 2: Sanitized text (clean delimiters & markdown fences)
+        # Candidate 3: Clean text stripped of injected colors / legend
+        # Candidate 4: Normalized raw model text
+        candidates: list[str] = []
+
+        c1 = self.puml_text.strip()
+        if c1:
+            candidates.append(c1)
+
+        c2 = self._sanitize_puml(c1)
+        if c2 and c2 not in candidates:
+            candidates.append(c2)
+
+        c3 = self._strip_annotations(self.raw_puml_text or c1)
+        c3 = self._sanitize_puml(c3)
+        if c3 and c3 not in candidates:
+            candidates.append(c3)
+
+        c4 = self._strip_annotations(c1)
+        if c4 and c4 not in candidates:
+            candidates.append(c4)
+
+        max_attempts = 3
+        last_error = ""
+
+        for attempt in range(1, max_attempts + 1):
+            for puml in candidates:
+                raw_bytes = self._try_render_all_endpoints(puml)
+                if raw_bytes:
+                    self.image_loaded.emit(QByteArray(raw_bytes))
+                    return
+
+            if attempt < max_attempts:
+                self.msleep(300 * attempt)
+
+        self.error.emit(f"Rendering failed after retries: {last_error or 'Unable to fetch diagram from rendering servers.'}")
+
+    def _try_render_all_endpoints(self, text: str) -> bytes | None:
+        """Try rendering a given PUML text against Kroki.io and PlantUML.com endpoints."""
+        utf8_data = text.encode("utf-8")
+
+        # 1. Kroki.io SVG (POST)
         try:
-            url = self._plantuml_url(self.puml_text)
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=60) as resp:
-                raw_bytes = resp.read()
-            self.image_loaded.emit(QByteArray(raw_bytes))
-        except Exception as exc:
-            self.error.emit(str(exc))
+            req = urllib.request.Request(
+                "https://kroki.io/plantuml/svg",
+                data=utf8_data,
+                headers={
+                    "Content-Type": "text/plain; charset=utf-8",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI",
+                },
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = resp.read()
+            if data and len(data) > 20:
+                return data
+        except Exception:
+            pass
 
-    def _plantuml_url(self, text: str) -> str:
+        # 2. Kroki.io PNG (POST)
+        try:
+            req = urllib.request.Request(
+                "https://kroki.io/plantuml/png",
+                data=utf8_data,
+                headers={
+                    "Content-Type": "text/plain; charset=utf-8",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI",
+                },
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = resp.read()
+            if data and len(data) > 20:
+                return data
+        except Exception:
+            pass
+
+        # 3. Official PlantUML.com SVG (GET)
+        enc = self._encode_plantuml(text)
+        try:
+            url = f"https://www.plantuml.com/plantuml/svg/{enc}"
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI"},
+            )
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                data = resp.read()
+            if data and len(data) > 20:
+                return data
+        except Exception:
+            pass
+
+        # 4. Official PlantUML.com PNG (GET)
+        try:
+            url = f"https://www.plantuml.com/plantuml/png/{enc}"
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI"},
+            )
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                data = resp.read()
+            if data and len(data) > 20:
+                return data
+        except Exception:
+            pass
+
+        # 5. Alternate mirrors (HTTP / PlantText)
+        for host in ["http://www.plantuml.com/plantuml/svg", "https://planttext.com/api/plantuml/svg"]:
+            try:
+                url = f"{host}/{enc}"
+                req = urllib.request.Request(
+                    url,
+                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI"},
+                )
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    data = resp.read()
+                if data and len(data) > 20:
+                    return data
+            except Exception:
+                pass
+
+        return None
+
+    @staticmethod
+    def _sanitize_puml(text: str) -> str:
+        """Strip markdown wrappers and ensure proper @startuml / @enduml boundaries."""
+        lines = []
+        for line in text.splitlines():
+            s = line.strip()
+            if s.startswith("```"):
+                continue
+            lines.append(line)
+        cleaned = "\n".join(lines).strip()
+        if not cleaned.lower().startswith("@startuml"):
+            cleaned = "@startuml\n" + cleaned
+        if not cleaned.lower().endswith("@enduml"):
+            cleaned = cleaned + "\n@enduml"
+        return cleaned
+
+    @staticmethod
+    def _strip_annotations(text: str) -> str:
+        """Strip color tags, legend blocks, and highlight styling to recover clean PUML."""
+        lines = []
+        in_legend = False
+        for line in text.splitlines():
+            s = line.strip().lower()
+            if s.startswith("legend") or s.startswith("endlegend"):
+                in_legend = s.startswith("legend")
+                continue
+            if in_legend:
+                continue
+            clean_line = re.sub(r'#(?:C8E6C9|FFB74D|FFCDD2|c8e6c9|ffb74d|ffcdd2|green|orange|red)\b', '', line)
+            lines.append(clean_line)
+        return "\n".join(lines)
+
+    @staticmethod
+    def _encode_plantuml(text: str) -> str:
+        """Encode text using standard PlantUML 64-character alphabet deflate."""
         c = zlib.compress(text.encode("utf-8"), 9)[2:-4]
-        res = ""
-        for i in range(0, len(c), 3):
-            chunk = c[i:i + 3]
-            b1 = chunk[0]
-            b2 = chunk[1] if len(chunk) > 1 else 0
-            b3 = chunk[2] if len(chunk) > 2 else 0
-            c1 = b1 >> 2
-            c2 = ((b1 & 3) << 4) | (b2 >> 4)
-            c3 = ((b2 & 15) << 2) | (b3 >> 6)
-            c4 = b3 & 63
-            for x in [c1, c2, c3, c4]:
-                res += self._e(x & 63)
-        return f"http://www.plantuml.com/plantuml/png/{res}"
-
-    def _e(self, b: int) -> str:
-        if b < 10:
-            return chr(48 + b)
-        b -= 10
-        if b < 26:
-            return chr(65 + b)
-        b -= 26
-        if b < 26:
-            return chr(97 + b)
-        b -= 26
-        return "-" if b == 0 else ("_" if b == 1 else "?")
+        alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
+        res = []
+        i = 0
+        while i < len(c):
+            rem = len(c) - i
+            if rem >= 3:
+                b1, b2, b3 = c[i], c[i + 1], c[i + 2]
+                res.append(alphabet[b1 >> 2])
+                res.append(alphabet[((b1 & 3) << 4) | (b2 >> 4)])
+                res.append(alphabet[((b2 & 15) << 2) | (b3 >> 6)])
+                res.append(alphabet[b3 & 63])
+                i += 3
+            elif rem == 2:
+                b1, b2 = c[i], c[i + 1]
+                res.append(alphabet[b1 >> 2])
+                res.append(alphabet[((b1 & 3) << 4) | (b2 >> 4)])
+                res.append(alphabet[(b2 & 15) << 2])
+                i += 2
+            elif rem == 1:
+                b1 = c[i]
+                res.append(alphabet[b1 >> 2])
+                res.append(alphabet[(b1 & 3) << 4])
+                i += 1
+        return "".join(res)
 
 
 class ScoringSchemaDialog(QDialog):
@@ -149,6 +307,135 @@ class ScoringSchemaDialog(QDialog):
         return self.sat_spin.value(), self.part_spin.value(), self.not_spin.value()
 
 
+# ---------------------------------------------------------------------------
+# Material Design button helper
+# ---------------------------------------------------------------------------
+
+_MD_BTN_STYLE = """
+    QPushButton {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        padding: 3px 10px;
+        border-radius: 4px;
+        border: none;
+        min-height: 24px;
+        max-height: 24px;
+    }
+    QPushButton:hover   { opacity: 0.88; }
+    QPushButton:pressed { padding-top: 4px; padding-bottom: 2px; }
+    QPushButton:disabled { color: #9e9e9e; background: #e0e0e0; }
+"""
+
+def _md_btn(text: str, color: str = "#1976D2", text_color: str = "#ffffff") -> QPushButton:
+    """Create a compact Material Design filled button."""
+    btn = QPushButton(text)
+    btn.setStyleSheet(
+        _MD_BTN_STYLE +
+        f"QPushButton {{ background: {color}; color: {text_color}; }}"
+        f"QPushButton:hover {{ background: {color}CC; }}"
+    )
+    btn.setCursor(Qt.PointingHandCursor)
+    return btn
+
+
+def _md_btn_outlined(text: str, color: str = "#1976D2") -> QPushButton:
+    """Create a compact Material Design outlined (text-style) button."""
+    btn = QPushButton(text)
+    btn.setStyleSheet(
+        f"""
+        QPushButton {{
+            font-size: 11px; font-weight: 600; letter-spacing: 0.4px;
+            padding: 3px 10px; border-radius: 4px; min-height: 24px; max-height: 24px;
+            border: 1px solid {color}; background: transparent; color: {color};
+        }}
+        QPushButton:hover   {{ background: {color}18; }}
+        QPushButton:pressed {{ background: {color}30; }}
+        QPushButton:disabled {{ color: #9e9e9e; border-color: #9e9e9e; }}
+        """
+    )
+    btn.setCursor(Qt.PointingHandCursor)
+    return btn
+
+
+# ---------------------------------------------------------------------------
+# Folder Settings Dialog
+# ---------------------------------------------------------------------------
+
+class FolderSettingsDialog(QDialog):
+    """Dialog for configuring Output Folder and Case Models Folder paths."""
+
+    def __init__(self, output_dir: str, models_dir: str, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("⚙️  Folder Settings")
+        self.setMinimumWidth(560)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(12)
+        layout.setContentsMargins(16, 16, 16, 12)
+
+        form = QFormLayout()
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        form.setHorizontalSpacing(10)
+        form.setVerticalSpacing(10)
+
+        # Output Folder row
+        out_row = QHBoxLayout()
+        self.output_edit = QLineEdit(output_dir)
+        self.output_edit.setPlaceholderText("e.g. output/gui_run")
+        btn_out = _md_btn_outlined("Browse…", "#1976D2")
+        btn_out.setFixedWidth(72)
+        btn_out.clicked.connect(self._browse_output)
+        out_row.addWidget(self.output_edit)
+        out_row.addWidget(btn_out)
+        form.addRow("Output Folder:", out_row)
+
+        # Case Models Folder row
+        mdl_row = QHBoxLayout()
+        self.models_edit = QLineEdit(models_dir)
+        self.models_edit.setPlaceholderText("e.g. Cases")
+        btn_mdl = _md_btn_outlined("Browse…", "#1976D2")
+        btn_mdl.setFixedWidth(72)
+        btn_mdl.clicked.connect(self._browse_models)
+        mdl_row.addWidget(self.models_edit)
+        mdl_row.addWidget(btn_mdl)
+        form.addRow("Case Models Folder:", mdl_row)
+
+        layout.addLayout(form)
+
+        # Buttons
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+        btn_cancel = _md_btn_outlined("Cancel", "#757575")
+        btn_cancel.setFixedWidth(80)
+        btn_cancel.clicked.connect(self.reject)
+        btn_ok = _md_btn("Apply", "#1976D2")
+        btn_ok.setFixedWidth(80)
+        btn_ok.clicked.connect(self.accept)
+        btn_row.addWidget(btn_cancel)
+        btn_row.addSpacing(8)
+        btn_row.addWidget(btn_ok)
+        layout.addLayout(btn_row)
+
+    def _browse_output(self) -> None:
+        folder = QFileDialog.getExistingDirectory(self, "Select Output Folder")
+        if folder:
+            self.output_edit.setText(folder)
+
+    def _browse_models(self) -> None:
+        folder = QFileDialog.getExistingDirectory(self, "Select Case Models Folder")
+        if folder:
+            self.models_edit.setText(folder)
+
+    def get_values(self) -> tuple[str, str]:
+        return self.output_edit.text().strip(), self.models_edit.text().strip()
+
+
+# ---------------------------------------------------------------------------
+# Feedback Dialog
+# ---------------------------------------------------------------------------
+
 class FeedbackDialog(QDialog):
     """Resizable feedback editor with word-wrap and comfortable reading at any size."""
 
@@ -180,6 +467,272 @@ class FeedbackDialog(QDialog):
         return self.text_edit.toPlainText()
 
 
+# ---------------------------------------------------------------------------
+# General Note Dialog
+# ---------------------------------------------------------------------------
+
+class GeneralNoteDialog(QDialog):
+    """Resizable general manual comment / note editor for the overall solution/case."""
+
+    def __init__(self, case_id: str, current_notes: str, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"📝 General Solution Note — Case {case_id}" if case_id else "📝 General Solution Note")
+        self.resize(620, 360)
+        self.setMinimumSize(420, 220)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+
+        header_lbl = QLabel(
+            f"Enter general manual comment / evaluation notes for case <b>{case_id}</b>:"
+            if case_id else
+            "Enter general manual comment / evaluation notes for the solution:"
+        )
+        header_lbl.setWordWrap(True)
+        header_lbl.setStyleSheet("font-size: 12px; color: #263238;")
+        layout.addWidget(header_lbl)
+
+        self.text_edit = QPlainTextEdit()
+        self.text_edit.setPlainText(current_notes)
+        self.text_edit.setPlaceholderText("Write overall solution feedback, evaluation rationale, or reviewer notes here…")
+        self.text_edit.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+        self.text_edit.setFont(QFont("Segoe UI", 10))
+        layout.addWidget(self.text_edit, stretch=1)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+    def get_text(self) -> str:
+        return self.text_edit.toPlainText()
+
+
+# ---------------------------------------------------------------------------
+# Floating (detached) windows
+# ---------------------------------------------------------------------------
+
+class DiagramFloatWindow(QDialog):
+    """Non-modal floating window that mirrors the current PlantUML diagram."""
+
+    def __init__(self, pixmap: "QPixmap | None", case_title: str = "", parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"🖼️  Diagram — {case_title}" if case_title else "🖼️  PlantUML Diagram")
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.WindowMinimizeButtonHint |
+            Qt.WindowMaximizeButtonHint |
+            Qt.WindowCloseButtonHint
+        )
+        self.resize(900, 650)
+        self.setMinimumSize(400, 300)
+        self._zoom = 1.0
+        self._original_pixmap = pixmap
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+        toolbar.setSpacing(4)
+        btn_out   = _md_btn_outlined("−", "#455A64"); btn_out.setFixedWidth(28)
+        btn_reset = _md_btn_outlined("1:1", "#455A64"); btn_reset.setFixedWidth(36)
+        btn_in    = _md_btn_outlined("+", "#455A64"); btn_in.setFixedWidth(28)
+        self._zoom_lbl = QLabel("100%")
+        self._zoom_lbl.setFixedWidth(42)
+        self._zoom_lbl.setAlignment(Qt.AlignCenter)
+        self._zoom_lbl.setStyleSheet("font-size: 11px; color: #616161;")
+        btn_save = _md_btn_outlined("💾 Save PNG", "#1976D2")
+        btn_save.clicked.connect(self._save_png)
+
+        btn_in.clicked.connect(self._zoom_in)
+        btn_out.clicked.connect(self._zoom_out)
+        btn_reset.clicked.connect(self._zoom_reset)
+
+        toolbar.addStretch(1)
+        toolbar.addWidget(btn_out)
+        toolbar.addWidget(btn_reset)
+        toolbar.addWidget(btn_in)
+        toolbar.addWidget(self._zoom_lbl)
+        toolbar.addStretch(1)
+        toolbar.addWidget(btn_save)
+        layout.addLayout(toolbar)
+
+        # Scrollable image
+        self._scroll = QScrollArea()
+        self._scroll.setWidgetResizable(True)
+        self._img_label = QLabel("No diagram.")
+        self._img_label.setAlignment(Qt.AlignCenter)
+        self._img_label.setStyleSheet("background:#ffffff; color:#555;")
+        self._scroll.setWidget(self._img_label)
+        layout.addWidget(self._scroll, stretch=1)
+
+        self._apply_zoom()
+
+    def _apply_zoom(self) -> None:
+        if not self._original_pixmap:
+            return
+        w = max(1, int(self._original_pixmap.width() * self._zoom))
+        h = max(1, int(self._original_pixmap.height() * self._zoom))
+        scaled = self._original_pixmap.scaled(w, h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self._img_label.setPixmap(scaled)
+        self._zoom_lbl.setText(f"{int(self._zoom * 100)}%")
+
+    def _zoom_in(self)  -> None: self._zoom = min(4.0, self._zoom + 0.1); self._apply_zoom()
+    def _zoom_out(self) -> None: self._zoom = max(0.1, self._zoom - 0.1); self._apply_zoom()
+    def _zoom_reset(self) -> None: self._zoom = 1.0; self._apply_zoom()
+
+    def update_pixmap(self, pixmap: "QPixmap") -> None:
+        """Live-update the floating window when the main diagram refreshes."""
+        self._original_pixmap = pixmap
+        self._apply_zoom()
+
+    def _save_png(self) -> None:
+        if not self._original_pixmap:
+            QMessageBox.warning(self, "No Image", "No diagram to save.")
+            return
+        path, _ = QFileDialog.getSaveFileName(self, "Save Diagram", "", "PNG Image (*.png)")
+        if path:
+            self._original_pixmap.save(path, "PNG")
+
+
+class TableFloatWindow(QDialog):
+    """Non-modal floating window showing a snapshot of the compliance table + summary."""
+
+    _TABLE_STYLE = """
+        QTableWidget {
+            selection-background-color: #1976D2; selection-color: #fff; outline: none;
+        }
+        QTableWidget::item:selected { background: #1976D2; color: #fff; font-weight: bold; }
+        QTableWidget::item:hover    { background: #E3F2FD; }
+    """
+
+    def __init__(self, source_table: QTableWidget, summary_html: str,
+                 case_title: str = "", parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"📋  Compliance — {case_title}" if case_title else "📋  Compliance Vector")
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.WindowMinimizeButtonHint |
+            Qt.WindowMaximizeButtonHint |
+            Qt.WindowCloseButtonHint
+        )
+        self.resize(1000, 600)
+        self.setMinimumSize(500, 300)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
+
+        # Search filter bar
+        top_row = QHBoxLayout()
+        self._filter_edit = QLineEdit()
+        self._filter_edit.setPlaceholderText("🔍 Filter table (elements, status, evidence, notes...)...")
+        self._filter_edit.setClearButtonEnabled(True)
+        self._filter_edit.textChanged.connect(self._apply_float_filter)
+        top_row.addWidget(self._filter_edit)
+        layout.addLayout(top_row)
+
+        # Clone the table data (read-only)
+        self._table = QTableWidget(source_table.rowCount(), source_table.columnCount())
+        headers = [source_table.horizontalHeaderItem(c).text()
+                   for c in range(source_table.columnCount())
+                   if source_table.horizontalHeaderItem(c)]
+        self._table.setHorizontalHeaderLabels(headers)
+        self._table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self._table.setSelectionBehavior(QTableWidget.SelectRows)
+        self._table.setWordWrap(True)
+        self._table.setAlternatingRowColors(True)
+        self._table.setStyleSheet(self._TABLE_STYLE)
+        hdr = self._table.horizontalHeader()
+        hdr.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        hdr.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        for c in range(2, self._table.columnCount()):
+            hdr.setSectionResizeMode(c, QHeaderView.Stretch)
+
+        # Copy cells
+        for r in range(source_table.rowCount()):
+            for c in range(source_table.columnCount()):
+                src = source_table.item(r, c)
+                if src:
+                    dst = QTableWidgetItem(src.text())
+                    dst.setBackground(src.background())
+                    dst.setForeground(src.foreground())
+                    f = src.font(); f.setBold(src.font().bold()); dst.setFont(f)
+                    self._table.setItem(r, c, dst)
+        self._table.resizeRowsToContents()
+        layout.addWidget(self._table, stretch=1)
+
+        # Summary bar
+        self._summary = QLabel()
+        self._summary.setTextFormat(Qt.RichText)
+        self._summary.setWordWrap(True)
+        self._summary.setStyleSheet(
+            "font-size: 11px; color: #37474F; border-top: 1px solid #CFD8DC; padding: 4px 8px;"
+        )
+        self._summary.setText(summary_html)
+        self._summary.setMaximumHeight(52)
+        layout.addWidget(self._summary, stretch=0)
+
+    def _apply_float_filter(self, text: str) -> None:
+        q = text.strip().lower()
+        tokens = q.split()
+        for r in range(self._table.rowCount()):
+            if not tokens:
+                self._table.setRowHidden(r, False)
+                continue
+            item0 = self._table.item(r, 0)
+            if item0 and "SUMMARY" in item0.text():
+                self._table.setRowHidden(r, False)
+                continue
+            row_text = " ".join(
+                self._table.item(r, c).text().lower()
+                for c in range(self._table.columnCount())
+                if self._table.item(r, c) and self._table.item(r, c).text()
+            )
+            match = all(t in row_text for t in tokens)
+            self._table.setRowHidden(r, not match)
+        self._table.resizeRowsToContents()
+
+    def refresh(self, source_table: QTableWidget, summary_html: str) -> None:
+        """Refresh floating table from updated source data."""
+        self._table.setRowCount(source_table.rowCount())
+        for r in range(source_table.rowCount()):
+            for c in range(source_table.columnCount()):
+                src = source_table.item(r, c)
+                if src:
+                    dst = QTableWidgetItem(src.text())
+                    dst.setBackground(src.background())
+                    dst.setForeground(src.foreground())
+                    f = src.font(); f.setBold(src.font().bold()); dst.setFont(f)
+                    self._table.setItem(r, c, dst)
+        self._table.resizeRowsToContents()
+        self._summary.setText(summary_html)
+        if self._filter_edit.text():
+            self._apply_float_filter(self._filter_edit.text())
+
+
+# ---------------------------------------------------------------------------
+# Pre-compiled PlantUML element patterns for compliance color annotation
+# ---------------------------------------------------------------------------
+_PUML_PATTERNS: list[tuple] = [
+    # new-style activity:  :Step Name;  or  :Step Name; #existing
+    (re.compile(r'^(\s*:)([^;#\n]+?)(\s*)((?:#\w+)?)(;.*)$'), "activity_new"),
+    # old-style activity/arrow label: --> "label" or --> StepName
+    (re.compile(r'^(\s*.*-->\s*"?)([^",#\n]+?)("?\s*)((?:#\w+)?)$'), "arrow_label"),
+    # class / interface / entity / enum
+    (re.compile(r'^(\s*(?:class|interface|entity|enum|abstract)\s+\w+)(\s*)((?:#\w+)?)(\s*(?:\{.*)?)$'), "class"),
+    # component / database / node / rectangle / storage / cloud
+    (re.compile(r'^(\s*(?:component|database|node|rectangle|storage|cloud|queue|card|file)\s+"?)([^"{#\n]+?)("?\s*)((?:#\w+)?)(\s*(?:\[.*)?)$'), "block"),
+    # usecase
+    (re.compile(r'^(\s*usecase\s+"?)([^"{#\n]+?)("?\s*)((?:#\w+)?)$'), "usecase"),
+    # state
+    (re.compile(r'^(\s*state\s+"?)([^"{#\n]+?)("?\s*)((?:#\w+)?)(\s*(?:as\s+\w+)?.*)$'), "state"),
+    # participant / actor / boundary / control (sequence diagrams)
+    (re.compile(r'^(\s*(?:participant|actor|boundary|control|entity|database|collections)\s+"?)([^"{#\n]+?)("?\s+as\s+\w+|"?)(\s*)((?:#\w+)?)$'), "sequence"),
+]
+
 class Agent3Tab(QWidget):
     """
     Native PySide6 Agent 3 Tab: Compliance Visualizer & Interactive Human Involvement Editor.
@@ -209,83 +762,178 @@ class Agent3Tab(QWidget):
         self._current_rendered_text: str | None = None
         self._diagram_cache: dict[str, QPixmap] = {}
         self._pending_puml_text: str | None = None
+        self._diag_float: DiagramFloatWindow | None = None   # floating diagram window
+        self._table_float: TableFloatWindow | None = None    # floating table window
+        self._annotate_active: bool = True  # compliance annotation overlay toggle (enabled by default)
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(6, 6, 6, 6)
+        main_layout.setContentsMargins(6, 4, 6, 6)
+        main_layout.setSpacing(4)
 
-        # ── Top Control & Configuration Bar ──
-        top_box = QGroupBox("Compliance Viewer & Case Selection Controls")
-        top_layout = QVBoxLayout(top_box)
+        # ── Compact top toolbar (single row) ──────────────────────────────────
+        toolbar = QHBoxLayout()
+        toolbar.setContentsMargins(2, 2, 2, 2)
+        toolbar.setSpacing(6)
 
-        row1 = QHBoxLayout()
-        row1.addWidget(QLabel("Output Folder:"))
+        # Hidden line-edits kept for cross-tab compatibility (output_dir, models_dir)
         self.output_dir_edit = QLineEdit()
+        self.output_dir_edit.hide()
         self.output_dir_edit.textChanged.connect(self.output_dir_changed.emit)
-        row1.addWidget(self.output_dir_edit, stretch=1)
-        btn_browse_output = QPushButton("Browse Output…")
-        btn_browse_output.clicked.connect(self._browse_output_dir)
-        row1.addWidget(btn_browse_output)
-
-        row1.addWidget(QLabel("Case Models Folder:"))
         self.models_dir_edit = QLineEdit()
-        row1.addWidget(self.models_dir_edit, stretch=1)
-        btn_browse_models = QPushButton("Browse Models…")
-        btn_browse_models.clicked.connect(self._browse_models_dir)
-        row1.addWidget(btn_browse_models)
+        self.models_dir_edit.hide()
 
-        top_layout.addLayout(row1)
+        # ⚙️ Settings button — opens folder config dialog
+        btn_settings = _md_btn("⚙️  Folders", "#546E7A", "#ffffff")
+        btn_settings.setToolTip("Configure Output Folder and Case Models Folder")
+        btn_settings.clicked.connect(self._open_folder_settings)
+        toolbar.addWidget(btn_settings)
 
-        row2 = QHBoxLayout()
-        row2.addWidget(QLabel("Case Model:"))
+        # Divider label
+        sep1 = QLabel("│")
+        sep1.setStyleSheet("color: #9e9e9e; font-size: 16px;")
+        toolbar.addWidget(sep1)
+
+        # Case Model combo
+        toolbar.addWidget(QLabel("Model:"))
         self.model_combo = QComboBox()
-        self.model_combo.setMinimumWidth(180)
+        self.model_combo.setMinimumWidth(160)
+        self.model_combo.setMaximumWidth(260)
+        self.model_combo.setFixedHeight(24)
         self.model_combo.currentTextChanged.connect(self._on_model_selected)
-        row2.addWidget(self.model_combo)
+        toolbar.addWidget(self.model_combo)
 
-        row2.addWidget(QLabel("Aggregate Vector:"))
+        # Aggregate Vector combo
+        toolbar.addWidget(QLabel("Case:"))
         self.aggregate_combo = QComboBox()
-        self.aggregate_combo.setMinimumWidth(220)
+        self.aggregate_combo.setMinimumWidth(180)
+        self.aggregate_combo.setMaximumWidth(280)
+        self.aggregate_combo.setFixedHeight(24)
         self.aggregate_combo.currentTextChanged.connect(self._on_aggregate_selected)
-        row2.addWidget(self.aggregate_combo)
+        toolbar.addWidget(self.aggregate_combo)
 
-        btn_refresh = QPushButton("🔄 Refresh Files")
+        sep2 = QLabel("│")
+        sep2.setStyleSheet("color: #9e9e9e; font-size: 16px;")
+        toolbar.addWidget(sep2)
+
+        # Action chips
+        btn_refresh = _md_btn_outlined("🔄 Refresh", "#1976D2")
         btn_refresh.clicked.connect(self.refresh_file_lists)
-        row2.addWidget(btn_refresh)
+        toolbar.addWidget(btn_refresh)
 
-        btn_schema = QPushButton("⚖️ Scoring Weights")
+        btn_schema = _md_btn_outlined("⚖️ Weights", "#7B1FA2")
         btn_schema.clicked.connect(self._open_scoring_schema_dialog)
-        row2.addWidget(btn_schema)
+        toolbar.addWidget(btn_schema)
 
-        row2.addStretch(1)
-        top_layout.addLayout(row2)
+        toolbar.addStretch(1)
 
-        self.status_label = QLabel("Ready — select a case or run the orchestrator.")
-        self.status_label.setStyleSheet("font-weight: bold;")
-        top_layout.addWidget(self.status_label)
+        # Status chip (right-aligned)
+        self.status_label = QLabel("Ready")
+        self.status_label.setStyleSheet(
+            "font-size: 10px; color: #616161; padding: 2px 6px;"
+            "border: 1px solid #e0e0e0; border-radius: 10px; background: transparent;"
+        )
+        self.status_label.setMaximumWidth(380)
+        toolbar.addWidget(self.status_label)
 
-        main_layout.addWidget(top_box)
+        main_layout.addLayout(toolbar)
 
-        # ── Main Splitter (Left: Code/Diagram, Right: Compliance Vector & Details) ──
-        main_splitter = QSplitter(Qt.Horizontal)
-        main_splitter.setChildrenCollapsible(False)  # prevent panels from disappearing
+        # ── Main Vertical Splitter: PlantUML viewer on top, guidelines table below ──
+        main_splitter = QSplitter(Qt.Vertical)
+        main_splitter.setChildrenCollapsible(False)
 
-        # ── Left Panel (Tabs: Code & Diagram) ──
-        left_widget = QWidget()
-        left_widget.setMinimumWidth(200)  # always keep editor visible
-        left_layout = QVBoxLayout(left_widget)
-        left_layout.setContentsMargins(0, 0, 0, 0)
+        # ══════════════════════════════════════════════════════════════
+        # TOP PANE — PlantUML Diagram (large, centered)
+        # ══════════════════════════════════════════════════════════════
+        viewer_widget = QWidget()
+        viewer_layout = QVBoxLayout(viewer_widget)
+        viewer_layout.setContentsMargins(0, 0, 0, 0)
 
         self.left_tabs = QTabWidget()
 
-        # Tab 1: Code
+        # Tab 0: Diagram — shown by default
+        diag_widget = QWidget()
+        diag_layout = QVBoxLayout(diag_widget)
+        diag_layout.setContentsMargins(4, 4, 4, 4)
+        diag_layout.setSpacing(4)
+
+        diag_toolbar = QHBoxLayout()
+        diag_toolbar.setSpacing(4)
+        btn_zoom_out   = _md_btn_outlined("−", "#455A64")
+        btn_zoom_out.setFixedWidth(28)
+        btn_zoom_reset = _md_btn_outlined("1:1", "#455A64")
+        btn_zoom_reset.setFixedWidth(36)
+        btn_zoom_in    = _md_btn_outlined("+", "#455A64")
+        btn_zoom_in.setFixedWidth(28)
+        self.zoom_label = QLabel("100%")
+        self.zoom_label.setFixedWidth(42)
+        self.zoom_label.setAlignment(Qt.AlignCenter)
+        self.zoom_label.setStyleSheet("font-size: 11px; color: #616161;")
+
+        btn_zoom_in.clicked.connect(self._zoom_in)
+        btn_zoom_out.clicked.connect(self._zoom_out)
+        btn_zoom_reset.clicked.connect(self._zoom_reset)
+
+        btn_popout_diag = _md_btn_outlined("⤢ Pop Out", "#455A64")
+        btn_popout_diag.setToolTip("Open diagram in a separate floating window")
+        btn_popout_diag.clicked.connect(self._popout_diagram)
+
+        # Compliance annotation toggle (enabled by default)
+        self.btn_annotate = _md_btn("🎨 Annotated", "#1B5E20")
+        self.btn_annotate.setToolTip(
+            "Toggle compliance color overlay on the diagram.\n"
+            "Green = Satisfied  |  Orange = Partially-Satisfied  |  Red = Not-Satisfied"
+        )
+        self.btn_annotate.setCheckable(True)
+        self.btn_annotate.setChecked(True)
+        self.btn_annotate.toggled.connect(self._on_annotate_toggled)
+        self.annotate_legend_label = QLabel()
+        self.annotate_legend_label.setTextFormat(Qt.RichText)
+        self.annotate_legend_label.setText(
+            "&nbsp;"
+            "<span style='background:#C8E6C9; color:#1B5E20; padding:1px 4px; "
+            "border-radius:3px; font-size:10px;'>■ Satisfied</span>&nbsp;"
+            "<span style='background:#FFB74D; color:#E65100; padding:1px 4px; "
+            "border-radius:3px; font-size:10px;'>■ Partial</span>&nbsp;"
+            "<span style='background:#FFCDD2; color:#B71C1C; padding:1px 4px; "
+            "border-radius:3px; font-size:10px;'>■ Not-Satisfied</span>"
+        )
+        self.annotate_legend_label.show()
+
+        diag_toolbar.addStretch(1)
+        diag_toolbar.addWidget(btn_zoom_out)
+        diag_toolbar.addWidget(btn_zoom_reset)
+        diag_toolbar.addWidget(btn_zoom_in)
+        diag_toolbar.addWidget(self.zoom_label)
+        diag_toolbar.addSpacing(14)
+        diag_toolbar.addWidget(self.btn_annotate)
+        diag_toolbar.addWidget(self.annotate_legend_label)
+        diag_toolbar.addSpacing(10)
+        diag_toolbar.addWidget(btn_popout_diag)
+        diag_toolbar.addStretch(1)
+        diag_layout.addLayout(diag_toolbar)
+
+        self.diagram_scroll = QScrollArea()
+        self.diagram_scroll.setWidgetResizable(True)
+        self.diagram_label = QLabel("No diagram rendered.")
+        self.diagram_label.setAlignment(Qt.AlignCenter)
+        self.diagram_label.setStyleSheet("background-color: #ffffff; color: #555555;")
+        self.diagram_scroll.setWidget(self.diagram_label)
+        diag_layout.addWidget(self.diagram_scroll, stretch=1)
+
+        self.left_tabs.addTab(diag_widget, "🖼️ Model Diagram")
+
+        # Tab 1: PlantUML Code editor
         code_widget = QWidget()
         code_layout = QVBoxLayout(code_widget)
+        code_layout.setContentsMargins(4, 4, 4, 4)
+        code_layout.setSpacing(4)
 
         code_toolbar = QHBoxLayout()
-        btn_render_model = QPushButton("▶️ Render Diagram")
-        btn_save_model = QPushButton("💾 Save Model File")
-        self.model_status_label = QLabel("Live diagram update active")
-        self.model_status_label.setStyleSheet("color: #888888; font-size: 11px;")
+        code_toolbar.setSpacing(4)
+        btn_render_model = _md_btn("▶ Render", "#1565C0")
+        btn_save_model   = _md_btn_outlined("💾 Save", "#1976D2")
+        self.model_status_label = QLabel("Live update active")
+        self.model_status_label.setStyleSheet("color: #9e9e9e; font-size: 10px;")
 
         btn_render_model.clicked.connect(self._manual_render_model)
         btn_save_model.clicked.connect(self._save_model_file)
@@ -299,7 +947,7 @@ class Agent3Tab(QWidget):
         self.model_text_edit = QPlainTextEdit()
         self.model_text_edit.setFont(QFont("Consolas", 11))
         code_layout.addWidget(self.model_text_edit)
-        self.left_tabs.addTab(code_widget, "📄 Model Code (PlantUML / TXT)")
+        self.left_tabs.addTab(code_widget, "📄 PlantUML Code")
 
         self._model_text_debounce_timer = QTimer(self)
         self._model_text_debounce_timer.setSingleShot(True)
@@ -307,142 +955,156 @@ class Agent3Tab(QWidget):
         self._model_text_debounce_timer.timeout.connect(self._on_model_text_user_edited)
         self.model_text_edit.textChanged.connect(self._model_text_debounce_timer.start)
 
-        # Tab 2: Diagram
-        diag_widget = QWidget()
-        diag_layout = QVBoxLayout(diag_widget)
+        # Default to the Diagram tab
+        self.left_tabs.setCurrentIndex(0)
 
-        diag_toolbar = QHBoxLayout()
-        btn_zoom_in = QPushButton("🔍 Zoom In (+)")
-        btn_zoom_out = QPushButton("🔍 Zoom Out (-)")
-        btn_zoom_reset = QPushButton("100% Reset")
-        self.zoom_label = QLabel("100%")
+        viewer_layout.addWidget(self.left_tabs)
+        main_splitter.addWidget(viewer_widget)
 
-        btn_zoom_in.clicked.connect(self._zoom_in)
-        btn_zoom_out.clicked.connect(self._zoom_out)
-        btn_zoom_reset.clicked.connect(self._zoom_reset)
+        # ══════════════════════════════════════════════════════════════
+        # BOTTOM PANE — Guidelines Table + Details + HITL Controls
+        # ══════════════════════════════════════════════════════════════
+        bottom_widget = QWidget()
+        bottom_layout = QVBoxLayout(bottom_widget)
+        bottom_layout.setContentsMargins(0, 4, 0, 0)
+        bottom_layout.setSpacing(4)
 
-        diag_toolbar.addWidget(btn_zoom_in)
-        diag_toolbar.addWidget(btn_zoom_out)
-        diag_toolbar.addWidget(btn_zoom_reset)
-        diag_toolbar.addWidget(self.zoom_label)
-        diag_toolbar.addStretch(1)
-        diag_layout.addLayout(diag_toolbar)
+        # Compliance Vector Table — header row with Search, Filter & Pop-out button
+        table_header_row = QHBoxLayout()
+        table_header_row.setContentsMargins(0, 0, 0, 0)
+        table_header_row.setSpacing(6)
 
-        self.diagram_scroll = QScrollArea()
-        self.diagram_scroll.setWidgetResizable(True)
-        self.diagram_label = QLabel("No diagram rendered.")
-        self.diagram_label.setAlignment(Qt.AlignCenter)
-        self.diagram_label.setStyleSheet("background-color: #ffffff; color: #555555;")
-        self.diagram_scroll.setWidget(self.diagram_label)
-        diag_layout.addWidget(self.diagram_scroll)
+        _tbl_title = QLabel("Model Reports & Summary")
+        _tbl_title.setStyleSheet("font-weight: 600; color: #37474F; font-size: 11px;")
+        table_header_row.addWidget(_tbl_title)
 
-        self.left_tabs.addTab(diag_widget, "🖼️ Model Diagram")
-        left_layout.addWidget(self.left_tabs)
+        # Search / Filter Edit
+        self.table_search_edit = QLineEdit()
+        self.table_search_edit.setPlaceholderText("🔍 Search guidelines, elements, status, evidence, feedback...")
+        self.table_search_edit.setClearButtonEnabled(True)
+        self.table_search_edit.setMaximumWidth(380)
+        self.table_search_edit.textChanged.connect(self._apply_table_filter)
+        table_header_row.addWidget(self.table_search_edit)
 
-        main_splitter.addWidget(left_widget)
+        # Status Filter Combo
+        self.table_status_filter = QComboBox()
+        self.table_status_filter.addItems([
+            "All Statuses",
+            "Satisfied",
+            "Partially-Satisfied",
+            "Not-Satisfied",
+            "Alternative",
+            "Mistake",
+        ])
+        self.table_status_filter.currentTextChanged.connect(self._apply_table_filter)
+        table_header_row.addWidget(self.table_status_filter)
 
-        # ── Right Panel (Splitter: Tree + Details + HITL Controls) ──
-        right_widget = QWidget()
-        right_widget.setMinimumWidth(200)  # always keep compliance table visible
-        right_layout = QVBoxLayout(right_widget)
-        right_layout.setContentsMargins(0, 0, 0, 0)
+        # Counter Label
+        self.table_filter_count_lbl = QLabel("")
+        self.table_filter_count_lbl.setStyleSheet("font-size: 11px; color: #546E7A; font-weight: 500;")
+        table_header_row.addWidget(self.table_filter_count_lbl)
 
-        right_splitter = QSplitter(Qt.Vertical)
-        right_splitter.setChildrenCollapsible(False)  # prevent table/details from disappearing
+        table_header_row.addStretch(1)
 
-        # Top Right: Compliance Vector Table
-        table_box = QGroupBox("Compliance Vector & Summary")
+        btn_popout_tbl = _md_btn_outlined("⤢ Pop Out", "#1976D2")
+        btn_popout_tbl.setToolTip("Open compliance table in a separate floating window")
+        btn_popout_tbl.clicked.connect(self._popout_table)
+        table_header_row.addWidget(btn_popout_tbl)
+
+        table_box = QWidget()   # plain widget instead of GroupBox
         table_layout = QVBoxLayout(table_box)
+        table_layout.setContentsMargins(4, 2, 4, 4)
+        table_layout.setSpacing(4)
+        table_layout.addLayout(table_header_row)
 
         table_style = """
             QTableWidget {
-                selection-background-color: #005fb8;
+                selection-background-color: #1976D2;
                 selection-color: #ffffff;
                 outline: none;
             }
             QTableWidget::item:selected {
-                background-color: #005fb8;
+                background-color: #1976D2;
                 color: #ffffff;
                 font-weight: bold;
             }
             QTableWidget::item:selected:hover {
-                background-color: #004e98;
+                background-color: #1565C0;
                 color: #ffffff;
             }
             QTableWidget::item:hover {
-                background-color: #e8f2fe;
+                background-color: #E3F2FD;
             }
         """
 
-        self.tree_table = QTableWidget(0, 5)
+        self.tree_table = QTableWidget(0, 6)
         self.tree_table.setHorizontalHeaderLabels([
-            "ID", "Status", "Reference Guideline", "Evidence", "Notes / Feedback"
+            "ID", "Status", "Matched Elements", "Reference Guideline", "Evidence", "Notes / Feedback"
         ])
         self.tree_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.tree_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.tree_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.tree_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.tree_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
         self.tree_table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.tree_table.setSelectionMode(QTableWidget.SingleSelection)
+        self.tree_table.setSelectionMode(QTableWidget.ExtendedSelection)
         self.tree_table.setWordWrap(True)  # Excel-like wrap text inside cells
         self.tree_table.setStyleSheet(table_style)
         self.tree_table.itemSelectionChanged.connect(self._on_table_selection_changed)
+        self.tree_table.cellDoubleClicked.connect(self._on_table_cell_double_clicked)
         table_layout.addWidget(self.tree_table)
 
         table_box.setMinimumHeight(120)
-        right_splitter.addWidget(table_box)
+        bottom_layout.addWidget(table_box, stretch=1)
 
-        # Bottom Right: Details panel (in splitter)
-        details_box = QGroupBox("Selected Item Details & Assessment")
-        details_layout = QVBoxLayout(details_box)
+        # ── Inline Summary Bar (replaces separate Details panel) ──
+        self.summary_bar = QLabel("No case loaded.")
+        self.summary_bar.setWordWrap(True)
+        self.summary_bar.setTextFormat(Qt.RichText)
+        self.summary_bar.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.summary_bar.setContentsMargins(8, 4, 8, 4)
+        self.summary_bar.setStyleSheet(
+            "font-size: 11px; color: #37474F;"
+            "background: transparent;"
+            "border-top: 1px solid #CFD8DC;"
+            "padding: 4px 8px;"
+        )
+        self.summary_bar.setMinimumHeight(28)
+        self.summary_bar.setMaximumHeight(52)
+        bottom_layout.addWidget(self.summary_bar, stretch=0)
 
-        self.details_text = QPlainTextEdit()
-        self.details_text.setReadOnly(True)
-        self.details_text.setFont(QFont("Segoe UI", 10))
-        details_layout.addWidget(self.details_text)
-
-        details_box.setMinimumHeight(80)
-        right_splitter.addWidget(details_box)
-
-        right_layout.addWidget(right_splitter, stretch=1)
-
-        # ── Human Involvement Toolbar (3.3 CRUD) ──
-        # Placed OUTSIDE the splitter so it is always visible at the bottom
+        # ── Human Involvement Controls (Material Design chip row) ──────────────
         hitl_box = QGroupBox("Human Involvement Controls (3.3)")
-        hitl_grid = QGridLayout(hitl_box)
-        hitl_grid.setSpacing(4)
+        hitl_layout = QHBoxLayout(hitl_box)
+        hitl_layout.setContentsMargins(8, 6, 8, 6)
+        hitl_layout.setSpacing(6)
 
-        btn_status   = QPushButton("✏️ Change Status")
-        btn_feedback = QPushButton("💬 Edit Feedback")
-        btn_map      = QPushButton("➕ Map Fragment")
-        btn_unmap    = QPushButton("⛔ Unmap Fragment")
-        btn_continue = QPushButton("▶️ Continue Pipeline")
-        btn_save     = QPushButton("💾 Save Changes")
+        btn_status       = _md_btn("✏️ Status",       "#1976D2")
+        btn_feedback     = _md_btn("💬 Feedback",     "#0288D1")
+        btn_general_note = _md_btn("📝 General Note", "#7B1FA2")
+        btn_map          = _md_btn_outlined("➕ Map",   "#388E3C")
+        btn_unmap        = _md_btn_outlined("⛔ Unmap", "#D32F2F")
+        btn_continue     = _md_btn("▶ Continue",      "#388E3C")
+        btn_save         = _md_btn("💾 Save",         "#F57C00")
 
         btn_status.clicked.connect(self._hitl_change_status)
         btn_feedback.clicked.connect(self._hitl_update_feedback)
+        btn_general_note.clicked.connect(self._hitl_edit_general_note)
         btn_map.clicked.connect(self._hitl_map_fragment)
         btn_unmap.clicked.connect(self._hitl_unmap_fragment)
         btn_continue.clicked.connect(lambda: self.continue_pipeline_requested.emit())
         btn_save.clicked.connect(self._save_hitl_changes)
 
-        # Row 0: Change Status | Edit Feedback | Continue Pipeline
-        # Row 1: Map Fragment  | Unmap Fragment | Save Changes
-        for col, btn in enumerate([btn_status, btn_feedback, btn_continue]):
-            hitl_grid.addWidget(btn, 0, col)
-        for col, btn in enumerate([btn_map, btn_unmap, btn_save]):
-            hitl_grid.addWidget(btn, 1, col)
+        for btn in [btn_status, btn_feedback, btn_general_note, btn_map, btn_unmap, btn_continue, btn_save]:
+            hitl_layout.addWidget(btn)
+        hitl_layout.addStretch(1)
 
-        # Equal column widths
-        for col in range(3):
-            hitl_grid.setColumnStretch(col, 1)
+        bottom_layout.addWidget(hitl_box, stretch=0)
+        main_splitter.addWidget(bottom_widget)
 
-        # Pin the controls bar to the bottom — never inside the splitter
-        right_layout.addWidget(hitl_box, stretch=0)
-        main_splitter.addWidget(right_widget)
-
-        main_splitter.setSizes([550, 650])
+        # Diagram pane ~55% height, guidelines pane ~45%
+        main_splitter.setSizes([420, 340])
         main_layout.addWidget(main_splitter, stretch=1)
 
     # ── Hand-off from Orchestrator ──
@@ -474,22 +1136,67 @@ class Agent3Tab(QWidget):
                 f"Make sure the pipeline has been run and case {case_id} exists.",
             )
 
-    # ── Folder Browsing ──
+    # ── Pop-out / Detach Windows ──
 
-    def _browse_output_dir(self) -> None:
-        folder = QFileDialog.getExistingDirectory(self, "Select Orchestrator Output Folder")
-        if folder:
-            self.output_dir_edit.setText(folder)
-            set_log_output_dir(folder)
+    def _popout_diagram(self) -> None:
+        """Open (or raise) the floating diagram window."""
+        case_id = self.current_raw_data.get("case_id", "")
+        if self._diag_float and not self._diag_float.isHidden():
+            # Already open — just bring to front and refresh pixmap
+            if self.original_pixmap:
+                self._diag_float.update_pixmap(self.original_pixmap)
+            self._diag_float.raise_()
+            self._diag_float.activateWindow()
+            return
+        self._diag_float = DiagramFloatWindow(
+            pixmap=self.original_pixmap,
+            case_title=str(case_id),
+            parent=None,          # top-level, not modal
+        )
+        self._diag_float.show()
+
+    def _popout_table(self) -> None:
+        """Open (or raise) the floating compliance table window."""
+        case_id = self.current_raw_data.get("case_id", "")
+        summary_html = self._build_summary_html()
+        if self._table_float and not self._table_float.isHidden():
+            self._table_float.refresh(self.tree_table, summary_html)
+            self._table_float.raise_()
+            self._table_float.activateWindow()
+            return
+        self._table_float = TableFloatWindow(
+            source_table=self.tree_table,
+            summary_html=summary_html,
+            case_title=str(case_id),
+            parent=None,          # top-level, not modal
+        )
+        self._table_float.show()
+
+    # ── Folder Settings ──
+
+    def _open_folder_settings(self) -> None:
+        """Open the Folder Settings dialog to configure output & models directories."""
+        dlg = FolderSettingsDialog(
+            self.output_dir_edit.text(),
+            self.models_dir_edit.text(),
+            parent=self,
+        )
+        if dlg.exec():
+            out_dir, models_dir = dlg.get_values()
+            self.output_dir_edit.setText(out_dir)
+            self.models_dir_edit.setText(models_dir)
+            if out_dir:
+                set_log_output_dir(out_dir)
             self.refresh_file_lists()
-            log_action("Agent3", "browse_output_dir", f"path={folder}")
+            log_action("Agent3", "folder_settings_applied",
+                       f"output={out_dir}, models={models_dir}")
+
+    # Legacy browse stubs (kept for any external callers / backward compat)
+    def _browse_output_dir(self) -> None:
+        self._open_folder_settings()
 
     def _browse_models_dir(self) -> None:
-        folder = QFileDialog.getExistingDirectory(self, "Select Case Models Folder")
-        if folder:
-            self.models_dir_edit.setText(folder)
-            self.refresh_file_lists()
-            log_action("Agent3", "browse_models_dir", f"path={folder}")
+        self._open_folder_settings()
 
     # ── File List Refresh ──
 
@@ -615,16 +1322,434 @@ class Agent3Tab(QWidget):
         """Auto-render diagram when model text is edited by the user."""
         text = self.model_text_edit.toPlainText().strip()
         if text:
-            self._render_diagram(text)
+            render_text = self._build_annotated_puml(text) if self._annotate_active else text
+            self._render_diagram(render_text)
             self.model_status_label.setText("Diagram updated from edited code.")
 
     def _manual_render_model(self) -> None:
         """Manually trigger diagram render and switch to Diagram tab."""
         text = self.model_text_edit.toPlainText().strip()
         if text:
-            self._render_diagram(text)
-            self.left_tabs.setCurrentIndex(1)
-            self.model_status_label.setText("Diagram rendering triggered.")
+            render_text = self._build_annotated_puml(text) if self._annotate_active else text
+            self._render_diagram(render_text)
+            self.left_tabs.setCurrentIndex(0)  # Diagram is now tab 0
+            self.model_status_label.setText(
+                "Annotated diagram rendered." if self._annotate_active else "Diagram rendering triggered."
+            )
+
+    # ── Compliance Annotation Overlay ──
+
+    # Status → PlantUML fill color (light enough for text readability)
+    _ANNOTATION_COLORS = {
+        "Satisfied":           "#C8E6C9",   # light green
+        "MAPPED":              "#C8E6C9",
+        "Partially-Satisfied": "#FFB74D",   # distinct Material Orange
+        "Partially Satisfied": "#FFB74D",
+        "Partial":             "#FFB74D",
+        "PARTIAL":             "#FFB74D",
+        "Not-Satisfied":       "#FFCDD2",   # light red
+        "Not Satisfied":       "#FFCDD2",
+        "Not-satisfied":       "#FFCDD2",
+        "UNOPERATIONALIZED":   "#FFCDD2",
+        "Unsatisfied":         "#FFCDD2",
+    }
+
+    _STOPWORDS = {
+        "that", "this", "with", "from", "have", "been", "will", "shall", "must",
+        "should", "when", "each", "their", "which", "where", "rather", "than",
+        "and", "the", "for", "not", "but", "all", "any", "has", "had", "use",
+        "used", "using", "uses", "can", "are", "were", "did", "does", "into",
+        "onto", "also", "its", "they", "them", "then", "some", "such", "only",
+        "other", "both", "either", "neither", "about", "above", "after", "before",
+        "being", "below", "between", "during", "more", "most", "same",
+        "there", "these", "those", "through", "under", "until", "very", "while",
+        "state", "states", "notes", "case", "model", "guideline", "reference"
+    }
+
+    _GENERIC_NOUNS = {
+        "order", "orders", "delivery", "deliveries", "item", "items",
+        "vehicle", "state", "states", "data", "info", "system", "service",
+        "process", "processing", "status", "type", "activity"
+    }
+
+    def _on_annotate_toggled(self, checked: bool) -> None:
+        """React to the Annotate toggle button."""
+        self._annotate_active = checked
+        if checked:
+            self.btn_annotate.setText("🎨 Annotated")
+            self.btn_annotate.setStyleSheet(
+                self.btn_annotate.styleSheet() +
+                "QPushButton { background: #1B5E20; }"
+            )
+            self.annotate_legend_label.setText(
+                "&nbsp;"
+                "<span style='background:#C8E6C9; color:#1B5E20; padding:1px 4px; "
+                "border-radius:3px; font-size:10px;'>■ Satisfied</span>&nbsp;"
+                "<span style='background:#FFB74D; color:#E65100; padding:1px 4px; "
+                "border-radius:3px; font-size:10px;'>■ Partial</span>&nbsp;"
+                "<span style='background:#FFCDD2; color:#B71C1C; padding:1px 4px; "
+                "border-radius:3px; font-size:10px;'>■ Not-Satisfied</span>"
+            )
+            self.annotate_legend_label.show()
+        else:
+            self.btn_annotate.setText("🎨 Annotate")
+            self.btn_annotate.setStyleSheet(
+                "".join(
+                    l for l in self.btn_annotate.styleSheet().splitlines(keepends=True)
+                    if "#1B5E20" not in l
+                )
+            )
+            self.annotate_legend_label.hide()
+
+        # Re-render with or without annotation
+        raw = self.model_text_edit.toPlainText().strip()
+        if raw:
+            render_text = self._build_annotated_puml(raw) if checked else raw
+            self._render_diagram(render_text)
+            self.model_status_label.setText(
+                f"Annotation {'ON' if checked else 'OFF'} — re-rendering…"
+            )
+
+    def _get_selected_guideline_ids(self) -> set[str]:
+        """Return the set of guideline IDs for all currently selected rows in the table."""
+        selected_gids, _ = self._get_selected_table_items()
+        return selected_gids
+
+    def _get_selected_table_items(self) -> tuple[set[str], set[int]]:
+        """Return (selected_gids, selected_uf_indices) for all currently selected rows in the table."""
+        selected_gids: set[str] = set()
+        selected_ufs: set[int] = set()
+        for idx in self.tree_table.selectionModel().selectedRows():
+            item = self.tree_table.item(idx.row(), 0)
+            if item:
+                meta = item.data(Qt.UserRole)
+                if meta:
+                    if meta[0] == "g" and meta[1] < len(self.compliance_data):
+                        gid = self.compliance_data[meta[1]].get("guideline_id")
+                        if gid:
+                            selected_gids.add(gid)
+                    elif meta[0] == "u" and meta[1] < len(self.uncovered_data):
+                        selected_ufs.add(meta[1])
+        return selected_gids, selected_ufs
+
+    def _extract_element_name(self, line: str) -> tuple[str | None, str | None, str | None]:
+        """Extract (kind, name, alias) from a PlantUML element declaration line."""
+        line_s = line.strip()
+
+        # Class / Interface / Enum / Abstract (e.g. class Customer {)
+        m = re.match(r'^(?:class|interface|enum|abstract)\s+"?([A-Za-z0-9_]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
+        if m:
+            return "class", m.group(1), m.group(2)
+
+        # State (e.g. state "Payment Pending" as PaymentPending)
+        m = re.match(r'^state\s+"?([^"{:\n<]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
+        if m:
+            return "state", m.group(1).strip(), m.group(2)
+
+        # Component / Database / Node / Rectangle / Storage / Cloud
+        m = re.match(r'^(?:component|database|node|rectangle|storage|cloud|queue|card|file)\s+"?([^"{\[\n]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
+        if m:
+            return "component", m.group(1).strip(), m.group(2)
+
+        # UseCase (e.g. usecase "Place Order")
+        m = re.match(r'^usecase\s+"?([^"\n]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
+        if m:
+            return "usecase", m.group(1).strip(), m.group(2)
+
+        # Activity (e.g. :Verify order;)
+        m = re.match(r'^:\s*([^;#\n]+?)\s*(?:#[^;]+)?;\s*$', line_s)
+        if m:
+            return "activity", m.group(1).strip(), None
+
+        return None, None, None
+
+    def _match_element_to_guideline(self, line: str, guideline_text: str, explicit_elements: list[str] | None = None) -> bool:
+        """Check whether a PlantUML element declaration specifically matches the guideline text or explicit matched_elements."""
+        kind, name, alias = self._extract_element_name(line)
+        if not kind or not name:
+            return False
+
+        # 1. Direct match with explicit matched_elements if provided
+        if explicit_elements:
+            for elem in explicit_elements:
+                if not elem:
+                    continue
+                elem_lower = elem.strip().lower()
+                clean_name = name.strip('"').lower()
+                clean_alias = alias.strip().lower() if alias else ""
+                if elem_lower == clean_name or (clean_alias and elem_lower == clean_alias):
+                    return True
+                # e.g. "Actor: Customer" or "UC: Place Order" or "Class: Customer"
+                if clean_name and (clean_name in elem_lower or elem_lower in clean_name):
+                    return True
+
+        # 2. Text matching against guideline evidence
+        g_text_lower = guideline_text.lower()
+        candidates = [name]
+        if alias:
+            candidates.append(alias)
+
+        for cand in candidates:
+            clean = cand.strip('"').lower()
+            if len(clean) >= 4 and clean in g_text_lower:
+                return True
+
+            words = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|\b)|[a-zA-Z]{3,}', cand)
+            words = [w.lower() for w in words if len(w) >= 3 and w.lower() not in self._STOPWORDS]
+            if not words:
+                continue
+
+            # Single-word name (e.g. Employee, Customer, Manufacturer, Refund, Clarification):
+            if len(words) == 1:
+                w = words[0]
+                if re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower):
+                    return True
+            else:
+                # Multi-word name (e.g. RegularOrder, UrgentOrder, DeliveryProblem, PaymentPending):
+                # Specific modifier words must match the guideline
+                specific_words = [w for w in words if w not in self._GENERIC_NOUNS]
+                if specific_words:
+                    if any(re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower) for w in specific_words):
+                        return True
+                else:
+                    if all(re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower) for w in words):
+                        return True
+
+        return False
+
+    def _build_annotated_puml(self, puml_text: str, selected_gids: set[str] | None = None, selected_ufs: set[int] | None = None) -> str:
+        """
+        Inject PlantUML fill-color directives into model elements that match
+        the compliance guideline(s) or uncovered fragments. If specific rows are selected
+        in the table, highlights ONLY those rows; if no row is selected, annotates all
+        satisfied and partially-satisfied guidelines.
+        """
+        if not self.compliance_data and not self.uncovered_data:
+            return puml_text
+
+        if selected_gids is None and selected_ufs is None:
+            selected_gids, selected_ufs = self._get_selected_table_items()
+        elif selected_gids is None:
+            selected_gids = set()
+        if selected_ufs is None:
+            selected_ufs = set()
+
+        has_explicit_selection = bool(selected_gids or selected_ufs)
+
+        lines = puml_text.split("\n")
+
+        # Build: (guideline_text, fill_color, guideline_id, explicit_elements)
+        targets: list[tuple[str, str, str, list[str]]] = []
+        selected_items: list[dict] = []
+
+        # 1. Guidelines
+        for g in self.compliance_data:
+            gid = g.get("guideline_id", "")
+            # If user selected specific rows, filter to only those
+            if has_explicit_selection and gid not in selected_gids:
+                continue
+
+            status_raw = g.get("compliance_status", "") or g.get("label", "")
+            fill = self._ANNOTATION_COLORS.get(status_raw)
+            if not fill:
+                s_lower = status_raw.lower().replace("-", " ").replace("_", " ")
+                if "part" in s_lower:
+                    fill = "#FFB74D"
+                elif "not" in s_lower or "unop" in s_lower or "unsat" in s_lower:
+                    fill = "#FFCDD2"
+                elif "sat" in s_lower or "map" in s_lower:
+                    fill = "#C8E6C9"
+
+            if not fill:
+                continue
+
+            selected_items.append(g)
+            evidence = (g.get("evidence", "") or "").strip()
+            ref_name = (g.get("guideline_name", "") or g.get("reference_guideline", "") or "").strip()
+            notes    = (g.get("notes", "") or "").strip()
+            # Use specific evidence as primary matching text
+            target_text = evidence if evidence else (ref_name + " " + notes)
+            explicit_elems = g.get("matched_elements") or g.get("matched_classes") or g.get("matched_states") or []
+            if isinstance(explicit_elems, str):
+                explicit_elems = [e.strip() for e in explicit_elems.split(",") if e.strip()]
+            targets.append((target_text.lower(), fill, gid, explicit_elems))
+
+        # 2. Uncovered Fragments
+        if self.uncovered_data:
+            for uf_idx, uf in enumerate(self.uncovered_data):
+                if has_explicit_selection and uf_idx not in selected_ufs:
+                    continue
+
+                lbl = uf.get("label", "Alternative")
+                fill = "#E1BEE7" if lbl == "Alternative" else "#FFCDD2"
+                frag_desc = (uf.get("fragment", uf.get("fragment_description", uf.get("description", ""))) or "").strip()
+                reason = (uf.get("reason", "") or "").strip()
+                target_text = frag_desc if frag_desc else reason
+                explicit_elems = (
+                    uf.get("matched_elements")
+                    or uf.get("matched_classes")
+                    or uf.get("matched_states")
+                    or uf.get("elements")
+                    or uf.get("matched_element")
+                    or uf.get("model_elements")
+                    or []
+                )
+                if isinstance(explicit_elems, str):
+                    explicit_elems = [e.strip() for e in explicit_elems.split(",") if e.strip()]
+
+                if explicit_elems or target_text:
+                    selected_items.append({"guideline_id": f"Frag #{uf_idx+1}", "compliance_status": lbl})
+                    targets.append((target_text.lower(), fill, f"Frag #{uf_idx+1}", explicit_elems))
+
+        if not targets:
+            return puml_text
+
+        annotated = [self._inject_puml_color(line, targets) for line in lines]
+        annotated = self._insert_legend(annotated, selected_items)
+        return "\n".join(annotated)
+
+    # Lines that must NEVER be colored — PlantUML keywords / structural elements
+    _PUML_SKIP_PREFIXES = (
+        "'", "/'", "@", "!",
+        "skinparam", "hide ", "show ", "scale ",
+        "title", "header", "footer", "caption",
+        "note", "end note", "rnote", "hnote",
+        "legend", "endlegend",
+        "if ", "else", "elseif", "endif",
+        "while", "endwhile", "repeat", "backward",
+        "fork", "end fork", "split", "end split",
+        "start", "stop", "end",
+        "-->", "<--", "->", "<-", "==>", "..>",
+        "-[", "<|", "*--", "o--",
+        "activate", "deactivate", "destroy",
+        "group", "end group", "loop", "opt", "alt", "break",
+        "ref over", "critical",
+        "package", "namespace", "frame",
+        "together", "partition", "swimlane",
+        "#", "|",
+    )
+
+    def _inject_puml_color(self, line: str, targets: list) -> str:
+        """
+        Safe color injection.  Returns the original line if we cannot determine
+        the correct injection point, preventing any 400 errors.
+        """
+        stripped = line.strip()
+        if not stripped:
+            return line
+
+        stripped_lower = stripped.lower()
+
+        # Skip any line that starts with a known keyword/directive
+        if any(stripped_lower.startswith(p) for p in self._PUML_SKIP_PREFIXES):
+            return line
+
+        # Also skip lines containing arrow operators (mid-line arrows)
+        if re.search(r"-->|<--|->|<-|\.\.>|\.\.|==", stripped):
+            return line
+
+        line_lower = stripped_lower
+
+        # Match element against target guidelines
+        color = ""
+        for item in targets:
+            g_text = item[0]
+            fill   = item[1]
+            gid    = item[2]
+            explicit_elems = item[3] if len(item) > 3 else None
+            if self._match_element_to_guideline(line, g_text, explicit_elems):
+                color = fill
+                break
+
+        if not color:
+            return line
+
+        # ── State diagrams: state ... [as alias] [<<stereo>>] [{ or : or end] ──
+        if line_lower.startswith("state "):
+            m_block = re.search(r'(\s*\{|\s*:.*)$', line)
+            if m_block:
+                main_part = line[:m_block.start()].rstrip()
+                suffix = line[m_block.start():]
+            else:
+                main_part = line.rstrip()
+                suffix = ""
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', main_part)
+            return f"{main_part} {color}{suffix}"
+
+        # ── Activity new-style: :Step text; → :Step text #color; ──
+        m_act = re.match(r'^(\s*:)([^;#\n]+?)(\s*)(?:#[0-9a-fA-F]{3,8}|#[a-zA-Z]+)?(;.*)$', line)
+        if m_act:
+            pre, text, sp, suffix = m_act.groups()
+            return f"{pre}{text} {color}{suffix}"
+
+        # ── Class / interface / enum / abstract ──
+        if any(line_lower.startswith(k) for k in ("class ", "interface ", "enum ", "abstract ")):
+            m_cls = re.match(
+                r'^(\s*(?:class|interface|enum|abstract)\s+"?[^"{:\s<]+"?(?:\s+as\s+\w+)?(?:\s+<<[^>]+>>)?)(.*)$',
+                line,
+                re.IGNORECASE,
+            )
+            if m_cls:
+                head, tail = m_cls.group(1), m_cls.group(2)
+                head = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', head)
+                tail = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', tail)
+                return f"{head} {color}{tail}"
+            m_block = re.search(r'(\s*\{.*)$', line)
+            if m_block:
+                main_part = line[:m_block.start()].rstrip()
+                suffix = line[m_block.start():]
+            else:
+                main_part = line.rstrip()
+                suffix = ""
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', main_part)
+            return f"{main_part} {color}{suffix}"
+
+        # ── Component / database / node / rectangle / storage / cloud / queue / card / file ──
+        if any(line_lower.startswith(k) for k in ("component ", "database ", "node ", "rectangle ", "storage ", "cloud ", "queue ", "card ", "file ")):
+            m_block = re.search(r'(\s*\[.*|\s*\{.*)$', line)
+            if m_block:
+                main_part = line[:m_block.start()].rstrip()
+                suffix = line[m_block.start():]
+            else:
+                main_part = line.rstrip()
+                suffix = ""
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', main_part)
+            return f"{main_part} {color}{suffix}"
+
+        # ── UseCase ──
+        if line_lower.startswith("usecase "):
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', line.rstrip())
+            return f"{main_part} {color}"
+
+        # ── Sequence participant / actor / boundary / control / collections ──
+        if any(line_lower.startswith(k) for k in ("participant ", "actor ", "boundary ", "control ", "collections ")):
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', line.rstrip())
+            return f"{main_part} {color}"
+
+        # ── No safe injection found — return original unchanged ──
+        return line
+
+    def _insert_legend(self, lines: list[str], selected_items: list | None = None) -> list[str]:
+        """
+        Insert a plain-text color legend before @enduml showing the highlighted guideline(s).
+        """
+        if not selected_items:
+            return lines
+
+        g_labels = [f"{g.get('guideline_id', '')} ({g.get('compliance_status', '')})" for g in selected_items]
+        g_str = ", ".join(g_labels[:4])
+        if len(g_labels) > 4:
+            g_str += f" +{len(g_labels)-4} more"
+
+        legend = [
+            "legend bottom right",
+            f"  Highlight: {g_str}",
+            "endlegend",
+        ]
+        for i in range(len(lines) - 1, -1, -1):
+            if lines[i].strip().lower().startswith("@enduml"):
+                return lines[:i] + legend + lines[i:]
+        return lines + legend
 
     def _save_model_file(self) -> None:
         """Save edited model code back to the model file on disk."""
@@ -667,7 +1792,8 @@ class Agent3Tab(QWidget):
                 self.model_text_edit.blockSignals(True)
                 self.model_text_edit.setPlainText(content)
                 self.model_text_edit.blockSignals(False)
-                self._render_diagram(content)
+                render_text = self._build_annotated_puml(content) if self._annotate_active else content
+                self._render_diagram(render_text)
             except Exception as exc:
                 self.model_text_edit.blockSignals(True)
                 self.model_text_edit.setPlainText(f"Error reading model file: {exc}")
@@ -731,10 +1857,17 @@ class Agent3Tab(QWidget):
                     else:
                         ref_gl = g_name or g_desc or f"Guideline {gid}"
 
+                matched_elems = entry.get("matched_elements") or entry.get("matched_classes") or entry.get("matched_states") or []
+                if isinstance(matched_elems, list):
+                    matched_elems_str = ", ".join(str(x) for x in matched_elems)
+                else:
+                    matched_elems_str = str(matched_elems) if matched_elems else ""
+
                 self.compliance_data.append({
                     "guideline_id": gid,
                     "label": status,
                     "compliance_status": status,
+                    "matched_elements": matched_elems_str,
                     "reference_guideline": ref_gl,
                     "evidence": ev,
                     "notes": notes,
@@ -748,8 +1881,15 @@ class Agent3Tab(QWidget):
             score_pct = data.get("score_pct", "")
             score_str = f" | Score: {score_pct}%" if score_pct != "" else ""
             self.status_label.setText(
-                f"Loaded Case {cid} | {len(self.compliance_data)} Guidelines, {len(self.uncovered_data)} Uncovered Fragments{score_str}"
+                f"Case {cid} — {len(self.compliance_data)} guidelines"
             )
+
+            # Re-render diagram with compliance annotations if active
+            if self._annotate_active:
+                raw_m = self.model_text_edit.toPlainText().strip()
+                if raw_m:
+                    render_text = self._build_annotated_puml(raw_m)
+                    self._render_diagram(render_text)
 
         except Exception as exc:
             QMessageBox.critical(self, "Load Error", str(exc))
@@ -760,9 +1900,10 @@ class Agent3Tab(QWidget):
         self.tree_table.setRowCount(0)
         self.tree_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.tree_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.tree_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.tree_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.tree_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
         row = 0
 
         # Guidelines
@@ -770,12 +1911,14 @@ class Agent3Tab(QWidget):
             self.tree_table.insertRow(row)
             gid = g.get("guideline_id", "")
             status = g.get("label", g.get("compliance_status", ""))
+            matched = g.get("matched_elements", "")
             ref_gl = g.get("reference_guideline", "")
             ev = g.get("evidence", "")
             notes = g.get("notes", "")
 
             item_id = QTableWidgetItem(gid)
             item_status = QTableWidgetItem(status)
+            item_matched = QTableWidgetItem(matched)
             item_ref = QTableWidgetItem(ref_gl)
             item_ev = QTableWidgetItem(ev)
             item_notes = QTableWidgetItem(notes)
@@ -788,11 +1931,18 @@ class Agent3Tab(QWidget):
             elif status == "Not-Satisfied":
                 item_status.setForeground(QColor("#c62828"))
 
+            if matched:
+                item_matched.setForeground(QColor("#0d47a1"))
+                f = item_matched.font()
+                f.setBold(True)
+                item_matched.setFont(f)
+
             self.tree_table.setItem(row, 0, item_id)
             self.tree_table.setItem(row, 1, item_status)
-            self.tree_table.setItem(row, 2, item_ref)
-            self.tree_table.setItem(row, 3, item_ev)
-            self.tree_table.setItem(row, 4, item_notes)
+            self.tree_table.setItem(row, 2, item_matched)
+            self.tree_table.setItem(row, 3, item_ref)
+            self.tree_table.setItem(row, 4, item_ev)
+            self.tree_table.setItem(row, 5, item_notes)
 
             # Store metadata
             item_id.setData(Qt.UserRole, ("g", idx))
@@ -806,6 +1956,7 @@ class Agent3Tab(QWidget):
             self.tree_table.setItem(row, 2, QTableWidgetItem("FRAGMENTS ---"))
             self.tree_table.setItem(row, 3, QTableWidgetItem(""))
             self.tree_table.setItem(row, 4, QTableWidgetItem(""))
+            self.tree_table.setItem(row, 5, QTableWidgetItem(""))
             self._set_row_background(row, QColor("#eeeeee"), font_bold=True)
             row += 1
 
@@ -813,17 +1964,42 @@ class Agent3Tab(QWidget):
                 self.tree_table.insertRow(row)
                 lbl = uf.get("label", "Alternative")
                 snip = uf.get("fragment", uf.get("fragment_description", uf.get("description", "")))
+                matched_raw = (
+                    uf.get("matched_elements")
+                    or uf.get("matched_classes")
+                    or uf.get("matched_states")
+                    or uf.get("elements")
+                    or uf.get("matched_element")
+                    or uf.get("model_elements")
+                    or []
+                )
+                if isinstance(matched_raw, list):
+                    matched_str = ", ".join(str(x) for x in matched_raw if x)
+                else:
+                    matched_str = str(matched_raw) if matched_raw else ""
 
                 item_id = QTableWidgetItem("Frag")
                 item_lbl = QTableWidgetItem(lbl)
                 item_lbl.setForeground(QColor("#6a1b9a"))
+
+                item_matched = QTableWidgetItem(matched_str)
+                if matched_str:
+                    item_matched.setForeground(QColor("#6a1b9a"))
+                    f = item_matched.font()
+                    f.setBold(True)
+                    item_matched.setFont(f)
+                    item_matched.setToolTip(matched_str)
+
                 item_snip = QTableWidgetItem(snip)
+                if snip:
+                    item_snip.setToolTip(snip)
 
                 self.tree_table.setItem(row, 0, item_id)
                 self.tree_table.setItem(row, 1, item_lbl)
-                self.tree_table.setItem(row, 2, QTableWidgetItem(""))
-                self.tree_table.setItem(row, 3, item_snip)
-                self.tree_table.setItem(row, 4, QTableWidgetItem(""))
+                self.tree_table.setItem(row, 2, item_matched)
+                self.tree_table.setItem(row, 3, QTableWidgetItem(""))
+                self.tree_table.setItem(row, 4, item_snip)
+                self.tree_table.setItem(row, 5, QTableWidgetItem(""))
 
                 item_id.setData(Qt.UserRole, ("u", idx))
                 row += 1
@@ -841,17 +2017,129 @@ class Agent3Tab(QWidget):
         pct = (pts / float(total_g) * 100.0) if total_g > 0 else 0.0
         score_info = f"Score: {pct:.1f}% ({pts:g}/{total_g} pts) — Click for full details" if total_g > 0 else "Click to view case score & assessment"
 
-        self.tree_table.setItem(row, 2, QTableWidgetItem(score_info))
-        self.tree_table.setItem(row, 3, QTableWidgetItem(""))
+        gen_notes = self.current_raw_data.get(
+            "general_notes",
+            self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
+        )
+
+        self.tree_table.setItem(row, 2, QTableWidgetItem(""))
+        self.tree_table.setItem(row, 3, QTableWidgetItem(score_info))
         self.tree_table.setItem(row, 4, QTableWidgetItem(""))
+
+        item_gen_note = QTableWidgetItem(f"📝 {gen_notes}" if gen_notes else "Double-click to add general note")
+        if gen_notes:
+            item_gen_note.setForeground(QColor("#4A148C"))
+            f = item_gen_note.font()
+            f.setBold(True)
+            item_gen_note.setFont(f)
+        else:
+            item_gen_note.setForeground(QColor("#9E9E9E"))
+        self.tree_table.setItem(row, 5, item_gen_note)
+
         self._set_row_background(row, QColor("#e3f2fd"), font_bold=True)
         item_sum.setData(Qt.UserRole, ("summary", 0))
 
         # Auto-resize all row heights to fit wrapped text content (Excel-like behaviour)
         self.tree_table.resizeRowsToContents()
+        # Refresh the always-visible summary bar
+        self._update_summary_bar()
+        # Re-apply search / status filters if active
+        self._apply_table_filter()
+
+    def _apply_table_filter(self) -> None:
+        """Filter rows in tree_table across elements, guidelines, status, evidence, feedback/notes, etc."""
+        if not hasattr(self, "table_search_edit") or not hasattr(self, "table_status_filter"):
+            return
+
+        search_query = self.table_search_edit.text().strip().lower()
+        status_filter = self.table_status_filter.currentText()
+
+        total_data_rows = 0
+        visible_data_rows = 0
+        uncovered_header_row = -1
+        visible_uncovered_rows = 0
+
+        for r in range(self.tree_table.rowCount()):
+            item_id = self.tree_table.item(r, 0)
+            if not item_id:
+                continue
+            meta = item_id.data(Qt.UserRole)
+            id_text = item_id.text().strip()
+
+            # 1. Summary row: always keep visible
+            if meta and meta[0] == "summary":
+                self.tree_table.setRowHidden(r, False)
+                continue
+
+            # 2. Uncovered Fragments separator header row
+            if id_text == "---":
+                uncovered_header_row = r
+                continue
+
+            # Data rows (guidelines or uncovered fragments)
+            total_data_rows += 1
+
+            # Check status match
+            item_status = self.tree_table.item(r, 1)
+            status_text = item_status.text().strip() if item_status else ""
+
+            status_match = True
+            if status_filter != "All Statuses":
+                if status_filter == "Mistake":
+                    status_match = "mistake" in status_text.lower()
+                else:
+                    status_match = (status_filter.lower() == status_text.lower())
+
+            # Check text search across all columns + extra metadata fields
+            text_match = True
+            if search_query:
+                row_texts = []
+                for c in range(self.tree_table.columnCount()):
+                    cell_item = self.tree_table.item(r, c)
+                    if cell_item and cell_item.text():
+                        row_texts.append(cell_item.text().lower())
+
+                # Also search extra fields from underlying guideline / uncovered fragment object
+                if meta and meta[0] == "g" and meta[1] < len(self.compliance_data):
+                    g = self.compliance_data[meta[1]]
+                    row_texts.extend([
+                        str(g.get("guideline_name", "")).lower(),
+                        str(g.get("description", "")).lower(),
+                    ])
+                elif meta and meta[0] == "u" and meta[1] < len(self.uncovered_data):
+                    uf = self.uncovered_data[meta[1]]
+                    row_texts.extend([
+                        str(uf.get("reason", "")).lower(),
+                        str(uf.get("severity", "")).lower(),
+                    ])
+
+                combined_text = " ".join(row_texts)
+                search_tokens = search_query.split()
+                text_match = all(token in combined_text for token in search_tokens)
+
+            row_visible = status_match and text_match
+            self.tree_table.setRowHidden(r, not row_visible)
+
+            if row_visible:
+                visible_data_rows += 1
+                if meta and meta[0] == "u":
+                    visible_uncovered_rows += 1
+
+        # Show / hide uncovered fragments header row based on whether any fragment is visible
+        if uncovered_header_row >= 0:
+            self.tree_table.setRowHidden(uncovered_header_row, visible_uncovered_rows == 0)
+
+        # Update counter label
+        if hasattr(self, "table_filter_count_lbl"):
+            if search_query or status_filter != "All Statuses":
+                self.table_filter_count_lbl.setText(f"Showing {visible_data_rows} of {total_data_rows}")
+            else:
+                self.table_filter_count_lbl.setText(f"{total_data_rows} items" if total_data_rows > 0 else "")
+
+        self.tree_table.resizeRowsToContents()
 
     def _set_row_background(self, row: int, color: QColor, font_bold: bool = False) -> None:
-        for col in range(5):
+        for col in range(6):
             item = self.tree_table.item(row, col)
             if item:
                 item.setBackground(color)
@@ -860,121 +2148,152 @@ class Agent3Tab(QWidget):
                     font.setBold(True)
                     item.setFont(font)
 
-    # ── Table Selection Details ──
+    # ── Table Selection → inline summary bar ──
+
+    def _build_summary_html(self) -> str:
+        """Compute the always-visible case score + assessment line."""
+        if not self.compliance_data:
+            return "No case loaded."
+
+        n_sat  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
+        n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") == "Partially-Satisfied")
+        n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
+        total_g = len(self.compliance_data)
+
+        pts = n_sat * self.sat_weight + n_part * self.part_weight + n_not * self.not_weight
+        max_pts = total_g * self.sat_weight if total_g > 0 else 1.0
+        pct = pts / max_pts * 100.0 if max_pts > 0 else 0.0
+
+        raw_pct = self.current_raw_data.get("score_pct")
+        if raw_pct is not None:
+            try:
+                pct = float(raw_pct)
+            except (ValueError, TypeError):
+                pass
+
+        overall = self.current_raw_data.get("overall_assessment", "")
+        if not overall:
+            if pct >= 90:
+                overall = "EXCELLENT"
+            elif pct >= 75:
+                overall = "GOOD"
+            elif pct >= 50:
+                overall = "MODERATE"
+            else:
+                overall = "POOR"
+
+        # Colour coding
+        pct_color = (
+            "#2E7D32" if pct >= 75 else
+            "#F57C00" if pct >= 50 else
+            "#C62828"
+        )
+        overall_color = pct_color
+
+        cid = self.current_raw_data.get("case_id", "")
+        cid_part = f"<b>Case {cid}</b> &nbsp;|&nbsp;" if cid else ""
+        uf_part  = f"  &nbsp;<span style='color:#7B1FA2;'>{len(self.uncovered_data)} uncovered</span>" if self.uncovered_data else ""
+
+        gen_notes = self.current_raw_data.get(
+            "general_notes",
+            self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
+        )
+        notes_badge = f" &nbsp;|&nbsp; <span style='background:#EDE7F6; color:#4A148C; padding:1px 6px; border-radius:3px; font-size:10px;'>📝 {gen_notes[:50]}{'…' if len(gen_notes)>50 else ''}</span>" if gen_notes else ""
+
+        return (
+            f"{cid_part}"
+            f"Score: <b><span style='color:{pct_color};'>{pct:.1f}%</span></b>"
+            f" ({n_sat}✓ {n_part}~ {n_not}✗ / {total_g}){uf_part}"
+            f" &nbsp;|&nbsp; <span style='color:{overall_color};'><b>{overall}</b></span>"
+            f"{notes_badge}"
+        )
+
+    def _update_summary_bar(self, extra_html: str = "") -> None:
+        """Refresh the summary bar. Pass extra_html to append a selected-row detail."""
+        base = self._build_summary_html()
+        if extra_html:
+            self.summary_bar.setText(f"{base} &nbsp;<span style='color:#546E7A;'>│</span> {extra_html}")
+        else:
+            self.summary_bar.setText(base)
 
     def _on_table_selection_changed(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()
         if not rows:
+            self._update_summary_bar()
             return
         row = rows[0].row()
         item = self.tree_table.item(row, 0)
         if not item:
+            self._update_summary_bar()
             return
         meta = item.data(Qt.UserRole)
         if not meta:
+            self._update_summary_bar()
             return
 
         tag, idx = meta
+
         if tag == "g" and idx < len(self.compliance_data):
             g = self.compliance_data[idx]
-            gid = g.get("guideline_id", "")
-            d = f"GUIDELINE {gid}\n{'=' * 40}\n\n"
-            ref_gl = g.get("reference_guideline", "")
-            if not ref_gl:
-                ref_obj = self.reference_guidelines_map.get(gid, {})
-                ref_gl = ref_obj.get("description") or ref_obj.get("guideline_description", "")
-
-            d += f"REFERENCE GUIDELINE:\n{ref_gl or 'N/A'}\n\n"
-            d += f"COMPLIANCE STATUS:\n{g.get('compliance_status', 'N/A')}\n\n"
-            d += f"EVIDENCE:\n{g.get('evidence', 'N/A')}\n\n"
-            d += f"NOTES / FEEDBACK:\n{g.get('notes', '') or 'None'}\n\n"
-            self.details_text.setPlainText(d)
+            gid    = g.get("guideline_id", "")
+            status = g.get("compliance_status", "")
+            notes  = g.get("notes", "")
+            ev     = g.get("evidence", "")
+            status_color = (
+                "#2E7D32" if status == "Satisfied" else
+                "#F57C00" if status == "Partially-Satisfied" else
+                "#C62828"
+            )
+            extra = (
+                f"<b>{gid}</b>: <span style='color:{status_color};'>{status}</span>"
+            )
+            if notes:
+                extra += f" — <i>{notes[:80]}</i>"
+            elif ev:
+                extra += f" — <span style='color:#546E7A;'>{ev[:80]}</span>"
+            self._update_summary_bar(extra)
 
         elif tag == "u" and idx < len(self.uncovered_data):
-            uf = self.uncovered_data[idx]
-            d = f"UNCOVERED FRAGMENT {idx+1}\n{'=' * 30}\n\n"
-            d += f"LABEL:\n{uf.get('label','')}\n\n"
-            d += f"DESCRIPTION:\n{uf.get('fragment', uf.get('fragment_description', uf.get('description','')))}\n\n"
-            self.details_text.setPlainText(d)
+            uf   = self.uncovered_data[idx]
+            lbl  = uf.get("label", "Fragment")
+            desc = uf.get("fragment", uf.get("fragment_description", uf.get("description", "")))
+            m_raw = (
+                uf.get("matched_elements")
+                or uf.get("matched_classes")
+                or uf.get("matched_states")
+                or uf.get("elements")
+                or uf.get("matched_element")
+                or uf.get("model_elements")
+                or ""
+            )
+            m_str = ", ".join(str(x) for x in m_raw if x) if isinstance(m_raw, list) else (str(m_raw) if m_raw else "")
+            elems_part = f" &nbsp;|&nbsp; <b>Matched Elements:</b> <span style='color:#6a1b9a;'>{m_str}</span>" if m_str else ""
+            extra = f"<span style='color:#7B1FA2;'><b>{lbl}</b></span>: {desc[:90]}{'…' if len(desc)>90 else ''}{elems_part}"
+            self._update_summary_bar(extra)
 
         elif tag == "summary":
-            cid = self.current_raw_data.get("case_id", "N/A")
-            ver = self.current_raw_data.get("skill_version", "1.0.0")
-
-            # Guideline Breakdown & Score
-            n_sat = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
+            # Clicking the summary row shows full breakdown
+            n_sat  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
             n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") == "Partially-Satisfied")
-            n_not = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
-            total_g = len(self.compliance_data)
+            n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
+            gen_notes = self.current_raw_data.get(
+                "general_notes",
+                self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
+            )
+            extra = (
+                f"✓ {n_sat} Satisfied &nbsp; ~ {n_part} Partial &nbsp; ✗ {n_not} Not-Satisfied"
+                f" &nbsp; | &nbsp; {len(self.uncovered_data)} uncovered fragments"
+            )
+            if gen_notes:
+                extra += f" &nbsp; | &nbsp; 📝 <b>General Note:</b> <i>{gen_notes}</i>"
+            self._update_summary_bar(extra)
 
-            points_earned = n_sat * 1.0 + n_part * 0.5
-            max_points = float(total_g) if total_g > 0 else 1.0
-            score_pct = (points_earned / max_points * 100.0) if max_points > 0 else 0.0
-
-            raw_tot = self.current_raw_data.get("total_score") or self.current_raw_data.get("score")
-            raw_max = self.current_raw_data.get("max_score")
-            raw_pct = self.current_raw_data.get("score_pct")
-
-            if raw_tot is not None:
-                points_earned = raw_tot
-            if raw_max is not None:
-                max_points = raw_max
-            if raw_pct is not None:
-                try:
-                    score_pct = float(raw_pct)
-                except (ValueError, TypeError):
-                    pass
-
-            # Uncovered Fragments Breakdown
-            n_alt = sum(1 for uf in self.uncovered_data if uf.get("label") == "Alternative")
-            n_dom_err = sum(1 for uf in self.uncovered_data if uf.get("label") == "Domain Mistake")
-            n_lang_err = sum(1 for uf in self.uncovered_data if uf.get("label") == "Language Mistake")
-            total_uf = len(self.uncovered_data)
-
-            # Overall Assessment Rating
-            overall = self.current_raw_data.get("overall_assessment")
-            if not overall:
-                if score_pct >= 90:
-                    overall = "EXCELLENT — Model complies closely with reference guidelines."
-                elif score_pct >= 75:
-                    overall = "GOOD — Minor non-compliance or acceptable alternatives."
-                elif score_pct >= 50:
-                    overall = "MODERATE — Partial compliance with noticeable gaps or alternatives."
-                else:
-                    overall = "POOR — Significant compliance gaps identified in case model."
-
-            d = "CASE ASSESSMENT SUMMARY\n=======================\n\n"
-            d += f"CASE ID:\n{cid}\n\n"
-            d += f"SKILL VERSION:\n{ver}\n\n"
-            d += f"OVERALL COMPLIANCE SCORE:\n{score_pct:.1f}% ({points_earned:g} / {max_points:g} points)\n\n"
-            d += f"OVERALL ASSESSMENT:\n{overall}\n\n"
-
-            d += f"GUIDELINE BREAKDOWN ({total_g} total):\n"
-            d += f"  • Satisfied:           {n_sat}\n"
-            d += f"  • Partially-Satisfied: {n_part}\n"
-            d += f"  • Not-Satisfied:       {n_not}\n\n"
-
-            if total_uf > 0:
-                d += f"UNCOVERED FRAGMENTS BREAKDOWN ({total_uf} total):\n"
-                d += f"  • Alternatives:       {n_alt}\n"
-                d += f"  • Domain Mistakes:    {n_dom_err}\n"
-                d += f"  • Language Mistakes:  {n_lang_err}\n\n"
-
-            cov_sum = self.current_raw_data.get("coverage_summary")
-            if isinstance(cov_sum, dict):
-                d += f"COVERAGE SUMMARY:\n"
-                for ck, cv in cov_sum.items():
-                    d += f"  • {ck.upper().replace('_', ' ')}: {cv}\n"
-                d += "\n"
-
-            res_sum = self.current_raw_data.get("resolution_summary")
-            if isinstance(res_sum, dict):
-                d += f"RESOLUTION SUMMARY:\n"
-                for rk, rv in res_sum.items():
-                    d += f"  • {rk.upper().replace('_', ' ')}: {rv}\n"
-                d += "\n"
-
-            self.details_text.setPlainText(d)
+        # If annotation overlay is active, re-render diagram with ONLY the selected guideline(s)
+        if self._annotate_active:
+            raw = self.model_text_edit.toPlainText().strip()
+            if raw:
+                render_text = self._build_annotated_puml(raw)
+                self._render_diagram(render_text)
 
     # ── PlantUML Async Diagram Rendering ──
 
@@ -996,18 +2315,46 @@ class Agent3Tab(QWidget):
             return
 
         self._pending_puml_text = puml_text
-        self.diagram_label.setText("Rendering diagram from PlantUML server…")
+        self.diagram_label.setText("Rendering diagram…")
         if self.diagram_worker and self.diagram_worker.isRunning():
             self.diagram_worker.terminate()
 
-        self.diagram_worker = PlantUMLDiagramWorker(puml_text, self)
+        raw_puml = self.model_text_edit.toPlainText().strip()
+        self.diagram_worker = PlantUMLDiagramWorker(puml_text, raw_puml_text=raw_puml, parent=self)
         self.diagram_worker.image_loaded.connect(self._on_diagram_loaded)
         self.diagram_worker.error.connect(self._on_diagram_error)
         self.diagram_worker.start()
 
     def _on_diagram_loaded(self, raw_bytes: QByteArray) -> None:
         pix = QPixmap()
-        if pix.loadFromData(raw_bytes):
+
+        # 1. Try rendering SVG if bytes contain XML/SVG data
+        is_svg = (
+            raw_bytes.startsWith(b"<svg")
+            or raw_bytes.startsWith(b"<?xml")
+            or b"<svg" in bytes(raw_bytes[:300])
+        )
+        if is_svg:
+            try:
+                renderer = QSvgRenderer(raw_bytes)
+                if renderer.isValid():
+                    size = renderer.defaultSize()
+                    w = max(100, int(size.width())) if size.width() > 0 else 1200
+                    h = max(100, int(size.height())) if size.height() > 0 else 900
+                    img = QImage(w, h, QImage.Format_ARGB32_Premultiplied)
+                    img.fill(Qt.transparent)
+                    p = QPainter(img)
+                    renderer.render(p)
+                    p.end()
+                    pix = QPixmap.fromImage(img)
+            except Exception:
+                pass
+
+        # 2. Fallback to standard raster (PNG/JPG) loader
+        if pix.isNull():
+            pix.loadFromData(raw_bytes)
+
+        if not pix.isNull():
             self.original_pixmap = pix
             puml = getattr(self, "_pending_puml_text", None)
             if puml:
@@ -1016,6 +2363,9 @@ class Agent3Tab(QWidget):
                 self._diagram_cache[puml] = pix
                 self._current_rendered_text = puml
             self._apply_zoom()
+            # Live-push to floating window if open
+            if self._diag_float and not self._diag_float.isHidden():
+                self._diag_float.update_pixmap(pix)
         else:
             self.diagram_label.setText("Failed to parse diagram image.")
 
@@ -1133,6 +2483,46 @@ class Agent3Tab(QWidget):
             log_action("Agent3", "update_feedback", f"guideline={gid} | old_feedback={curr_notes!r} | new_feedback={notes!r}")
             self._save_hitl_changes()  # auto-save
 
+    def _hitl_edit_general_note(self) -> None:
+        """Add or edit general manual comment/review for the overall solution/case."""
+        if not self.current_raw_data and not self.compliance_data:
+            QMessageBox.warning(self, "No Case", "Select or load a case first before adding a general note.")
+            return
+
+        cid = str(self.current_raw_data.get("case_id", self.aggregate_combo.currentText().replace(".json", "")))
+        curr_notes = self.current_raw_data.get(
+            "general_notes",
+            self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
+        )
+
+        dlg = GeneralNoteDialog(cid, curr_notes, parent=self)
+        if dlg.exec() == QDialog.Accepted:
+            notes = dlg.get_text().strip()
+            self.current_raw_data["general_notes"] = notes
+            self.current_raw_data["reviewer_notes"] = notes
+            self._populate_tree_table()
+            log_action("Agent3", "update_general_note", f"case_id={cid} | old_note={curr_notes!r} | new_note={notes!r}")
+            self._save_hitl_changes()  # auto-save
+
+    def _on_table_cell_double_clicked(self, row: int, col: int) -> None:
+        """Context-aware double click handler for guidelines, uncovered fragments, and summary row."""
+        item = self.tree_table.item(row, 0)
+        if not item:
+            return
+        meta = item.data(Qt.UserRole)
+        if not meta:
+            return
+        tag, idx = meta
+        if tag == "g":
+            if col == 1:
+                self._hitl_change_status()
+            else:
+                self._hitl_update_feedback()
+        elif tag == "u":
+            self._hitl_map_fragment()
+        elif tag == "summary":
+            self._hitl_edit_general_note()
+
     def _hitl_map_fragment(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()
         if not rows:
@@ -1161,11 +2551,14 @@ class Agent3Tab(QWidget):
         if ok and gid.strip():
             target_gid = gid.strip()
             mapping = self.current_raw_data.setdefault("existing_mapping", [])
+            m_elems = uf.get("matched_elements") or uf.get("elements") or []
             matched = False
             for entry in mapping:
                 if entry.get("guideline_id") == target_gid:
                     entry["compliance_status"] = "Satisfied"
                     entry["evidence"] = desc
+                    if m_elems:
+                        entry["matched_elements"] = m_elems
                     matched = True
                     break
             if not matched:
@@ -1173,6 +2566,7 @@ class Agent3Tab(QWidget):
                     "guideline_id": target_gid,
                     "compliance_status": "Satisfied",
                     "evidence": desc,
+                    "matched_elements": m_elems,
                     "notes": "Mapped by Human Reviewer",
                 })
             self.uncovered_data.pop(idx)
