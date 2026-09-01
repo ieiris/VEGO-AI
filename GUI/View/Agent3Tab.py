@@ -30,7 +30,8 @@ from agent_controllers import Agent3Controller
 
 
 from PySide6.QtCore import QByteArray, QTimer, Qt, QThread, Signal
-from PySide6.QtGui import QColor, QFont, QImage, QPixmap
+from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap
+from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -61,97 +62,211 @@ from action_logger import log_action, set_log_output_dir
 
 
 class PlantUMLDiagramWorker(QThread):
-    """Asynchronously fetches PlantUML diagram from kroki.io (SVG) with fallbacks."""
+    """Asynchronously fetches PlantUML diagram with multi-tier failover and error recovery.
+
+    If a 400 Bad Request or syntax error occurs on annotated PUML, it automatically
+    sanitizes the code, strips conflicting annotations, and retries across Kroki and
+    official PlantUML servers until a valid diagram is produced.
+    """
 
     image_loaded = Signal(QByteArray)
     error = Signal(str)
 
-    def __init__(self, puml_text: str, parent=None):
+    def __init__(self, puml_text: str, raw_puml_text: str | None = None, parent=None):
         super().__init__(parent)
         self.puml_text = puml_text
+        self.raw_puml_text = raw_puml_text or puml_text
 
     def run(self):
-        if not self.puml_text.strip():
+        if not self.puml_text or not self.puml_text.strip():
             self.error.emit("No model text provided.")
             return
 
-        # 1. Primary: Kroki.io SVG (vector quality, no URL length limits)
+        # Prepare progressive candidate texts:
+        # Candidate 1: Annotated text as requested
+        # Candidate 2: Sanitized text (clean delimiters & markdown fences)
+        # Candidate 3: Clean text stripped of injected colors / legend
+        # Candidate 4: Normalized raw model text
+        candidates: list[str] = []
+
+        c1 = self.puml_text.strip()
+        if c1:
+            candidates.append(c1)
+
+        c2 = self._sanitize_puml(c1)
+        if c2 and c2 not in candidates:
+            candidates.append(c2)
+
+        c3 = self._strip_annotations(self.raw_puml_text or c1)
+        c3 = self._sanitize_puml(c3)
+        if c3 and c3 not in candidates:
+            candidates.append(c3)
+
+        c4 = self._strip_annotations(c1)
+        if c4 and c4 not in candidates:
+            candidates.append(c4)
+
+        max_attempts = 3
+        last_error = ""
+
+        for attempt in range(1, max_attempts + 1):
+            for puml in candidates:
+                raw_bytes = self._try_render_all_endpoints(puml)
+                if raw_bytes:
+                    self.image_loaded.emit(QByteArray(raw_bytes))
+                    return
+
+            if attempt < max_attempts:
+                self.msleep(300 * attempt)
+
+        self.error.emit(f"Rendering failed after retries: {last_error or 'Unable to fetch diagram from rendering servers.'}")
+
+    def _try_render_all_endpoints(self, text: str) -> bytes | None:
+        """Try rendering a given PUML text against Kroki.io and PlantUML.com endpoints."""
+        utf8_data = text.encode("utf-8")
+
+        # 1. Kroki.io SVG (POST)
         try:
             req = urllib.request.Request(
                 "https://kroki.io/plantuml/svg",
-                data=self.puml_text.encode("utf-8"),
+                data=utf8_data,
                 headers={
                     "Content-Type": "text/plain; charset=utf-8",
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI",
                 },
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw_bytes = resp.read()
-            if raw_bytes:
-                self.image_loaded.emit(QByteArray(raw_bytes))
-                return
-        except Exception as exc_kroki_svg:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = resp.read()
+            if data and len(data) > 20:
+                return data
+        except Exception:
             pass
 
-        # 2. Secondary fallback: Kroki.io PNG
+        # 2. Kroki.io PNG (POST)
         try:
             req = urllib.request.Request(
                 "https://kroki.io/plantuml/png",
-                data=self.puml_text.encode("utf-8"),
+                data=utf8_data,
                 headers={
                     "Content-Type": "text/plain; charset=utf-8",
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI",
                 },
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw_bytes = resp.read()
-            if raw_bytes:
-                self.image_loaded.emit(QByteArray(raw_bytes))
-                return
-        except Exception as exc_kroki_png:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = resp.read()
+            if data and len(data) > 20:
+                return data
+        except Exception:
             pass
 
-        # 3. Tertiary fallback: plantuml.com
+        # 3. Official PlantUML.com SVG (GET)
+        enc = self._encode_plantuml(text)
         try:
-            url = self._plantuml_url(self.puml_text)
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw_bytes = resp.read()
-            if raw_bytes:
-                self.image_loaded.emit(QByteArray(raw_bytes))
-                return
-        except Exception as exc:
-            self.error.emit(f"Rendering failed: {exc}")
+            url = f"https://www.plantuml.com/plantuml/svg/{enc}"
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI"},
+            )
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                data = resp.read()
+            if data and len(data) > 20:
+                return data
+        except Exception:
+            pass
 
-    def _plantuml_url(self, text: str) -> str:
+        # 4. Official PlantUML.com PNG (GET)
+        try:
+            url = f"https://www.plantuml.com/plantuml/png/{enc}"
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI"},
+            )
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                data = resp.read()
+            if data and len(data) > 20:
+                return data
+        except Exception:
+            pass
+
+        # 5. Alternate mirrors (HTTP / PlantText)
+        for host in ["http://www.plantuml.com/plantuml/svg", "https://planttext.com/api/plantuml/svg"]:
+            try:
+                url = f"{host}/{enc}"
+                req = urllib.request.Request(
+                    url,
+                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI"},
+                )
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    data = resp.read()
+                if data and len(data) > 20:
+                    return data
+            except Exception:
+                pass
+
+        return None
+
+    @staticmethod
+    def _sanitize_puml(text: str) -> str:
+        """Strip markdown wrappers and ensure proper @startuml / @enduml boundaries."""
+        lines = []
+        for line in text.splitlines():
+            s = line.strip()
+            if s.startswith("```"):
+                continue
+            lines.append(line)
+        cleaned = "\n".join(lines).strip()
+        if not cleaned.lower().startswith("@startuml"):
+            cleaned = "@startuml\n" + cleaned
+        if not cleaned.lower().endswith("@enduml"):
+            cleaned = cleaned + "\n@enduml"
+        return cleaned
+
+    @staticmethod
+    def _strip_annotations(text: str) -> str:
+        """Strip color tags, legend blocks, and highlight styling to recover clean PUML."""
+        lines = []
+        in_legend = False
+        for line in text.splitlines():
+            s = line.strip().lower()
+            if s.startswith("legend") or s.startswith("endlegend"):
+                in_legend = s.startswith("legend")
+                continue
+            if in_legend:
+                continue
+            clean_line = re.sub(r'#(?:C8E6C9|FFB74D|FFCDD2|c8e6c9|ffb74d|ffcdd2|green|orange|red)\b', '', line)
+            lines.append(clean_line)
+        return "\n".join(lines)
+
+    @staticmethod
+    def _encode_plantuml(text: str) -> str:
+        """Encode text using standard PlantUML 64-character alphabet deflate."""
         c = zlib.compress(text.encode("utf-8"), 9)[2:-4]
-        res = ""
-        for i in range(0, len(c), 3):
-            chunk = c[i:i + 3]
-            b1 = chunk[0]
-            b2 = chunk[1] if len(chunk) > 1 else 0
-            b3 = chunk[2] if len(chunk) > 2 else 0
-            c1 = b1 >> 2
-            c2 = ((b1 & 3) << 4) | (b2 >> 4)
-            c3 = ((b2 & 15) << 2) | (b3 >> 6)
-            c4 = b3 & 63
-            for x in [c1, c2, c3, c4]:
-                res += self._e(x & 63)
-        return f"http://www.plantuml.com/plantuml/png/{res}"
-
-    def _e(self, b: int) -> str:
-        if b < 10:
-            return chr(48 + b)
-        b -= 10
-        if b < 26:
-            return chr(65 + b)
-        b -= 26
-        if b < 26:
-            return chr(97 + b)
-        b -= 26
-        return "-" if b == 0 else ("_" if b == 1 else "?")
+        alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
+        res = []
+        i = 0
+        while i < len(c):
+            rem = len(c) - i
+            if rem >= 3:
+                b1, b2, b3 = c[i], c[i + 1], c[i + 2]
+                res.append(alphabet[b1 >> 2])
+                res.append(alphabet[((b1 & 3) << 4) | (b2 >> 4)])
+                res.append(alphabet[((b2 & 15) << 2) | (b3 >> 6)])
+                res.append(alphabet[b3 & 63])
+                i += 3
+            elif rem == 2:
+                b1, b2 = c[i], c[i + 1]
+                res.append(alphabet[b1 >> 2])
+                res.append(alphabet[((b1 & 3) << 4) | (b2 >> 4)])
+                res.append(alphabet[(b2 & 15) << 2])
+                i += 2
+            elif rem == 1:
+                b1 = c[i]
+                res.append(alphabet[b1 >> 2])
+                res.append(alphabet[(b1 & 3) << 4])
+                i += 1
+        return "".join(res)
 
 
 class ScoringSchemaDialog(QDialog):
@@ -1464,6 +1579,16 @@ class Agent3Tab(QWidget):
 
         # ── Class / interface / enum / abstract ──
         if any(line_lower.startswith(k) for k in ("class ", "interface ", "enum ", "abstract ")):
+            m_cls = re.match(
+                r'^(\s*(?:class|interface|enum|abstract)\s+"?[^"{:\s<]+"?(?:\s+as\s+\w+)?(?:\s+<<[^>]+>>)?)(.*)$',
+                line,
+                re.IGNORECASE,
+            )
+            if m_cls:
+                head, tail = m_cls.group(1), m_cls.group(2)
+                head = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', head)
+                tail = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', tail)
+                return f"{head} {color}{tail}"
             m_block = re.search(r'(\s*\{.*)$', line)
             if m_block:
                 main_part = line[:m_block.start()].rstrip()
@@ -1956,18 +2081,46 @@ class Agent3Tab(QWidget):
             return
 
         self._pending_puml_text = puml_text
-        self.diagram_label.setText("Rendering diagram via kroki.io…")
+        self.diagram_label.setText("Rendering diagram…")
         if self.diagram_worker and self.diagram_worker.isRunning():
             self.diagram_worker.terminate()
 
-        self.diagram_worker = PlantUMLDiagramWorker(puml_text, self)
+        raw_puml = self.model_text_edit.toPlainText().strip()
+        self.diagram_worker = PlantUMLDiagramWorker(puml_text, raw_puml_text=raw_puml, parent=self)
         self.diagram_worker.image_loaded.connect(self._on_diagram_loaded)
         self.diagram_worker.error.connect(self._on_diagram_error)
         self.diagram_worker.start()
 
     def _on_diagram_loaded(self, raw_bytes: QByteArray) -> None:
         pix = QPixmap()
-        if pix.loadFromData(raw_bytes):
+
+        # 1. Try rendering SVG if bytes contain XML/SVG data
+        is_svg = (
+            raw_bytes.startsWith(b"<svg")
+            or raw_bytes.startsWith(b"<?xml")
+            or b"<svg" in bytes(raw_bytes[:300])
+        )
+        if is_svg:
+            try:
+                renderer = QSvgRenderer(raw_bytes)
+                if renderer.isValid():
+                    size = renderer.defaultSize()
+                    w = max(100, int(size.width())) if size.width() > 0 else 1200
+                    h = max(100, int(size.height())) if size.height() > 0 else 900
+                    img = QImage(w, h, QImage.Format_ARGB32_Premultiplied)
+                    img.fill(Qt.transparent)
+                    p = QPainter(img)
+                    renderer.render(p)
+                    p.end()
+                    pix = QPixmap.fromImage(img)
+            except Exception:
+                pass
+
+        # 2. Fallback to standard raster (PNG/JPG) loader
+        if pix.isNull():
+            pix.loadFromData(raw_bytes)
+
+        if not pix.isNull():
             self.original_pixmap = pix
             puml = getattr(self, "_pending_puml_text", None)
             if puml:
