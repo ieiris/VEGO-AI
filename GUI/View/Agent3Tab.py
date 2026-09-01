@@ -1369,7 +1369,8 @@ class Agent3Tab(QWidget):
     _GENERIC_NOUNS = {
         "order", "orders", "delivery", "deliveries", "item", "items",
         "vehicle", "state", "states", "data", "info", "system", "service",
-        "process", "processing", "status", "type", "activity"
+        "process", "processing", "status", "type", "types", "activity",
+        "place", "view", "update", "generate", "provide", "track", "link", "assign"
     }
 
     def _on_annotate_toggled(self, checked: bool) -> None:
@@ -1436,6 +1437,21 @@ class Agent3Tab(QWidget):
         """Extract (kind, name, alias) from a PlantUML element declaration line."""
         line_s = line.strip()
 
+        # Actor (e.g. actor SalesStaff as "Sales Staff" or actor :Customer: as C or actor Customer)
+        m = re.match(r'^actor\s+(?:"([^"]+)"|:([^:]+):|([A-Za-z0-9_]+))(?:\s+as\s+(?:"([^"]+)"|([A-Za-z0-9_]+)))?', line_s, re.IGNORECASE)
+        if m:
+            name = m.group(1) or m.group(2) or m.group(3)
+            alias = m.group(4) or m.group(5)
+            return "actor", name.strip(), alias.strip() if alias else None
+
+        # Standalone UseCase (e.g. usecase "Place Order" or (Place Order) or usecase (Place Order) as PO)
+        m = re.match(r'^(?:usecase\s+)?(?:\(([^)\n]+)\)|"([^"\n]+)"|([A-Za-z0-9_]+))(?:\s+as\s+(?:"([^"\n]+)"|([A-Za-z0-9_]+)))?$', line_s, re.IGNORECASE)
+        if m and not re.search(r"-->|<--|->|<-|\.\.>|\.\.|--|==", line_s):
+            name = m.group(1) or m.group(2) or m.group(3)
+            alias = m.group(4) or m.group(5)
+            if line_s.lower().startswith("usecase") or line_s.startswith("("):
+                return "usecase", name.strip(), alias.strip() if alias else None
+
         # Class / Interface / Enum / Abstract (e.g. class Customer {)
         m = re.match(r'^(?:class|interface|enum|abstract)\s+"?([A-Za-z0-9_]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
         if m:
@@ -1451,11 +1467,6 @@ class Agent3Tab(QWidget):
         if m:
             return "component", m.group(1).strip(), m.group(2)
 
-        # UseCase (e.g. usecase "Place Order")
-        m = re.match(r'^usecase\s+"?([^"\n]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
-        if m:
-            return "usecase", m.group(1).strip(), m.group(2)
-
         # Activity (e.g. :Verify order;)
         m = re.match(r'^:\s*([^;#\n]+?)\s*(?:#[^;]+)?;\s*$', line_s)
         if m:
@@ -1463,11 +1474,13 @@ class Agent3Tab(QWidget):
 
         return None, None, None
 
-    def _match_element_to_guideline(self, line: str, guideline_text: str, explicit_elements: list[str] | None = None) -> bool:
-        """Check whether a PlantUML element declaration specifically matches the guideline text or explicit matched_elements."""
-        kind, name, alias = self._extract_element_name(line)
-        if not kind or not name:
+    def _match_name_to_guideline(self, name: str, alias: str | None, guideline_text: str, explicit_elements: list[str] | None = None) -> bool:
+        """Check whether an element name or alias matches the guideline text or explicit matched_elements."""
+        if not name:
             return False
+
+        clean_name = name.strip('"').lower()
+        clean_alias = alias.strip('"').lower() if alias else ""
 
         # 1. Direct match with explicit matched_elements if provided
         if explicit_elements:
@@ -1475,15 +1488,19 @@ class Agent3Tab(QWidget):
                 if not elem:
                     continue
                 elem_lower = elem.strip().lower()
-                clean_name = name.strip('"').lower()
-                clean_alias = alias.strip().lower() if alias else ""
-                if elem_lower == clean_name or (clean_alias and elem_lower == clean_alias):
-                    return True
-                # e.g. "Actor: Customer" or "UC: Place Order" or "Class: Customer"
-                if clean_name and (clean_name in elem_lower or elem_lower in clean_name):
-                    return True
+                clean_elem = re.sub(r'^(?:actor|uc|usecase|class|state|component|interface|enum)\s*:\s*', '', elem_lower).strip()
 
-        # 2. Text matching against guideline evidence
+                if clean_name == elem_lower or clean_name == clean_elem:
+                    return True
+                if clean_alias and (clean_alias == elem_lower or clean_alias == clean_elem):
+                    return True
+                if clean_name and clean_name in elem_lower:
+                    return True
+                if clean_alias and clean_alias in elem_lower:
+                    return True
+            return False
+
+        # 2. Text matching against guideline evidence / description
         g_text_lower = guideline_text.lower()
         candidates = [name]
         if alias:
@@ -1491,7 +1508,7 @@ class Agent3Tab(QWidget):
 
         for cand in candidates:
             clean = cand.strip('"').lower()
-            if len(clean) >= 4 and clean in g_text_lower:
+            if len(clean) >= 3 and clean in g_text_lower:
                 return True
 
             words = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|\b)|[a-zA-Z]{3,}', cand)
@@ -1499,23 +1516,27 @@ class Agent3Tab(QWidget):
             if not words:
                 continue
 
-            # Single-word name (e.g. Employee, Customer, Manufacturer, Refund, Clarification):
             if len(words) == 1:
                 w = words[0]
                 if re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower):
                     return True
             else:
-                # Multi-word name (e.g. RegularOrder, UrgentOrder, DeliveryProblem, PaymentPending):
-                # Specific modifier words must match the guideline
                 specific_words = [w for w in words if w not in self._GENERIC_NOUNS]
                 if specific_words:
-                    if any(re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower) for w in specific_words):
+                    if all(re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower) for w in specific_words):
                         return True
                 else:
                     if all(re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower) for w in words):
                         return True
 
         return False
+
+    def _match_element_to_guideline(self, line: str, guideline_text: str, explicit_elements: list[str] | None = None) -> bool:
+        """Check whether a PlantUML element declaration specifically matches the guideline text or explicit matched_elements."""
+        kind, name, alias = self._extract_element_name(line)
+        if not kind or not name:
+            return False
+        return self._match_name_to_guideline(name, alias, guideline_text, explicit_elements)
 
     def _build_annotated_puml(self, puml_text: str, selected_gids: set[str] | None = None, selected_ufs: set[int] | None = None) -> str:
         """
@@ -1604,9 +1625,82 @@ class Agent3Tab(QWidget):
         if not targets:
             return puml_text
 
-        annotated = [self._inject_puml_color(line, targets) for line in lines]
-        annotated = self._insert_legend(annotated, selected_items)
-        return "\n".join(annotated)
+        # Track elements explicitly declared in standalone lines
+        declared_names: set[str] = set()
+        for line in lines:
+            stripped = line.strip()
+            if not stripped or any(stripped.lower().startswith(p) for p in self._PUML_SKIP_PREFIXES):
+                continue
+            if re.search(r"-->|<--|->|<-|\.\.>|\.\.|==", stripped):
+                continue
+            kind, name, alias = self._extract_element_name(line)
+            if name:
+                declared_names.add(name.strip('"').lower())
+            if alias:
+                declared_names.add(alias.strip('"').lower())
+
+        # Inject colors into standalone lines and detect inline use cases
+        annotated_lines = []
+        container_stack: list[int] = []
+        container_injections: dict[int | None, list[str]] = {}
+        injected_names: set[str] = set()
+
+        for line in lines:
+            stripped = line.strip()
+            stripped_lower = stripped.lower()
+
+            is_container_start = False
+            if "{" in stripped and not any(stripped_lower.startswith(k) for k in ("note", "class ", "interface ", "enum ", "state ")):
+                is_container_start = True
+
+            colored_line = self._inject_puml_color(line, targets)
+            annotated_idx = len(annotated_lines)
+            annotated_lines.append(colored_line)
+
+            if is_container_start:
+                container_stack.append(annotated_idx)
+            elif "}" in stripped and container_stack:
+                container_stack.pop()
+
+            # Detect inline use cases inside relationship lines
+            if re.search(r"-->|<--|->|<-|\.\.>|\.\.|--|==", stripped):
+                rel_part = stripped.split(":", 1)[0]
+                inline_ucs = re.findall(r'\(([^)\n]+)\)', rel_part)
+                for uc in inline_ucs:
+                    uc_clean = uc.strip()
+                    uc_key = uc_clean.lower()
+                    if not uc_clean or uc_key in declared_names or uc_key in injected_names:
+                        continue
+
+                    for item in targets:
+                        g_text = item[0]
+                        fill   = item[1]
+                        explicit_elems = item[3] if len(item) > 3 else None
+                        if self._match_name_to_guideline(uc_clean, None, g_text, explicit_elems):
+                            current_container = container_stack[-1] if container_stack else None
+                            if current_container not in container_injections:
+                                container_injections[current_container] = []
+                            indent = "  " if current_container is not None else ""
+                            container_injections[current_container].append(f"{indent}usecase ({uc_clean}) {fill}")
+                            injected_names.add(uc_key)
+                            break
+
+        final_lines = []
+        for idx, line in enumerate(annotated_lines):
+            final_lines.append(line)
+            if idx in container_injections:
+                final_lines.extend(container_injections[idx])
+
+        if None in container_injections:
+            insert_pos = 0
+            for i, l in enumerate(final_lines):
+                if l.strip().lower().startswith("@startuml"):
+                    insert_pos = i + 1
+                    break
+            final_lines = final_lines[:insert_pos] + container_injections[None] + final_lines[insert_pos:]
+
+        final_lines = self._insert_legend(final_lines, selected_items)
+        return "\n".join(final_lines)
 
     # Lines that must NEVER be colored — PlantUML keywords / structural elements
     _PUML_SKIP_PREFIXES = (
@@ -1717,12 +1811,12 @@ class Agent3Tab(QWidget):
             return f"{main_part} {color}{suffix}"
 
         # ── UseCase ──
-        if line_lower.startswith("usecase "):
+        if line_lower.startswith("usecase ") or (stripped.startswith("(") and stripped.endswith(")")):
             main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', line.rstrip())
             return f"{main_part} {color}"
 
-        # ── Sequence participant / actor / boundary / control / collections ──
-        if any(line_lower.startswith(k) for k in ("participant ", "actor ", "boundary ", "control ", "collections ")):
+        # ── Sequence participant / actor / boundary / control / collections / entity ──
+        if any(line_lower.startswith(k) for k in ("participant ", "actor ", "boundary ", "control ", "collections ", "entity ")):
             main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', line.rstrip())
             return f"{main_part} {color}"
 
