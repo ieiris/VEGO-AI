@@ -353,6 +353,47 @@ class FeedbackDialog(QDialog):
 
 
 # ---------------------------------------------------------------------------
+# General Note Dialog
+# ---------------------------------------------------------------------------
+
+class GeneralNoteDialog(QDialog):
+    """Resizable general manual comment / note editor for the overall solution/case."""
+
+    def __init__(self, case_id: str, current_notes: str, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"📝 General Solution Note — Case {case_id}" if case_id else "📝 General Solution Note")
+        self.resize(620, 360)
+        self.setMinimumSize(420, 220)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+
+        header_lbl = QLabel(
+            f"Enter general manual comment / evaluation notes for case <b>{case_id}</b>:"
+            if case_id else
+            "Enter general manual comment / evaluation notes for the solution:"
+        )
+        header_lbl.setWordWrap(True)
+        header_lbl.setStyleSheet("font-size: 12px; color: #263238;")
+        layout.addWidget(header_lbl)
+
+        self.text_edit = QPlainTextEdit()
+        self.text_edit.setPlainText(current_notes)
+        self.text_edit.setPlaceholderText("Write overall solution feedback, evaluation rationale, or reviewer notes here…")
+        self.text_edit.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+        self.text_edit.setFont(QFont("Segoe UI", 10))
+        layout.addWidget(self.text_edit, stretch=1)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+    def get_text(self) -> str:
+        return self.text_edit.toPlainText()
+
+
+# ---------------------------------------------------------------------------
 # Floating (detached) windows
 # ---------------------------------------------------------------------------
 
@@ -577,7 +618,7 @@ class Agent3Tab(QWidget):
         self._pending_puml_text: str | None = None
         self._diag_float: DiagramFloatWindow | None = None   # floating diagram window
         self._table_float: TableFloatWindow | None = None    # floating table window
-        self._annotate_active: bool = False  # compliance annotation overlay toggle
+        self._annotate_active: bool = True  # compliance annotation overlay toggle (enabled by default)
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(6, 4, 6, 6)
@@ -690,17 +731,27 @@ class Agent3Tab(QWidget):
         btn_popout_diag.setToolTip("Open diagram in a separate floating window")
         btn_popout_diag.clicked.connect(self._popout_diagram)
 
-        # Compliance annotation toggle
-        self.btn_annotate = _md_btn("🎨 Annotate", "#37474F")
+        # Compliance annotation toggle (enabled by default)
+        self.btn_annotate = _md_btn("🎨 Annotated", "#1B5E20")
         self.btn_annotate.setToolTip(
             "Toggle compliance color overlay on the diagram.\n"
-            "Green = Satisfied  |  Orange = Partially-Satisfied"
+            "Green = Satisfied  |  Orange = Partially-Satisfied  |  Red = Not-Satisfied"
         )
         self.btn_annotate.setCheckable(True)
+        self.btn_annotate.setChecked(True)
         self.btn_annotate.toggled.connect(self._on_annotate_toggled)
         self.annotate_legend_label = QLabel()
         self.annotate_legend_label.setTextFormat(Qt.RichText)
-        self.annotate_legend_label.hide()
+        self.annotate_legend_label.setText(
+            "&nbsp;"
+            "<span style='background:#C8E6C9; color:#1B5E20; padding:1px 4px; "
+            "border-radius:3px; font-size:10px;'>■ Satisfied</span>&nbsp;"
+            "<span style='background:#FFB74D; color:#E65100; padding:1px 4px; "
+            "border-radius:3px; font-size:10px;'>■ Partial</span>&nbsp;"
+            "<span style='background:#FFCDD2; color:#B71C1C; padding:1px 4px; "
+            "border-radius:3px; font-size:10px;'>■ Not-Satisfied</span>"
+        )
+        self.annotate_legend_label.show()
 
         diag_toolbar.addStretch(1)
         diag_toolbar.addWidget(btn_zoom_out)
@@ -810,20 +861,22 @@ class Agent3Tab(QWidget):
             }
         """
 
-        self.tree_table = QTableWidget(0, 5)
+        self.tree_table = QTableWidget(0, 6)
         self.tree_table.setHorizontalHeaderLabels([
-            "ID", "Status", "Reference Guideline", "Evidence", "Notes / Feedback"
+            "ID", "Status", "Matched Elements", "Reference Guideline", "Evidence", "Notes / Feedback"
         ])
         self.tree_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.tree_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.tree_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.tree_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.tree_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
         self.tree_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.tree_table.setSelectionMode(QTableWidget.ExtendedSelection)
         self.tree_table.setWordWrap(True)  # Excel-like wrap text inside cells
         self.tree_table.setStyleSheet(table_style)
         self.tree_table.itemSelectionChanged.connect(self._on_table_selection_changed)
+        self.tree_table.cellDoubleClicked.connect(self._on_table_cell_double_clicked)
         table_layout.addWidget(self.tree_table)
 
         table_box.setMinimumHeight(120)
@@ -851,21 +904,23 @@ class Agent3Tab(QWidget):
         hitl_layout.setContentsMargins(8, 6, 8, 6)
         hitl_layout.setSpacing(6)
 
-        btn_status   = _md_btn("✏️ Status",   "#1976D2")
-        btn_feedback = _md_btn("💬 Feedback", "#0288D1")
-        btn_map      = _md_btn_outlined("➕ Map",   "#388E3C")
-        btn_unmap    = _md_btn_outlined("⛔ Unmap", "#D32F2F")
-        btn_continue = _md_btn("▶ Continue",  "#388E3C")
-        btn_save     = _md_btn("💾 Save",     "#F57C00")
+        btn_status       = _md_btn("✏️ Status",       "#1976D2")
+        btn_feedback     = _md_btn("💬 Feedback",     "#0288D1")
+        btn_general_note = _md_btn("📝 General Note", "#7B1FA2")
+        btn_map          = _md_btn_outlined("➕ Map",   "#388E3C")
+        btn_unmap        = _md_btn_outlined("⛔ Unmap", "#D32F2F")
+        btn_continue     = _md_btn("▶ Continue",      "#388E3C")
+        btn_save         = _md_btn("💾 Save",         "#F57C00")
 
         btn_status.clicked.connect(self._hitl_change_status)
         btn_feedback.clicked.connect(self._hitl_update_feedback)
+        btn_general_note.clicked.connect(self._hitl_edit_general_note)
         btn_map.clicked.connect(self._hitl_map_fragment)
         btn_unmap.clicked.connect(self._hitl_unmap_fragment)
         btn_continue.clicked.connect(lambda: self.continue_pipeline_requested.emit())
         btn_save.clicked.connect(self._save_hitl_changes)
 
-        for btn in [btn_status, btn_feedback, btn_map, btn_unmap, btn_continue, btn_save]:
+        for btn in [btn_status, btn_feedback, btn_general_note, btn_map, btn_unmap, btn_continue, btn_save]:
             hitl_layout.addWidget(btn)
         hitl_layout.addStretch(1)
 
@@ -1112,14 +1167,33 @@ class Agent3Tab(QWidget):
     _ANNOTATION_COLORS = {
         "Satisfied":           "#C8E6C9",   # light green
         "MAPPED":              "#C8E6C9",
-        "Partially-Satisfied": "#FFE0B2",   # light orange
-        "Not-Satisfied":       None,         # no annotation (default)
-        "UNOPERATIONALIZED":   None,
+        "Partially-Satisfied": "#FFB74D",   # distinct Material Orange
+        "Partially Satisfied": "#FFB74D",
+        "Partial":             "#FFB74D",
+        "PARTIAL":             "#FFB74D",
+        "Not-Satisfied":       "#FFCDD2",   # light red
+        "Not Satisfied":       "#FFCDD2",
+        "Not-satisfied":       "#FFCDD2",
+        "UNOPERATIONALIZED":   "#FFCDD2",
+        "Unsatisfied":         "#FFCDD2",
     }
-    _ANNOTATION_BORDER = {
-        "Satisfied":           "#2E7D32",
-        "MAPPED":              "#2E7D32",
-        "Partially-Satisfied": "#E65100",
+
+    _STOPWORDS = {
+        "that", "this", "with", "from", "have", "been", "will", "shall", "must",
+        "should", "when", "each", "their", "which", "where", "rather", "than",
+        "and", "the", "for", "not", "but", "all", "any", "has", "had", "use",
+        "used", "using", "uses", "can", "are", "were", "did", "does", "into",
+        "onto", "also", "its", "they", "them", "then", "some", "such", "only",
+        "other", "both", "either", "neither", "about", "above", "after", "before",
+        "being", "below", "between", "during", "more", "most", "same",
+        "there", "these", "those", "through", "under", "until", "very", "while",
+        "state", "states", "notes", "case", "model", "guideline", "reference"
+    }
+
+    _GENERIC_NOUNS = {
+        "order", "orders", "delivery", "deliveries", "item", "items",
+        "vehicle", "state", "states", "data", "info", "system", "service",
+        "process", "processing", "status", "type", "activity"
     }
 
     def _on_annotate_toggled(self, checked: bool) -> None:
@@ -1135,13 +1209,12 @@ class Agent3Tab(QWidget):
                 "&nbsp;"
                 "<span style='background:#C8E6C9; color:#1B5E20; padding:1px 4px; "
                 "border-radius:3px; font-size:10px;'>■ Satisfied</span>&nbsp;"
-                "<span style='background:#FFE0B2; color:#E65100; padding:1px 4px; "
-                "border-radius:3px; font-size:10px;'>■ Partial</span>"
+                "<span style='background:#FFB74D; color:#E65100; padding:1px 4px; "
+                "border-radius:3px; font-size:10px;'>■ Partial</span>&nbsp;"
+                "<span style='background:#FFCDD2; color:#B71C1C; padding:1px 4px; "
+                "border-radius:3px; font-size:10px;'>■ Not-Satisfied</span>"
             )
             self.annotate_legend_label.show()
-            # If nothing is selected, select the first guideline row by default
-            if not self.tree_table.selectionModel().selectedRows() and self.tree_table.rowCount() > 0:
-                self.tree_table.selectRow(0)
         else:
             self.btn_annotate.setText("🎨 Annotate")
             self.btn_annotate.setStyleSheet(
@@ -1174,11 +1247,97 @@ class Agent3Tab(QWidget):
                         selected_gids.add(gid)
         return selected_gids
 
+    def _extract_element_name(self, line: str) -> tuple[str | None, str | None, str | None]:
+        """Extract (kind, name, alias) from a PlantUML element declaration line."""
+        line_s = line.strip()
+
+        # Class / Interface / Enum / Abstract (e.g. class Customer {)
+        m = re.match(r'^(?:class|interface|enum|abstract)\s+"?([A-Za-z0-9_]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
+        if m:
+            return "class", m.group(1), m.group(2)
+
+        # State (e.g. state "Payment Pending" as PaymentPending)
+        m = re.match(r'^state\s+"?([^"{:\n<]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
+        if m:
+            return "state", m.group(1).strip(), m.group(2)
+
+        # Component / Database / Node / Rectangle / Storage / Cloud
+        m = re.match(r'^(?:component|database|node|rectangle|storage|cloud|queue|card|file)\s+"?([^"{\[\n]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
+        if m:
+            return "component", m.group(1).strip(), m.group(2)
+
+        # UseCase (e.g. usecase "Place Order")
+        m = re.match(r'^usecase\s+"?([^"\n]+)"?(?:\s+as\s+(\w+))?', line_s, re.IGNORECASE)
+        if m:
+            return "usecase", m.group(1).strip(), m.group(2)
+
+        # Activity (e.g. :Verify order;)
+        m = re.match(r'^:\s*([^;#\n]+?)\s*(?:#[^;]+)?;\s*$', line_s)
+        if m:
+            return "activity", m.group(1).strip(), None
+
+        return None, None, None
+
+    def _match_element_to_guideline(self, line: str, guideline_text: str, explicit_elements: list[str] | None = None) -> bool:
+        """Check whether a PlantUML element declaration specifically matches the guideline text or explicit matched_elements."""
+        kind, name, alias = self._extract_element_name(line)
+        if not kind or not name:
+            return False
+
+        # 1. Direct match with explicit matched_elements if provided
+        if explicit_elements:
+            for elem in explicit_elements:
+                if not elem:
+                    continue
+                elem_lower = elem.strip().lower()
+                clean_name = name.strip('"').lower()
+                clean_alias = alias.strip().lower() if alias else ""
+                if elem_lower == clean_name or (clean_alias and elem_lower == clean_alias):
+                    return True
+                # e.g. "Actor: Customer" or "UC: Place Order" or "Class: Customer"
+                if clean_name and (clean_name in elem_lower or elem_lower in clean_name):
+                    return True
+
+        # 2. Text matching against guideline evidence
+        g_text_lower = guideline_text.lower()
+        candidates = [name]
+        if alias:
+            candidates.append(alias)
+
+        for cand in candidates:
+            clean = cand.strip('"').lower()
+            if len(clean) >= 4 and clean in g_text_lower:
+                return True
+
+            words = re.findall(r'[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|\b)|[a-zA-Z]{3,}', cand)
+            words = [w.lower() for w in words if len(w) >= 3 and w.lower() not in self._STOPWORDS]
+            if not words:
+                continue
+
+            # Single-word name (e.g. Employee, Customer, Manufacturer, Refund, Clarification):
+            if len(words) == 1:
+                w = words[0]
+                if re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower):
+                    return True
+            else:
+                # Multi-word name (e.g. RegularOrder, UrgentOrder, DeliveryProblem, PaymentPending):
+                # Specific modifier words must match the guideline
+                specific_words = [w for w in words if w not in self._GENERIC_NOUNS]
+                if specific_words:
+                    if any(re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower) for w in specific_words):
+                        return True
+                else:
+                    if all(re.search(r'\b' + re.escape(w) + r'(?:s|es|ed|ing)?\b', g_text_lower) for w in words):
+                        return True
+
+        return False
+
     def _build_annotated_puml(self, puml_text: str, selected_gids: set[str] | None = None) -> str:
         """
         Inject PlantUML fill-color directives into model elements that match
-        ONLY the selected compliance guideline(s). If no guideline is selected,
-        returns the unannotated puml_text.
+        the compliance guideline(s). If specific rows are selected in the table,
+        highlights ONLY those guidelines; if no row is selected, annotates all
+        satisfied and partially-satisfied guidelines.
         """
         if not self.compliance_data:
             return puml_text
@@ -1186,36 +1345,41 @@ class Agent3Tab(QWidget):
         if selected_gids is None:
             selected_gids = self._get_selected_guideline_ids()
 
-        if not selected_gids:
-            return puml_text
-
         lines = puml_text.split("\n")
 
-        # Build: (keywords, fill_color, guideline_id) ONLY for selected guidelines
-        targets: list[tuple[list[str], str, str]] = []
+        # Build: (guideline_text, fill_color, guideline_id, explicit_elements)
+        targets: list[tuple[str, str, str, list[str]]] = []
         selected_items: list[dict] = []
         for g in self.compliance_data:
             gid = g.get("guideline_id", "")
-            if gid not in selected_gids:
+            # If user selected specific guidelines, filter to only those
+            if selected_gids and gid not in selected_gids:
                 continue
 
-            status = g.get("compliance_status", "")
-            fill   = self._ANNOTATION_COLORS.get(status)
+            status_raw = g.get("compliance_status", "") or g.get("label", "")
+            fill = self._ANNOTATION_COLORS.get(status_raw)
+            if not fill:
+                s_lower = status_raw.lower().replace("-", " ").replace("_", " ")
+                if "part" in s_lower:
+                    fill = "#FFB74D"
+                elif "not" in s_lower or "unop" in s_lower or "unsat" in s_lower:
+                    fill = "#FFCDD2"
+                elif "sat" in s_lower or "map" in s_lower:
+                    fill = "#C8E6C9"
+
             if not fill:
                 continue
 
             selected_items.append(g)
-            evidence = g.get("evidence", "") or ""
-            ref_name = g.get("guideline_name", "") or g.get("reference_guideline", "") or ""
-            combined = (evidence + " " + ref_name).lower()
-            keywords = [
-                w for w in re.findall(r"[a-zA-Z]{4,}", combined)
-                if w not in {"that", "this", "with", "from", "have", "been", "will",
-                             "shall", "must", "should", "when", "each", "their",
-                             "which", "where", "order", "state", "note", "case"}
-            ]
-            if keywords:
-                targets.append((keywords[:6], fill, gid))
+            evidence = (g.get("evidence", "") or "").strip()
+            ref_name = (g.get("guideline_name", "") or g.get("reference_guideline", "") or "").strip()
+            notes    = (g.get("notes", "") or "").strip()
+            # Use specific evidence as primary matching text
+            target_text = evidence if evidence else (ref_name + " " + notes)
+            explicit_elems = g.get("matched_elements") or g.get("matched_classes") or g.get("matched_states") or []
+            if isinstance(explicit_elems, str):
+                explicit_elems = [explicit_elems]
+            targets.append((target_text.lower(), fill, gid, explicit_elems))
 
         if not targets:
             return puml_text
@@ -1266,20 +1430,19 @@ class Agent3Tab(QWidget):
 
         line_lower = stripped_lower
 
-        # Find best-matching target (≥2 keyword hits)
-        best_fill = ""
-        best_hits = 0
-        for keywords, fill, gid in targets:
-            hits = sum(1 for kw in keywords if kw in line_lower)
-            if hits >= 2 and hits > best_hits:
-                best_hits = hits
-                best_fill = fill
+        # Match element against target guidelines
+        color = ""
+        for item in targets:
+            g_text = item[0]
+            fill   = item[1]
+            gid    = item[2]
+            explicit_elems = item[3] if len(item) > 3 else None
+            if self._match_element_to_guideline(line, g_text, explicit_elems):
+                color = fill
+                break
 
-        if not best_fill:
+        if not color:
             return line
-
-        # Simple #HEXCOLOR only — universally safe across all diagram types
-        color = best_fill   # e.g. "#C8E6C9"
 
         # ── State diagrams: state ... [as alias] [<<stereo>>] [{ or : or end] ──
         if line_lower.startswith("state "):
@@ -1399,7 +1562,8 @@ class Agent3Tab(QWidget):
                 self.model_text_edit.blockSignals(True)
                 self.model_text_edit.setPlainText(content)
                 self.model_text_edit.blockSignals(False)
-                self._render_diagram(content)
+                render_text = self._build_annotated_puml(content) if self._annotate_active else content
+                self._render_diagram(render_text)
             except Exception as exc:
                 self.model_text_edit.blockSignals(True)
                 self.model_text_edit.setPlainText(f"Error reading model file: {exc}")
@@ -1463,10 +1627,17 @@ class Agent3Tab(QWidget):
                     else:
                         ref_gl = g_name or g_desc or f"Guideline {gid}"
 
+                matched_elems = entry.get("matched_elements") or entry.get("matched_classes") or entry.get("matched_states") or []
+                if isinstance(matched_elems, list):
+                    matched_elems_str = ", ".join(str(x) for x in matched_elems)
+                else:
+                    matched_elems_str = str(matched_elems) if matched_elems else ""
+
                 self.compliance_data.append({
                     "guideline_id": gid,
                     "label": status,
                     "compliance_status": status,
+                    "matched_elements": matched_elems_str,
                     "reference_guideline": ref_gl,
                     "evidence": ev,
                     "notes": notes,
@@ -1483,6 +1654,13 @@ class Agent3Tab(QWidget):
                 f"Case {cid} — {len(self.compliance_data)} guidelines"
             )
 
+            # Re-render diagram with compliance annotations if active
+            if self._annotate_active:
+                raw_m = self.model_text_edit.toPlainText().strip()
+                if raw_m:
+                    render_text = self._build_annotated_puml(raw_m)
+                    self._render_diagram(render_text)
+
         except Exception as exc:
             QMessageBox.critical(self, "Load Error", str(exc))
 
@@ -1492,9 +1670,10 @@ class Agent3Tab(QWidget):
         self.tree_table.setRowCount(0)
         self.tree_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.tree_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.tree_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.tree_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
+        self.tree_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
         row = 0
 
         # Guidelines
@@ -1502,12 +1681,14 @@ class Agent3Tab(QWidget):
             self.tree_table.insertRow(row)
             gid = g.get("guideline_id", "")
             status = g.get("label", g.get("compliance_status", ""))
+            matched = g.get("matched_elements", "")
             ref_gl = g.get("reference_guideline", "")
             ev = g.get("evidence", "")
             notes = g.get("notes", "")
 
             item_id = QTableWidgetItem(gid)
             item_status = QTableWidgetItem(status)
+            item_matched = QTableWidgetItem(matched)
             item_ref = QTableWidgetItem(ref_gl)
             item_ev = QTableWidgetItem(ev)
             item_notes = QTableWidgetItem(notes)
@@ -1520,11 +1701,18 @@ class Agent3Tab(QWidget):
             elif status == "Not-Satisfied":
                 item_status.setForeground(QColor("#c62828"))
 
+            if matched:
+                item_matched.setForeground(QColor("#0d47a1"))
+                f = item_matched.font()
+                f.setBold(True)
+                item_matched.setFont(f)
+
             self.tree_table.setItem(row, 0, item_id)
             self.tree_table.setItem(row, 1, item_status)
-            self.tree_table.setItem(row, 2, item_ref)
-            self.tree_table.setItem(row, 3, item_ev)
-            self.tree_table.setItem(row, 4, item_notes)
+            self.tree_table.setItem(row, 2, item_matched)
+            self.tree_table.setItem(row, 3, item_ref)
+            self.tree_table.setItem(row, 4, item_ev)
+            self.tree_table.setItem(row, 5, item_notes)
 
             # Store metadata
             item_id.setData(Qt.UserRole, ("g", idx))
@@ -1538,6 +1726,7 @@ class Agent3Tab(QWidget):
             self.tree_table.setItem(row, 2, QTableWidgetItem("FRAGMENTS ---"))
             self.tree_table.setItem(row, 3, QTableWidgetItem(""))
             self.tree_table.setItem(row, 4, QTableWidgetItem(""))
+            self.tree_table.setItem(row, 5, QTableWidgetItem(""))
             self._set_row_background(row, QColor("#eeeeee"), font_bold=True)
             row += 1
 
@@ -1554,8 +1743,9 @@ class Agent3Tab(QWidget):
                 self.tree_table.setItem(row, 0, item_id)
                 self.tree_table.setItem(row, 1, item_lbl)
                 self.tree_table.setItem(row, 2, QTableWidgetItem(""))
-                self.tree_table.setItem(row, 3, item_snip)
-                self.tree_table.setItem(row, 4, QTableWidgetItem(""))
+                self.tree_table.setItem(row, 3, QTableWidgetItem(""))
+                self.tree_table.setItem(row, 4, item_snip)
+                self.tree_table.setItem(row, 5, QTableWidgetItem(""))
 
                 item_id.setData(Qt.UserRole, ("u", idx))
                 row += 1
@@ -1573,9 +1763,25 @@ class Agent3Tab(QWidget):
         pct = (pts / float(total_g) * 100.0) if total_g > 0 else 0.0
         score_info = f"Score: {pct:.1f}% ({pts:g}/{total_g} pts) — Click for full details" if total_g > 0 else "Click to view case score & assessment"
 
-        self.tree_table.setItem(row, 2, QTableWidgetItem(score_info))
-        self.tree_table.setItem(row, 3, QTableWidgetItem(""))
+        gen_notes = self.current_raw_data.get(
+            "general_notes",
+            self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
+        )
+
+        self.tree_table.setItem(row, 2, QTableWidgetItem(""))
+        self.tree_table.setItem(row, 3, QTableWidgetItem(score_info))
         self.tree_table.setItem(row, 4, QTableWidgetItem(""))
+
+        item_gen_note = QTableWidgetItem(f"📝 {gen_notes}" if gen_notes else "Double-click to add general note")
+        if gen_notes:
+            item_gen_note.setForeground(QColor("#4A148C"))
+            f = item_gen_note.font()
+            f.setBold(True)
+            item_gen_note.setFont(f)
+        else:
+            item_gen_note.setForeground(QColor("#9E9E9E"))
+        self.tree_table.setItem(row, 5, item_gen_note)
+
         self._set_row_background(row, QColor("#e3f2fd"), font_bold=True)
         item_sum.setData(Qt.UserRole, ("summary", 0))
 
@@ -1585,7 +1791,7 @@ class Agent3Tab(QWidget):
         self._update_summary_bar()
 
     def _set_row_background(self, row: int, color: QColor, font_bold: bool = False) -> None:
-        for col in range(5):
+        for col in range(6):
             item = self.tree_table.item(row, col)
             if item:
                 item.setBackground(color)
@@ -1640,11 +1846,18 @@ class Agent3Tab(QWidget):
         cid_part = f"<b>Case {cid}</b> &nbsp;|&nbsp;" if cid else ""
         uf_part  = f"  &nbsp;<span style='color:#7B1FA2;'>{len(self.uncovered_data)} uncovered</span>" if self.uncovered_data else ""
 
+        gen_notes = self.current_raw_data.get(
+            "general_notes",
+            self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
+        )
+        notes_badge = f" &nbsp;|&nbsp; <span style='background:#EDE7F6; color:#4A148C; padding:1px 6px; border-radius:3px; font-size:10px;'>📝 {gen_notes[:50]}{'…' if len(gen_notes)>50 else ''}</span>" if gen_notes else ""
+
         return (
             f"{cid_part}"
             f"Score: <b><span style='color:{pct_color};'>{pct:.1f}%</span></b>"
             f" ({n_sat}✓ {n_part}~ {n_not}✗ / {total_g}){uf_part}"
             f" &nbsp;|&nbsp; <span style='color:{overall_color};'><b>{overall}</b></span>"
+            f"{notes_badge}"
         )
 
     def _update_summary_bar(self, extra_html: str = "") -> None:
@@ -1704,10 +1917,16 @@ class Agent3Tab(QWidget):
             n_sat  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
             n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") == "Partially-Satisfied")
             n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
+            gen_notes = self.current_raw_data.get(
+                "general_notes",
+                self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
+            )
             extra = (
                 f"✓ {n_sat} Satisfied &nbsp; ~ {n_part} Partial &nbsp; ✗ {n_not} Not-Satisfied"
                 f" &nbsp; | &nbsp; {len(self.uncovered_data)} uncovered fragments"
             )
+            if gen_notes:
+                extra += f" &nbsp; | &nbsp; 📝 <b>General Note:</b> <i>{gen_notes}</i>"
             self._update_summary_bar(extra)
 
         # If annotation overlay is active, re-render diagram with ONLY the selected guideline(s)
@@ -1876,6 +2095,46 @@ class Agent3Tab(QWidget):
             self._populate_tree_table()
             log_action("Agent3", "update_feedback", f"guideline={gid} | old_feedback={curr_notes!r} | new_feedback={notes!r}")
             self._save_hitl_changes()  # auto-save
+
+    def _hitl_edit_general_note(self) -> None:
+        """Add or edit general manual comment/review for the overall solution/case."""
+        if not self.current_raw_data and not self.compliance_data:
+            QMessageBox.warning(self, "No Case", "Select or load a case first before adding a general note.")
+            return
+
+        cid = str(self.current_raw_data.get("case_id", self.aggregate_combo.currentText().replace(".json", "")))
+        curr_notes = self.current_raw_data.get(
+            "general_notes",
+            self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", ""))
+        )
+
+        dlg = GeneralNoteDialog(cid, curr_notes, parent=self)
+        if dlg.exec() == QDialog.Accepted:
+            notes = dlg.get_text().strip()
+            self.current_raw_data["general_notes"] = notes
+            self.current_raw_data["reviewer_notes"] = notes
+            self._populate_tree_table()
+            log_action("Agent3", "update_general_note", f"case_id={cid} | old_note={curr_notes!r} | new_note={notes!r}")
+            self._save_hitl_changes()  # auto-save
+
+    def _on_table_cell_double_clicked(self, row: int, col: int) -> None:
+        """Context-aware double click handler for guidelines, uncovered fragments, and summary row."""
+        item = self.tree_table.item(row, 0)
+        if not item:
+            return
+        meta = item.data(Qt.UserRole)
+        if not meta:
+            return
+        tag, idx = meta
+        if tag == "g":
+            if col == 1:
+                self._hitl_change_status()
+            else:
+                self._hitl_update_feedback()
+        elif tag == "u":
+            self._hitl_map_fragment()
+        elif tag == "summary":
+            self._hitl_edit_general_note()
 
     def _hitl_map_fragment(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()

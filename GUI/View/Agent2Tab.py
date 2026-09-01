@@ -127,6 +127,9 @@ class RefGuidelineEditDialog(QDialog):
         self.name_edit = QLineEdit()
         self.name_edit.setPlaceholderText("Guideline Name (e.g. System Boundaries Specification)")
 
+        self.matched_elements_edit = QLineEdit()
+        self.matched_elements_edit.setPlaceholderText("e.g. SalesEmployee, Order (comma-separated)")
+
         self.desc_edit = QPlainTextEdit()
         self.desc_edit.setPlaceholderText("Guideline rule / description")
 
@@ -146,6 +149,11 @@ class RefGuidelineEditDialog(QDialog):
             self.gid_edit.setText(str(guideline.get("id", "")))
             g_name = guideline.get("guideline_name") or guideline.get("short_name") or guideline.get("name") or ""
             self.name_edit.setText(str(g_name))
+            m_elems = guideline.get("matched_elements") or guideline.get("matched_classes") or guideline.get("matched_states") or []
+            if isinstance(m_elems, list):
+                self.matched_elements_edit.setText(", ".join(str(x) for x in m_elems))
+            else:
+                self.matched_elements_edit.setText(str(m_elems) if m_elems else "")
             g_desc = guideline.get("description") or guideline.get("guideline_description") or guideline.get("rule") or ""
             self.desc_edit.setPlainText(str(g_desc))
             g_seg = guideline.get("related_template_id") or guideline.get("segment_id") or guideline.get("target_segment") or guideline.get("segment") or ""
@@ -162,6 +170,7 @@ class RefGuidelineEditDialog(QDialog):
 
         form.addRow("Guideline ID:", self.gid_edit)
         form.addRow("Guideline Name:", self.name_edit)
+        form.addRow("Matched Elements:", self.matched_elements_edit)
         form.addRow("Description:", self.desc_edit)
         form.addRow("Segment / Template ID:", self.seg_edit)
         form.addRow("Operationalized:", self.op_check)
@@ -175,6 +184,8 @@ class RefGuidelineEditDialog(QDialog):
 
     def get_data(self) -> dict:
         g_name = self.name_edit.text().strip()
+        m_elems_raw = self.matched_elements_edit.text().strip()
+        m_elems = [x.strip() for x in m_elems_raw.split(",") if x.strip()] if m_elems_raw else []
         g_desc = self.desc_edit.toPlainText().strip()
         g_seg = self.seg_edit.text().strip()
         g_cite = self.citation_edit.text().strip() or "Human"
@@ -184,6 +195,7 @@ class RefGuidelineEditDialog(QDialog):
             "id": self.gid_edit.text().strip(),
             "guideline_name": g_name,
             "short_name": g_name,
+            "matched_elements": m_elems,
             "description": g_desc,
             "related_template_id": g_seg,
             "segment_id": g_seg,
@@ -259,14 +271,14 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             }
         """
 
-        self.gl_table = QTableWidget(0, 6)
+        self.gl_table = QTableWidget(0, 7)
         self.gl_table.setHorizontalHeaderLabels(
-            ["ID", "Segment Name", "Template", "Template Name", "Description", "Explanation"]
+            ["ID", "Segment Name", "Matched Elements", "Template", "Template Name", "Description", "Explanation"]
         )
 
         # Excel-like interactive column resizing (matches Q&A table)
         gl_h_header = self.gl_table.horizontalHeader()
-        for i in range(6):
+        for i in range(7):
             gl_h_header.setSectionResizeMode(i, QHeaderView.Interactive)
         gl_h_header.setStretchLastSection(True)
         gl_h_header.setSectionsMovable(True)
@@ -280,11 +292,12 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
 
         # Initial column widths
         self.gl_table.setColumnWidth(0, 60)   # ID
-        self.gl_table.setColumnWidth(1, 160)  # Segment Name
-        self.gl_table.setColumnWidth(2, 80)   # Template
-        self.gl_table.setColumnWidth(3, 160)  # Template Name
-        self.gl_table.setColumnWidth(4, 200)  # Description
-        self.gl_table.setColumnWidth(5, 240)  # Explanation
+        self.gl_table.setColumnWidth(1, 150)  # Segment Name
+        self.gl_table.setColumnWidth(2, 150)  # Matched Elements
+        self.gl_table.setColumnWidth(3, 80)   # Template
+        self.gl_table.setColumnWidth(4, 150)  # Template Name
+        self.gl_table.setColumnWidth(5, 200)  # Description
+        self.gl_table.setColumnWidth(6, 240)  # Explanation
 
         self.gl_table.setShowGrid(True)
         self.gl_table.setAlternatingRowColors(True)
@@ -620,6 +633,13 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                         or ""
                     )[:120]
 
+                # col 2 — Matched Elements
+                m_elems = g.get("matched_elements") or g.get("matched_classes") or g.get("matched_states") or []
+                if isinstance(m_elems, list):
+                    matched_val = ", ".join(str(x) for x in m_elems)
+                else:
+                    matched_val = str(m_elems) if m_elems else ""
+
                 # col 3 — Template (related_template_id)
                 tpl_id_val = str(
                     g.get("related_template_id")
@@ -671,6 +691,14 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                 item_seg_name = QTableWidgetItem(seg_name_val)
                 item_seg_name.setToolTip(seg_name_val)
 
+                item_matched = QTableWidgetItem(matched_val)
+                item_matched.setToolTip(matched_val)
+                if matched_val:
+                    item_matched.setForeground(QColor("#0d47a1"))
+                    f = item_matched.font()
+                    f.setBold(True)
+                    item_matched.setFont(f)
+
                 item_tpl_id = QTableWidgetItem(tpl_id_val)
                 item_tpl_id.setForeground(QColor("#1565C0"))
                 if tpl_id_val:
@@ -689,10 +717,11 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
 
                 self.gl_table.setItem(row_idx, 0, QTableWidgetItem(gid))
                 self.gl_table.setItem(row_idx, 1, item_seg_name)
-                self.gl_table.setItem(row_idx, 2, item_tpl_id)
-                self.gl_table.setItem(row_idx, 3, item_tpl_name)
-                self.gl_table.setItem(row_idx, 4, item_fragment)
-                self.gl_table.setItem(row_idx, 5, item_explanation)
+                self.gl_table.setItem(row_idx, 2, item_matched)
+                self.gl_table.setItem(row_idx, 3, item_tpl_id)
+                self.gl_table.setItem(row_idx, 4, item_tpl_name)
+                self.gl_table.setItem(row_idx, 5, item_fragment)
+                self.gl_table.setItem(row_idx, 6, item_explanation)
 
             # Restore selection if row matching selected_gid exists
             if selected_gid:
@@ -736,14 +765,17 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         elif col == 1:  # Segment Name
             g["guideline_name"] = text
             g["short_name"] = text
-        elif col == 2:  # Template
+        elif col == 2:  # Matched Elements
+            elems = [x.strip() for x in text.split(",") if x.strip()] if text else []
+            g["matched_elements"] = elems
+        elif col == 3:  # Template
             g["related_template_id"] = text
-        elif col == 3:  # Template Name — read-only display, no write-back
+        elif col == 4:  # Template Name — read-only display, no write-back
             pass
-        elif col == 4:  # Description
+        elif col == 5:  # Description
             g["description"] = text
             g["guideline_description"] = text
-        elif col == 5:  # Explanation
+        elif col == 6:  # Explanation
             g["rationale"] = text
             g["citation"] = text
 
