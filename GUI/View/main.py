@@ -70,7 +70,7 @@ from PySide6.QtWidgets import (
 
 
 APP_TITLE   = "VEGO-AI Pipeline GUI"
-APP_VERSION = "2.1.4"
+APP_VERSION = "2.1.5"
 APP_USER_MODEL_ID = "VEGOAI.PipelineGUI"
 
 

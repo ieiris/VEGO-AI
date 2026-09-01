@@ -149,6 +149,135 @@ class ScoringSchemaDialog(QDialog):
         return self.sat_spin.value(), self.part_spin.value(), self.not_spin.value()
 
 
+# ---------------------------------------------------------------------------
+# Material Design button helper
+# ---------------------------------------------------------------------------
+
+_MD_BTN_STYLE = """
+    QPushButton {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        padding: 3px 10px;
+        border-radius: 4px;
+        border: none;
+        min-height: 24px;
+        max-height: 24px;
+    }
+    QPushButton:hover   { opacity: 0.88; }
+    QPushButton:pressed { padding-top: 4px; padding-bottom: 2px; }
+    QPushButton:disabled { color: #9e9e9e; background: #e0e0e0; }
+"""
+
+def _md_btn(text: str, color: str = "#1976D2", text_color: str = "#ffffff") -> QPushButton:
+    """Create a compact Material Design filled button."""
+    btn = QPushButton(text)
+    btn.setStyleSheet(
+        _MD_BTN_STYLE +
+        f"QPushButton {{ background: {color}; color: {text_color}; }}"
+        f"QPushButton:hover {{ background: {color}CC; }}"
+    )
+    btn.setCursor(Qt.PointingHandCursor)
+    return btn
+
+
+def _md_btn_outlined(text: str, color: str = "#1976D2") -> QPushButton:
+    """Create a compact Material Design outlined (text-style) button."""
+    btn = QPushButton(text)
+    btn.setStyleSheet(
+        f"""
+        QPushButton {{
+            font-size: 11px; font-weight: 600; letter-spacing: 0.4px;
+            padding: 3px 10px; border-radius: 4px; min-height: 24px; max-height: 24px;
+            border: 1px solid {color}; background: transparent; color: {color};
+        }}
+        QPushButton:hover   {{ background: {color}18; }}
+        QPushButton:pressed {{ background: {color}30; }}
+        QPushButton:disabled {{ color: #9e9e9e; border-color: #9e9e9e; }}
+        """
+    )
+    btn.setCursor(Qt.PointingHandCursor)
+    return btn
+
+
+# ---------------------------------------------------------------------------
+# Folder Settings Dialog
+# ---------------------------------------------------------------------------
+
+class FolderSettingsDialog(QDialog):
+    """Dialog for configuring Output Folder and Case Models Folder paths."""
+
+    def __init__(self, output_dir: str, models_dir: str, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("⚙️  Folder Settings")
+        self.setMinimumWidth(560)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(12)
+        layout.setContentsMargins(16, 16, 16, 12)
+
+        form = QFormLayout()
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        form.setHorizontalSpacing(10)
+        form.setVerticalSpacing(10)
+
+        # Output Folder row
+        out_row = QHBoxLayout()
+        self.output_edit = QLineEdit(output_dir)
+        self.output_edit.setPlaceholderText("e.g. output/gui_run")
+        btn_out = _md_btn_outlined("Browse…", "#1976D2")
+        btn_out.setFixedWidth(72)
+        btn_out.clicked.connect(self._browse_output)
+        out_row.addWidget(self.output_edit)
+        out_row.addWidget(btn_out)
+        form.addRow("Output Folder:", out_row)
+
+        # Case Models Folder row
+        mdl_row = QHBoxLayout()
+        self.models_edit = QLineEdit(models_dir)
+        self.models_edit.setPlaceholderText("e.g. Cases")
+        btn_mdl = _md_btn_outlined("Browse…", "#1976D2")
+        btn_mdl.setFixedWidth(72)
+        btn_mdl.clicked.connect(self._browse_models)
+        mdl_row.addWidget(self.models_edit)
+        mdl_row.addWidget(btn_mdl)
+        form.addRow("Case Models Folder:", mdl_row)
+
+        layout.addLayout(form)
+
+        # Buttons
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+        btn_cancel = _md_btn_outlined("Cancel", "#757575")
+        btn_cancel.setFixedWidth(80)
+        btn_cancel.clicked.connect(self.reject)
+        btn_ok = _md_btn("Apply", "#1976D2")
+        btn_ok.setFixedWidth(80)
+        btn_ok.clicked.connect(self.accept)
+        btn_row.addWidget(btn_cancel)
+        btn_row.addSpacing(8)
+        btn_row.addWidget(btn_ok)
+        layout.addLayout(btn_row)
+
+    def _browse_output(self) -> None:
+        folder = QFileDialog.getExistingDirectory(self, "Select Output Folder")
+        if folder:
+            self.output_edit.setText(folder)
+
+    def _browse_models(self) -> None:
+        folder = QFileDialog.getExistingDirectory(self, "Select Case Models Folder")
+        if folder:
+            self.models_edit.setText(folder)
+
+    def get_values(self) -> tuple[str, str]:
+        return self.output_edit.text().strip(), self.models_edit.text().strip()
+
+
+# ---------------------------------------------------------------------------
+# Feedback Dialog
+# ---------------------------------------------------------------------------
+
 class FeedbackDialog(QDialog):
     """Resizable feedback editor with word-wrap and comfortable reading at any size."""
 
@@ -180,6 +309,180 @@ class FeedbackDialog(QDialog):
         return self.text_edit.toPlainText()
 
 
+# ---------------------------------------------------------------------------
+# Floating (detached) windows
+# ---------------------------------------------------------------------------
+
+class DiagramFloatWindow(QDialog):
+    """Non-modal floating window that mirrors the current PlantUML diagram."""
+
+    def __init__(self, pixmap: "QPixmap | None", case_title: str = "", parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"🖼️  Diagram — {case_title}" if case_title else "🖼️  PlantUML Diagram")
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.WindowMinimizeButtonHint |
+            Qt.WindowMaximizeButtonHint |
+            Qt.WindowCloseButtonHint
+        )
+        self.resize(900, 650)
+        self.setMinimumSize(400, 300)
+        self._zoom = 1.0
+        self._original_pixmap = pixmap
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+        toolbar.setSpacing(4)
+        btn_out   = _md_btn_outlined("−", "#455A64"); btn_out.setFixedWidth(28)
+        btn_reset = _md_btn_outlined("1:1", "#455A64"); btn_reset.setFixedWidth(36)
+        btn_in    = _md_btn_outlined("+", "#455A64"); btn_in.setFixedWidth(28)
+        self._zoom_lbl = QLabel("100%")
+        self._zoom_lbl.setFixedWidth(42)
+        self._zoom_lbl.setAlignment(Qt.AlignCenter)
+        self._zoom_lbl.setStyleSheet("font-size: 11px; color: #616161;")
+        btn_save = _md_btn_outlined("💾 Save PNG", "#1976D2")
+        btn_save.clicked.connect(self._save_png)
+
+        btn_in.clicked.connect(self._zoom_in)
+        btn_out.clicked.connect(self._zoom_out)
+        btn_reset.clicked.connect(self._zoom_reset)
+
+        toolbar.addStretch(1)
+        toolbar.addWidget(btn_out)
+        toolbar.addWidget(btn_reset)
+        toolbar.addWidget(btn_in)
+        toolbar.addWidget(self._zoom_lbl)
+        toolbar.addStretch(1)
+        toolbar.addWidget(btn_save)
+        layout.addLayout(toolbar)
+
+        # Scrollable image
+        self._scroll = QScrollArea()
+        self._scroll.setWidgetResizable(True)
+        self._img_label = QLabel("No diagram.")
+        self._img_label.setAlignment(Qt.AlignCenter)
+        self._img_label.setStyleSheet("background:#ffffff; color:#555;")
+        self._scroll.setWidget(self._img_label)
+        layout.addWidget(self._scroll, stretch=1)
+
+        self._apply_zoom()
+
+    def _apply_zoom(self) -> None:
+        if not self._original_pixmap:
+            return
+        w = max(1, int(self._original_pixmap.width() * self._zoom))
+        h = max(1, int(self._original_pixmap.height() * self._zoom))
+        scaled = self._original_pixmap.scaled(w, h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self._img_label.setPixmap(scaled)
+        self._zoom_lbl.setText(f"{int(self._zoom * 100)}%")
+
+    def _zoom_in(self)  -> None: self._zoom = min(4.0, self._zoom + 0.1); self._apply_zoom()
+    def _zoom_out(self) -> None: self._zoom = max(0.1, self._zoom - 0.1); self._apply_zoom()
+    def _zoom_reset(self) -> None: self._zoom = 1.0; self._apply_zoom()
+
+    def update_pixmap(self, pixmap: "QPixmap") -> None:
+        """Live-update the floating window when the main diagram refreshes."""
+        self._original_pixmap = pixmap
+        self._apply_zoom()
+
+    def _save_png(self) -> None:
+        if not self._original_pixmap:
+            QMessageBox.warning(self, "No Image", "No diagram to save.")
+            return
+        path, _ = QFileDialog.getSaveFileName(self, "Save Diagram", "", "PNG Image (*.png)")
+        if path:
+            self._original_pixmap.save(path, "PNG")
+
+
+class TableFloatWindow(QDialog):
+    """Non-modal floating window showing a snapshot of the compliance table + summary."""
+
+    _TABLE_STYLE = """
+        QTableWidget {
+            selection-background-color: #1976D2; selection-color: #fff; outline: none;
+        }
+        QTableWidget::item:selected { background: #1976D2; color: #fff; font-weight: bold; }
+        QTableWidget::item:hover    { background: #E3F2FD; }
+    """
+
+    def __init__(self, source_table: QTableWidget, summary_html: str,
+                 case_title: str = "", parent=None):
+        super().__init__(parent)
+        self.setWindowTitle(f"📋  Compliance — {case_title}" if case_title else "📋  Compliance Vector")
+        self.setWindowFlags(
+            Qt.Window |
+            Qt.WindowMinimizeButtonHint |
+            Qt.WindowMaximizeButtonHint |
+            Qt.WindowCloseButtonHint
+        )
+        self.resize(1000, 600)
+        self.setMinimumSize(500, 300)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
+
+        # Clone the table data (read-only)
+        self._table = QTableWidget(source_table.rowCount(), source_table.columnCount())
+        headers = [source_table.horizontalHeaderItem(c).text()
+                   for c in range(source_table.columnCount())
+                   if source_table.horizontalHeaderItem(c)]
+        self._table.setHorizontalHeaderLabels(headers)
+        self._table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self._table.setSelectionBehavior(QTableWidget.SelectRows)
+        self._table.setWordWrap(True)
+        self._table.setAlternatingRowColors(True)
+        self._table.setStyleSheet(self._TABLE_STYLE)
+        hdr = self._table.horizontalHeader()
+        hdr.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        hdr.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        for c in range(2, self._table.columnCount()):
+            hdr.setSectionResizeMode(c, QHeaderView.Stretch)
+
+        # Copy cells
+        for r in range(source_table.rowCount()):
+            for c in range(source_table.columnCount()):
+                src = source_table.item(r, c)
+                if src:
+                    dst = QTableWidgetItem(src.text())
+                    dst.setBackground(src.background())
+                    dst.setForeground(src.foreground())
+                    f = src.font(); f.setBold(src.font().bold()); dst.setFont(f)
+                    self._table.setItem(r, c, dst)
+        self._table.resizeRowsToContents()
+        layout.addWidget(self._table, stretch=1)
+
+        # Summary bar
+        self._summary = QLabel()
+        self._summary.setTextFormat(Qt.RichText)
+        self._summary.setWordWrap(True)
+        self._summary.setStyleSheet(
+            "font-size: 11px; color: #37474F; border-top: 1px solid #CFD8DC; padding: 4px 8px;"
+        )
+        self._summary.setText(summary_html)
+        self._summary.setMaximumHeight(52)
+        layout.addWidget(self._summary, stretch=0)
+
+    def refresh(self, source_table: QTableWidget, summary_html: str) -> None:
+        """Refresh floating table from updated source data."""
+        self._table.setRowCount(source_table.rowCount())
+        for r in range(source_table.rowCount()):
+            for c in range(source_table.columnCount()):
+                src = source_table.item(r, c)
+                if src:
+                    dst = QTableWidgetItem(src.text())
+                    dst.setBackground(src.background())
+                    dst.setForeground(src.foreground())
+                    f = src.font(); f.setBold(src.font().bold()); dst.setFont(f)
+                    self._table.setItem(r, c, dst)
+        self._table.resizeRowsToContents()
+        self._summary.setText(summary_html)
+
+
 class Agent3Tab(QWidget):
     """
     Native PySide6 Agent 3 Tab: Compliance Visualizer & Interactive Human Involvement Editor.
@@ -209,83 +512,152 @@ class Agent3Tab(QWidget):
         self._current_rendered_text: str | None = None
         self._diagram_cache: dict[str, QPixmap] = {}
         self._pending_puml_text: str | None = None
+        self._diag_float: DiagramFloatWindow | None = None   # floating diagram window
+        self._table_float: TableFloatWindow | None = None    # floating table window
 
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(6, 6, 6, 6)
+        main_layout.setContentsMargins(6, 4, 6, 6)
+        main_layout.setSpacing(4)
 
-        # ── Top Control & Configuration Bar ──
-        top_box = QGroupBox("Compliance Viewer & Case Selection Controls")
-        top_layout = QVBoxLayout(top_box)
+        # ── Compact top toolbar (single row) ──────────────────────────────────
+        toolbar = QHBoxLayout()
+        toolbar.setContentsMargins(2, 2, 2, 2)
+        toolbar.setSpacing(6)
 
-        row1 = QHBoxLayout()
-        row1.addWidget(QLabel("Output Folder:"))
+        # Hidden line-edits kept for cross-tab compatibility (output_dir, models_dir)
         self.output_dir_edit = QLineEdit()
+        self.output_dir_edit.hide()
         self.output_dir_edit.textChanged.connect(self.output_dir_changed.emit)
-        row1.addWidget(self.output_dir_edit, stretch=1)
-        btn_browse_output = QPushButton("Browse Output…")
-        btn_browse_output.clicked.connect(self._browse_output_dir)
-        row1.addWidget(btn_browse_output)
-
-        row1.addWidget(QLabel("Case Models Folder:"))
         self.models_dir_edit = QLineEdit()
-        row1.addWidget(self.models_dir_edit, stretch=1)
-        btn_browse_models = QPushButton("Browse Models…")
-        btn_browse_models.clicked.connect(self._browse_models_dir)
-        row1.addWidget(btn_browse_models)
+        self.models_dir_edit.hide()
 
-        top_layout.addLayout(row1)
+        # ⚙️ Settings button — opens folder config dialog
+        btn_settings = _md_btn("⚙️  Folders", "#546E7A", "#ffffff")
+        btn_settings.setToolTip("Configure Output Folder and Case Models Folder")
+        btn_settings.clicked.connect(self._open_folder_settings)
+        toolbar.addWidget(btn_settings)
 
-        row2 = QHBoxLayout()
-        row2.addWidget(QLabel("Case Model:"))
+        # Divider label
+        sep1 = QLabel("│")
+        sep1.setStyleSheet("color: #9e9e9e; font-size: 16px;")
+        toolbar.addWidget(sep1)
+
+        # Case Model combo
+        toolbar.addWidget(QLabel("Model:"))
         self.model_combo = QComboBox()
-        self.model_combo.setMinimumWidth(180)
+        self.model_combo.setMinimumWidth(160)
+        self.model_combo.setMaximumWidth(260)
+        self.model_combo.setFixedHeight(24)
         self.model_combo.currentTextChanged.connect(self._on_model_selected)
-        row2.addWidget(self.model_combo)
+        toolbar.addWidget(self.model_combo)
 
-        row2.addWidget(QLabel("Aggregate Vector:"))
+        # Aggregate Vector combo
+        toolbar.addWidget(QLabel("Case:"))
         self.aggregate_combo = QComboBox()
-        self.aggregate_combo.setMinimumWidth(220)
+        self.aggregate_combo.setMinimumWidth(180)
+        self.aggregate_combo.setMaximumWidth(280)
+        self.aggregate_combo.setFixedHeight(24)
         self.aggregate_combo.currentTextChanged.connect(self._on_aggregate_selected)
-        row2.addWidget(self.aggregate_combo)
+        toolbar.addWidget(self.aggregate_combo)
 
-        btn_refresh = QPushButton("🔄 Refresh Files")
+        sep2 = QLabel("│")
+        sep2.setStyleSheet("color: #9e9e9e; font-size: 16px;")
+        toolbar.addWidget(sep2)
+
+        # Action chips
+        btn_refresh = _md_btn_outlined("🔄 Refresh", "#1976D2")
         btn_refresh.clicked.connect(self.refresh_file_lists)
-        row2.addWidget(btn_refresh)
+        toolbar.addWidget(btn_refresh)
 
-        btn_schema = QPushButton("⚖️ Scoring Weights")
+        btn_schema = _md_btn_outlined("⚖️ Weights", "#7B1FA2")
         btn_schema.clicked.connect(self._open_scoring_schema_dialog)
-        row2.addWidget(btn_schema)
+        toolbar.addWidget(btn_schema)
 
-        row2.addStretch(1)
-        top_layout.addLayout(row2)
+        toolbar.addStretch(1)
 
-        self.status_label = QLabel("Ready — select a case or run the orchestrator.")
-        self.status_label.setStyleSheet("font-weight: bold;")
-        top_layout.addWidget(self.status_label)
+        # Status chip (right-aligned)
+        self.status_label = QLabel("Ready")
+        self.status_label.setStyleSheet(
+            "font-size: 10px; color: #616161; padding: 2px 6px;"
+            "border: 1px solid #e0e0e0; border-radius: 10px; background: transparent;"
+        )
+        self.status_label.setMaximumWidth(380)
+        toolbar.addWidget(self.status_label)
 
-        main_layout.addWidget(top_box)
+        main_layout.addLayout(toolbar)
 
-        # ── Main Splitter (Left: Code/Diagram, Right: Compliance Vector & Details) ──
-        main_splitter = QSplitter(Qt.Horizontal)
-        main_splitter.setChildrenCollapsible(False)  # prevent panels from disappearing
+        # ── Main Vertical Splitter: PlantUML viewer on top, guidelines table below ──
+        main_splitter = QSplitter(Qt.Vertical)
+        main_splitter.setChildrenCollapsible(False)
 
-        # ── Left Panel (Tabs: Code & Diagram) ──
-        left_widget = QWidget()
-        left_widget.setMinimumWidth(200)  # always keep editor visible
-        left_layout = QVBoxLayout(left_widget)
-        left_layout.setContentsMargins(0, 0, 0, 0)
+        # ══════════════════════════════════════════════════════════════
+        # TOP PANE — PlantUML Diagram (large, centered)
+        # ══════════════════════════════════════════════════════════════
+        viewer_widget = QWidget()
+        viewer_layout = QVBoxLayout(viewer_widget)
+        viewer_layout.setContentsMargins(0, 0, 0, 0)
 
         self.left_tabs = QTabWidget()
 
-        # Tab 1: Code
+        # Tab 0: Diagram — shown by default
+        diag_widget = QWidget()
+        diag_layout = QVBoxLayout(diag_widget)
+        diag_layout.setContentsMargins(4, 4, 4, 4)
+        diag_layout.setSpacing(4)
+
+        diag_toolbar = QHBoxLayout()
+        diag_toolbar.setSpacing(4)
+        btn_zoom_out   = _md_btn_outlined("−", "#455A64")
+        btn_zoom_out.setFixedWidth(28)
+        btn_zoom_reset = _md_btn_outlined("1:1", "#455A64")
+        btn_zoom_reset.setFixedWidth(36)
+        btn_zoom_in    = _md_btn_outlined("+", "#455A64")
+        btn_zoom_in.setFixedWidth(28)
+        self.zoom_label = QLabel("100%")
+        self.zoom_label.setFixedWidth(42)
+        self.zoom_label.setAlignment(Qt.AlignCenter)
+        self.zoom_label.setStyleSheet("font-size: 11px; color: #616161;")
+
+        btn_zoom_in.clicked.connect(self._zoom_in)
+        btn_zoom_out.clicked.connect(self._zoom_out)
+        btn_zoom_reset.clicked.connect(self._zoom_reset)
+
+        btn_popout_diag = _md_btn_outlined("⤢ Pop Out", "#455A64")
+        btn_popout_diag.setToolTip("Open diagram in a separate floating window")
+        btn_popout_diag.clicked.connect(self._popout_diagram)
+
+        diag_toolbar.addStretch(1)
+        diag_toolbar.addWidget(btn_zoom_out)
+        diag_toolbar.addWidget(btn_zoom_reset)
+        diag_toolbar.addWidget(btn_zoom_in)
+        diag_toolbar.addWidget(self.zoom_label)
+        diag_toolbar.addSpacing(10)
+        diag_toolbar.addWidget(btn_popout_diag)
+        diag_toolbar.addStretch(1)
+        diag_layout.addLayout(diag_toolbar)
+
+        self.diagram_scroll = QScrollArea()
+        self.diagram_scroll.setWidgetResizable(True)
+        self.diagram_label = QLabel("No diagram rendered.")
+        self.diagram_label.setAlignment(Qt.AlignCenter)
+        self.diagram_label.setStyleSheet("background-color: #ffffff; color: #555555;")
+        self.diagram_scroll.setWidget(self.diagram_label)
+        diag_layout.addWidget(self.diagram_scroll, stretch=1)
+
+        self.left_tabs.addTab(diag_widget, "🖼️ Model Diagram")
+
+        # Tab 1: PlantUML Code editor
         code_widget = QWidget()
         code_layout = QVBoxLayout(code_widget)
+        code_layout.setContentsMargins(4, 4, 4, 4)
+        code_layout.setSpacing(4)
 
         code_toolbar = QHBoxLayout()
-        btn_render_model = QPushButton("▶️ Render Diagram")
-        btn_save_model = QPushButton("💾 Save Model File")
-        self.model_status_label = QLabel("Live diagram update active")
-        self.model_status_label.setStyleSheet("color: #888888; font-size: 11px;")
+        code_toolbar.setSpacing(4)
+        btn_render_model = _md_btn("▶ Render", "#1565C0")
+        btn_save_model   = _md_btn_outlined("💾 Save", "#1976D2")
+        self.model_status_label = QLabel("Live update active")
+        self.model_status_label.setStyleSheet("color: #9e9e9e; font-size: 10px;")
 
         btn_render_model.clicked.connect(self._manual_render_model)
         btn_save_model.clicked.connect(self._save_model_file)
@@ -299,7 +671,7 @@ class Agent3Tab(QWidget):
         self.model_text_edit = QPlainTextEdit()
         self.model_text_edit.setFont(QFont("Consolas", 11))
         code_layout.addWidget(self.model_text_edit)
-        self.left_tabs.addTab(code_widget, "📄 Model Code (PlantUML / TXT)")
+        self.left_tabs.addTab(code_widget, "📄 PlantUML Code")
 
         self._model_text_debounce_timer = QTimer(self)
         self._model_text_debounce_timer.setSingleShot(True)
@@ -307,70 +679,55 @@ class Agent3Tab(QWidget):
         self._model_text_debounce_timer.timeout.connect(self._on_model_text_user_edited)
         self.model_text_edit.textChanged.connect(self._model_text_debounce_timer.start)
 
-        # Tab 2: Diagram
-        diag_widget = QWidget()
-        diag_layout = QVBoxLayout(diag_widget)
+        # Default to the Diagram tab
+        self.left_tabs.setCurrentIndex(0)
 
-        diag_toolbar = QHBoxLayout()
-        btn_zoom_in = QPushButton("🔍 Zoom In (+)")
-        btn_zoom_out = QPushButton("🔍 Zoom Out (-)")
-        btn_zoom_reset = QPushButton("100% Reset")
-        self.zoom_label = QLabel("100%")
+        viewer_layout.addWidget(self.left_tabs)
+        main_splitter.addWidget(viewer_widget)
 
-        btn_zoom_in.clicked.connect(self._zoom_in)
-        btn_zoom_out.clicked.connect(self._zoom_out)
-        btn_zoom_reset.clicked.connect(self._zoom_reset)
+        # ══════════════════════════════════════════════════════════════
+        # BOTTOM PANE — Guidelines Table + Details + HITL Controls
+        # ══════════════════════════════════════════════════════════════
+        bottom_widget = QWidget()
+        bottom_layout = QVBoxLayout(bottom_widget)
+        bottom_layout.setContentsMargins(0, 4, 0, 0)
+        bottom_layout.setSpacing(4)
 
-        diag_toolbar.addWidget(btn_zoom_in)
-        diag_toolbar.addWidget(btn_zoom_out)
-        diag_toolbar.addWidget(btn_zoom_reset)
-        diag_toolbar.addWidget(self.zoom_label)
-        diag_toolbar.addStretch(1)
-        diag_layout.addLayout(diag_toolbar)
+        # Compliance Vector Table — header row with Pop-out button
+        table_header_row = QHBoxLayout()
+        table_header_row.setContentsMargins(0, 0, 0, 0)
+        _tbl_title = QLabel("Compliance Vector & Summary")
+        _tbl_title.setStyleSheet("font-weight: 600; color: #37474F; font-size: 11px;")
+        btn_popout_tbl = _md_btn_outlined("⤢ Pop Out", "#1976D2")
+        btn_popout_tbl.setToolTip("Open compliance table in a separate floating window")
+        btn_popout_tbl.clicked.connect(self._popout_table)
+        table_header_row.addWidget(_tbl_title)
+        table_header_row.addStretch(1)
+        table_header_row.addWidget(btn_popout_tbl)
 
-        self.diagram_scroll = QScrollArea()
-        self.diagram_scroll.setWidgetResizable(True)
-        self.diagram_label = QLabel("No diagram rendered.")
-        self.diagram_label.setAlignment(Qt.AlignCenter)
-        self.diagram_label.setStyleSheet("background-color: #ffffff; color: #555555;")
-        self.diagram_scroll.setWidget(self.diagram_label)
-        diag_layout.addWidget(self.diagram_scroll)
-
-        self.left_tabs.addTab(diag_widget, "🖼️ Model Diagram")
-        left_layout.addWidget(self.left_tabs)
-
-        main_splitter.addWidget(left_widget)
-
-        # ── Right Panel (Splitter: Tree + Details + HITL Controls) ──
-        right_widget = QWidget()
-        right_widget.setMinimumWidth(200)  # always keep compliance table visible
-        right_layout = QVBoxLayout(right_widget)
-        right_layout.setContentsMargins(0, 0, 0, 0)
-
-        right_splitter = QSplitter(Qt.Vertical)
-        right_splitter.setChildrenCollapsible(False)  # prevent table/details from disappearing
-
-        # Top Right: Compliance Vector Table
-        table_box = QGroupBox("Compliance Vector & Summary")
+        table_box = QWidget()   # plain widget instead of GroupBox
         table_layout = QVBoxLayout(table_box)
+        table_layout.setContentsMargins(4, 2, 4, 4)
+        table_layout.setSpacing(4)
+        table_layout.addLayout(table_header_row)
 
         table_style = """
             QTableWidget {
-                selection-background-color: #005fb8;
+                selection-background-color: #1976D2;
                 selection-color: #ffffff;
                 outline: none;
             }
             QTableWidget::item:selected {
-                background-color: #005fb8;
+                background-color: #1976D2;
                 color: #ffffff;
                 font-weight: bold;
             }
             QTableWidget::item:selected:hover {
-                background-color: #004e98;
+                background-color: #1565C0;
                 color: #ffffff;
             }
             QTableWidget::item:hover {
-                background-color: #e8f2fe;
+                background-color: #E3F2FD;
             }
         """
 
@@ -391,34 +748,36 @@ class Agent3Tab(QWidget):
         table_layout.addWidget(self.tree_table)
 
         table_box.setMinimumHeight(120)
-        right_splitter.addWidget(table_box)
+        bottom_layout.addWidget(table_box, stretch=1)
 
-        # Bottom Right: Details panel (in splitter)
-        details_box = QGroupBox("Selected Item Details & Assessment")
-        details_layout = QVBoxLayout(details_box)
+        # ── Inline Summary Bar (replaces separate Details panel) ──
+        self.summary_bar = QLabel("No case loaded.")
+        self.summary_bar.setWordWrap(True)
+        self.summary_bar.setTextFormat(Qt.RichText)
+        self.summary_bar.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self.summary_bar.setContentsMargins(8, 4, 8, 4)
+        self.summary_bar.setStyleSheet(
+            "font-size: 11px; color: #37474F;"
+            "background: transparent;"
+            "border-top: 1px solid #CFD8DC;"
+            "padding: 4px 8px;"
+        )
+        self.summary_bar.setMinimumHeight(28)
+        self.summary_bar.setMaximumHeight(52)
+        bottom_layout.addWidget(self.summary_bar, stretch=0)
 
-        self.details_text = QPlainTextEdit()
-        self.details_text.setReadOnly(True)
-        self.details_text.setFont(QFont("Segoe UI", 10))
-        details_layout.addWidget(self.details_text)
-
-        details_box.setMinimumHeight(80)
-        right_splitter.addWidget(details_box)
-
-        right_layout.addWidget(right_splitter, stretch=1)
-
-        # ── Human Involvement Toolbar (3.3 CRUD) ──
-        # Placed OUTSIDE the splitter so it is always visible at the bottom
+        # ── Human Involvement Controls (Material Design chip row) ──────────────
         hitl_box = QGroupBox("Human Involvement Controls (3.3)")
-        hitl_grid = QGridLayout(hitl_box)
-        hitl_grid.setSpacing(4)
+        hitl_layout = QHBoxLayout(hitl_box)
+        hitl_layout.setContentsMargins(8, 6, 8, 6)
+        hitl_layout.setSpacing(6)
 
-        btn_status   = QPushButton("✏️ Change Status")
-        btn_feedback = QPushButton("💬 Edit Feedback")
-        btn_map      = QPushButton("➕ Map Fragment")
-        btn_unmap    = QPushButton("⛔ Unmap Fragment")
-        btn_continue = QPushButton("▶️ Continue Pipeline")
-        btn_save     = QPushButton("💾 Save Changes")
+        btn_status   = _md_btn("✏️ Status",   "#1976D2")
+        btn_feedback = _md_btn("💬 Feedback", "#0288D1")
+        btn_map      = _md_btn_outlined("➕ Map",   "#388E3C")
+        btn_unmap    = _md_btn_outlined("⛔ Unmap", "#D32F2F")
+        btn_continue = _md_btn("▶ Continue",  "#388E3C")
+        btn_save     = _md_btn("💾 Save",     "#F57C00")
 
         btn_status.clicked.connect(self._hitl_change_status)
         btn_feedback.clicked.connect(self._hitl_update_feedback)
@@ -427,22 +786,15 @@ class Agent3Tab(QWidget):
         btn_continue.clicked.connect(lambda: self.continue_pipeline_requested.emit())
         btn_save.clicked.connect(self._save_hitl_changes)
 
-        # Row 0: Change Status | Edit Feedback | Continue Pipeline
-        # Row 1: Map Fragment  | Unmap Fragment | Save Changes
-        for col, btn in enumerate([btn_status, btn_feedback, btn_continue]):
-            hitl_grid.addWidget(btn, 0, col)
-        for col, btn in enumerate([btn_map, btn_unmap, btn_save]):
-            hitl_grid.addWidget(btn, 1, col)
+        for btn in [btn_status, btn_feedback, btn_map, btn_unmap, btn_continue, btn_save]:
+            hitl_layout.addWidget(btn)
+        hitl_layout.addStretch(1)
 
-        # Equal column widths
-        for col in range(3):
-            hitl_grid.setColumnStretch(col, 1)
+        bottom_layout.addWidget(hitl_box, stretch=0)
+        main_splitter.addWidget(bottom_widget)
 
-        # Pin the controls bar to the bottom — never inside the splitter
-        right_layout.addWidget(hitl_box, stretch=0)
-        main_splitter.addWidget(right_widget)
-
-        main_splitter.setSizes([550, 650])
+        # Diagram pane ~55% height, guidelines pane ~45%
+        main_splitter.setSizes([420, 340])
         main_layout.addWidget(main_splitter, stretch=1)
 
     # ── Hand-off from Orchestrator ──
@@ -474,22 +826,67 @@ class Agent3Tab(QWidget):
                 f"Make sure the pipeline has been run and case {case_id} exists.",
             )
 
-    # ── Folder Browsing ──
+    # ── Pop-out / Detach Windows ──
 
-    def _browse_output_dir(self) -> None:
-        folder = QFileDialog.getExistingDirectory(self, "Select Orchestrator Output Folder")
-        if folder:
-            self.output_dir_edit.setText(folder)
-            set_log_output_dir(folder)
+    def _popout_diagram(self) -> None:
+        """Open (or raise) the floating diagram window."""
+        case_id = self.current_raw_data.get("case_id", "")
+        if self._diag_float and not self._diag_float.isHidden():
+            # Already open — just bring to front and refresh pixmap
+            if self.original_pixmap:
+                self._diag_float.update_pixmap(self.original_pixmap)
+            self._diag_float.raise_()
+            self._diag_float.activateWindow()
+            return
+        self._diag_float = DiagramFloatWindow(
+            pixmap=self.original_pixmap,
+            case_title=str(case_id),
+            parent=None,          # top-level, not modal
+        )
+        self._diag_float.show()
+
+    def _popout_table(self) -> None:
+        """Open (or raise) the floating compliance table window."""
+        case_id = self.current_raw_data.get("case_id", "")
+        summary_html = self._build_summary_html()
+        if self._table_float and not self._table_float.isHidden():
+            self._table_float.refresh(self.tree_table, summary_html)
+            self._table_float.raise_()
+            self._table_float.activateWindow()
+            return
+        self._table_float = TableFloatWindow(
+            source_table=self.tree_table,
+            summary_html=summary_html,
+            case_title=str(case_id),
+            parent=None,          # top-level, not modal
+        )
+        self._table_float.show()
+
+    # ── Folder Settings ──
+
+    def _open_folder_settings(self) -> None:
+        """Open the Folder Settings dialog to configure output & models directories."""
+        dlg = FolderSettingsDialog(
+            self.output_dir_edit.text(),
+            self.models_dir_edit.text(),
+            parent=self,
+        )
+        if dlg.exec():
+            out_dir, models_dir = dlg.get_values()
+            self.output_dir_edit.setText(out_dir)
+            self.models_dir_edit.setText(models_dir)
+            if out_dir:
+                set_log_output_dir(out_dir)
             self.refresh_file_lists()
-            log_action("Agent3", "browse_output_dir", f"path={folder}")
+            log_action("Agent3", "folder_settings_applied",
+                       f"output={out_dir}, models={models_dir}")
+
+    # Legacy browse stubs (kept for any external callers / backward compat)
+    def _browse_output_dir(self) -> None:
+        self._open_folder_settings()
 
     def _browse_models_dir(self) -> None:
-        folder = QFileDialog.getExistingDirectory(self, "Select Case Models Folder")
-        if folder:
-            self.models_dir_edit.setText(folder)
-            self.refresh_file_lists()
-            log_action("Agent3", "browse_models_dir", f"path={folder}")
+        self._open_folder_settings()
 
     # ── File List Refresh ──
 
@@ -623,7 +1020,7 @@ class Agent3Tab(QWidget):
         text = self.model_text_edit.toPlainText().strip()
         if text:
             self._render_diagram(text)
-            self.left_tabs.setCurrentIndex(1)
+            self.left_tabs.setCurrentIndex(0)  # Diagram is now tab 0
             self.model_status_label.setText("Diagram rendering triggered.")
 
     def _save_model_file(self) -> None:
@@ -748,7 +1145,7 @@ class Agent3Tab(QWidget):
             score_pct = data.get("score_pct", "")
             score_str = f" | Score: {score_pct}%" if score_pct != "" else ""
             self.status_label.setText(
-                f"Loaded Case {cid} | {len(self.compliance_data)} Guidelines, {len(self.uncovered_data)} Uncovered Fragments{score_str}"
+                f"Case {cid} — {len(self.compliance_data)} guidelines"
             )
 
         except Exception as exc:
@@ -849,6 +1246,8 @@ class Agent3Tab(QWidget):
 
         # Auto-resize all row heights to fit wrapped text content (Excel-like behaviour)
         self.tree_table.resizeRowsToContents()
+        # Refresh the always-visible summary bar
+        self._update_summary_bar()
 
     def _set_row_background(self, row: int, color: QColor, font_bold: bool = False) -> None:
         for col in range(5):
@@ -860,121 +1259,121 @@ class Agent3Tab(QWidget):
                     font.setBold(True)
                     item.setFont(font)
 
-    # ── Table Selection Details ──
+    # ── Table Selection → inline summary bar ──
+
+    def _build_summary_html(self) -> str:
+        """Compute the always-visible case score + assessment line."""
+        if not self.compliance_data:
+            return "No case loaded."
+
+        n_sat  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
+        n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") == "Partially-Satisfied")
+        n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
+        total_g = len(self.compliance_data)
+
+        pts = n_sat * self.sat_weight + n_part * self.part_weight + n_not * self.not_weight
+        max_pts = total_g * self.sat_weight if total_g > 0 else 1.0
+        pct = pts / max_pts * 100.0 if max_pts > 0 else 0.0
+
+        raw_pct = self.current_raw_data.get("score_pct")
+        if raw_pct is not None:
+            try:
+                pct = float(raw_pct)
+            except (ValueError, TypeError):
+                pass
+
+        overall = self.current_raw_data.get("overall_assessment", "")
+        if not overall:
+            if pct >= 90:
+                overall = "EXCELLENT"
+            elif pct >= 75:
+                overall = "GOOD"
+            elif pct >= 50:
+                overall = "MODERATE"
+            else:
+                overall = "POOR"
+
+        # Colour coding
+        pct_color = (
+            "#2E7D32" if pct >= 75 else
+            "#F57C00" if pct >= 50 else
+            "#C62828"
+        )
+        overall_color = pct_color
+
+        cid = self.current_raw_data.get("case_id", "")
+        cid_part = f"<b>Case {cid}</b> &nbsp;|&nbsp;" if cid else ""
+        uf_part  = f"  &nbsp;<span style='color:#7B1FA2;'>{len(self.uncovered_data)} uncovered</span>" if self.uncovered_data else ""
+
+        return (
+            f"{cid_part}"
+            f"Score: <b><span style='color:{pct_color};'>{pct:.1f}%</span></b>"
+            f" ({n_sat}✓ {n_part}~ {n_not}✗ / {total_g}){uf_part}"
+            f" &nbsp;|&nbsp; <span style='color:{overall_color};'><b>{overall}</b></span>"
+        )
+
+    def _update_summary_bar(self, extra_html: str = "") -> None:
+        """Refresh the summary bar. Pass extra_html to append a selected-row detail."""
+        base = self._build_summary_html()
+        if extra_html:
+            self.summary_bar.setText(f"{base} &nbsp;<span style='color:#546E7A;'>│</span> {extra_html}")
+        else:
+            self.summary_bar.setText(base)
 
     def _on_table_selection_changed(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()
         if not rows:
+            self._update_summary_bar()
             return
         row = rows[0].row()
         item = self.tree_table.item(row, 0)
         if not item:
+            self._update_summary_bar()
             return
         meta = item.data(Qt.UserRole)
         if not meta:
+            self._update_summary_bar()
             return
 
         tag, idx = meta
+
         if tag == "g" and idx < len(self.compliance_data):
             g = self.compliance_data[idx]
-            gid = g.get("guideline_id", "")
-            d = f"GUIDELINE {gid}\n{'=' * 40}\n\n"
-            ref_gl = g.get("reference_guideline", "")
-            if not ref_gl:
-                ref_obj = self.reference_guidelines_map.get(gid, {})
-                ref_gl = ref_obj.get("description") or ref_obj.get("guideline_description", "")
-
-            d += f"REFERENCE GUIDELINE:\n{ref_gl or 'N/A'}\n\n"
-            d += f"COMPLIANCE STATUS:\n{g.get('compliance_status', 'N/A')}\n\n"
-            d += f"EVIDENCE:\n{g.get('evidence', 'N/A')}\n\n"
-            d += f"NOTES / FEEDBACK:\n{g.get('notes', '') or 'None'}\n\n"
-            self.details_text.setPlainText(d)
+            gid    = g.get("guideline_id", "")
+            status = g.get("compliance_status", "")
+            notes  = g.get("notes", "")
+            ev     = g.get("evidence", "")
+            status_color = (
+                "#2E7D32" if status == "Satisfied" else
+                "#F57C00" if status == "Partially-Satisfied" else
+                "#C62828"
+            )
+            extra = (
+                f"<b>{gid}</b>: <span style='color:{status_color};'>{status}</span>"
+            )
+            if notes:
+                extra += f" — <i>{notes[:80]}</i>"
+            elif ev:
+                extra += f" — <span style='color:#546E7A;'>{ev[:80]}</span>"
+            self._update_summary_bar(extra)
 
         elif tag == "u" and idx < len(self.uncovered_data):
-            uf = self.uncovered_data[idx]
-            d = f"UNCOVERED FRAGMENT {idx+1}\n{'=' * 30}\n\n"
-            d += f"LABEL:\n{uf.get('label','')}\n\n"
-            d += f"DESCRIPTION:\n{uf.get('fragment', uf.get('fragment_description', uf.get('description','')))}\n\n"
-            self.details_text.setPlainText(d)
+            uf   = self.uncovered_data[idx]
+            lbl  = uf.get("label", "Fragment")
+            desc = uf.get("fragment", uf.get("fragment_description", uf.get("description", "")))
+            extra = f"<span style='color:#7B1FA2;'>{lbl}</span>: {desc[:100]}"
+            self._update_summary_bar(extra)
 
         elif tag == "summary":
-            cid = self.current_raw_data.get("case_id", "N/A")
-            ver = self.current_raw_data.get("skill_version", "1.0.0")
-
-            # Guideline Breakdown & Score
-            n_sat = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
+            # Clicking the summary row shows full breakdown
+            n_sat  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
             n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") == "Partially-Satisfied")
-            n_not = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
-            total_g = len(self.compliance_data)
-
-            points_earned = n_sat * 1.0 + n_part * 0.5
-            max_points = float(total_g) if total_g > 0 else 1.0
-            score_pct = (points_earned / max_points * 100.0) if max_points > 0 else 0.0
-
-            raw_tot = self.current_raw_data.get("total_score") or self.current_raw_data.get("score")
-            raw_max = self.current_raw_data.get("max_score")
-            raw_pct = self.current_raw_data.get("score_pct")
-
-            if raw_tot is not None:
-                points_earned = raw_tot
-            if raw_max is not None:
-                max_points = raw_max
-            if raw_pct is not None:
-                try:
-                    score_pct = float(raw_pct)
-                except (ValueError, TypeError):
-                    pass
-
-            # Uncovered Fragments Breakdown
-            n_alt = sum(1 for uf in self.uncovered_data if uf.get("label") == "Alternative")
-            n_dom_err = sum(1 for uf in self.uncovered_data if uf.get("label") == "Domain Mistake")
-            n_lang_err = sum(1 for uf in self.uncovered_data if uf.get("label") == "Language Mistake")
-            total_uf = len(self.uncovered_data)
-
-            # Overall Assessment Rating
-            overall = self.current_raw_data.get("overall_assessment")
-            if not overall:
-                if score_pct >= 90:
-                    overall = "EXCELLENT — Model complies closely with reference guidelines."
-                elif score_pct >= 75:
-                    overall = "GOOD — Minor non-compliance or acceptable alternatives."
-                elif score_pct >= 50:
-                    overall = "MODERATE — Partial compliance with noticeable gaps or alternatives."
-                else:
-                    overall = "POOR — Significant compliance gaps identified in case model."
-
-            d = "CASE ASSESSMENT SUMMARY\n=======================\n\n"
-            d += f"CASE ID:\n{cid}\n\n"
-            d += f"SKILL VERSION:\n{ver}\n\n"
-            d += f"OVERALL COMPLIANCE SCORE:\n{score_pct:.1f}% ({points_earned:g} / {max_points:g} points)\n\n"
-            d += f"OVERALL ASSESSMENT:\n{overall}\n\n"
-
-            d += f"GUIDELINE BREAKDOWN ({total_g} total):\n"
-            d += f"  • Satisfied:           {n_sat}\n"
-            d += f"  • Partially-Satisfied: {n_part}\n"
-            d += f"  • Not-Satisfied:       {n_not}\n\n"
-
-            if total_uf > 0:
-                d += f"UNCOVERED FRAGMENTS BREAKDOWN ({total_uf} total):\n"
-                d += f"  • Alternatives:       {n_alt}\n"
-                d += f"  • Domain Mistakes:    {n_dom_err}\n"
-                d += f"  • Language Mistakes:  {n_lang_err}\n\n"
-
-            cov_sum = self.current_raw_data.get("coverage_summary")
-            if isinstance(cov_sum, dict):
-                d += f"COVERAGE SUMMARY:\n"
-                for ck, cv in cov_sum.items():
-                    d += f"  • {ck.upper().replace('_', ' ')}: {cv}\n"
-                d += "\n"
-
-            res_sum = self.current_raw_data.get("resolution_summary")
-            if isinstance(res_sum, dict):
-                d += f"RESOLUTION SUMMARY:\n"
-                for rk, rv in res_sum.items():
-                    d += f"  • {rk.upper().replace('_', ' ')}: {rv}\n"
-                d += "\n"
-
-            self.details_text.setPlainText(d)
+            n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
+            extra = (
+                f"✓ {n_sat} Satisfied &nbsp; ~ {n_part} Partial &nbsp; ✗ {n_not} Not-Satisfied"
+                f" &nbsp; | &nbsp; {len(self.uncovered_data)} uncovered fragments"
+            )
+            self._update_summary_bar(extra)
 
     # ── PlantUML Async Diagram Rendering ──
 
@@ -1016,6 +1415,9 @@ class Agent3Tab(QWidget):
                 self._diagram_cache[puml] = pix
                 self._current_rendered_text = puml
             self._apply_zoom()
+            # Live-push to floating window if open
+            if self._diag_float and not self._diag_float.isHidden():
+                self._diag_float.update_pixmap(pix)
         else:
             self.diagram_label.setText("Failed to parse diagram image.")
 

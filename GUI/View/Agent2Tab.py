@@ -259,12 +259,14 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             }
         """
 
-        self.gl_table = QTableWidget(0, 4)
-        self.gl_table.setHorizontalHeaderLabels(["ID", "Description", "Segment", "Rationale"])
+        self.gl_table = QTableWidget(0, 6)
+        self.gl_table.setHorizontalHeaderLabels(
+            ["ID", "Segment Name", "Template", "Template Name", "Description", "Explanation"]
+        )
 
         # Excel-like interactive column resizing (matches Q&A table)
         gl_h_header = self.gl_table.horizontalHeader()
-        for i in range(4):
+        for i in range(6):
             gl_h_header.setSectionResizeMode(i, QHeaderView.Interactive)
         gl_h_header.setStretchLastSection(True)
         gl_h_header.setSectionsMovable(True)
@@ -277,10 +279,12 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         gl_v_header.setDefaultSectionSize(32)
 
         # Initial column widths
-        self.gl_table.setColumnWidth(0, 80)
-        self.gl_table.setColumnWidth(1, 340)
-        self.gl_table.setColumnWidth(2, 100)
-        self.gl_table.setColumnWidth(3, 260)
+        self.gl_table.setColumnWidth(0, 60)   # ID
+        self.gl_table.setColumnWidth(1, 160)  # Segment Name
+        self.gl_table.setColumnWidth(2, 80)   # Template
+        self.gl_table.setColumnWidth(3, 160)  # Template Name
+        self.gl_table.setColumnWidth(4, 200)  # Description
+        self.gl_table.setColumnWidth(5, 240)  # Explanation
 
         self.gl_table.setShowGrid(True)
         self.gl_table.setAlternatingRowColors(True)
@@ -388,9 +392,9 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             self.refresh_guidelines_table()
 
     def _on_gl_table_cell_clicked(self, row: int, col: int) -> None:
-        """If column 2 (Segment) is clicked, emit signal to navigate to Agent 1 tab."""
-        if col == 2:
-            item = self.gl_table.item(row, 2)
+        """If column 1 (Segment ID) or 3 (Template) is clicked, emit signal to navigate to Agent 1 tab."""
+        if col in (1, 3):
+            item = self.gl_table.item(row, col)
             if item and item.text().strip():
                 seg_id = item.text().strip()
                 log_action("Agent2", "click_template_segment", f"segment={seg_id}")
@@ -590,67 +594,105 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             self.gl_table.setRowCount(len(op_guidelines))
 
             for row_idx, g in enumerate(op_guidelines):
+                # col 0 — ID
                 gid = str(g.get("id") or g.get("guideline_id") or f"G{row_idx + 1}")
-                name = str(g.get("guideline_name") or "")
-                desc_body = str(
+
+                # col 1 — Segment ID
+                seg_id_val = str(
+                    g.get("segment_id")
+                    or g.get("related_template_id")
+                    or g.get("segment")
+                    or ""
+                )
+
+                # col 2 — Segment Name (guideline name / description)
+                seg_name_val = str(
+                    g.get("guideline_name")
+                    or g.get("short_name")
+                    or g.get("name")
+                    or ""
+                )
+                if not seg_name_val:
+                    seg_name_val = str(
+                        g.get("description")
+                        or g.get("guideline_description")
+                        or g.get("rule")
+                        or ""
+                    )[:120]
+
+                # col 3 — Template (related_template_id)
+                tpl_id_val = str(
+                    g.get("related_template_id")
+                    or g.get("template_id")
+                    or ""
+                )
+
+                # col 4 — Template Name (from language template map)
+                tpl_info = (
+                    self._language_template_map.get(tpl_id_val)
+                    or self._language_template_map.get(tpl_id_val.lower(), {})
+                    or self._language_template_map.get(seg_id_val)
+                    or self._language_template_map.get(seg_id_val.lower(), {})
+                )
+                tpl_name_val = ""
+                if isinstance(tpl_info, dict):
+                    tpl_name_val = str(
+                        tpl_info.get("short_name")
+                        or tpl_info.get("construct_type")
+                        or tpl_info.get("name")
+                        or ""
+                    )
+
+                # col 5 — Description
+                fragment_val = str(
                     g.get("description")
                     or g.get("guideline_description")
                     or g.get("rule")
                     or ""
                 )
-                desc = (
-                    f"{name}: {desc_body}"
-                    if name and desc_body
-                    else (name or desc_body)
-                )
 
-                seg = str(
-                    g.get("related_template_id")
-                    or g.get("segment_id")
-                    or g.get("segment")
-                    or ""
-                )
-                rationale = str(
-                    g.get("citation")
-                    or g.get("rationale")
+                # col 6 — Explanation
+                explanation_val = str(
+                    g.get("rationale")
+                    or g.get("explanation")
+                    or g.get("citation")
                     or g.get("change_note")
                     or ""
                 )
 
-                item_desc = QTableWidgetItem(desc)
-                item_desc.setToolTip(desc)
-                item_rat = QTableWidgetItem(rationale)
-                item_rat.setToolTip(rationale)
-                item_seg = QTableWidgetItem(seg)
-
-                tpl_info = (
-                    self._language_template_map.get(seg)
-                    or self._language_template_map.get(seg.lower(), {})
-                )
-                if tpl_info:
-                    s_name = (
-                        tpl_info.get("short_name")
-                        or tpl_info.get("construct_type")
-                        or tpl_info.get("fragment_description")
-                        or ""
-                    )
-                    if s_name:
-                        item_seg.setToolTip(
-                            f"[{seg}] {s_name}\n"
-                            "Click to navigate to Agent 1 and view segment mark."
-                        )
-                elif seg:
-                    item_seg.setToolTip(
-                        f"Template Segment {seg}\n"
-                        "Click to navigate to Agent 1 and view segment mark."
+                # Build items
+                item_seg_id = QTableWidgetItem(seg_id_val)
+                item_seg_id.setForeground(QColor("#1565C0"))
+                if seg_id_val:
+                    item_seg_id.setToolTip(
+                        f"Segment ID: {seg_id_val}\nClick to navigate to Agent 1."
                     )
 
-                item_seg.setForeground(QColor("#1565C0"))
+                item_seg_name = QTableWidgetItem(seg_name_val)
+                item_seg_name.setToolTip(seg_name_val)
+
+                item_tpl_id = QTableWidgetItem(tpl_id_val)
+                item_tpl_id.setForeground(QColor("#1565C0"))
+                if tpl_id_val:
+                    item_tpl_id.setToolTip(
+                        f"Template: {tpl_id_val}\nClick to navigate to Agent 1."
+                    )
+
+                item_tpl_name = QTableWidgetItem(tpl_name_val)
+                item_tpl_name.setToolTip(tpl_name_val)
+
+                item_fragment = QTableWidgetItem(fragment_val)
+                item_fragment.setToolTip(fragment_val)  # Description
+
+                item_explanation = QTableWidgetItem(explanation_val)
+                item_explanation.setToolTip(explanation_val)
 
                 self.gl_table.setItem(row_idx, 0, QTableWidgetItem(gid))
-                self.gl_table.setItem(row_idx, 1, item_desc)
-                self.gl_table.setItem(row_idx, 2, item_seg)
-                self.gl_table.setItem(row_idx, 3, item_rat)
+                self.gl_table.setItem(row_idx, 1, item_seg_name)
+                self.gl_table.setItem(row_idx, 2, item_tpl_id)
+                self.gl_table.setItem(row_idx, 3, item_tpl_name)
+                self.gl_table.setItem(row_idx, 4, item_fragment)
+                self.gl_table.setItem(row_idx, 5, item_explanation)
 
             # Restore selection if row matching selected_gid exists
             if selected_gid:
@@ -691,13 +733,17 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
 
         if col == 0:
             g["id"] = text
-        elif col == 1:
-            g["description"] = text
+        elif col == 1:  # Segment Name
             g["guideline_name"] = text
-        elif col == 2:
+            g["short_name"] = text
+        elif col == 2:  # Template
             g["related_template_id"] = text
-            g["segment_id"] = text
-        elif col == 3:
+        elif col == 3:  # Template Name — read-only display, no write-back
+            pass
+        elif col == 4:  # Description
+            g["description"] = text
+            g["guideline_description"] = text
+        elif col == 5:  # Explanation
             g["rationale"] = text
             g["citation"] = text
 
