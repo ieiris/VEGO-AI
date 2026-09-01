@@ -1351,16 +1351,25 @@ class Agent3Tab(QWidget):
 
     def _get_selected_guideline_ids(self) -> set[str]:
         """Return the set of guideline IDs for all currently selected rows in the table."""
+        selected_gids, _ = self._get_selected_table_items()
+        return selected_gids
+
+    def _get_selected_table_items(self) -> tuple[set[str], set[int]]:
+        """Return (selected_gids, selected_uf_indices) for all currently selected rows in the table."""
         selected_gids: set[str] = set()
+        selected_ufs: set[int] = set()
         for idx in self.tree_table.selectionModel().selectedRows():
             item = self.tree_table.item(idx.row(), 0)
             if item:
                 meta = item.data(Qt.UserRole)
-                if meta and meta[0] == "g" and meta[1] < len(self.compliance_data):
-                    gid = self.compliance_data[meta[1]].get("guideline_id")
-                    if gid:
-                        selected_gids.add(gid)
-        return selected_gids
+                if meta:
+                    if meta[0] == "g" and meta[1] < len(self.compliance_data):
+                        gid = self.compliance_data[meta[1]].get("guideline_id")
+                        if gid:
+                            selected_gids.add(gid)
+                    elif meta[0] == "u" and meta[1] < len(self.uncovered_data):
+                        selected_ufs.add(meta[1])
+        return selected_gids, selected_ufs
 
     def _extract_element_name(self, line: str) -> tuple[str | None, str | None, str | None]:
         """Extract (kind, name, alias) from a PlantUML element declaration line."""
@@ -1447,28 +1456,36 @@ class Agent3Tab(QWidget):
 
         return False
 
-    def _build_annotated_puml(self, puml_text: str, selected_gids: set[str] | None = None) -> str:
+    def _build_annotated_puml(self, puml_text: str, selected_gids: set[str] | None = None, selected_ufs: set[int] | None = None) -> str:
         """
         Inject PlantUML fill-color directives into model elements that match
-        the compliance guideline(s). If specific rows are selected in the table,
-        highlights ONLY those guidelines; if no row is selected, annotates all
+        the compliance guideline(s) or uncovered fragments. If specific rows are selected
+        in the table, highlights ONLY those rows; if no row is selected, annotates all
         satisfied and partially-satisfied guidelines.
         """
-        if not self.compliance_data:
+        if not self.compliance_data and not self.uncovered_data:
             return puml_text
 
-        if selected_gids is None:
-            selected_gids = self._get_selected_guideline_ids()
+        if selected_gids is None and selected_ufs is None:
+            selected_gids, selected_ufs = self._get_selected_table_items()
+        elif selected_gids is None:
+            selected_gids = set()
+        if selected_ufs is None:
+            selected_ufs = set()
+
+        has_explicit_selection = bool(selected_gids or selected_ufs)
 
         lines = puml_text.split("\n")
 
         # Build: (guideline_text, fill_color, guideline_id, explicit_elements)
         targets: list[tuple[str, str, str, list[str]]] = []
         selected_items: list[dict] = []
+
+        # 1. Guidelines
         for g in self.compliance_data:
             gid = g.get("guideline_id", "")
-            # If user selected specific guidelines, filter to only those
-            if selected_gids and gid not in selected_gids:
+            # If user selected specific rows, filter to only those
+            if has_explicit_selection and gid not in selected_gids:
                 continue
 
             status_raw = g.get("compliance_status", "") or g.get("label", "")
@@ -1493,8 +1510,35 @@ class Agent3Tab(QWidget):
             target_text = evidence if evidence else (ref_name + " " + notes)
             explicit_elems = g.get("matched_elements") or g.get("matched_classes") or g.get("matched_states") or []
             if isinstance(explicit_elems, str):
-                explicit_elems = [explicit_elems]
+                explicit_elems = [e.strip() for e in explicit_elems.split(",") if e.strip()]
             targets.append((target_text.lower(), fill, gid, explicit_elems))
+
+        # 2. Uncovered Fragments
+        if self.uncovered_data:
+            for uf_idx, uf in enumerate(self.uncovered_data):
+                if has_explicit_selection and uf_idx not in selected_ufs:
+                    continue
+
+                lbl = uf.get("label", "Alternative")
+                fill = "#E1BEE7" if lbl == "Alternative" else "#FFCDD2"
+                frag_desc = (uf.get("fragment", uf.get("fragment_description", uf.get("description", ""))) or "").strip()
+                reason = (uf.get("reason", "") or "").strip()
+                target_text = frag_desc if frag_desc else reason
+                explicit_elems = (
+                    uf.get("matched_elements")
+                    or uf.get("matched_classes")
+                    or uf.get("matched_states")
+                    or uf.get("elements")
+                    or uf.get("matched_element")
+                    or uf.get("model_elements")
+                    or []
+                )
+                if isinstance(explicit_elems, str):
+                    explicit_elems = [e.strip() for e in explicit_elems.split(",") if e.strip()]
+
+                if explicit_elems or target_text:
+                    selected_items.append({"guideline_id": f"Frag #{uf_idx+1}", "compliance_status": lbl})
+                    targets.append((target_text.lower(), fill, f"Frag #{uf_idx+1}", explicit_elems))
 
         if not targets:
             return puml_text
@@ -1859,15 +1903,39 @@ class Agent3Tab(QWidget):
                 self.tree_table.insertRow(row)
                 lbl = uf.get("label", "Alternative")
                 snip = uf.get("fragment", uf.get("fragment_description", uf.get("description", "")))
+                matched_raw = (
+                    uf.get("matched_elements")
+                    or uf.get("matched_classes")
+                    or uf.get("matched_states")
+                    or uf.get("elements")
+                    or uf.get("matched_element")
+                    or uf.get("model_elements")
+                    or []
+                )
+                if isinstance(matched_raw, list):
+                    matched_str = ", ".join(str(x) for x in matched_raw if x)
+                else:
+                    matched_str = str(matched_raw) if matched_raw else ""
 
                 item_id = QTableWidgetItem("Frag")
                 item_lbl = QTableWidgetItem(lbl)
                 item_lbl.setForeground(QColor("#6a1b9a"))
+
+                item_matched = QTableWidgetItem(matched_str)
+                if matched_str:
+                    item_matched.setForeground(QColor("#6a1b9a"))
+                    f = item_matched.font()
+                    f.setBold(True)
+                    item_matched.setFont(f)
+                    item_matched.setToolTip(matched_str)
+
                 item_snip = QTableWidgetItem(snip)
+                if snip:
+                    item_snip.setToolTip(snip)
 
                 self.tree_table.setItem(row, 0, item_id)
                 self.tree_table.setItem(row, 1, item_lbl)
-                self.tree_table.setItem(row, 2, QTableWidgetItem(""))
+                self.tree_table.setItem(row, 2, item_matched)
                 self.tree_table.setItem(row, 3, QTableWidgetItem(""))
                 self.tree_table.setItem(row, 4, item_snip)
                 self.tree_table.setItem(row, 5, QTableWidgetItem(""))
@@ -2034,7 +2102,18 @@ class Agent3Tab(QWidget):
             uf   = self.uncovered_data[idx]
             lbl  = uf.get("label", "Fragment")
             desc = uf.get("fragment", uf.get("fragment_description", uf.get("description", "")))
-            extra = f"<span style='color:#7B1FA2;'>{lbl}</span>: {desc[:100]}"
+            m_raw = (
+                uf.get("matched_elements")
+                or uf.get("matched_classes")
+                or uf.get("matched_states")
+                or uf.get("elements")
+                or uf.get("matched_element")
+                or uf.get("model_elements")
+                or ""
+            )
+            m_str = ", ".join(str(x) for x in m_raw if x) if isinstance(m_raw, list) else (str(m_raw) if m_raw else "")
+            elems_part = f" &nbsp;|&nbsp; <b>Matched Elements:</b> <span style='color:#6a1b9a;'>{m_str}</span>" if m_str else ""
+            extra = f"<span style='color:#7B1FA2;'><b>{lbl}</b></span>: {desc[:90]}{'…' if len(desc)>90 else ''}{elems_part}"
             self._update_summary_bar(extra)
 
         elif tag == "summary":
@@ -2317,11 +2396,14 @@ class Agent3Tab(QWidget):
         if ok and gid.strip():
             target_gid = gid.strip()
             mapping = self.current_raw_data.setdefault("existing_mapping", [])
+            m_elems = uf.get("matched_elements") or uf.get("elements") or []
             matched = False
             for entry in mapping:
                 if entry.get("guideline_id") == target_gid:
                     entry["compliance_status"] = "Satisfied"
                     entry["evidence"] = desc
+                    if m_elems:
+                        entry["matched_elements"] = m_elems
                     matched = True
                     break
             if not matched:
@@ -2329,6 +2411,7 @@ class Agent3Tab(QWidget):
                     "guideline_id": target_gid,
                     "compliance_status": "Satisfied",
                     "evidence": desc,
+                    "matched_elements": m_elems,
                     "notes": "Mapped by Human Reviewer",
                 })
             self.uncovered_data.pop(idx)
