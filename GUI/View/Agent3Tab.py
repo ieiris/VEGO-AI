@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import urllib.request
 import zlib
 import sys
@@ -60,7 +61,7 @@ from action_logger import log_action, set_log_output_dir
 
 
 class PlantUMLDiagramWorker(QThread):
-    """Asynchronously fetches PlantUML PNG diagram from plantuml.com server."""
+    """Asynchronously fetches PlantUML diagram from kroki.io (SVG) with fallbacks."""
 
     image_loaded = Signal(QByteArray)
     error = Signal(str)
@@ -73,14 +74,56 @@ class PlantUMLDiagramWorker(QThread):
         if not self.puml_text.strip():
             self.error.emit("No model text provided.")
             return
+
+        # 1. Primary: Kroki.io SVG (vector quality, no URL length limits)
+        try:
+            req = urllib.request.Request(
+                "https://kroki.io/plantuml/svg",
+                data=self.puml_text.encode("utf-8"),
+                headers={
+                    "Content-Type": "text/plain; charset=utf-8",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI",
+                },
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                raw_bytes = resp.read()
+            if raw_bytes:
+                self.image_loaded.emit(QByteArray(raw_bytes))
+                return
+        except Exception as exc_kroki_svg:
+            pass
+
+        # 2. Secondary fallback: Kroki.io PNG
+        try:
+            req = urllib.request.Request(
+                "https://kroki.io/plantuml/png",
+                data=self.puml_text.encode("utf-8"),
+                headers={
+                    "Content-Type": "text/plain; charset=utf-8",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) VEGO-AI",
+                },
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                raw_bytes = resp.read()
+            if raw_bytes:
+                self.image_loaded.emit(QByteArray(raw_bytes))
+                return
+        except Exception as exc_kroki_png:
+            pass
+
+        # 3. Tertiary fallback: plantuml.com
         try:
             url = self._plantuml_url(self.puml_text)
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=60) as resp:
+            with urllib.request.urlopen(req, timeout=30) as resp:
                 raw_bytes = resp.read()
-            self.image_loaded.emit(QByteArray(raw_bytes))
+            if raw_bytes:
+                self.image_loaded.emit(QByteArray(raw_bytes))
+                return
         except Exception as exc:
-            self.error.emit(str(exc))
+            self.error.emit(f"Rendering failed: {exc}")
 
     def _plantuml_url(self, text: str) -> str:
         c = zlib.compress(text.encode("utf-8"), 9)[2:-4]
@@ -483,6 +526,26 @@ class TableFloatWindow(QDialog):
         self._summary.setText(summary_html)
 
 
+# ---------------------------------------------------------------------------
+# Pre-compiled PlantUML element patterns for compliance color annotation
+# ---------------------------------------------------------------------------
+_PUML_PATTERNS: list[tuple] = [
+    # new-style activity:  :Step Name;  or  :Step Name; #existing
+    (re.compile(r'^(\s*:)([^;#\n]+?)(\s*)((?:#\w+)?)(;.*)$'), "activity_new"),
+    # old-style activity/arrow label: --> "label" or --> StepName
+    (re.compile(r'^(\s*.*-->\s*"?)([^",#\n]+?)("?\s*)((?:#\w+)?)$'), "arrow_label"),
+    # class / interface / entity / enum
+    (re.compile(r'^(\s*(?:class|interface|entity|enum|abstract)\s+\w+)(\s*)((?:#\w+)?)(\s*(?:\{.*)?)$'), "class"),
+    # component / database / node / rectangle / storage / cloud
+    (re.compile(r'^(\s*(?:component|database|node|rectangle|storage|cloud|queue|card|file)\s+"?)([^"{#\n]+?)("?\s*)((?:#\w+)?)(\s*(?:\[.*)?)$'), "block"),
+    # usecase
+    (re.compile(r'^(\s*usecase\s+"?)([^"{#\n]+?)("?\s*)((?:#\w+)?)$'), "usecase"),
+    # state
+    (re.compile(r'^(\s*state\s+"?)([^"{#\n]+?)("?\s*)((?:#\w+)?)(\s*(?:as\s+\w+)?.*)$'), "state"),
+    # participant / actor / boundary / control (sequence diagrams)
+    (re.compile(r'^(\s*(?:participant|actor|boundary|control|entity|database|collections)\s+"?)([^"{#\n]+?)("?\s+as\s+\w+|"?)(\s*)((?:#\w+)?)$'), "sequence"),
+]
+
 class Agent3Tab(QWidget):
     """
     Native PySide6 Agent 3 Tab: Compliance Visualizer & Interactive Human Involvement Editor.
@@ -514,6 +577,7 @@ class Agent3Tab(QWidget):
         self._pending_puml_text: str | None = None
         self._diag_float: DiagramFloatWindow | None = None   # floating diagram window
         self._table_float: TableFloatWindow | None = None    # floating table window
+        self._annotate_active: bool = False  # compliance annotation overlay toggle
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(6, 4, 6, 6)
@@ -626,11 +690,26 @@ class Agent3Tab(QWidget):
         btn_popout_diag.setToolTip("Open diagram in a separate floating window")
         btn_popout_diag.clicked.connect(self._popout_diagram)
 
+        # Compliance annotation toggle
+        self.btn_annotate = _md_btn("🎨 Annotate", "#37474F")
+        self.btn_annotate.setToolTip(
+            "Toggle compliance color overlay on the diagram.\n"
+            "Green = Satisfied  |  Orange = Partially-Satisfied"
+        )
+        self.btn_annotate.setCheckable(True)
+        self.btn_annotate.toggled.connect(self._on_annotate_toggled)
+        self.annotate_legend_label = QLabel()
+        self.annotate_legend_label.setTextFormat(Qt.RichText)
+        self.annotate_legend_label.hide()
+
         diag_toolbar.addStretch(1)
         diag_toolbar.addWidget(btn_zoom_out)
         diag_toolbar.addWidget(btn_zoom_reset)
         diag_toolbar.addWidget(btn_zoom_in)
         diag_toolbar.addWidget(self.zoom_label)
+        diag_toolbar.addSpacing(14)
+        diag_toolbar.addWidget(self.btn_annotate)
+        diag_toolbar.addWidget(self.annotate_legend_label)
         diag_toolbar.addSpacing(10)
         diag_toolbar.addWidget(btn_popout_diag)
         diag_toolbar.addStretch(1)
@@ -696,7 +775,7 @@ class Agent3Tab(QWidget):
         # Compliance Vector Table — header row with Pop-out button
         table_header_row = QHBoxLayout()
         table_header_row.setContentsMargins(0, 0, 0, 0)
-        _tbl_title = QLabel("Compliance Vector & Summary")
+        _tbl_title = QLabel("Model Reports & Summary")
         _tbl_title.setStyleSheet("font-weight: 600; color: #37474F; font-size: 11px;")
         btn_popout_tbl = _md_btn_outlined("⤢ Pop Out", "#1976D2")
         btn_popout_tbl.setToolTip("Open compliance table in a separate floating window")
@@ -741,7 +820,7 @@ class Agent3Tab(QWidget):
         self.tree_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.tree_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
         self.tree_table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.tree_table.setSelectionMode(QTableWidget.SingleSelection)
+        self.tree_table.setSelectionMode(QTableWidget.ExtendedSelection)
         self.tree_table.setWordWrap(True)  # Excel-like wrap text inside cells
         self.tree_table.setStyleSheet(table_style)
         self.tree_table.itemSelectionChanged.connect(self._on_table_selection_changed)
@@ -1012,16 +1091,272 @@ class Agent3Tab(QWidget):
         """Auto-render diagram when model text is edited by the user."""
         text = self.model_text_edit.toPlainText().strip()
         if text:
-            self._render_diagram(text)
+            render_text = self._build_annotated_puml(text) if self._annotate_active else text
+            self._render_diagram(render_text)
             self.model_status_label.setText("Diagram updated from edited code.")
 
     def _manual_render_model(self) -> None:
         """Manually trigger diagram render and switch to Diagram tab."""
         text = self.model_text_edit.toPlainText().strip()
         if text:
-            self._render_diagram(text)
+            render_text = self._build_annotated_puml(text) if self._annotate_active else text
+            self._render_diagram(render_text)
             self.left_tabs.setCurrentIndex(0)  # Diagram is now tab 0
-            self.model_status_label.setText("Diagram rendering triggered.")
+            self.model_status_label.setText(
+                "Annotated diagram rendered." if self._annotate_active else "Diagram rendering triggered."
+            )
+
+    # ── Compliance Annotation Overlay ──
+
+    # Status → PlantUML fill color (light enough for text readability)
+    _ANNOTATION_COLORS = {
+        "Satisfied":           "#C8E6C9",   # light green
+        "MAPPED":              "#C8E6C9",
+        "Partially-Satisfied": "#FFE0B2",   # light orange
+        "Not-Satisfied":       None,         # no annotation (default)
+        "UNOPERATIONALIZED":   None,
+    }
+    _ANNOTATION_BORDER = {
+        "Satisfied":           "#2E7D32",
+        "MAPPED":              "#2E7D32",
+        "Partially-Satisfied": "#E65100",
+    }
+
+    def _on_annotate_toggled(self, checked: bool) -> None:
+        """React to the Annotate toggle button."""
+        self._annotate_active = checked
+        if checked:
+            self.btn_annotate.setText("🎨 Annotated")
+            self.btn_annotate.setStyleSheet(
+                self.btn_annotate.styleSheet() +
+                "QPushButton { background: #1B5E20; }"
+            )
+            self.annotate_legend_label.setText(
+                "&nbsp;"
+                "<span style='background:#C8E6C9; color:#1B5E20; padding:1px 4px; "
+                "border-radius:3px; font-size:10px;'>■ Satisfied</span>&nbsp;"
+                "<span style='background:#FFE0B2; color:#E65100; padding:1px 4px; "
+                "border-radius:3px; font-size:10px;'>■ Partial</span>"
+            )
+            self.annotate_legend_label.show()
+            # If nothing is selected, select the first guideline row by default
+            if not self.tree_table.selectionModel().selectedRows() and self.tree_table.rowCount() > 0:
+                self.tree_table.selectRow(0)
+        else:
+            self.btn_annotate.setText("🎨 Annotate")
+            self.btn_annotate.setStyleSheet(
+                "".join(
+                    l for l in self.btn_annotate.styleSheet().splitlines(keepends=True)
+                    if "#1B5E20" not in l
+                )
+            )
+            self.annotate_legend_label.hide()
+
+        # Re-render with or without annotation
+        raw = self.model_text_edit.toPlainText().strip()
+        if raw:
+            render_text = self._build_annotated_puml(raw) if checked else raw
+            self._render_diagram(render_text)
+            self.model_status_label.setText(
+                f"Annotation {'ON' if checked else 'OFF'} — re-rendering…"
+            )
+
+    def _get_selected_guideline_ids(self) -> set[str]:
+        """Return the set of guideline IDs for all currently selected rows in the table."""
+        selected_gids: set[str] = set()
+        for idx in self.tree_table.selectionModel().selectedRows():
+            item = self.tree_table.item(idx.row(), 0)
+            if item:
+                meta = item.data(Qt.UserRole)
+                if meta and meta[0] == "g" and meta[1] < len(self.compliance_data):
+                    gid = self.compliance_data[meta[1]].get("guideline_id")
+                    if gid:
+                        selected_gids.add(gid)
+        return selected_gids
+
+    def _build_annotated_puml(self, puml_text: str, selected_gids: set[str] | None = None) -> str:
+        """
+        Inject PlantUML fill-color directives into model elements that match
+        ONLY the selected compliance guideline(s). If no guideline is selected,
+        returns the unannotated puml_text.
+        """
+        if not self.compliance_data:
+            return puml_text
+
+        if selected_gids is None:
+            selected_gids = self._get_selected_guideline_ids()
+
+        if not selected_gids:
+            return puml_text
+
+        lines = puml_text.split("\n")
+
+        # Build: (keywords, fill_color, guideline_id) ONLY for selected guidelines
+        targets: list[tuple[list[str], str, str]] = []
+        selected_items: list[dict] = []
+        for g in self.compliance_data:
+            gid = g.get("guideline_id", "")
+            if gid not in selected_gids:
+                continue
+
+            status = g.get("compliance_status", "")
+            fill   = self._ANNOTATION_COLORS.get(status)
+            if not fill:
+                continue
+
+            selected_items.append(g)
+            evidence = g.get("evidence", "") or ""
+            ref_name = g.get("guideline_name", "") or g.get("reference_guideline", "") or ""
+            combined = (evidence + " " + ref_name).lower()
+            keywords = [
+                w for w in re.findall(r"[a-zA-Z]{4,}", combined)
+                if w not in {"that", "this", "with", "from", "have", "been", "will",
+                             "shall", "must", "should", "when", "each", "their",
+                             "which", "where", "order", "state", "note", "case"}
+            ]
+            if keywords:
+                targets.append((keywords[:6], fill, gid))
+
+        if not targets:
+            return puml_text
+
+        annotated = [self._inject_puml_color(line, targets) for line in lines]
+        annotated = self._insert_legend(annotated, selected_items)
+        return "\n".join(annotated)
+
+    # Lines that must NEVER be colored — PlantUML keywords / structural elements
+    _PUML_SKIP_PREFIXES = (
+        "'", "/'", "@", "!",
+        "skinparam", "hide ", "show ", "scale ",
+        "title", "header", "footer", "caption",
+        "note", "end note", "rnote", "hnote",
+        "legend", "endlegend",
+        "if ", "else", "elseif", "endif",
+        "while", "endwhile", "repeat", "backward",
+        "fork", "end fork", "split", "end split",
+        "start", "stop", "end",
+        "-->", "<--", "->", "<-", "==>", "..>",
+        "-[", "<|", "*--", "o--",
+        "activate", "deactivate", "destroy",
+        "group", "end group", "loop", "opt", "alt", "break",
+        "ref over", "critical",
+        "package", "namespace", "frame",
+        "together", "partition", "swimlane",
+        "#", "|",
+    )
+
+    def _inject_puml_color(self, line: str, targets: list) -> str:
+        """
+        Safe color injection.  Returns the original line if we cannot determine
+        the correct injection point, preventing any 400 errors.
+        """
+        stripped = line.strip()
+        if not stripped:
+            return line
+
+        stripped_lower = stripped.lower()
+
+        # Skip any line that starts with a known keyword/directive
+        if any(stripped_lower.startswith(p) for p in self._PUML_SKIP_PREFIXES):
+            return line
+
+        # Also skip lines containing arrow operators (mid-line arrows)
+        if re.search(r"-->|<--|->|<-|\.\.>|\.\.|==", stripped):
+            return line
+
+        line_lower = stripped_lower
+
+        # Find best-matching target (≥2 keyword hits)
+        best_fill = ""
+        best_hits = 0
+        for keywords, fill, gid in targets:
+            hits = sum(1 for kw in keywords if kw in line_lower)
+            if hits >= 2 and hits > best_hits:
+                best_hits = hits
+                best_fill = fill
+
+        if not best_fill:
+            return line
+
+        # Simple #HEXCOLOR only — universally safe across all diagram types
+        color = best_fill   # e.g. "#C8E6C9"
+
+        # ── State diagrams: state ... [as alias] [<<stereo>>] [{ or : or end] ──
+        if line_lower.startswith("state "):
+            m_block = re.search(r'(\s*\{|\s*:.*)$', line)
+            if m_block:
+                main_part = line[:m_block.start()].rstrip()
+                suffix = line[m_block.start():]
+            else:
+                main_part = line.rstrip()
+                suffix = ""
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', main_part)
+            return f"{main_part} {color}{suffix}"
+
+        # ── Activity new-style: :Step text; → :Step text #color; ──
+        m_act = re.match(r'^(\s*:)([^;#\n]+?)(\s*)(?:#[0-9a-fA-F]{3,8}|#[a-zA-Z]+)?(;.*)$', line)
+        if m_act:
+            pre, text, sp, suffix = m_act.groups()
+            return f"{pre}{text} {color}{suffix}"
+
+        # ── Class / interface / enum / abstract ──
+        if any(line_lower.startswith(k) for k in ("class ", "interface ", "enum ", "abstract ")):
+            m_block = re.search(r'(\s*\{.*)$', line)
+            if m_block:
+                main_part = line[:m_block.start()].rstrip()
+                suffix = line[m_block.start():]
+            else:
+                main_part = line.rstrip()
+                suffix = ""
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', main_part)
+            return f"{main_part} {color}{suffix}"
+
+        # ── Component / database / node / rectangle / storage / cloud / queue / card / file ──
+        if any(line_lower.startswith(k) for k in ("component ", "database ", "node ", "rectangle ", "storage ", "cloud ", "queue ", "card ", "file ")):
+            m_block = re.search(r'(\s*\[.*|\s*\{.*)$', line)
+            if m_block:
+                main_part = line[:m_block.start()].rstrip()
+                suffix = line[m_block.start():]
+            else:
+                main_part = line.rstrip()
+                suffix = ""
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', main_part)
+            return f"{main_part} {color}{suffix}"
+
+        # ── UseCase ──
+        if line_lower.startswith("usecase "):
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', line.rstrip())
+            return f"{main_part} {color}"
+
+        # ── Sequence participant / actor / boundary / control / collections ──
+        if any(line_lower.startswith(k) for k in ("participant ", "actor ", "boundary ", "control ", "collections ")):
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', line.rstrip())
+            return f"{main_part} {color}"
+
+        # ── No safe injection found — return original unchanged ──
+        return line
+
+    def _insert_legend(self, lines: list[str], selected_items: list | None = None) -> list[str]:
+        """
+        Insert a plain-text color legend before @enduml showing the highlighted guideline(s).
+        """
+        if not selected_items:
+            return lines
+
+        g_labels = [f"{g.get('guideline_id', '')} ({g.get('compliance_status', '')})" for g in selected_items]
+        g_str = ", ".join(g_labels[:4])
+        if len(g_labels) > 4:
+            g_str += f" +{len(g_labels)-4} more"
+
+        legend = [
+            "legend bottom right",
+            f"  Highlight: {g_str}",
+            "endlegend",
+        ]
+        for i in range(len(lines) - 1, -1, -1):
+            if lines[i].strip().lower().startswith("@enduml"):
+                return lines[:i] + legend + lines[i:]
+        return lines + legend
 
     def _save_model_file(self) -> None:
         """Save edited model code back to the model file on disk."""
@@ -1375,6 +1710,13 @@ class Agent3Tab(QWidget):
             )
             self._update_summary_bar(extra)
 
+        # If annotation overlay is active, re-render diagram with ONLY the selected guideline(s)
+        if self._annotate_active:
+            raw = self.model_text_edit.toPlainText().strip()
+            if raw:
+                render_text = self._build_annotated_puml(raw)
+                self._render_diagram(render_text)
+
     # ── PlantUML Async Diagram Rendering ──
 
     def _render_diagram(self, puml_text: str) -> None:
@@ -1395,7 +1737,7 @@ class Agent3Tab(QWidget):
             return
 
         self._pending_puml_text = puml_text
-        self.diagram_label.setText("Rendering diagram from PlantUML server…")
+        self.diagram_label.setText("Rendering diagram via kroki.io…")
         if self.diagram_worker and self.diagram_worker.isRunning():
             self.diagram_worker.terminate()
 
