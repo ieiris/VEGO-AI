@@ -625,6 +625,15 @@ class TableFloatWindow(QDialog):
         layout.setContentsMargins(6, 6, 6, 6)
         layout.setSpacing(4)
 
+        # Search filter bar
+        top_row = QHBoxLayout()
+        self._filter_edit = QLineEdit()
+        self._filter_edit.setPlaceholderText("🔍 Filter table (elements, status, evidence, notes...)...")
+        self._filter_edit.setClearButtonEnabled(True)
+        self._filter_edit.textChanged.connect(self._apply_float_filter)
+        top_row.addWidget(self._filter_edit)
+        layout.addLayout(top_row)
+
         # Clone the table data (read-only)
         self._table = QTableWidget(source_table.rowCount(), source_table.columnCount())
         headers = [source_table.horizontalHeaderItem(c).text()
@@ -666,6 +675,26 @@ class TableFloatWindow(QDialog):
         self._summary.setMaximumHeight(52)
         layout.addWidget(self._summary, stretch=0)
 
+    def _apply_float_filter(self, text: str) -> None:
+        q = text.strip().lower()
+        tokens = q.split()
+        for r in range(self._table.rowCount()):
+            if not tokens:
+                self._table.setRowHidden(r, False)
+                continue
+            item0 = self._table.item(r, 0)
+            if item0 and "SUMMARY" in item0.text():
+                self._table.setRowHidden(r, False)
+                continue
+            row_text = " ".join(
+                self._table.item(r, c).text().lower()
+                for c in range(self._table.columnCount())
+                if self._table.item(r, c) and self._table.item(r, c).text()
+            )
+            match = all(t in row_text for t in tokens)
+            self._table.setRowHidden(r, not match)
+        self._table.resizeRowsToContents()
+
     def refresh(self, source_table: QTableWidget, summary_html: str) -> None:
         """Refresh floating table from updated source data."""
         self._table.setRowCount(source_table.rowCount())
@@ -680,6 +709,8 @@ class TableFloatWindow(QDialog):
                     self._table.setItem(r, c, dst)
         self._table.resizeRowsToContents()
         self._summary.setText(summary_html)
+        if self._filter_edit.text():
+            self._apply_float_filter(self._filter_edit.text())
 
 
 # ---------------------------------------------------------------------------
@@ -938,16 +969,46 @@ class Agent3Tab(QWidget):
         bottom_layout.setContentsMargins(0, 4, 0, 0)
         bottom_layout.setSpacing(4)
 
-        # Compliance Vector Table — header row with Pop-out button
+        # Compliance Vector Table — header row with Search, Filter & Pop-out button
         table_header_row = QHBoxLayout()
         table_header_row.setContentsMargins(0, 0, 0, 0)
+        table_header_row.setSpacing(6)
+
         _tbl_title = QLabel("Model Reports & Summary")
         _tbl_title.setStyleSheet("font-weight: 600; color: #37474F; font-size: 11px;")
+        table_header_row.addWidget(_tbl_title)
+
+        # Search / Filter Edit
+        self.table_search_edit = QLineEdit()
+        self.table_search_edit.setPlaceholderText("🔍 Search guidelines, elements, status, evidence, feedback...")
+        self.table_search_edit.setClearButtonEnabled(True)
+        self.table_search_edit.setMaximumWidth(380)
+        self.table_search_edit.textChanged.connect(self._apply_table_filter)
+        table_header_row.addWidget(self.table_search_edit)
+
+        # Status Filter Combo
+        self.table_status_filter = QComboBox()
+        self.table_status_filter.addItems([
+            "All Statuses",
+            "Satisfied",
+            "Partially-Satisfied",
+            "Not-Satisfied",
+            "Alternative",
+            "Mistake",
+        ])
+        self.table_status_filter.currentTextChanged.connect(self._apply_table_filter)
+        table_header_row.addWidget(self.table_status_filter)
+
+        # Counter Label
+        self.table_filter_count_lbl = QLabel("")
+        self.table_filter_count_lbl.setStyleSheet("font-size: 11px; color: #546E7A; font-weight: 500;")
+        table_header_row.addWidget(self.table_filter_count_lbl)
+
+        table_header_row.addStretch(1)
+
         btn_popout_tbl = _md_btn_outlined("⤢ Pop Out", "#1976D2")
         btn_popout_tbl.setToolTip("Open compliance table in a separate floating window")
         btn_popout_tbl.clicked.connect(self._popout_table)
-        table_header_row.addWidget(_tbl_title)
-        table_header_row.addStretch(1)
         table_header_row.addWidget(btn_popout_tbl)
 
         table_box = QWidget()   # plain widget instead of GroupBox
@@ -1982,6 +2043,100 @@ class Agent3Tab(QWidget):
         self.tree_table.resizeRowsToContents()
         # Refresh the always-visible summary bar
         self._update_summary_bar()
+        # Re-apply search / status filters if active
+        self._apply_table_filter()
+
+    def _apply_table_filter(self) -> None:
+        """Filter rows in tree_table across elements, guidelines, status, evidence, feedback/notes, etc."""
+        if not hasattr(self, "table_search_edit") or not hasattr(self, "table_status_filter"):
+            return
+
+        search_query = self.table_search_edit.text().strip().lower()
+        status_filter = self.table_status_filter.currentText()
+
+        total_data_rows = 0
+        visible_data_rows = 0
+        uncovered_header_row = -1
+        visible_uncovered_rows = 0
+
+        for r in range(self.tree_table.rowCount()):
+            item_id = self.tree_table.item(r, 0)
+            if not item_id:
+                continue
+            meta = item_id.data(Qt.UserRole)
+            id_text = item_id.text().strip()
+
+            # 1. Summary row: always keep visible
+            if meta and meta[0] == "summary":
+                self.tree_table.setRowHidden(r, False)
+                continue
+
+            # 2. Uncovered Fragments separator header row
+            if id_text == "---":
+                uncovered_header_row = r
+                continue
+
+            # Data rows (guidelines or uncovered fragments)
+            total_data_rows += 1
+
+            # Check status match
+            item_status = self.tree_table.item(r, 1)
+            status_text = item_status.text().strip() if item_status else ""
+
+            status_match = True
+            if status_filter != "All Statuses":
+                if status_filter == "Mistake":
+                    status_match = "mistake" in status_text.lower()
+                else:
+                    status_match = (status_filter.lower() == status_text.lower())
+
+            # Check text search across all columns + extra metadata fields
+            text_match = True
+            if search_query:
+                row_texts = []
+                for c in range(self.tree_table.columnCount()):
+                    cell_item = self.tree_table.item(r, c)
+                    if cell_item and cell_item.text():
+                        row_texts.append(cell_item.text().lower())
+
+                # Also search extra fields from underlying guideline / uncovered fragment object
+                if meta and meta[0] == "g" and meta[1] < len(self.compliance_data):
+                    g = self.compliance_data[meta[1]]
+                    row_texts.extend([
+                        str(g.get("guideline_name", "")).lower(),
+                        str(g.get("description", "")).lower(),
+                    ])
+                elif meta and meta[0] == "u" and meta[1] < len(self.uncovered_data):
+                    uf = self.uncovered_data[meta[1]]
+                    row_texts.extend([
+                        str(uf.get("reason", "")).lower(),
+                        str(uf.get("severity", "")).lower(),
+                    ])
+
+                combined_text = " ".join(row_texts)
+                search_tokens = search_query.split()
+                text_match = all(token in combined_text for token in search_tokens)
+
+            row_visible = status_match and text_match
+            self.tree_table.setRowHidden(r, not row_visible)
+
+            if row_visible:
+                visible_data_rows += 1
+                if meta and meta[0] == "u":
+                    visible_uncovered_rows += 1
+
+        # Show / hide uncovered fragments header row based on whether any fragment is visible
+        if uncovered_header_row >= 0:
+            self.tree_table.setRowHidden(uncovered_header_row, visible_uncovered_rows == 0)
+
+        # Update counter label
+        if hasattr(self, "table_filter_count_lbl"):
+            if search_query or status_filter != "All Statuses":
+                self.table_filter_count_lbl.setText(f"Showing {visible_data_rows} of {total_data_rows}")
+            else:
+                self.table_filter_count_lbl.setText(f"{total_data_rows} items" if total_data_rows > 0 else "")
+
+        self.tree_table.resizeRowsToContents()
 
     def _set_row_background(self, row: int, color: QColor, font_bold: bool = False) -> None:
         for col in range(6):
