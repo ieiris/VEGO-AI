@@ -76,6 +76,7 @@ class LLMWorker(QThread):
         model: str | None = None,
         base_url: str | None = None,
         label: str = "gui_run",
+        output_dir: str | Path | None = None,
         parent=None,
     ):
         super().__init__(parent)
@@ -84,6 +85,7 @@ class LLMWorker(QThread):
         self.model = model
         self.base_url = base_url
         self.label = label
+        self.output_dir = Path(output_dir).resolve() if output_dir else None
 
     def run(self) -> None:
         log_action(
@@ -94,7 +96,13 @@ class LLMWorker(QThread):
         )
 
         async def _async_call():
-            client = LLMClient(api_key=self.api_key, model=self.model, base_url=self.base_url)
+            log_path = self.output_dir / "interaction_log.json" if self.output_dir else None
+            client = LLMClient(
+                api_key=self.api_key,
+                model=self.model,
+                base_url=self.base_url,
+                interaction_log=log_path,
+            )
             try:
                 return await client.call(self.prompt, label=self.label)
             finally:

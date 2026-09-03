@@ -641,6 +641,8 @@ async def run_setting(
     output_dir = Path(cfg.get("output_dir", f"output/{setting_id}"))
     output_dir.mkdir(parents=True, exist_ok=True)
     state_path = output_dir / "pipeline_state.json"
+    if interaction_log_path is None:
+        interaction_log_path = output_dir / "interaction_log.json"
 
     # Per-setting pipeline log (always written)
     file_handler = logging.FileHandler(output_dir / "pipeline.log",

@@ -41,6 +41,9 @@ MAX_TOKENS = 16384
 MAX_PARSE_RETRIES = 2   # total attempts = 1 + MAX_PARSE_RETRIES
 
 
+_SESSION_INTERACTIONS: dict[Path, list[dict[str, Any]]] = {}
+
+
 class LLMClient:
     """Async OpenAI client shared across the entire pipeline run."""
 
@@ -54,10 +57,16 @@ class LLMClient:
     ) -> None:
         self._client = AsyncOpenAI(api_key=api_key, base_url=base_url, timeout=timeout)  # None → reads OPENAI_API_KEY env var
         self.model = model
+        if interaction_log is None:
+            try:
+                from action_logger import get_interaction_log_path
+                interaction_log = get_interaction_log_path()
+            except ImportError:
+                interaction_log = Path("output/gui_run/interaction_log.json")
         self._log_path = interaction_log
-        if interaction_log:
-            interaction_log.parent.mkdir(parents=True, exist_ok=True)
-            logger.info("Interaction log → %s", interaction_log)
+        if self._log_path:
+            self._log_path.parent.mkdir(parents=True, exist_ok=True)
+            logger.info("Interaction log → %s", self._log_path)
 
     async def close(self) -> None:
         """Close the underlying AsyncOpenAI client and HTTP transport pool."""
@@ -116,6 +125,7 @@ class LLMClient:
             )
 
             raw = response.choices[0].message.content or ""
+            finish_reason = getattr(response.choices[0], "finish_reason", None)
             logger.debug("%sRaw response (%d chars)", tag, len(raw))
 
             parsed: dict[str, Any] | None = None
@@ -131,6 +141,7 @@ class LLMClient:
                     raw=raw,
                     parsed=None,
                     parse_error=parse_error,
+                    finish_reason=finish_reason,
                 )
                 if attempt < total_attempts:
                     logger.warning(
@@ -146,6 +157,7 @@ class LLMClient:
                     raw=raw,
                     parsed=parsed,
                     parse_error=None,
+                    finish_reason=finish_reason,
                 )
                 return parsed
 
@@ -156,6 +168,34 @@ class LLMClient:
     # Interaction log
     # ------------------------------------------------------------------
 
+    @staticmethod
+    def _extract_version(prompt: dict[str, Any], agent: str = "") -> str:
+        """Extract system prompt / skill version from metadata, prompt text, or agent defaults."""
+        if "version" in prompt and prompt["version"]:
+            return str(prompt["version"])
+        if "skill_version" in prompt and prompt["skill_version"]:
+            return str(prompt["skill_version"])
+
+        sys_text = prompt.get("system", "")
+        m = re.search(
+            r'skill_version(?:[^\w\d"]+must be set to)?["\s:]+([0-9]+(?:\.[0-9]+)*)',
+            sys_text,
+            re.IGNORECASE,
+        )
+        if m:
+            return m.group(1)
+
+        agent_defaults = {
+            "agent1": "1.1.0",
+            "agent2": "1.0.0",
+            "agent3": "1.0.1",
+            "agent4": "1.2.0",
+        }
+        for k, v in agent_defaults.items():
+            if k in agent.lower():
+                return v
+        return "1.0.0"
+
     def _write_interaction(
         self,
         *,
@@ -164,8 +204,9 @@ class LLMClient:
         raw: str,
         parsed: dict | None,
         parse_error: str | None,
+        finish_reason: str | None = None,
     ) -> None:
-        """Append one JSONL entry to the interaction log (if enabled)."""
+        """Append entry to interaction log files (JSONL and formatted JSON arrays)."""
         if not self._log_path:
             return
 
@@ -174,6 +215,7 @@ class LLMClient:
         parts = label.split("/", 1)
         agent = parts[0] if parts else ""
         skill = parts[1] if len(parts) > 1 else ""
+        version = self._extract_version(prompt, agent=agent)
 
         entry = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -181,18 +223,43 @@ class LLMClient:
             "skill":     skill,
             "label":     label,
             "model":     self.model,
+            "version":   version,
+            "prompt_system_version": version,
             "prompt_system":   prompt.get("system", ""),
             "prompt_user":     prompt.get("user", ""),
             "response_raw":    raw,
             "response_parsed": parsed,
             "parse_error":     parse_error,
+            "finish_reason":   finish_reason,
         }
 
+        log_dir = self._log_path.parent
         try:
-            with open(self._log_path, "a", encoding="utf-8") as fh:
-                fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        except OSError as exc:
-            logger.warning("Could not write to interaction log: %s", exc)
+            log_dir.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            pass
+
+        target_json = log_dir / "interaction_log.json"
+        resolved_dir = log_dir.resolve()
+        if resolved_dir not in _SESSION_INTERACTIONS:
+            _SESSION_INTERACTIONS[resolved_dir] = []
+            if target_json.exists():
+                try:
+                    with open(target_json, "r", encoding="utf-8") as fh:
+                        data = json.load(fh)
+                        if isinstance(data, list):
+                            _SESSION_INTERACTIONS[resolved_dir] = data
+                except Exception:
+                    pass
+
+        _SESSION_INTERACTIONS[resolved_dir].append(entry)
+
+        try:
+            json_text = json.dumps(_SESSION_INTERACTIONS[resolved_dir], ensure_ascii=False, indent=2)
+            with open(target_json, "w", encoding="utf-8") as fh:
+                fh.write(json_text)
+        except Exception as exc:
+            logger.warning("Could not write to interaction log '%s': %s", target_json, exc)
 
     # ------------------------------------------------------------------
     # JSON parsing

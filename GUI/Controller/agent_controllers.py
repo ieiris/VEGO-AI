@@ -225,4 +225,6 @@ class OrchestratorController:
     @staticmethod
     async def run_setting(cfg: dict, config_path: Path, setting_id: str = "gui_run") -> None:
         log_action("OrchestratorController", "run_setting", f"setting_id={setting_id}")
-        await orch.run_setting(cfg, config_path, interaction_log_path=None, setting_id=setting_id)
+        out_dir = Path(cfg.get("output_dir", f"output/{setting_id}"))
+        log_path = out_dir / "interaction_log.json"
+        await orch.run_setting(cfg, config_path, interaction_log_path=log_path, setting_id=setting_id)

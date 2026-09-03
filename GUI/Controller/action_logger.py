@@ -33,6 +33,7 @@ _LOG_RETENTION_DAYS = 7
 _logger: Optional[logging.Logger] = None
 _active_handler_paths: Set[str] = set()
 _init_error: Optional[str] = None  # populated when log setup fails
+_current_out_dir: Path = Path("output/gui_run").resolve()
 
 
 def get_init_error() -> Optional[str]:
@@ -42,6 +43,16 @@ def get_init_error() -> Optional[str]:
     starts and surface a visible warning to the user.
     """
     return _init_error
+
+
+def get_log_output_dir() -> Path:
+    """Return the current active output directory as a Path."""
+    return _current_out_dir
+
+
+def get_interaction_log_path() -> Path:
+    """Return the Path to interaction_log.json in the current output directory."""
+    return _current_out_dir / "interaction_log.json"
 
 
 def _get_logger() -> logging.Logger:
@@ -70,13 +81,14 @@ def set_log_output_dir(dir_path: str | Path) -> None:
     dir_path : str | Path
         The target output folder (e.g. "output/gui_run" or "output").
     """
-    global _logger, _active_handler_paths, _init_error
+    global _logger, _active_handler_paths, _init_error, _current_out_dir
     if _logger is None:
         _logger = logging.getLogger(_LOGGER_NAME)
         _logger.setLevel(logging.INFO)
         _logger.propagate = False
 
     out_dir = Path(dir_path).resolve()
+    _current_out_dir = out_dir
     try:
         out_dir.mkdir(parents=True, exist_ok=True)
     except OSError as exc:
