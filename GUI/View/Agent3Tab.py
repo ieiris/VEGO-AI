@@ -3264,7 +3264,23 @@ class Agent3Tab(QWidget):
                 else:
                     header = f"[{gid} ({status} | {ded_str})]"
 
-                notes_list.append(f"{header}: {note_body}" if note_body else header)
+                citation = (
+                    entry.get("citation")
+                    or ref_obj.get("citation")
+                    or entry.get("reference_guideline")
+                    or ref_obj.get("reference_guideline")
+                    or ""
+                ).strip()
+
+                item_lines = [header]
+                if citation:
+                    item_lines.append(f'Citation: "{citation}"')
+                if note_body and note_body != citation:
+                    item_lines.append(f"Note: {note_body}")
+                elif not citation and note_body:
+                    item_lines.append(f"Note: {note_body}")
+
+                notes_list.append("\n".join(item_lines))
 
             gen_notes = (data.get("general_notes") or data.get("reviewer_notes") or data.get("general_comment") or "").strip()
             ded_val = float(data.get("score_deduction", data.get("manual_deduction", 0.0)) or 0.0)
