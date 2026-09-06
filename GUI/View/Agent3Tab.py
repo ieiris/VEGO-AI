@@ -29,7 +29,7 @@ for _p in (_CONTROLLER_DIR, _MODEL_DIR):
 from agent_controllers import Agent3Controller
 
 
-from PySide6.QtCore import QByteArray, QTimer, Qt, QThread, Signal
+from PySide6.QtCore import QByteArray, QItemSelection, QItemSelectionModel, QTimer, Qt, QThread, Signal
 from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
@@ -775,7 +775,10 @@ class DiagramFloatWindow(QDialog):
 
 
 class TableFloatWindow(QDialog):
-    """Non-modal floating window showing a snapshot of the compliance table + summary."""
+    """Non-modal floating window showing an interactive live view of the compliance table + summary."""
+
+    selection_changed = Signal()
+    cell_double_clicked = Signal(int, int)
 
     _TABLE_STYLE = """
         QTableWidget {
@@ -797,6 +800,7 @@ class TableFloatWindow(QDialog):
         )
         self.resize(1000, 600)
         self.setMinimumSize(500, 300)
+        self._syncing_selection: bool = False
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(6, 6, 6, 6)
@@ -811,34 +815,18 @@ class TableFloatWindow(QDialog):
         top_row.addWidget(self._filter_edit)
         layout.addLayout(top_row)
 
-        # Clone the table data (read-only)
-        self._table = QTableWidget(source_table.rowCount(), source_table.columnCount())
-        headers = [source_table.horizontalHeaderItem(c).text()
-                   for c in range(source_table.columnCount())
-                   if source_table.horizontalHeaderItem(c)]
-        self._table.setHorizontalHeaderLabels(headers)
+        # Interactive cloned table
+        self._table = QTableWidget()
         self._table.setEditTriggers(QTableWidget.NoEditTriggers)
         self._table.setSelectionBehavior(QTableWidget.SelectRows)
+        self._table.setSelectionMode(QTableWidget.ExtendedSelection)
         self._table.setWordWrap(True)
         self._table.setAlternatingRowColors(True)
         self._table.setStyleSheet(self._TABLE_STYLE)
-        hdr = self._table.horizontalHeader()
-        hdr.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        hdr.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        for c in range(2, self._table.columnCount()):
-            hdr.setSectionResizeMode(c, QHeaderView.Stretch)
+        self._table.itemSelectionChanged.connect(self._on_table_selection_changed)
+        self._table.cellDoubleClicked.connect(self.cell_double_clicked.emit)
 
-        # Copy cells
-        for r in range(source_table.rowCount()):
-            for c in range(source_table.columnCount()):
-                src = source_table.item(r, c)
-                if src:
-                    dst = QTableWidgetItem(src.text())
-                    dst.setBackground(src.background())
-                    dst.setForeground(src.foreground())
-                    f = src.font(); f.setBold(src.font().bold()); dst.setFont(f)
-                    self._table.setItem(r, c, dst)
-        self._table.resizeRowsToContents()
+        self._copy_cells_from(source_table)
         layout.addWidget(self._table, stretch=1)
 
         # Summary bar
@@ -851,6 +839,61 @@ class TableFloatWindow(QDialog):
         self._summary.setText(summary_html)
         self._summary.setMaximumHeight(52)
         layout.addWidget(self._summary, stretch=0)
+
+    def _copy_cells_from(self, source_table: QTableWidget) -> None:
+        self._table.setRowCount(source_table.rowCount())
+        self._table.setColumnCount(source_table.columnCount())
+        headers = [source_table.horizontalHeaderItem(c).text()
+                   for c in range(source_table.columnCount())
+                   if source_table.horizontalHeaderItem(c)]
+        self._table.setHorizontalHeaderLabels(headers)
+        hdr = self._table.horizontalHeader()
+        hdr.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        hdr.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        for c in range(2, self._table.columnCount()):
+            hdr.setSectionResizeMode(c, QHeaderView.Stretch)
+
+        for r in range(source_table.rowCount()):
+            for c in range(source_table.columnCount()):
+                src = source_table.item(r, c)
+                if src:
+                    dst = QTableWidgetItem(src.text())
+                    dst.setBackground(src.background())
+                    dst.setForeground(src.foreground())
+                    f = src.font()
+                    f.setBold(src.font().bold())
+                    dst.setFont(f)
+                    user_data = src.data(Qt.UserRole)
+                    if user_data is not None:
+                        dst.setData(Qt.UserRole, user_data)
+                    self._table.setItem(r, c, dst)
+        self._table.resizeRowsToContents()
+
+    def _on_table_selection_changed(self) -> None:
+        if self._syncing_selection:
+            return
+        self.selection_changed.emit()
+
+    def sync_selection_from(self, source_table: QTableWidget) -> None:
+        """Mirror selection from source_table into floating table without re-emitting."""
+        self._syncing_selection = True
+        try:
+            selection = QItemSelection()
+            for idx in source_table.selectionModel().selectedRows():
+                row = idx.row()
+                if 0 <= row < self._table.rowCount():
+                    top_left = self._table.model().index(row, 0)
+                    bottom_right = self._table.model().index(row, self._table.columnCount() - 1)
+                    selection.select(top_left, bottom_right)
+            self._table.selectionModel().select(
+                selection, QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
+            )
+        finally:
+            self._syncing_selection = False
+
+    def set_summary_text(self, summary_html: str) -> None:
+        """Update summary bar text."""
+        self._summary.setText(summary_html)
 
     def _apply_float_filter(self, text: str) -> None:
         q = text.strip().lower()
@@ -874,17 +917,11 @@ class TableFloatWindow(QDialog):
 
     def refresh(self, source_table: QTableWidget, summary_html: str) -> None:
         """Refresh floating table from updated source data."""
-        self._table.setRowCount(source_table.rowCount())
-        for r in range(source_table.rowCount()):
-            for c in range(source_table.columnCount()):
-                src = source_table.item(r, c)
-                if src:
-                    dst = QTableWidgetItem(src.text())
-                    dst.setBackground(src.background())
-                    dst.setForeground(src.foreground())
-                    f = src.font(); f.setBold(src.font().bold()); dst.setFont(f)
-                    self._table.setItem(r, c, dst)
-        self._table.resizeRowsToContents()
+        self._syncing_selection = True
+        try:
+            self._copy_cells_from(source_table)
+        finally:
+            self._syncing_selection = False
         self._summary.setText(summary_html)
         if self._filter_edit.text():
             self._apply_float_filter(self._filter_edit.text())
@@ -941,6 +978,7 @@ class Agent3Tab(QWidget):
         self._pending_puml_text: str | None = None
         self._diag_float: DiagramFloatWindow | None = None   # floating diagram window
         self._table_float: TableFloatWindow | None = None    # floating table window
+        self._syncing_selection: bool = False
         self._annotate_active: bool = True  # compliance annotation overlay toggle (enabled by default)
 
         main_layout = QVBoxLayout(self)
@@ -1335,9 +1373,10 @@ class Agent3Tab(QWidget):
     def _popout_table(self) -> None:
         """Open (or raise) the floating compliance table window."""
         case_id = self.current_raw_data.get("case_id", "")
-        summary_html = self._build_summary_html()
+        summary_html = self.summary_bar.text() or self._build_summary_html()
         if self._table_float and not self._table_float.isHidden():
             self._table_float.refresh(self.tree_table, summary_html)
+            self._table_float.sync_selection_from(self.tree_table)
             self._table_float.raise_()
             self._table_float.activateWindow()
             return
@@ -1347,7 +1386,30 @@ class Agent3Tab(QWidget):
             case_title=str(case_id),
             parent=None,          # top-level, not modal
         )
+        self._table_float.selection_changed.connect(self._on_float_table_selection_changed)
+        self._table_float.cell_double_clicked.connect(self._on_table_cell_double_clicked)
+        self._table_float.sync_selection_from(self.tree_table)
         self._table_float.show()
+
+    def _on_float_table_selection_changed(self) -> None:
+        """Handle selection change inside the floating table, sync to main table & diagram."""
+        if self._syncing_selection or not self._table_float:
+            return
+        self._syncing_selection = True
+        try:
+            selection = QItemSelection()
+            for idx in self._table_float._table.selectionModel().selectedRows():
+                row = idx.row()
+                if 0 <= row < self.tree_table.rowCount():
+                    top_left = self.tree_table.model().index(row, 0)
+                    bottom_right = self.tree_table.model().index(row, self.tree_table.columnCount() - 1)
+                    selection.select(top_left, bottom_right)
+            self.tree_table.selectionModel().select(
+                selection, QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
+            )
+        finally:
+            self._syncing_selection = False
+        self._on_table_selection_changed()
 
     # ── Folder Settings ──
 
@@ -2348,6 +2410,11 @@ class Agent3Tab(QWidget):
         self.tree_table.resizeRowsToContents()
         # Refresh the always-visible summary bar
         self._update_summary_bar()
+        if self._table_float and not self._table_float.isHidden():
+            case_id = self.current_raw_data.get("case_id", "")
+            self._table_float.setWindowTitle(f"📋  Compliance — {case_id}" if case_id else "📋  Compliance Vector")
+            self._table_float.refresh(self.tree_table, self.summary_bar.text())
+            self._table_float.sync_selection_from(self.tree_table)
         # Re-apply search / status filters if active
         self._apply_table_filter()
 
@@ -2536,11 +2603,20 @@ class Agent3Tab(QWidget):
             self.summary_bar.setText(f"{base} &nbsp;<span style='color:#546E7A;'>│</span> {extra_html}")
         else:
             self.summary_bar.setText(base)
+        if self._table_float and not self._table_float.isHidden():
+            self._table_float.set_summary_text(self.summary_bar.text())
 
     def _on_table_selection_changed(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()
         if not rows:
             self._update_summary_bar()
+            if self._annotate_active:
+                raw = self.model_text_edit.toPlainText().strip()
+                if raw:
+                    render_text = self._build_annotated_puml(raw)
+                    self._render_diagram(render_text)
+            if not self._syncing_selection and self._table_float and not self._table_float.isHidden():
+                self._table_float.sync_selection_from(self.tree_table)
             return
         row = rows[0].row()
         item = self.tree_table.item(row, 0)
@@ -2626,6 +2702,10 @@ class Agent3Tab(QWidget):
             if raw:
                 render_text = self._build_annotated_puml(raw)
                 self._render_diagram(render_text)
+
+        # Sync selection to floating table if open
+        if not self._syncing_selection and self._table_float and not self._table_float.isHidden():
+            self._table_float.sync_selection_from(self.tree_table)
 
     # ── PlantUML Async Diagram Rendering ──
 
