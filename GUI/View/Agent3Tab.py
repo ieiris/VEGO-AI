@@ -686,8 +686,21 @@ class GeneralNoteDialog(QDialog):
 
 
 # ---------------------------------------------------------------------------
-# Floating (detached) windows
+# Floating (detached) windows & UI Constants
 # ---------------------------------------------------------------------------
+
+_COMPLIANCE_LEGEND_HTML = (
+    "&nbsp;"
+    "<span style='background:#C8E6C9; color:#1B5E20; padding:1px 4px; "
+    "border-radius:3px; font-size:10px;'>■ Satisfied</span>&nbsp;"
+    "<span style='background:#FFB74D; color:#E65100; padding:1px 4px; "
+    "border-radius:3px; font-size:10px;'>■ Partial</span>&nbsp;"
+    "<span style='background:#FFCDD2; color:#B71C1C; padding:1px 4px; "
+    "border-radius:3px; font-size:10px;'>■ Not-Satisfied</span>&nbsp;"
+    "<span style='background:#E1BEE7; color:#6A1B9A; padding:1px 4px; "
+    "border-radius:3px; font-size:10px;'>■ Fragment</span>"
+)
+
 
 class DiagramFloatWindow(QDialog):
     """Non-modal floating window that mirrors the current PlantUML diagram."""
@@ -723,6 +736,11 @@ class DiagramFloatWindow(QDialog):
         btn_save = _md_btn_outlined("💾 Save PNG", "#1976D2")
         btn_save.clicked.connect(self._save_png)
 
+        # Legend label
+        self._legend_lbl = QLabel()
+        self._legend_lbl.setTextFormat(Qt.RichText)
+        self._legend_lbl.setText(_COMPLIANCE_LEGEND_HTML)
+
         btn_in.clicked.connect(self._zoom_in)
         btn_out.clicked.connect(self._zoom_out)
         btn_reset.clicked.connect(self._zoom_reset)
@@ -732,6 +750,8 @@ class DiagramFloatWindow(QDialog):
         toolbar.addWidget(btn_reset)
         toolbar.addWidget(btn_in)
         toolbar.addWidget(self._zoom_lbl)
+        toolbar.addSpacing(14)
+        toolbar.addWidget(self._legend_lbl)
         toolbar.addStretch(1)
         toolbar.addWidget(btn_save)
         layout.addLayout(toolbar)
@@ -764,6 +784,10 @@ class DiagramFloatWindow(QDialog):
         """Live-update the floating window when the main diagram refreshes."""
         self._original_pixmap = pixmap
         self._apply_zoom()
+
+    def set_legend_visible(self, visible: bool) -> None:
+        """Show or hide the compliance color legend in the floating window."""
+        self._legend_lbl.setVisible(visible)
 
     def _save_png(self) -> None:
         if not self._original_pixmap:
@@ -1096,22 +1120,14 @@ class Agent3Tab(QWidget):
         self.btn_annotate = _md_btn("🎨 Annotated", "#1B5E20")
         self.btn_annotate.setToolTip(
             "Toggle compliance color overlay on the diagram.\n"
-            "Green = Satisfied  |  Orange = Partially-Satisfied  |  Red = Not-Satisfied"
+            "Green = Satisfied  |  Orange = Partially-Satisfied  |  Red = Not-Satisfied  |  Purple = Fragment"
         )
         self.btn_annotate.setCheckable(True)
         self.btn_annotate.setChecked(True)
         self.btn_annotate.toggled.connect(self._on_annotate_toggled)
         self.annotate_legend_label = QLabel()
         self.annotate_legend_label.setTextFormat(Qt.RichText)
-        self.annotate_legend_label.setText(
-            "&nbsp;"
-            "<span style='background:#C8E6C9; color:#1B5E20; padding:1px 4px; "
-            "border-radius:3px; font-size:10px;'>■ Satisfied</span>&nbsp;"
-            "<span style='background:#FFB74D; color:#E65100; padding:1px 4px; "
-            "border-radius:3px; font-size:10px;'>■ Partial</span>&nbsp;"
-            "<span style='background:#FFCDD2; color:#B71C1C; padding:1px 4px; "
-            "border-radius:3px; font-size:10px;'>■ Not-Satisfied</span>"
-        )
+        self.annotate_legend_label.setText(_COMPLIANCE_LEGEND_HTML)
         self.annotate_legend_label.show()
 
         diag_toolbar.addStretch(1)
@@ -1360,6 +1376,7 @@ class Agent3Tab(QWidget):
             # Already open — just bring to front and refresh pixmap
             if self.original_pixmap:
                 self._diag_float.update_pixmap(self.original_pixmap)
+            self._diag_float.set_legend_visible(self._annotate_active)
             self._diag_float.raise_()
             self._diag_float.activateWindow()
             return
@@ -1368,6 +1385,7 @@ class Agent3Tab(QWidget):
             case_title=str(case_id),
             parent=None,          # top-level, not modal
         )
+        self._diag_float.set_legend_visible(self._annotate_active)
         self._diag_float.show()
 
     def _popout_table(self) -> None:
@@ -1621,15 +1639,7 @@ class Agent3Tab(QWidget):
                 self.btn_annotate.styleSheet() +
                 "QPushButton { background: #1B5E20; }"
             )
-            self.annotate_legend_label.setText(
-                "&nbsp;"
-                "<span style='background:#C8E6C9; color:#1B5E20; padding:1px 4px; "
-                "border-radius:3px; font-size:10px;'>■ Satisfied</span>&nbsp;"
-                "<span style='background:#FFB74D; color:#E65100; padding:1px 4px; "
-                "border-radius:3px; font-size:10px;'>■ Partial</span>&nbsp;"
-                "<span style='background:#FFCDD2; color:#B71C1C; padding:1px 4px; "
-                "border-radius:3px; font-size:10px;'>■ Not-Satisfied</span>"
-            )
+            self.annotate_legend_label.setText(_COMPLIANCE_LEGEND_HTML)
             self.annotate_legend_label.show()
         else:
             self.btn_annotate.setText("🎨 Annotate")
@@ -1640,6 +1650,9 @@ class Agent3Tab(QWidget):
                 )
             )
             self.annotate_legend_label.hide()
+
+        if self._diag_float and not self._diag_float.isHidden():
+            self._diag_float.set_legend_visible(checked)
 
         # Re-render with or without annotation
         raw = self.model_text_edit.toPlainText().strip()
