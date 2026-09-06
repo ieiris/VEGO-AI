@@ -11,6 +11,7 @@ Integrates visualize_compliance.py capabilities natively inside the master PySid
 
 from __future__ import annotations
 
+import csv
 import json
 import os
 import re
@@ -1063,6 +1064,11 @@ class Agent3Tab(QWidget):
         btn_schema.clicked.connect(self._open_scoring_schema_dialog)
         toolbar.addWidget(btn_schema)
 
+        btn_export_csv = _md_btn_outlined("📊 Export All to CSV", "#2E7D32")
+        btn_export_csv.setToolTip("Export all cases to a CSV table (Case/Group, Score / 100, Notes)")
+        btn_export_csv.clicked.connect(self.export_all_to_csv)
+        toolbar.addWidget(btn_export_csv)
+
         toolbar.addStretch(1)
 
         # Status chip (right-aligned)
@@ -1241,6 +1247,11 @@ class Agent3Tab(QWidget):
         btn_popout_tbl.setToolTip("Open compliance table in a separate floating window")
         btn_popout_tbl.clicked.connect(self._popout_table)
         table_header_row.addWidget(btn_popout_tbl)
+
+        btn_export_csv_tbl = _md_btn_outlined("📊 Export CSV", "#2E7D32")
+        btn_export_csv_tbl.setToolTip("Export all cases to a CSV table (Case/Group, Score / 100, Notes)")
+        btn_export_csv_tbl.clicked.connect(self.export_all_to_csv)
+        table_header_row.addWidget(btn_export_csv_tbl)
 
         table_box = QWidget()   # plain widget instead of GroupBox
         table_layout = QVBoxLayout(table_box)
@@ -3129,3 +3140,171 @@ class Agent3Tab(QWidget):
             log_action("Agent3", "save_changes", f"case_id={cid}, file={agg_file}")
         except Exception as exc:
             QMessageBox.critical(self, "Save Error", str(exc))
+
+    # ── Export All to CSV ──
+
+    def export_all_to_csv(self) -> None:
+        """Export all cases to an English CSV table with columns:
+        - Case / Group
+        - Score (out of 100)
+        - Notes (contains only Not-Satisfied and Partially-Satisfied guidelines with point deductions out of 100, and final note)
+        """
+        out_dir = self.output_dir_edit.text().strip()
+        if not out_dir or not os.path.exists(out_dir):
+            QMessageBox.warning(self, "No Output Folder", "Please configure or select a valid output folder first.")
+            return
+
+        # Ensure latest aggregate files exist
+        self._auto_export_per_case(out_dir)
+
+        # Auto-save any in-progress edits on currently viewed case
+        if self.current_raw_data and self.aggregate_combo.currentText():
+            curr_agg = Path(out_dir) / "aggregate" / self.aggregate_combo.currentText()
+            try:
+                curr_agg.write_text(json.dumps(self.current_raw_data, indent=2, ensure_ascii=False), encoding="utf-8")
+            except Exception:
+                pass
+
+        agg_dir = Path(out_dir) / "aggregate"
+        if not agg_dir.exists():
+            QMessageBox.warning(self, "No Cases", "Aggregate cases directory does not exist.")
+            return
+
+        def _sort_key(p: Path):
+            m = re.search(r'\d+', p.stem)
+            return (0, int(m.group()), p.stem) if m else (1, 0, p.stem)
+
+        agg_files = sorted(agg_dir.glob("*.json"), key=_sort_key)
+        if not agg_files:
+            QMessageBox.warning(self, "No Cases Found", "No case aggregate files were found to export.")
+            return
+
+        # Load reference guidelines map if not already loaded
+        if not self.reference_guidelines_map:
+            ref_path = Path(out_dir) / "reference_guidelines.json"
+            if ref_path.exists():
+                self._load_reference_guidelines_map(ref_path)
+
+        rows = []
+        for p in agg_files:
+            try:
+                cid_stem = p.stem
+                if self.current_raw_data and str(self.current_raw_data.get("case_id", "")) == cid_stem:
+                    data = self.current_raw_data
+                else:
+                    data = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+
+            cid = str(data.get("case_id") or data.get("group_name") or data.get("group") or p.stem)
+            gname = str(data.get("group_name") or data.get("group") or "").strip()
+            case_col = f"{cid} - {gname}" if (gname and gname != cid) else cid
+
+            existing = list(data.get("existing_mapping", []) or [])
+            potential = list(data.get("potential_found", []) or [])
+            existing_ids = {e.get("guideline_id") for e in existing if isinstance(e, dict)}
+            for pot in potential:
+                if isinstance(pot, dict) and pot.get("guideline_id") not in existing_ids:
+                    existing.append(pot)
+
+            total_g = len(existing)
+            total_possible = total_g * self.sat_weight if total_g > 0 else 1.0
+
+            # Score calculation
+            raw_pct = data.get("score_pct")
+            if raw_pct is not None and str(raw_pct).strip() != "":
+                try:
+                    final_score = float(raw_pct)
+                except (ValueError, TypeError):
+                    final_score = None
+            else:
+                final_score = None
+
+            if final_score is None:
+                pts = sum(
+                    self.sat_weight if g.get("compliance_status") in ("Satisfied", "MAPPED")
+                    else (self.part_weight if g.get("compliance_status") in ("Partially-Satisfied", "Partial") else self.not_weight)
+                    for g in existing if isinstance(g, dict)
+                )
+                base_pct = (pts / total_possible * 100.0) if total_possible > 0 else 0.0
+                ded_val = float(data.get("score_deduction", data.get("manual_deduction", 0.0)) or 0.0)
+                adj_val = float(data.get("score_adjustment", data.get("manual_adjustment", -ded_val)) or 0.0)
+                final_score = max(0.0, min(100.0, base_pct + adj_val))
+
+            score_rounded = round(final_score, 1)
+            score_str = f"{score_rounded:g}"
+
+            # Filter notes: only Not-Satisfied, Partially-Satisfied, and final note
+            notes_list = []
+            for entry in existing:
+                if not isinstance(entry, dict):
+                    continue
+                status = str(entry.get("compliance_status", "")).strip()
+                if status not in ("Not-Satisfied", "Partially-Satisfied", "UNOPERATIONALIZED", "Partial", "Not Satisfied", "Partially Satisfied"):
+                    continue
+
+                # Point deduction for this guideline out of 100
+                if status in ("Not-Satisfied", "UNOPERATIONALIZED", "Not Satisfied"):
+                    pts_deducted = ((self.sat_weight - self.not_weight) / total_possible) * 100.0
+                else:
+                    pts_deducted = ((self.sat_weight - self.part_weight) / total_possible) * 100.0
+
+                ded_val = round(pts_deducted, 2)
+                ded_str = f"-{ded_val:g} pts"
+
+                gid = str(entry.get("guideline_id", "")).strip()
+                note_body = (entry.get("notes") or "").strip()
+                if not note_body:
+                    note_body = (entry.get("evidence") or "").strip()
+
+                ref_obj = self.reference_guidelines_map.get(gid, {}) or self.reference_guidelines_map.get(gid.replace("G", "G_"), {})
+                g_name = entry.get("guideline_name") or ref_obj.get("guideline_name") or ref_obj.get("name") or ""
+                if g_name and not note_body.startswith(g_name):
+                    header = f"[{gid} - {g_name} ({status} | {ded_str})]"
+                else:
+                    header = f"[{gid} ({status} | {ded_str})]"
+
+                notes_list.append(f"{header}: {note_body}" if note_body else header)
+
+            gen_notes = (data.get("general_notes") or data.get("reviewer_notes") or data.get("general_comment") or "").strip()
+            ded_val = float(data.get("score_deduction", data.get("manual_deduction", 0.0)) or 0.0)
+            adj_val = float(data.get("score_adjustment", data.get("manual_adjustment", -ded_val)) or 0.0)
+            adj_parts = []
+            if adj_val > 0:
+                adj_parts.append(f"[+{adj_val:g}% factor]")
+            elif adj_val < 0:
+                adj_parts.append(f"[{adj_val:g}% deduction]")
+            if gen_notes:
+                adj_parts.append(gen_notes)
+            final_note_text = " ".join(adj_parts).strip()
+            if final_note_text:
+                notes_list.append(f"[Final Note]: {final_note_text}")
+
+            cell_notes = "\n\n".join(notes_list)
+            rows.append([case_col, score_str, cell_notes])
+
+        default_file = str(Path(out_dir) / "cases_summary.csv")
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Export All Cases to CSV",
+            default_file,
+            "CSV Files (*.csv);;All Files (*)"
+        )
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, "w", newline="", encoding="utf-8-sig") as f:
+                writer = csv.writer(f, quoting=csv.QUOTE_MINIMAL)
+                writer.writerow(["Case / Group", "Score (out of 100)", "Notes"])
+                for r in rows:
+                    writer.writerow(r)
+
+            log_action("Agent3", "export_all_csv", f"file={file_path}, cases_count={len(rows)}")
+            QMessageBox.information(
+                self,
+                "Export Successful",
+                f"Successfully exported {len(rows)} cases to:\n{file_path}"
+            )
+        except Exception as exc:
+            QMessageBox.critical(self, "Export Error", f"Failed to write CSV file:\n{exc}")
