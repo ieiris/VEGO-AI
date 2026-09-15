@@ -70,7 +70,7 @@ from PySide6.QtWidgets import (
 
 
 APP_TITLE   = "VEGO-AI Pipeline GUI"
-APP_VERSION = "2.1.5.3"
+APP_VERSION = "2.1.5.4"
 APP_USER_MODEL_ID = "VEGOAI.PipelineGUI"
 
 
@@ -139,15 +139,18 @@ QWidget {
 QTabWidget::pane {
     border: 1px solid #3a3a52;
     background: #1e1e28;
+    border-radius: 0 4px 4px 4px;
+}
+QTabBar {
+    qproperty-expanding: true;
 }
 QTabBar::tab {
     background: #2a2a3a;
     color: #c0c0d0;
-    padding: 8px 20px;
+    padding: 8px 16px;
     border: 1px solid #3a3a52;
     border-bottom: none;
     border-radius: 4px 4px 0 0;
-    min-width: 120px;
     font-weight: 500;
 }
 QTabBar::tab:selected {
@@ -162,23 +165,25 @@ QTabBar::tab:hover:!selected {
 
 /* ---- nested tab bars (Agent 1 sub-tabs, Agent 2 sub-tabs, …) ---- */
 QTabWidget > QTabBar::tab {
-    min-width: 80px;
-    padding: 5px 14px;
+    padding: 5px 12px;
 }
 
 /* ---- group boxes ---- */
 QGroupBox {
     border: 1px solid #3a3a52;
     border-radius: 6px;
-    margin-top: 10px;
-    padding-top: 8px;
+    margin-top: 14px;
+    padding-top: 10px;
     color: #a0a8c0;
     font-weight: 600;
 }
 QGroupBox::title {
     subcontrol-origin: margin;
-    left: 10px;
-    padding: 0 4px;
+    subcontrol-position: top left;
+    left: 12px;
+    top: -1px;
+    padding: 0 5px;
+    background: transparent;
 }
 
 /* ---- config panel ---- */
@@ -194,7 +199,8 @@ QPushButton {
     color: #e8eaff;
     border: 1px solid #5060a0;
     border-radius: 5px;
-    padding: 5px 14px;
+    padding: 5px 16px;
+    min-height: 28px;
     font-weight: 500;
 }
 QPushButton:hover {
@@ -209,10 +215,15 @@ QPushButton:disabled {
     color: #606070;
     border-color: #3a3a52;
 }
+QPushButton:focus {
+    outline: none;
+    border: 2px solid #7090e0;
+}
 
 QPushButton#action_btn {
-    padding: 2px 10px;
-    font-size: 11px;
+    padding: 4px 12px;
+    min-height: 26px;
+    font-size: 10pt;
     font-weight: bold;
     background-color: #2b3a4a;
     color: #ffffff;
@@ -222,6 +233,25 @@ QPushButton#action_btn {
 QPushButton#action_btn:hover {
     background-color: #3b4d61;
 }
+QPushButton#action_btn:focus {
+    border: 2px solid #6090c0;
+}
+
+/* ---- reload button states ---- */
+QPushButton#reload_btn_off {
+    background: #3a3a52;
+    color: #c0c0d8;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid #5050708;
+}
+QPushButton#reload_btn_active {
+    background: #1b5e20;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid #2e7d32;
+}
 
 /* ---- line edits / spin boxes ---- */
 QLineEdit, QSpinBox, QDoubleSpinBox {
@@ -229,11 +259,83 @@ QLineEdit, QSpinBox, QDoubleSpinBox {
     color: #dde0ff;
     border: 1px solid #3a3a55;
     border-radius: 4px;
-    padding: 3px 6px;
+    padding: 4px 7px;
+    min-height: 26px;
     selection-background-color: #3c5fa0;
 }
-QLineEdit:focus, QSpinBox:focus {
-    border-color: #6080d0;
+QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus {
+    border: 2px solid #6080d0;
+}
+QSpinBox::up-button, QDoubleSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    background: #2e2e44;
+    border-left: 1px solid #3a3a55;
+    border-bottom: 1px solid #3a3a55;
+    border-radius: 0 4px 0 0;
+    width: 18px;
+}
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    background: #2e2e44;
+    border-left: 1px solid #3a3a55;
+    border-radius: 0 0 4px 0;
+    width: 18px;
+}
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
+    width: 7px; height: 7px;
+    image: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 5px solid #a0a8c0;
+}
+QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
+    width: 7px; height: 7px;
+    image: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #a0a8c0;
+}
+
+/* ---- combo boxes ---- */
+QComboBox {
+    background: #1a1a2a;
+    color: #dde0ff;
+    border: 1px solid #3a3a55;
+    border-radius: 4px;
+    padding: 4px 8px;
+    min-height: 26px;
+    selection-background-color: #3c5fa0;
+}
+QComboBox:focus {
+    border: 2px solid #6080d0;
+}
+QComboBox:hover {
+    border-color: #5060a0;
+}
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 22px;
+    border-left: 1px solid #3a3a55;
+    border-radius: 0 4px 4px 0;
+    background: #2e2e44;
+}
+QComboBox::down-arrow {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #a0a8c0;
+    width: 0; height: 0;
+}
+QComboBox QAbstractItemView {
+    background: #1e1e2e;
+    color: #dde0ff;
+    border: 1px solid #4a4a6a;
+    selection-background-color: #3c5fa0;
+    selection-color: #ffffff;
+    outline: none;
+    padding: 2px;
 }
 
 /* ---- plain-text editors ---- */
@@ -244,7 +346,10 @@ QPlainTextEdit {
     border-radius: 4px;
     selection-background-color: #3c5fa0;
     font-family: "Consolas", "Cascadia Code", monospace;
-    font-size: 9.5pt;
+    font-size: 10pt;
+}
+QPlainTextEdit:focus {
+    border: 2px solid #4060b0;
 }
 
 /* ---- tables ---- */
@@ -259,7 +364,7 @@ QHeaderView::section {
     background: #2a2a3a;
     color: #a0a8c0;
     border: 1px solid #3a3a52;
-    padding: 4px;
+    padding: 5px 6px;
     font-weight: 600;
 }
 
@@ -267,38 +372,57 @@ QHeaderView::section {
 QScrollBar:vertical {
     background: #1a1a2a;
     width: 10px;
+    margin: 0;
 }
 QScrollBar::handle:vertical {
     background: #3a3a55;
     border-radius: 5px;
-    min-height: 20px;
+    min-height: 24px;
 }
 QScrollBar::handle:vertical:hover {
     background: #505080;
 }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0;
+    background: none;
+    border: none;
+}
 QScrollBar:horizontal {
     background: #1a1a2a;
     height: 10px;
+    margin: 0;
 }
 QScrollBar::handle:horizontal {
     background: #3a3a55;
     border-radius: 5px;
+    min-width: 24px;
+}
+QScrollBar::handle:horizontal:hover {
+    background: #505080;
+}
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0;
+    background: none;
+    border: none;
 }
 
 /* ---- check boxes ---- */
 QCheckBox {
     color: #c0c8e0;
-    spacing: 6px;
+    spacing: 8px;
 }
 QCheckBox::indicator {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     border: 1px solid #5060a0;
     border-radius: 3px;
     background: #1e1e30;
 }
 QCheckBox::indicator:checked {
     background: #3c5fa0;
+}
+QCheckBox::indicator:focus {
+    border: 2px solid #7090e0;
 }
 
 /* ---- status labels ---- */
@@ -312,10 +436,13 @@ QSplitter::handle {
     background: #2e2e44;
 }
 QSplitter::handle:horizontal {
-    width: 3px;
+    width: 4px;
 }
 QSplitter::handle:vertical {
-    height: 3px;
+    height: 4px;
+}
+QSplitter::handle:hover {
+    background: #5070a0;
 }
 """
 
@@ -331,15 +458,18 @@ QWidget {
 QTabWidget::pane {
     border: 1px solid #d0d0d8;
     background: #f4f4f6;
+    border-radius: 0 4px 4px 4px;
+}
+QTabBar {
+    qproperty-expanding: true;
 }
 QTabBar::tab {
     background: #e2e2e8;
     color: #333333;
-    padding: 8px 20px;
+    padding: 8px 16px;
     border: 1px solid #c0c0c8;
     border-bottom: none;
     border-radius: 4px 4px 0 0;
-    min-width: 120px;
     font-weight: 500;
 }
 QTabBar::tab:selected {
@@ -354,23 +484,25 @@ QTabBar::tab:hover:!selected {
 
 /* ---- nested tab bars (Agent 1 sub-tabs, Agent 2 sub-tabs, …) ---- */
 QTabWidget > QTabBar::tab {
-    min-width: 80px;
-    padding: 5px 14px;
+    padding: 5px 12px;
 }
 
 /* ---- group boxes ---- */
 QGroupBox {
     border: 1px solid #c8c8d0;
     border-radius: 6px;
-    margin-top: 10px;
-    padding-top: 8px;
+    margin-top: 14px;
+    padding-top: 10px;
     color: #333344;
     font-weight: 600;
 }
 QGroupBox::title {
     subcontrol-origin: margin;
-    left: 10px;
-    padding: 0 4px;
+    subcontrol-position: top left;
+    left: 12px;
+    top: -1px;
+    padding: 0 5px;
+    background: transparent;
 }
 
 /* ---- config panel ---- */
@@ -386,7 +518,8 @@ QPushButton {
     color: #1c1c1e;
     border: 1px solid #b0b5c4;
     border-radius: 5px;
-    padding: 5px 14px;
+    padding: 5px 16px;
+    min-height: 28px;
     font-weight: 500;
 }
 QPushButton:hover {
@@ -401,10 +534,15 @@ QPushButton:disabled {
     color: #9999a0;
     border-color: #d0d0d8;
 }
+QPushButton:focus {
+    outline: none;
+    border: 2px solid #2b5797;
+}
 
 QPushButton#action_btn {
-    padding: 2px 10px;
-    font-size: 11px;
+    padding: 4px 12px;
+    min-height: 26px;
+    font-size: 10pt;
     font-weight: bold;
     background-color: #2b5797;
     color: #ffffff;
@@ -414,6 +552,25 @@ QPushButton#action_btn {
 QPushButton#action_btn:hover {
     background-color: #3567ab;
 }
+QPushButton#action_btn:focus {
+    border: 2px solid #1f4277;
+}
+
+/* ---- reload button states ---- */
+QPushButton#reload_btn_off {
+    background: #e0e0e8;
+    color: #444455;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid #b0b0c0;
+}
+QPushButton#reload_btn_active {
+    background: #2e7d32;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid #1b5e20;
+}
 
 /* ---- line edits / spin boxes ---- */
 QLineEdit, QSpinBox, QDoubleSpinBox {
@@ -421,12 +578,84 @@ QLineEdit, QSpinBox, QDoubleSpinBox {
     color: #1c1c1e;
     border: 1px solid #c0c0c8;
     border-radius: 4px;
-    padding: 3px 6px;
+    padding: 4px 7px;
+    min-height: 26px;
     selection-background-color: #2b5797;
     selection-color: #ffffff;
 }
-QLineEdit:focus, QSpinBox:focus {
-    border-color: #2b5797;
+QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus {
+    border: 2px solid #2b5797;
+}
+QSpinBox::up-button, QDoubleSpinBox::up-button {
+    subcontrol-origin: border;
+    subcontrol-position: top right;
+    background: #e8e8f0;
+    border-left: 1px solid #c0c0c8;
+    border-bottom: 1px solid #c0c0c8;
+    border-radius: 0 4px 0 0;
+    width: 18px;
+}
+QSpinBox::down-button, QDoubleSpinBox::down-button {
+    subcontrol-origin: border;
+    subcontrol-position: bottom right;
+    background: #e8e8f0;
+    border-left: 1px solid #c0c0c8;
+    border-radius: 0 0 4px 0;
+    width: 18px;
+}
+QSpinBox::up-arrow, QDoubleSpinBox::up-arrow {
+    width: 7px; height: 7px;
+    image: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 5px solid #555566;
+}
+QSpinBox::down-arrow, QDoubleSpinBox::down-arrow {
+    width: 7px; height: 7px;
+    image: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #555566;
+}
+
+/* ---- combo boxes ---- */
+QComboBox {
+    background: #ffffff;
+    color: #1c1c1e;
+    border: 1px solid #c0c0c8;
+    border-radius: 4px;
+    padding: 4px 8px;
+    min-height: 26px;
+    selection-background-color: #2b5797;
+}
+QComboBox:focus {
+    border: 2px solid #2b5797;
+}
+QComboBox:hover {
+    border-color: #9098b0;
+}
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 22px;
+    border-left: 1px solid #c0c0c8;
+    border-radius: 0 4px 4px 0;
+    background: #e8e8f0;
+}
+QComboBox::down-arrow {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #555566;
+    width: 0; height: 0;
+}
+QComboBox QAbstractItemView {
+    background: #ffffff;
+    color: #1c1c1e;
+    border: 1px solid #b8b8c8;
+    selection-background-color: #2b5797;
+    selection-color: #ffffff;
+    outline: none;
+    padding: 2px;
 }
 
 /* ---- plain-text editors ---- */
@@ -438,7 +667,10 @@ QPlainTextEdit {
     selection-background-color: #b5d5ff;
     selection-color: #000000;
     font-family: "Consolas", "Cascadia Code", monospace;
-    font-size: 9.5pt;
+    font-size: 10pt;
+}
+QPlainTextEdit:focus {
+    border: 2px solid #2b5797;
 }
 
 /* ---- tables ---- */
@@ -453,7 +685,7 @@ QHeaderView::section {
     background: #e4e4e8;
     color: #333333;
     border: 1px solid #c0c0c8;
-    padding: 4px;
+    padding: 5px 6px;
     font-weight: 600;
 }
 
@@ -461,38 +693,57 @@ QHeaderView::section {
 QScrollBar:vertical {
     background: #f0f0f4;
     width: 10px;
+    margin: 0;
 }
 QScrollBar::handle:vertical {
     background: #c0c0c8;
     border-radius: 5px;
-    min-height: 20px;
+    min-height: 24px;
 }
 QScrollBar::handle:vertical:hover {
     background: #a0a0a8;
 }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0;
+    background: none;
+    border: none;
+}
 QScrollBar:horizontal {
     background: #f0f0f4;
     height: 10px;
+    margin: 0;
 }
 QScrollBar::handle:horizontal {
     background: #c0c0c8;
     border-radius: 5px;
+    min-width: 24px;
+}
+QScrollBar::handle:horizontal:hover {
+    background: #a0a0a8;
+}
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0;
+    background: none;
+    border: none;
 }
 
 /* ---- check boxes ---- */
 QCheckBox {
     color: #1c1c1e;
-    spacing: 6px;
+    spacing: 8px;
 }
 QCheckBox::indicator {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
     border: 1px solid #a0a0a8;
     border-radius: 3px;
     background: #ffffff;
 }
 QCheckBox::indicator:checked {
     background: #2b5797;
+}
+QCheckBox::indicator:focus {
+    border: 2px solid #2b5797;
 }
 
 /* ---- status labels ---- */
@@ -506,10 +757,13 @@ QSplitter::handle {
     background: #c0c0c8;
 }
 QSplitter::handle:horizontal {
-    width: 3px;
+    width: 4px;
 }
 QSplitter::handle:vertical {
-    height: 3px;
+    height: 4px;
+}
+QSplitter::handle:hover {
+    background: #9098b0;
 }
 """
 
@@ -525,10 +779,12 @@ class LLMConfigDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("⚙️ LLM Configuration Settings")
         self.setMinimumWidth(520)
+        self.setMinimumHeight(220)
+        self.setSizeGripEnabled(True)
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 12, 12, 12)
-        layout.setSpacing(10)
+        layout.setContentsMargins(16, 16, 16, 16)
+        layout.setSpacing(12)
 
         layout.addWidget(config_panel)
 
@@ -536,7 +792,7 @@ class LLMConfigDialog(QDialog):
         btn_box.addStretch(1)
         ok_btn = QPushButton("Save / OK")
         ok_btn.setObjectName("action_btn")
-        ok_btn.setFixedHeight(28)
+        ok_btn.setMinimumHeight(32)
         ok_btn.clicked.connect(self.accept)
         btn_box.addWidget(ok_btn)
         layout.addLayout(btn_box)
@@ -552,40 +808,44 @@ class MainWindow(QMainWindow):
         self._loading_callback = loading_callback
         self.setWindowTitle(f"{APP_TITLE}  v{APP_VERSION}")
         self.setWindowIcon(QApplication.instance().windowIcon())
-        self.resize(1300, 750)
-        self.setMinimumSize(900, 500)
+        self.resize(1300, 780)
+        self.setMinimumSize(1024, 620)
 
         # ---------- central widget ----------
         central = QWidget()
         root_layout = QVBoxLayout(central)
-        root_layout.setContentsMargins(8, 8, 8, 8)
+        root_layout.setContentsMargins(8, 6, 8, 6)
         root_layout.setSpacing(6)
 
         # ---------- header ----------
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(4, 2, 4, 2)
+        header_layout.setSpacing(8)
 
         self.header_label = QLabel(f"<b>{APP_TITLE}</b>  <small>v{APP_VERSION}</small>")
         self.header_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
+        from PySide6.QtWidgets import QSizePolicy
+        self.header_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
         self.settings_btn = QPushButton("⚙️ LLM Settings")
-        self.settings_btn.setFixedHeight(28)
+        self.settings_btn.setMinimumHeight(30)
         self.settings_btn.setCursor(Qt.PointingHandCursor)
         self.settings_btn.clicked.connect(self._open_settings_dialog)
 
         self.theme_btn = QPushButton()
-        self.theme_btn.setFixedHeight(28)
+        self.theme_btn.setMinimumHeight(30)
         self.theme_btn.setCursor(Qt.PointingHandCursor)
         self.theme_btn.clicked.connect(self._toggle_theme)
 
         self._auto_reload_enabled = False
         self.reload_btn = QPushButton("⏸️ Auto-Reload Off")
-        self.reload_btn.setFixedHeight(28)
+        self.reload_btn.setObjectName("reload_btn_off")
+        self.reload_btn.setMinimumHeight(30)
         self.reload_btn.setCheckable(True)
         self.reload_btn.setChecked(False)
         self.reload_btn.setCursor(Qt.PointingHandCursor)
         self.reload_btn.setToolTip("Click to toggle automatic UI/code reloading on file changes (disabled by default to prevent constant UI refreshes).")
-        self.reload_btn.setStyleSheet("background: #4a4a6a; color: #ffffff; font-weight: bold; border-radius: 4px;")
         self.reload_btn.toggled.connect(self._toggle_auto_reload)
 
         header_layout.addWidget(self.header_label, stretch=1)
@@ -786,6 +1046,10 @@ class MainWindow(QMainWindow):
         # Refresh tab label text colors for the active theme
         self._reset_agent_statuses()
 
+        # Propagate theme to MD3 Orchestrator tab so its per-widget QSS switches
+        if hasattr(self, "orchestrator_tab") and hasattr(self.orchestrator_tab, "apply_theme"):
+            self.orchestrator_tab.apply_theme(theme_name)
+
     def _toggle_theme(self) -> None:
         new_theme = "light" if getattr(self, "current_theme", "dark") == "dark" else "dark"
         self._apply_theme(new_theme)
@@ -813,11 +1077,16 @@ class MainWindow(QMainWindow):
         self._auto_reload_enabled = checked
         if checked:
             self.reload_btn.setText("⚡ Auto-Reload Active")
-            self.reload_btn.setStyleSheet("background: #1b5e20; color: #ffffff; font-weight: bold; border-radius: 4px;")
+            self.reload_btn.setObjectName("reload_btn_active")
+            # Force stylesheet to re-evaluate with the new object name
+            self.reload_btn.style().unpolish(self.reload_btn)
+            self.reload_btn.style().polish(self.reload_btn)
             self.statusBar().showMessage("Auto-reload enabled: file changes will update UI.", 3000)
         else:
             self.reload_btn.setText("⏸️ Auto-Reload Off")
-            self.reload_btn.setStyleSheet("background: #4a4a6a; color: #ffffff; font-weight: bold; border-radius: 4px;")
+            self.reload_btn.setObjectName("reload_btn_off")
+            self.reload_btn.style().unpolish(self.reload_btn)
+            self.reload_btn.style().polish(self.reload_btn)
             self.statusBar().showMessage("Auto-reload disabled: UI will not auto-refresh on file changes.", 3000)
 
     def _setup_code_watcher(self) -> None:
@@ -1073,6 +1342,9 @@ class MainWindow(QMainWindow):
         """Reset agent tabs to neutral and turn Orchestrator tab amber when run starts."""
         self._reset_agent_statuses()
         self._set_tab_state("orchestrator", "⏳", self._RUNNING_COLOR, "⏳ Running full pipeline…")
+        # Reset MD3 phase chips inside the orchestrator tab
+        if hasattr(self.orchestrator_tab, "reset_chips"):
+            self.orchestrator_tab.reset_chips()
 
     def _reset_agent_statuses(self) -> None:
         """Restore all tabs to neutral when a new pipeline run starts or is stopped."""
@@ -1098,6 +1370,8 @@ class MainWindow(QMainWindow):
         for key in ("agent1", "agent2", "agent3", "agent4"):
             if key == agent_key:
                 self._set_tab_state(key, "⏳", self._RUNNING_COLOR, "⏳ Running (via Orchestrator)…")
+                if hasattr(self.orchestrator_tab, "_set_chip"):
+                    self.orchestrator_tab._set_chip(key, "running")
             else:
                 # Only remove the amber indicator — don't touch green (done) tabs
                 idx = self._agent_tab_index[key]
@@ -1110,6 +1384,8 @@ class MainWindow(QMainWindow):
     def _on_phase_complete(self, agent_key: str) -> None:
         """Turn the completed agent's tab green and sync its output widgets."""
         self._set_tab_state(agent_key, "\u2705", self._DONE_COLOR, "\u2705 Completed by Orchestrator")
+        if hasattr(self.orchestrator_tab, "_set_chip"):
+            self.orchestrator_tab._set_chip(agent_key, "done")
         self._sync_phase_outputs(agent_key)
 
     # ------------------------------------------------------------------

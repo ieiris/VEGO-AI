@@ -2369,7 +2369,7 @@ class Agent3Tab(QWidget):
         
         n_sat = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
         n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Partially-Satisfied", "Partial"))
-        n_not = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
+        n_not = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED", "UNMAPPED", "NOT-SATISFIED", "NOT_SATISFIED", "Not Satisfied"))
         total_g = len(self.compliance_data)
         pts = n_sat * self.sat_weight + n_part * self.part_weight + n_not * self.not_weight
         max_pts = total_g * self.sat_weight if total_g > 0 else 1.0
@@ -2553,7 +2553,7 @@ class Agent3Tab(QWidget):
 
         n_sat  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
         n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Partially-Satisfied", "Partial"))
-        n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
+        n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED", "UNMAPPED", "NOT-SATISFIED", "NOT_SATISFIED", "Not Satisfied"))
         total_g = len(self.compliance_data)
 
         pts = n_sat * self.sat_weight + n_part * self.part_weight + n_not * self.not_weight
@@ -2696,7 +2696,7 @@ class Agent3Tab(QWidget):
             # Clicking the summary row shows full breakdown
             n_sat  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Satisfied", "MAPPED"))
             n_part = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Partially-Satisfied", "Partial"))
-            n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED"))
+            n_not  = sum(1 for g in self.compliance_data if g.get("compliance_status") in ("Not-Satisfied", "UNOPERATIONALIZED", "UNMAPPED", "NOT-SATISFIED", "NOT_SATISFIED", "Not Satisfied"))
             deduction_val = float(self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0)
             adjustment = float(
                 self.current_raw_data.get(
@@ -2886,6 +2886,13 @@ class Agent3Tab(QWidget):
         self.current_raw_data["manual_adjustment"] = round(adjustment, 1)
         self.current_raw_data["score_deduction"] = round(-adjustment, 1)
         self.current_raw_data["manual_deduction"] = round(-adjustment, 1)
+        self.current_raw_data["total_score"] = round(actual, 2)
+        self.current_raw_data["max_score"] = round(total_possible, 2)
+        self.current_raw_data["coverage_summary"] = {
+            "satisfied": sat_c,
+            "partially_satisfied": part_c,
+            "not_satisfied": not_c,
+        }
 
         if adjustment > 0:
             adj_msg = f" (Factor: +{adjustment:g}%)"
@@ -2896,6 +2903,7 @@ class Agent3Tab(QWidget):
         self.status_label.setText(
             f"Recalculated Score: {final_pct:.1f}%{adj_msg} | Satisfied: {sat_c}, Partially: {part_c}, Not-Satisfied: {not_c}"
         )
+        self._update_summary_bar()
 
     def _hitl_change_status(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()
@@ -2923,8 +2931,18 @@ class Agent3Tab(QWidget):
             for entry in self.current_raw_data.get("existing_mapping", []):
                 if entry.get("guideline_id") == gid:
                     entry["compliance_status"] = new_st
+                    entry["label"] = new_st
+            for entry in self.current_raw_data.get("potential_found", []):
+                if isinstance(entry, dict) and entry.get("guideline_id") == gid:
+                    entry["compliance_status"] = new_st
+                    entry["label"] = new_st
             self._recalculate_score()
             self._populate_tree_table()
+            if self._annotate_active:
+                raw_m = self.model_text_edit.toPlainText().strip()
+                if raw_m:
+                    render_text = self._build_annotated_puml(raw_m)
+                    self._render_diagram(render_text)
             log_action("Agent3", "change_status", f"guideline={gid} | old_status={curr} | new_status={new_st}")
             self._save_hitl_changes()  # auto-save
 
@@ -3045,6 +3063,7 @@ class Agent3Tab(QWidget):
             for entry in mapping:
                 if entry.get("guideline_id") == target_gid:
                     entry["compliance_status"] = "Satisfied"
+                    entry["label"] = "Satisfied"
                     entry["evidence"] = desc
                     if m_elems:
                         entry["matched_elements"] = m_elems
@@ -3054,15 +3073,50 @@ class Agent3Tab(QWidget):
                 mapping.append({
                     "guideline_id": target_gid,
                     "compliance_status": "Satisfied",
+                    "label": "Satisfied",
                     "evidence": desc,
                     "matched_elements": m_elems,
                     "notes": "Mapped by Human Reviewer",
                 })
+            m_elems_str = ", ".join(str(x) for x in m_elems) if isinstance(m_elems, list) else str(m_elems or "")
+            target_found_in_comp = False
+            for g in self.compliance_data:
+                if g.get("guideline_id") == target_gid:
+                    g["compliance_status"] = "Satisfied"
+                    g["label"] = "Satisfied"
+                    g["evidence"] = desc
+                    if m_elems_str:
+                        g["matched_elements"] = m_elems_str
+                    target_found_in_comp = True
+                    break
+            if not target_found_in_comp:
+                self.compliance_data.append({
+                    "guideline_id": target_gid,
+                    "label": "Satisfied",
+                    "compliance_status": "Satisfied",
+                    "matched_elements": m_elems_str,
+                    "reference_guideline": f"Guideline {target_gid}",
+                    "evidence": desc,
+                    "notes": "Mapped by Human Reviewer",
+                })
+            for entry in self.current_raw_data.get("potential_found", []):
+                if isinstance(entry, dict) and entry.get("guideline_id") == target_gid:
+                    entry["compliance_status"] = "Satisfied"
+                    entry["label"] = "Satisfied"
+                    entry["evidence"] = desc
+                    if m_elems:
+                        entry["matched_elements"] = m_elems
             self.uncovered_data.pop(idx)
             self.current_raw_data["uncovered_fragments"] = self.uncovered_data
             self._recalculate_score()
             self._populate_tree_table()
+            if self._annotate_active:
+                raw_m = self.model_text_edit.toPlainText().strip()
+                if raw_m:
+                    render_text = self._build_annotated_puml(raw_m)
+                    self._render_diagram(render_text)
             log_action("Agent3", "map_fragment", f"guideline={target_gid}, fragment={desc[:60]}")
+            self._save_hitl_changes()
 
     def _hitl_unmap_fragment(self) -> None:
         rows = self.tree_table.selectionModel().selectedRows()
@@ -3083,26 +3137,39 @@ class Agent3Tab(QWidget):
 
         reply = QMessageBox.question(
             self, "Unmap Fragment", f"Unmap evidence from {gid} and return it to uncovered fragments?",
-            QMessageBox.Yes | QMessageBox.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
-        if reply == QMessageBox.Yes:
-            g["compliance_status"] = "Not-Satisfied"
-            g["evidence"] = ""
-            for entry in self.current_raw_data.get("existing_mapping", []):
-                if entry.get("guideline_id") == gid:
-                    entry["compliance_status"] = "Not-Satisfied"
-                    entry["evidence"] = ""
-            if ev:
-                uf_list = self.current_raw_data.setdefault("uncovered_fragments", [])
-                uf_list.append({
-                    "fragment_id": f"UF_unmapped_{len(uf_list)+1}",
-                    "label": "Alternative",
-                    "fragment_description": ev,
-                })
-                self.uncovered_data = uf_list
+        if reply == QMessageBox.StandardButton.Yes:
+            # Remove from compliance_data so it disappears from the guidelines table
+            self.compliance_data.pop(idx)
+            
+            # Remove from underlying data lists
+            for lst_name in ["existing_mapping", "potential_found"]:
+                lst = self.current_raw_data.get(lst_name, [])
+                if lst:
+                    self.current_raw_data[lst_name] = [
+                        entry for entry in lst 
+                        if not (isinstance(entry, dict) and entry.get("guideline_id") == gid)
+                    ]
+            
+            desc = ev if ev else f"Unmapped fragment from {gid}"
+            uf_list = self.current_raw_data.setdefault("uncovered_fragments", [])
+            uf_list.append({
+                "fragment_id": f"UF_unmapped_{len(uf_list)+1}",
+                "label": "Alternative",
+                "fragment_description": desc,
+            })
+            self.uncovered_data = uf_list
+            
             self._recalculate_score()
             self._populate_tree_table()
+            if self._annotate_active:
+                raw_m = self.model_text_edit.toPlainText().strip()
+                if raw_m:
+                    render_text = self._build_annotated_puml(raw_m)
+                    self._render_diagram(render_text)
             log_action("Agent3", "unmap_fragment", f"guideline={gid}")
+            self._save_hitl_changes()
 
     def _save_hitl_changes(self) -> None:
         out_dir = self.output_dir_edit.text().strip()

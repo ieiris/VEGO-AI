@@ -968,6 +968,9 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             if target in guidelines:
                 guidelines.remove(target)
             self.refresh_all()
+            # A full deletion must propagate to the shared pipeline state and
+            # reference_guidelines.json, otherwise Agent 3 receives stale data.
+            self.guidelines_updated.emit(self._data)
             log_action("Agent2", "delete_guideline", f"id={gid}")
 
     def _get_segments_list(self) -> list:

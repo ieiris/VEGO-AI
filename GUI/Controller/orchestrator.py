@@ -35,6 +35,36 @@ logger = logging.getLogger(__name__)
 MAX_QA_ROUNDS = 10
 
 
+def _guidelines_for_agent3(reference_guidelines: dict | str | list | None):
+    """Return the guideline payload Agent 3 is allowed to evaluate.
+
+    Agent 2 retains unoperationalized items so users can move them back to
+    Domain Segments.  They are not active reference guidelines, however, and
+    must not be evaluated by Agent 3.
+    """
+    if not isinstance(reference_guidelines, dict):
+        return reference_guidelines or {}
+
+    guidelines = reference_guidelines.get("reference_guidelines")
+    if not isinstance(guidelines, list):
+        return reference_guidelines
+
+    active_guidelines = []
+    for guideline in guidelines:
+        if not isinstance(guideline, dict):
+            continue
+        if guideline.get("is_operationalized") is False:
+            continue
+        status = str(guideline.get("status", "")).upper()
+        if status in {"UNMAPPED", "UNOPERATIONALIZED"}:
+            continue
+        active_guidelines.append(guideline)
+
+    payload = dict(reference_guidelines)
+    payload["reference_guidelines"] = active_guidelines
+    return payload
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Phase 1 — Language Advisor: build language template
 # ══════════════════════════════════════════════════════════════════════════════
@@ -193,12 +223,13 @@ async def _phase3_one_case(
     client: LLMClient,
     state_path: Path,
     sem: asyncio.Semaphore,
+    force_rerun: bool = False,
 ) -> None:
     case_id: str = case["case_id"]
     case_model: str = case["case_model"]
 
     async with sem:
-        if case_id in state.compliance_vectors and case_id in state.uncovered_fragments:
+        if not force_rerun and case_id in state.compliance_vectors and case_id in state.uncovered_fragments:
             logger.info("Case %s already evaluated — skipping.", case_id)
             return
 
@@ -206,8 +237,10 @@ async def _phase3_one_case(
         agg_file = out_dir / "aggregate" / f"{case_id}.json"
         cv_file = out_dir / "compliance_vectors.json"
 
-        # If aggregate vector already exists on disk, do not run the agent method again
-        if agg_file.exists():
+        # Existing result files are useful cache only when the user did not
+        # request a re-run.  A changed/deleted guideline must trigger a fresh
+        # evaluation instead of displaying an old aggregate vector.
+        if not force_rerun and agg_file.exists():
             try:
                 agg_data = json.loads(agg_file.read_text(encoding="utf-8"))
                 state.compliance_vectors[case_id] = agg_data
@@ -219,7 +252,7 @@ async def _phase3_one_case(
             except Exception:
                 pass
 
-        if cv_file.exists() and case_id not in state.compliance_vectors:
+        if not force_rerun and cv_file.exists() and case_id not in state.compliance_vectors:
             try:
                 cv_map = json.loads(cv_file.read_text(encoding="utf-8"))
                 if case_id in cv_map:
@@ -238,11 +271,12 @@ async def _phase3_one_case(
         logger.info("  Case %s — skill 3-1: map_guidelines_to_model", case_id)
         agent1_caps = (state.language_template or {}).get("agent1_capabilities", [])
         agent2_caps: list = []
+        active_guidelines = _guidelines_for_agent3(state.reference_guidelines)
 
         # ── Skill 3-1: direct mapping ────────────────────────────────────────
         prompt31 = a3.map_guidelines_to_model_prompt(
             case_model=case_model,
-            reference_guidelines=state.reference_guidelines or {},
+            reference_guidelines=active_guidelines,
             case_id=case_id,
         )
         cv = await client.call(prompt31, label=f"agent3/{case_id}/map")
@@ -254,7 +288,7 @@ async def _phase3_one_case(
             logger.info("  Case %s — skill 3-2 round %d: resolve_unsatisfied", case_id, round_n)
             prompt32 = a3.resolve_unsatisfied_guidelines_prompt(
                 case_model=case_model,
-                reference_guidelines=state.reference_guidelines or {},
+                reference_guidelines=active_guidelines,
                 compliance_vector=cv,
                 agent1_capabilities=agent1_caps,
                 agent2_capabilities=agent2_caps,
@@ -289,7 +323,7 @@ async def _phase3_one_case(
             logger.info("  Case %s — skill 3-3 round %d: audit_uncovered", case_id, round_n)
             prompt33 = a3.audit_uncovered_fragments_prompt(
                 case_model=case_model,
-                reference_guidelines=state.reference_guidelines or {},
+                reference_guidelines=active_guidelines,
                 compliance_vector=cv,
                 agent1_capabilities=agent1_caps,
                 agent2_capabilities=agent2_caps,
@@ -373,13 +407,14 @@ async def phase3_evaluate_cases(
 
     cases: list[dict] = cfg["case_models"]
     max_concurrent: int = cfg.get("max_concurrent_cases", 1)
+    force_rerun = bool(cfg.get("force_rerun"))
     sem = asyncio.Semaphore(max_concurrent)
 
     logger.info("=== Phase 3: Evaluating %d case model(s) (concurrency=%d) ===",
                 len(cases), max_concurrent)
 
     tasks = [
-        _phase3_one_case(case, state, registry, client, state_path, sem)
+        _phase3_one_case(case, state, registry, client, state_path, sem, force_rerun)
         for case in cases
     ]
     await asyncio.gather(*tasks)

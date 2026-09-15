@@ -21,7 +21,7 @@ for _p in (_CONTROLLER_DIR, _MODEL_DIR):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 
-from PySide6.QtCore import QThread, Signal
+from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -127,23 +127,22 @@ class LabeledTextBox(QGroupBox):
     def __init__(self, title: str, with_load_button: bool = True, parent=None):
         super().__init__(title, parent)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(6, 4, 6, 4)
-        layout.setSpacing(2)
+        layout.setContentsMargins(8, 6, 8, 6)
+        layout.setSpacing(4)
 
         if with_load_button:
             toolbar = QHBoxLayout()
             toolbar.setContentsMargins(0, 0, 0, 0)
             toolbar.addStretch(1)
             load_btn = QPushButton("📁 Load file…")
-            load_btn.setMinimumHeight(24)
-            load_btn.setFixedHeight(24)
+            load_btn.setMinimumHeight(28)
             load_btn.setObjectName("action_btn")
             load_btn.clicked.connect(self._load_file)
             toolbar.addWidget(load_btn)
             layout.addLayout(toolbar)
 
         self.editor = QPlainTextEdit()
-        self.editor.setMinimumHeight(40)
+        self.editor.setMinimumHeight(80)
         layout.addWidget(self.editor)
 
     def _load_file(self) -> None:
@@ -193,20 +192,19 @@ class OutputPane(QGroupBox):
     def __init__(self, title: str, parent=None):
         super().__init__(title, parent)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(6, 4, 6, 4)
-        layout.setSpacing(2)
+        layout.setContentsMargins(8, 6, 8, 6)
+        layout.setSpacing(4)
 
         toolbar = QHBoxLayout()
         toolbar.setContentsMargins(0, 0, 0, 0)
+        toolbar.setSpacing(6)
         toolbar.addStretch(1)
         copy_btn = QPushButton("📋 Copy")
         save_btn = QPushButton("💾 Save…")
-        copy_btn.setMinimumHeight(24)
-        copy_btn.setFixedHeight(24)
+        copy_btn.setMinimumHeight(28)
         copy_btn.setObjectName("action_btn")
 
-        save_btn.setMinimumHeight(24)
-        save_btn.setFixedHeight(24)
+        save_btn.setMinimumHeight(28)
         save_btn.setObjectName("action_btn")
 
         copy_btn.clicked.connect(self._copy)
@@ -216,7 +214,7 @@ class OutputPane(QGroupBox):
         layout.addLayout(toolbar)
 
         self.editor = QPlainTextEdit()
-        self.editor.setMinimumHeight(40)
+        self.editor.setMinimumHeight(80)
         self.editor.setReadOnly(True)
         layout.addWidget(self.editor)
 
@@ -243,9 +241,15 @@ class ConfigPanel(QGroupBox):
 
     def __init__(self, parent=None):
         super().__init__("LLM Configuration", parent)
+        self.setMinimumWidth(400)
         cfg = load_run_config()
 
+        from PySide6.QtWidgets import QFormLayout
         layout = QFormLayout(self)
+        layout.setContentsMargins(12, 8, 12, 12)
+        layout.setSpacing(8)
+        layout.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        layout.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
 
         self.api_key_input = QLineEdit(cfg.get("api_key") or "")
         self.api_key_input.setEchoMode(QLineEdit.Password)
