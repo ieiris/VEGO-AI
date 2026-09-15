@@ -2266,12 +2266,12 @@ class Agent3Tab(QWidget):
         # Guidelines
         for idx, g in enumerate(self.compliance_data):
             self.tree_table.insertRow(row)
-            gid = g.get("guideline_id", "")
-            status = g.get("label", g.get("compliance_status", ""))
-            matched = g.get("matched_elements", "")
-            ref_gl = g.get("reference_guideline", "")
-            ev = g.get("evidence", "")
-            notes = g.get("notes", "")
+            gid = str(g.get("guideline_id") or "")
+            status = str(g.get("label") or g.get("compliance_status") or "")
+            matched = str(g.get("matched_elements") or "")
+            ref_gl = str(g.get("reference_guideline") or "")
+            ev = str(g.get("evidence") or "")
+            notes = str(g.get("notes") or "")
 
             item_id = QTableWidgetItem(gid)
             item_status = QTableWidgetItem(status)
@@ -2319,8 +2319,8 @@ class Agent3Tab(QWidget):
 
             for idx, uf in enumerate(self.uncovered_data):
                 self.tree_table.insertRow(row)
-                lbl = uf.get("label", "Alternative")
-                snip = uf.get("fragment", uf.get("fragment_description", uf.get("description", "")))
+                lbl = str(uf.get("label") or "Alternative")
+                snip = str(uf.get("fragment") or uf.get("fragment_description") or uf.get("description") or "")
                 matched_raw = (
                     uf.get("matched_elements")
                     or uf.get("matched_classes")
@@ -2334,6 +2334,9 @@ class Agent3Tab(QWidget):
                     matched_str = ", ".join(str(x) for x in matched_raw if x)
                 else:
                     matched_str = str(matched_raw) if matched_raw else ""
+
+                ref_gl = str(uf.get("reference_guideline") or "")
+                notes = str(uf.get("notes") or "")
 
                 item_id = QTableWidgetItem("Frag")
                 item_lbl = QTableWidgetItem(lbl)
@@ -2351,12 +2354,15 @@ class Agent3Tab(QWidget):
                 if snip:
                     item_snip.setToolTip(snip)
 
+                item_ref = QTableWidgetItem(ref_gl)
+                item_notes = QTableWidgetItem(notes)
+
                 self.tree_table.setItem(row, 0, item_id)
                 self.tree_table.setItem(row, 1, item_lbl)
                 self.tree_table.setItem(row, 2, item_matched)
-                self.tree_table.setItem(row, 3, QTableWidgetItem(""))
+                self.tree_table.setItem(row, 3, item_ref)
                 self.tree_table.setItem(row, 4, item_snip)
-                self.tree_table.setItem(row, 5, QTableWidgetItem(""))
+                self.tree_table.setItem(row, 5, item_notes)
 
                 item_id.setData(Qt.UserRole, ("u", idx))
                 row += 1
@@ -3067,6 +3073,10 @@ class Agent3Tab(QWidget):
                     entry["evidence"] = desc
                     if m_elems:
                         entry["matched_elements"] = m_elems
+                    if "notes" in uf:
+                        entry["notes"] = uf["notes"]
+                    if "reference_guideline" in uf:
+                        entry["reference_guideline"] = uf["reference_guideline"]
                     matched = True
                     break
             if not matched:
@@ -3076,7 +3086,8 @@ class Agent3Tab(QWidget):
                     "label": "Satisfied",
                     "evidence": desc,
                     "matched_elements": m_elems,
-                    "notes": "Mapped by Human Reviewer",
+                    "notes": uf.get("notes", "Mapped by Human Reviewer"),
+                    "reference_guideline": uf.get("reference_guideline", f"Guideline {target_gid}"),
                 })
             m_elems_str = ", ".join(str(x) for x in m_elems) if isinstance(m_elems, list) else str(m_elems or "")
             target_found_in_comp = False
@@ -3087,6 +3098,10 @@ class Agent3Tab(QWidget):
                     g["evidence"] = desc
                     if m_elems_str:
                         g["matched_elements"] = m_elems_str
+                    if "notes" in uf:
+                        g["notes"] = uf["notes"]
+                    if "reference_guideline" in uf:
+                        g["reference_guideline"] = uf["reference_guideline"]
                     target_found_in_comp = True
                     break
             if not target_found_in_comp:
@@ -3095,9 +3110,9 @@ class Agent3Tab(QWidget):
                     "label": "Satisfied",
                     "compliance_status": "Satisfied",
                     "matched_elements": m_elems_str,
-                    "reference_guideline": f"Guideline {target_gid}",
+                    "reference_guideline": uf.get("reference_guideline", f"Guideline {target_gid}"),
                     "evidence": desc,
-                    "notes": "Mapped by Human Reviewer",
+                    "notes": uf.get("notes", "Mapped by Human Reviewer"),
                 })
             for entry in self.current_raw_data.get("potential_found", []):
                 if isinstance(entry, dict) and entry.get("guideline_id") == target_gid:
@@ -3106,6 +3121,19 @@ class Agent3Tab(QWidget):
                     entry["evidence"] = desc
                     if m_elems:
                         entry["matched_elements"] = m_elems
+                    if "notes" in uf:
+                        entry["notes"] = uf["notes"]
+                    if "reference_guideline" in uf:
+                        entry["reference_guideline"] = uf["reference_guideline"]
+            
+            def _sort_key(item):
+                gid = item.get("guideline_id", "") if isinstance(item, dict) else ""
+                m = re.search(r'\d+', gid)
+                return (0, int(m.group()), gid) if m else (1, 0, gid)
+                
+            mapping.sort(key=_sort_key)
+            self.compliance_data.sort(key=_sort_key)
+
             self.uncovered_data.pop(idx)
             self.current_raw_data["uncovered_fragments"] = self.uncovered_data
             self._recalculate_score()
@@ -3134,6 +3162,9 @@ class Agent3Tab(QWidget):
         g = self.compliance_data[idx]
         gid = g.get("guideline_id", "")
         ev = g.get("evidence", "")
+        matched_elems = g.get("matched_elements", "")
+        ref_gl = g.get("reference_guideline", "")
+        notes = g.get("notes", "")
 
         reply = QMessageBox.question(
             self, "Unmap Fragment", f"Unmap evidence from {gid} and return it to uncovered fragments?",
@@ -3158,6 +3189,9 @@ class Agent3Tab(QWidget):
                 "fragment_id": f"UF_unmapped_{len(uf_list)+1}",
                 "label": "Alternative",
                 "fragment_description": desc,
+                "matched_elements": matched_elems,
+                "reference_guideline": ref_gl,
+                "notes": notes,
             })
             self.uncovered_data = uf_list
             
