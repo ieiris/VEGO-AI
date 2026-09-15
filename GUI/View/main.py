@@ -1130,6 +1130,11 @@ class MainWindow(QMainWindow):
         self.orchestrator_tab.output_dir.textChanged.connect(self._on_orchestrator_output_dir_changed)
         self.agent3_tab.output_dir_changed.connect(self._on_agent3_output_dir_changed)
 
+        # ── Bidirectional models-folder sync ──────────────────────────────
+        self._syncing_models_dir = False
+        self.orchestrator_tab.case_models_dir.textChanged.connect(self._on_orchestrator_models_dir_changed)
+        self.agent3_tab.models_dir_edit.textChanged.connect(self._on_agent3_models_dir_changed)
+
     def _on_orchestrator_output_dir_changed(self, new_path: str) -> None:
         """Propagate Orchestrator output-folder changes → Agent 3 tab."""
         if self._syncing_output_dir:
@@ -1157,6 +1162,33 @@ class MainWindow(QMainWindow):
                 set_log_output_dir(new_path.strip())
         finally:
             self._syncing_output_dir = False
+
+    def _on_orchestrator_models_dir_changed(self, new_path: str) -> None:
+        """Propagate Orchestrator models-folder changes → Agent 3 tab."""
+        if getattr(self, "_syncing_models_dir", False):
+            return
+        self._syncing_models_dir = True
+        try:
+            self.agent3_tab.models_dir_edit.blockSignals(True)
+            self.agent3_tab.models_dir_edit.setText(new_path)
+            self.agent3_tab.models_dir_edit.blockSignals(False)
+            # The agent3_tab needs its internal path variable updated too if it's set manually
+            if hasattr(self.agent3_tab, 'models_dir_path'):
+                self.agent3_tab.models_dir_path = new_path
+        finally:
+            self._syncing_models_dir = False
+
+    def _on_agent3_models_dir_changed(self, new_path: str) -> None:
+        """Propagate Agent 3 models-folder changes → Orchestrator tab."""
+        if getattr(self, "_syncing_models_dir", False):
+            return
+        self._syncing_models_dir = True
+        try:
+            self.orchestrator_tab.case_models_dir.blockSignals(True)
+            self.orchestrator_tab.case_models_dir.setText(new_path)
+            self.orchestrator_tab.case_models_dir.blockSignals(False)
+        finally:
+            self._syncing_models_dir = False
 
     def _watch_output_dir(self, *args) -> None:
         output_dir = self.orchestrator_tab.output_dir.text().strip() or "output/gui_run"
