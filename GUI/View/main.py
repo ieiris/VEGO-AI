@@ -1069,7 +1069,13 @@ class MainWindow(QMainWindow):
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
     def closeEvent(self, event) -> None:  # noqa: N802 (Qt override)
-        """Stop the background JSON-loading thread pool cleanly on exit."""
+        """Flush pending persistence jobs and stop background loaders on exit."""
+        editor = getattr(self.agent2_tab, "guidelines_editor", None)
+        timer = getattr(editor, "_update_timer", None) if editor is not None else None
+        if timer is not None and timer.isActive():
+            timer.stop()
+            self._on_human_guidelines_edited(editor._data)
+        self._state_persister.flush()
         self._json_loader.shutdown()
         super().closeEvent(event)
 

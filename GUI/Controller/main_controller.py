@@ -83,13 +83,20 @@ class StatePersister:
         self._lock = threading.Lock()
         self._pending: Dict[str, Callable[[], None]] = {}
         self._wake = threading.Event()
+        self._idle = threading.Event()
+        self._idle.set()
         self._thread = Thread(target=self._run, daemon=True)
         self._thread.start()
 
     def submit(self, key: str, job: Callable[[], None]) -> None:
         with self._lock:
             self._pending[key] = job
+            self._idle.clear()
         self._wake.set()
+
+    def flush(self, timeout: float = 2.0) -> None:
+        """Wait for any queued persistence jobs to finish (e.g., on app exit)."""
+        self._idle.wait(timeout=timeout)
 
     def _run(self) -> None:
         while True:
@@ -101,10 +108,11 @@ class StatePersister:
             for job in jobs:
                 try:
                     job()
-                except Exception:
-                    # Persistence is best-effort; a bad write must never
-                    # take down the background thread or the app.
-                    pass
+                except Exception as exc:
+                    log_action("StatePersister", "write_error", str(exc))
+            with self._lock:
+                if not self._pending:
+                    self._idle.set()
 
 
 class MainController:

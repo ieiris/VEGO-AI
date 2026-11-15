@@ -190,20 +190,21 @@ class RefGuidelineEditDialog(QDialog):
         g_seg = self.seg_edit.text().strip()
         g_cite = self.citation_edit.text().strip() or "Human"
         g_rat = self.rationale_edit.toPlainText().strip()
+        is_op = self.op_check.isChecked()
 
-        return {
+        data = {
             "id": self.gid_edit.text().strip(),
             "guideline_name": g_name,
-            "short_name": g_name,
             "matched_elements": m_elems,
             "description": g_desc,
             "related_template_id": g_seg,
-            "segment_id": g_seg,
-            "is_operationalized": self.op_check.isChecked(),
-            "rationale": g_rat,
+            "is_operationalized": is_op,
+            "status": "MAPPED" if is_op else "UNMAPPED",
             "citation": g_cite,
-            "source": g_cite,
         }
+        if g_rat:
+            data["rationale"] = g_rat
+        return data
 
 
 class GuidelinesSegmentsEditorWidget(QGroupBox):
@@ -739,6 +740,30 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         finally:
             self.gl_table.blockSignals(False)
 
+    def _get_guidelines_list(self) -> list:
+        """Return the mutable guidelines list in self._data (initializing if needed)."""
+        for key in ("reference_guidelines", "guidelines"):
+            val = self._data.get(key)
+            if isinstance(val, list):
+                return val
+            if isinstance(val, dict):
+                nested = val.get("reference_guidelines") or val.get("guidelines")
+                if isinstance(nested, list):
+                    return nested
+        self._data["reference_guidelines"] = []
+        return self._data["reference_guidelines"]
+
+    def _next_guideline_id(self, guidelines: list) -> str:
+        """Generate the next unused G<N> identifier."""
+        used = {
+            str(g.get("id") or g.get("guideline_id") or "").strip()
+            for g in guidelines if isinstance(g, dict)
+        }
+        num = len(guidelines) + 1
+        while f"G{num}" in used:
+            num += 1
+        return f"G{num}"
+
     def _on_gl_table_item_changed(self, item: QTableWidgetItem) -> None:
         if self.gl_table.signalsBlocked():
             return
@@ -746,14 +771,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         col = item.column()
         text = item.text().strip()
 
-        guidelines = (
-            self._data.get("reference_guidelines")
-            or self._data.get("guidelines")
-            or []
-        )
-        if not isinstance(guidelines, list):
-            return
-
+        guidelines = self._get_guidelines_list()
         op_guidelines = [g for g in guidelines if isinstance(g, dict) and _is_operationalized(g)]
         if row >= len(op_guidelines):
             return
@@ -764,7 +782,6 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             g["id"] = text
         elif col == 1:  # Segment Name
             g["guideline_name"] = text
-            g["short_name"] = text
         elif col == 2:  # Matched Elements
             elems = [x.strip() for x in text.split(",") if x.strip()] if text else []
             g["matched_elements"] = elems
@@ -774,7 +791,6 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             pass
         elif col == 5:  # Description
             g["description"] = text
-            g["guideline_description"] = text
         elif col == 6:  # Explanation
             g["rationale"] = text
             g["citation"] = text
@@ -906,12 +922,11 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         dlg = RefGuidelineEditDialog(parent=self)
         if dlg.exec() == QDialog.Accepted:
             data = dlg.get_data()
+            guidelines = self._get_guidelines_list()
             if not data["id"]:
-                next_num = len(self._data.get("reference_guidelines", [])) + 1
-                data["id"] = f"G{next_num}"
-            if "reference_guidelines" not in self._data or not isinstance(self._data["reference_guidelines"], list):
-                self._data["reference_guidelines"] = []
-            self._data["reference_guidelines"].append(data)
+                data["id"] = self._next_guideline_id(guidelines)
+            data.setdefault("mapping_certainty", 1.0)
+            guidelines.append(data)
             self.refresh_all()
             self.guidelines_updated.emit(self._data)
             log_action("Agent2", "add_guideline", f"id={data['id']}")
@@ -921,9 +936,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         if row < 0:
             QMessageBox.warning(self, "No selection", "Select a guideline row to edit.")
             return
-        guidelines = self._data.get("reference_guidelines", [])
-        if not isinstance(guidelines, list):
-            return
+        guidelines = self._get_guidelines_list()
         op_guidelines = [g for g in guidelines if isinstance(g, dict) and _is_operationalized(g)]
         if row >= len(op_guidelines):
             return
@@ -932,6 +945,8 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         if dlg.exec() == QDialog.Accepted:
             updated = dlg.get_data()
             target.update(updated)
+            if "rationale" in target and not updated.get("rationale"):
+                target.pop("rationale", None)
             self.refresh_all()
             self.guidelines_updated.emit(self._data)
             log_action("Agent2", "edit_guideline", f"id={updated.get('id', '')}")
@@ -941,30 +956,34 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         if row < 0:
             QMessageBox.warning(self, "No selection", "Select a guideline row.")
             return
-        guidelines = self._data.get("reference_guidelines", [])
-        if not isinstance(guidelines, list):
-            return
+        guidelines = self._get_guidelines_list()
         op_guidelines = [g for g in guidelines if isinstance(g, dict) and _is_operationalized(g)]
         if row >= len(op_guidelines):
             return
         target = op_guidelines[row]
         gid = target.get("id", f"Row {row+1}")
 
-        reply = QMessageBox.question(
-            self, "Unoperationalize / Delete",
-            f"Do you want to Unoperationalize guideline {gid} (set is_operationalized=False),\n"
-            f"or Delete it completely from the list?\n\n"
-            f"Yes = Unoperationalize (move to Domain Segments) | No = Delete completely | Cancel = Abort",
-            QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel
+        box = QMessageBox(self)
+        box.setWindowTitle("Unoperationalize / Delete Guideline")
+        box.setIcon(QMessageBox.Question)
+        box.setText(
+            f"What would you like to do with guideline {gid}?\n\n"
+            f"• Unoperationalize: keep it in reference_guidelines.json with status=UNMAPPED (moves to Domain Segments).\n"
+            f"• Delete Completely: remove it permanently from reference_guidelines.json."
         )
+        unop_btn = box.addButton("Unoperationalize", QMessageBox.ActionRole)
+        del_btn = box.addButton("Delete Completely", QMessageBox.DestructiveRole)
+        box.addButton("Cancel", QMessageBox.RejectRole)
+        box.exec()
 
-        if reply == QMessageBox.Yes:
+        clicked = box.clickedButton()
+        if clicked == unop_btn:
             target["is_operationalized"] = False
             target["status"] = "UNMAPPED"
             self.refresh_all()
             self.guidelines_updated.emit(self._data)
             log_action("Agent2", "unoperationalize_guideline", f"id={gid}")
-        elif reply == QMessageBox.No:
+        elif clicked == del_btn:
             if target in guidelines:
                 guidelines.remove(target)
             self.refresh_all()
@@ -1005,13 +1024,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         segments = self._get_segments_list()
         num_segments = len(segments)
 
-        guidelines = (
-            self._data.get("reference_guidelines")
-            or self._data.get("guidelines")
-            or []
-        )
-        if not isinstance(guidelines, list):
-            guidelines = []
+        guidelines = self._get_guidelines_list()
         non_op_guidelines = [g for g in guidelines if isinstance(g, dict) and not _is_operationalized(g)]
 
         if row < num_segments:
@@ -1031,6 +1044,8 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                 if dlg.exec() == QDialog.Accepted:
                     updated = dlg.get_data()
                     target.update(updated)
+                    if "rationale" in target and not updated.get("rationale"):
+                        target.pop("rationale", None)
                     self.refresh_all()
                     self.guidelines_updated.emit(self._data)
                     log_action("Agent2", "edit_unop_guideline", f"id={updated.get('id', '')}")
@@ -1044,13 +1059,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         segments = self._get_segments_list()
         num_segments = len(segments)
 
-        guidelines = (
-            self._data.get("reference_guidelines")
-            or self._data.get("guidelines")
-            or []
-        )
-        if not isinstance(guidelines, list):
-            guidelines = []
+        guidelines = self._get_guidelines_list()
         non_op_guidelines = [g for g in guidelines if isinstance(g, dict) and not _is_operationalized(g)]
 
         if row < num_segments:
@@ -1070,21 +1079,27 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             if unop_index < len(non_op_guidelines):
                 target = non_op_guidelines[unop_index]
                 gid = target.get("id", f"Unoperationalized {unop_index+1}")
-                reply = QMessageBox.question(
-                    self, "Operationalize / Delete Guideline",
+                box = QMessageBox(self)
+                box.setWindowTitle("Operationalize / Delete Guideline")
+                box.setIcon(QMessageBox.Question)
+                box.setText(
                     f"Guideline {gid} is currently unoperationalized.\n\n"
-                    f"Do you want to Operationalize it (set is_operationalized=True, moving it to template segment),\n"
-                    f"or Delete it completely from the system?\n\n"
-                    f"Yes = Operationalize | No = Delete completely | Cancel = Abort",
-                    QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel
+                    f"• Operationalize: set status=MAPPED and move it to the Template Segments table.\n"
+                    f"• Delete Completely: remove it permanently from reference_guidelines.json."
                 )
-                if reply == QMessageBox.Yes:
+                op_btn = box.addButton("Operationalize", QMessageBox.ActionRole)
+                del_btn = box.addButton("Delete Completely", QMessageBox.DestructiveRole)
+                box.addButton("Cancel", QMessageBox.RejectRole)
+                box.exec()
+
+                clicked = box.clickedButton()
+                if clicked == op_btn:
                     target["is_operationalized"] = True
                     target["status"] = "MAPPED"
                     self.refresh_all()
                     self.guidelines_updated.emit(self._data)
                     log_action("Agent2", "operationalize_guideline", f"id={gid}")
-                elif reply == QMessageBox.No:
+                elif clicked == del_btn:
                     if target in guidelines:
                         guidelines.remove(target)
                     self.refresh_all()
