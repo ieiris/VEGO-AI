@@ -145,6 +145,9 @@ class RefGuidelineEditDialog(QDialog):
         self.citation_edit = QLineEdit()
         self.citation_edit.setPlaceholderText("Citation / Source (e.g. ISO 24765 Sec 3.2 / Human)")
 
+        self.grader_notes_edit = QPlainTextEdit()
+        self.grader_notes_edit.setPlaceholderText("Notes for the exercise grader / examiner")
+
         if guideline:
             self.gid_edit.setText(str(guideline.get("id", "")))
             g_name = guideline.get("guideline_name") or guideline.get("short_name") or guideline.get("name") or ""
@@ -167,6 +170,8 @@ class RefGuidelineEditDialog(QDialog):
             self.rationale_edit.setPlainText(str(g_rat))
             g_cite = guideline.get("citation") or guideline.get("source") or guideline.get("reference") or "Human"
             self.citation_edit.setText(str(g_cite))
+            g_grader = guideline.get("grader_notes") or ""
+            self.grader_notes_edit.setPlainText(str(g_grader))
 
         form.addRow("Guideline ID:", self.gid_edit)
         form.addRow("Guideline Name:", self.name_edit)
@@ -176,6 +181,7 @@ class RefGuidelineEditDialog(QDialog):
         form.addRow("Operationalized:", self.op_check)
         form.addRow("Rationale:", self.rationale_edit)
         form.addRow("Citation / Source:", self.citation_edit)
+        form.addRow("Grader Notes:", self.grader_notes_edit)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self.accept)
@@ -190,6 +196,7 @@ class RefGuidelineEditDialog(QDialog):
         g_seg = self.seg_edit.text().strip()
         g_cite = self.citation_edit.text().strip() or "Human"
         g_rat = self.rationale_edit.toPlainText().strip()
+        g_grader = self.grader_notes_edit.toPlainText().strip()
         is_op = self.op_check.isChecked()
 
         data = {
@@ -204,6 +211,8 @@ class RefGuidelineEditDialog(QDialog):
         }
         if g_rat:
             data["rationale"] = g_rat
+        if g_grader:
+            data["grader_notes"] = g_grader
         return data
 
 
@@ -252,6 +261,18 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         gl_bar.addWidget(self.run_continue_btn)
         gl_layout.addLayout(gl_bar)
 
+        gl_search_bar = QHBoxLayout()
+        self.gl_search_edit = QLineEdit()
+        self.gl_search_edit.setPlaceholderText(
+            "🔍 Search guidelines by ID, name, matched elements, template, description, explanation, or grader notes..."
+        )
+        self.gl_search_edit.setClearButtonEnabled(True)
+        self.gl_search_edit.textChanged.connect(self._apply_gl_search_filter)
+        self.gl_search_count_label = QLabel("")
+        gl_search_bar.addWidget(self.gl_search_edit, stretch=1)
+        gl_search_bar.addWidget(self.gl_search_count_label)
+        gl_layout.addLayout(gl_search_bar)
+
         table_style = """
             QTableWidget {
                 selection-background-color: #005fb8;
@@ -272,14 +293,14 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             }
         """
 
-        self.gl_table = QTableWidget(0, 7)
+        self.gl_table = QTableWidget(0, 8)
         self.gl_table.setHorizontalHeaderLabels(
-            ["ID", "Segment Name", "Matched Elements", "Template", "Template Name", "Description", "Explanation"]
+            ["ID", "Segment Name", "Matched Elements", "Template", "Template Name", "Description", "Explanation", "Grader Notes"]
         )
 
         # Excel-like interactive column resizing (matches Q&A table)
         gl_h_header = self.gl_table.horizontalHeader()
-        for i in range(7):
+        for i in range(8):
             gl_h_header.setSectionResizeMode(i, QHeaderView.Interactive)
         gl_h_header.setStretchLastSection(True)
         gl_h_header.setSectionsMovable(True)
@@ -298,7 +319,8 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         self.gl_table.setColumnWidth(3, 80)   # Template
         self.gl_table.setColumnWidth(4, 150)  # Template Name
         self.gl_table.setColumnWidth(5, 200)  # Description
-        self.gl_table.setColumnWidth(6, 240)  # Explanation
+        self.gl_table.setColumnWidth(6, 220)  # Explanation
+        self.gl_table.setColumnWidth(7, 220)  # Grader Notes
 
         self.gl_table.setShowGrid(True)
         self.gl_table.setAlternatingRowColors(True)
@@ -467,6 +489,8 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                     break
 
         if target_row >= 0 and target_row < self.gl_table.rowCount():
+            if self.gl_table.isRowHidden(target_row) and hasattr(self, "gl_search_edit"):
+                self.gl_search_edit.clear()
             self.gl_table.blockSignals(True)
             self.gl_table.clearSelection()
             self.gl_table.selectRow(target_row)
@@ -480,6 +504,32 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                     cell.setBackground(mark_color)
             self.gl_table.blockSignals(False)
             QTimer.singleShot(2500, self.clear_mark_highlight)
+
+    def _apply_gl_search_filter(self) -> None:
+        """Filter visible rows in gl_table by multi-token substring match across all columns."""
+        if not hasattr(self, "gl_search_edit"):
+            return
+        query = self.gl_search_edit.text().strip().lower()
+        tokens = query.split()
+        total = self.gl_table.rowCount()
+        visible = 0
+        for r in range(total):
+            if not tokens:
+                self.gl_table.setRowHidden(r, False)
+                visible += 1
+                continue
+            parts = []
+            for c in range(self.gl_table.columnCount()):
+                cell = self.gl_table.item(r, c)
+                if cell:
+                    parts.append(cell.text().lower())
+            combined = " ".join(parts)
+            match = all(tok in combined for tok in tokens)
+            self.gl_table.setRowHidden(r, not match)
+            if match:
+                visible += 1
+        if hasattr(self, "gl_search_count_label"):
+            self.gl_search_count_label.setText(f"{visible} / {total} shown" if tokens else "")
 
     def _on_save_clicked(self) -> None:
         log_action("Agent2", "save_guidelines", f"guidelines_count={len((self._data.get('reference_guidelines') or []))}")
@@ -681,6 +731,9 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                     or ""
                 )
 
+                # col 7 — Grader Notes
+                grader_notes_val = str(g.get("grader_notes") or "")
+
                 # Build items
                 item_seg_id = QTableWidgetItem(seg_id_val)
                 item_seg_id.setForeground(QColor("#1565C0"))
@@ -716,6 +769,9 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                 item_explanation = QTableWidgetItem(explanation_val)
                 item_explanation.setToolTip(explanation_val)
 
+                item_grader_notes = QTableWidgetItem(grader_notes_val)
+                item_grader_notes.setToolTip(grader_notes_val)
+
                 self.gl_table.setItem(row_idx, 0, QTableWidgetItem(gid))
                 self.gl_table.setItem(row_idx, 1, item_seg_name)
                 self.gl_table.setItem(row_idx, 2, item_matched)
@@ -723,6 +779,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                 self.gl_table.setItem(row_idx, 4, item_tpl_name)
                 self.gl_table.setItem(row_idx, 5, item_fragment)
                 self.gl_table.setItem(row_idx, 6, item_explanation)
+                self.gl_table.setItem(row_idx, 7, item_grader_notes)
 
             # Restore selection if row matching selected_gid exists
             if selected_gid:
@@ -732,6 +789,7 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
                         self.gl_table.selectRow(r)
                         break
 
+            self._apply_gl_search_filter()
             self.gl_table.verticalScrollBar().setValue(v_scroll)
             self.gl_table.horizontalScrollBar().setValue(h_scroll)
             self.gl_table.setUpdatesEnabled(True)
@@ -794,6 +852,11 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
         elif col == 6:  # Explanation
             g["rationale"] = text
             g["citation"] = text
+        elif col == 7:  # Grader Notes
+            if text:
+                g["grader_notes"] = text
+            else:
+                g.pop("grader_notes", None)
 
         self._emit_guidelines_updated_deferred()
 
@@ -947,6 +1010,8 @@ class GuidelinesSegmentsEditorWidget(QGroupBox):
             target.update(updated)
             if "rationale" in target and not updated.get("rationale"):
                 target.pop("rationale", None)
+            if "grader_notes" in target and not updated.get("grader_notes"):
+                target.pop("grader_notes", None)
             self.refresh_all()
             self.guidelines_updated.emit(self._data)
             log_action("Agent2", "edit_guideline", f"id={updated.get('id', '')}")
