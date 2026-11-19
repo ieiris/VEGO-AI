@@ -28,6 +28,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -42,6 +43,40 @@ MAX_PARSE_RETRIES = 2   # total attempts = 1 + MAX_PARSE_RETRIES
 
 
 _SESSION_INTERACTIONS: dict[Path, list[dict[str, Any]]] = {}
+_SESSION_API_LOGS: dict[Path, list[dict[str, Any]]] = {}
+
+
+def _append_json_log(
+    target_json: Path,
+    cache: dict[Path, list[dict[str, Any]]],
+    entry: dict[str, Any],
+) -> None:
+    """Append an entry to a cached JSON-array log file on disk."""
+    try:
+        target_json.parent.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        pass
+
+    resolved = target_json.resolve()
+    if resolved not in cache:
+        cache[resolved] = []
+        if target_json.exists():
+            try:
+                with open(target_json, "r", encoding="utf-8") as fh:
+                    data = json.load(fh)
+                    if isinstance(data, list):
+                        cache[resolved] = data
+            except Exception:
+                pass
+
+    cache[resolved].append(entry)
+
+    try:
+        json_text = json.dumps(cache[resolved], ensure_ascii=False, indent=2)
+        with open(target_json, "w", encoding="utf-8") as fh:
+            fh.write(json_text)
+    except Exception as exc:
+        logger.warning("Could not write to log '%s': %s", target_json, exc)
 
 
 class LLMClient:
@@ -115,17 +150,44 @@ class LLMClient:
         for attempt in range(1, total_attempts + 1):
             logger.info("%sCalling %s (attempt %d/%d)…", tag, self.model, attempt, total_attempts)
 
-            response = await self._client.chat.completions.create(
-                model=self.model,
-                max_tokens=max_tokens,
-                messages=[
-                    {"role": "system", "content": prompt["system"]},
-                    {"role": "user",   "content": prompt["user"]},
-                ],
-            )
+            messages = [
+                {"role": "system", "content": prompt["system"]},
+                {"role": "user",   "content": prompt["user"]},
+            ]
+            started = time.perf_counter()
+            try:
+                response = await self._client.chat.completions.create(
+                    model=self.model,
+                    max_tokens=max_tokens,
+                    messages=messages,
+                )
+            except Exception as api_exc:
+                duration_ms = round((time.perf_counter() - started) * 1000, 2)
+                self._write_api_log(
+                    label=label,
+                    attempt=attempt,
+                    max_attempts=total_attempts,
+                    max_tokens=max_tokens,
+                    messages=messages,
+                    duration_ms=duration_ms,
+                    status="api_error",
+                    error=str(api_exc),
+                )
+                raise
 
+            duration_ms = round((time.perf_counter() - started) * 1000, 2)
             raw = response.choices[0].message.content or ""
             finish_reason = getattr(response.choices[0], "finish_reason", None)
+            usage_obj = getattr(response, "usage", None)
+            usage = (
+                {
+                    "prompt_tokens": getattr(usage_obj, "prompt_tokens", None),
+                    "completion_tokens": getattr(usage_obj, "completion_tokens", None),
+                    "total_tokens": getattr(usage_obj, "total_tokens", None),
+                }
+                if usage_obj is not None
+                else None
+            )
             logger.debug("%sRaw response (%d chars)", tag, len(raw))
 
             parsed: dict[str, Any] | None = None
@@ -134,6 +196,19 @@ class LLMClient:
                 parsed = self._parse_json(raw, label=label)
             except ValueError as exc:
                 parse_error = str(exc)
+                self._write_api_log(
+                    label=label,
+                    attempt=attempt,
+                    max_attempts=total_attempts,
+                    max_tokens=max_tokens,
+                    messages=messages,
+                    duration_ms=duration_ms,
+                    status="parse_error",
+                    raw=raw,
+                    finish_reason=finish_reason,
+                    usage=usage,
+                    error=parse_error,
+                )
                 # Always log this attempt, then decide whether to retry or raise
                 self._write_interaction(
                     label=label,
@@ -151,6 +226,18 @@ class LLMClient:
                     continue
                 raise
             else:
+                self._write_api_log(
+                    label=label,
+                    attempt=attempt,
+                    max_attempts=total_attempts,
+                    max_tokens=max_tokens,
+                    messages=messages,
+                    duration_ms=duration_ms,
+                    status="ok",
+                    raw=raw,
+                    finish_reason=finish_reason,
+                    usage=usage,
+                )
                 self._write_interaction(
                     label=label,
                     prompt=prompt,
@@ -233,33 +320,51 @@ class LLMClient:
             "finish_reason":   finish_reason,
         }
 
-        log_dir = self._log_path.parent
-        try:
-            log_dir.mkdir(parents=True, exist_ok=True)
-        except OSError:
-            pass
+        target_json = self._log_path.parent / "interaction_log.json"
+        _append_json_log(target_json, _SESSION_INTERACTIONS, entry)
 
-        target_json = log_dir / "interaction_log.json"
-        resolved_dir = log_dir.resolve()
-        if resolved_dir not in _SESSION_INTERACTIONS:
-            _SESSION_INTERACTIONS[resolved_dir] = []
-            if target_json.exists():
-                try:
-                    with open(target_json, "r", encoding="utf-8") as fh:
-                        data = json.load(fh)
-                        if isinstance(data, list):
-                            _SESSION_INTERACTIONS[resolved_dir] = data
-                except Exception:
-                    pass
+    def _write_api_log(
+        self,
+        *,
+        label: str,
+        attempt: int,
+        max_attempts: int,
+        max_tokens: int,
+        messages: list[dict[str, str]],
+        duration_ms: float,
+        status: str,
+        raw: str | None = None,
+        finish_reason: str | None = None,
+        usage: dict[str, Any] | None = None,
+        error: str | None = None,
+    ) -> None:
+        """Append every LLM API call (success, parse error, or API error) to api.json."""
+        if not self._log_path:
+            return
 
-        _SESSION_INTERACTIONS[resolved_dir].append(entry)
+        parts = label.split("/", 1)
+        agent = parts[0] if parts else ""
+        skill = parts[1] if len(parts) > 1 else ""
 
-        try:
-            json_text = json.dumps(_SESSION_INTERACTIONS[resolved_dir], ensure_ascii=False, indent=2)
-            with open(target_json, "w", encoding="utf-8") as fh:
-                fh.write(json_text)
-        except Exception as exc:
-            logger.warning("Could not write to interaction log '%s': %s", target_json, exc)
+        entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "agent": agent,
+            "skill": skill,
+            "label": label,
+            "model": self.model,
+            "attempt": attempt,
+            "max_attempts": max_attempts,
+            "max_tokens": max_tokens,
+            "duration_ms": duration_ms,
+            "status": status,
+            "request_messages": messages,
+            "response_raw": raw,
+            "finish_reason": finish_reason,
+            "usage": usage,
+            "error": error,
+        }
+        target_json = self._log_path.parent / "api.json"
+        _append_json_log(target_json, _SESSION_API_LOGS, entry)
 
     # ------------------------------------------------------------------
     # JSON parsing
