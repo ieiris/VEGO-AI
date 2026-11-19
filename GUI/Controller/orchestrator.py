@@ -16,6 +16,7 @@ import json
 import logging
 import platform
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import chardet
@@ -32,7 +33,7 @@ import agent4_variability_explorer as a4
 logger = logging.getLogger(__name__)
 
 # ── Q&A loop termination guard ─────────────────────────────────────────────
-MAX_QA_ROUNDS = 10
+MAX_QA_ROUNDS = 3
 
 
 def _guidelines_for_agent3(reference_guidelines: dict | str | list | None):
@@ -98,12 +99,54 @@ async def phase1_build_language_template(
 # Phase 2 — Domain Advisor: build/update reference guidelines (Q&A loop)
 # ══════════════════════════════════════════════════════════════════════════════
 
+def _annotate_qa_answers(
+    answers: list[dict],
+    questions: list[dict],
+    *,
+    sender: str = "",
+    phase: str = "",
+    round_n: int | None = None,
+    case_id: str | None = None,
+) -> list[dict]:
+    """Attach provenance metadata (who asked, phase, round, case, timestamp) to Q&A entries."""
+    q_by_id = {
+        str(q.get("id") or q.get("question_id")): q.get("question", "")
+        for q in questions
+        if isinstance(q, dict) and (q.get("id") or q.get("question_id"))
+    }
+    ts = datetime.now().isoformat(timespec="seconds")
+    annotated: list[dict] = []
+    for ans in answers:
+        if not isinstance(ans, dict):
+            continue
+        entry = dict(ans)
+        qid = str(entry.get("question_id") or entry.get("id") or "")
+        if qid and not entry.get("question") and qid in q_by_id:
+            entry["question"] = q_by_id[qid]
+        if sender:
+            entry["asked_by"] = sender
+        if phase:
+            entry["phase"] = phase
+        if round_n is not None:
+            entry["round"] = round_n
+        if case_id:
+            entry["case_id"] = case_id
+        entry["timestamp"] = ts
+        annotated.append(entry)
+    return annotated
+
+
 async def _answer_lang_questions(
     questions: list[dict],
     state: PipelineState,
     registry: QARegistry,
     client: LLMClient,
     state_path: Path | None = None,
+    *,
+    sender: str = "",
+    round_n: int | None = None,
+    phase: str = "",
+    case_id: str | None = None,
 ) -> list[dict]:
     """Route Q_lang questions to Agent 1 and record answers."""
     if not questions:
@@ -115,7 +158,15 @@ async def _answer_lang_questions(
         questions=questions,
     )
     result = await client.call(prompt, label="agent1/answer_language_questions")
-    answers = result.get("questions_answers", []) if isinstance(result, dict) else []
+    raw_answers = result.get("questions_answers", []) if isinstance(result, dict) else []
+    answers = _annotate_qa_answers(
+        raw_answers,
+        questions,
+        sender=sender,
+        phase=phase,
+        round_n=round_n,
+        case_id=case_id,
+    )
     await registry.record_answers(answers, "lang")
     state.lang_qa_history = registry.lang_qa.copy()
     if state_path:
@@ -129,6 +180,11 @@ async def _answer_dom_questions(
     registry: QARegistry,
     client: LLMClient,
     state_path: Path | None = None,
+    *,
+    sender: str = "",
+    round_n: int | None = None,
+    phase: str = "",
+    case_id: str | None = None,
 ) -> list[dict]:
     """Route Q_dom questions to Agent 2 and record answers."""
     if not questions:
@@ -141,7 +197,15 @@ async def _answer_dom_questions(
         domain_identifier=(state.reference_guidelines or {}).get("domain_identifier", ""),
     )
     result = await client.call(prompt, label="agent2/answer_domain_questions")
-    answers = result.get("questions_answers", []) if isinstance(result, dict) else []
+    raw_answers = result.get("questions_answers", []) if isinstance(result, dict) else []
+    answers = _annotate_qa_answers(
+        raw_answers,
+        questions,
+        sender=sender,
+        phase=phase,
+        round_n=round_n,
+        case_id=case_id,
+    )
     await registry.record_answers(answers, "dom")
     state.dom_qa_history = registry.dom_qa.copy()
     if state_path:
@@ -197,10 +261,16 @@ async def phase2_build_reference_guidelines(
 
         if q_lang:
             logger.info("Phase 2 — %d language question(s) raised; routing to Agent 1.", len(q_lang))
-            await _answer_lang_questions(q_lang, state, registry, client, state_path)
+            await _answer_lang_questions(
+                q_lang, state, registry, client, state_path,
+                sender="Agent 2", round_n=round_n, phase="phase2",
+            )
         if q_dom:
             logger.info("Phase 2 — %d domain question(s) raised; routing to Agent 2.", len(q_dom))
-            await _answer_dom_questions(q_dom, state, registry, client, state_path)
+            await _answer_dom_questions(
+                q_dom, state, registry, client, state_path,
+                sender="Agent 2", round_n=round_n, phase="phase2",
+            )
         is_first = False
     else:
         logger.warning("Phase 2 reached MAX_QA_ROUNDS=%d without converging.", MAX_QA_ROUNDS)
@@ -309,10 +379,18 @@ async def _phase3_one_case(
 
             if q_lang:
                 logger.info("  Case %s — %d lang Q(s) → Agent 1", case_id, len(q_lang))
-                await _answer_lang_questions(q_lang, state, registry, client, state_path)
+                await _answer_lang_questions(
+                    q_lang, state, registry, client, state_path,
+                    sender="Agent 3", round_n=round_n,
+                    phase="phase3/resolve_unsatisfied", case_id=case_id,
+                )
             if q_dom:
                 logger.info("  Case %s — %d dom Q(s) → Agent 2", case_id, len(q_dom))
-                await _answer_dom_questions(q_dom, state, registry, client, state_path)
+                await _answer_dom_questions(
+                    q_dom, state, registry, client, state_path,
+                    sender="Agent 3", round_n=round_n,
+                    phase="phase3/resolve_unsatisfied", case_id=case_id,
+                )
         else:
             logger.warning("Case %s skill 3-2 reached MAX_QA_ROUNDS.", case_id)
             cv = _merge_resolved_into_cv(cv, resolved)  # type: ignore[possibly-undefined]
@@ -342,9 +420,17 @@ async def _phase3_one_case(
                 break
 
             if q_lang:
-                await _answer_lang_questions(q_lang, state, registry, client, state_path)
+                await _answer_lang_questions(
+                    q_lang, state, registry, client, state_path,
+                    sender="Agent 3", round_n=round_n,
+                    phase="phase3/audit_uncovered", case_id=case_id,
+                )
             if q_dom:
-                await _answer_dom_questions(q_dom, state, registry, client, state_path)
+                await _answer_dom_questions(
+                    q_dom, state, registry, client, state_path,
+                    sender="Agent 3", round_n=round_n,
+                    phase="phase3/audit_uncovered", case_id=case_id,
+                )
         else:
             logger.warning("Case %s skill 3-3 reached MAX_QA_ROUNDS.", case_id)
 
@@ -475,9 +561,17 @@ async def phase4_variability_analysis(
             break
 
         if q_lang:
-            await _answer_lang_questions(q_lang, state, registry, client)
+            await _answer_lang_questions(
+                q_lang, state, registry, client, state_path,
+                sender="Agent 4", round_n=round_n,
+                phase="phase4/classify_variability",
+            )
         if q_dom:
-            await _answer_dom_questions(q_dom, state, registry, client)
+            await _answer_dom_questions(
+                q_dom, state, registry, client, state_path,
+                sender="Agent 4", round_n=round_n,
+                phase="phase4/classify_variability",
+            )
     else:
         logger.warning("Phase 4 skill 4-2 reached MAX_QA_ROUNDS.")
 
@@ -522,7 +616,11 @@ async def phase4_variability_analysis(
             if not q_lang:
                 state.reference_guidelines = updated_gl
                 break
-            await _answer_lang_questions(q_lang, state, registry, client)
+            await _answer_lang_questions(
+                q_lang, state, registry, client, state_path,
+                sender="Agent 2", round_n=round_n,
+                phase="phase4/guidelines_feedback",
+            )
         else:
             logger.warning("Guidelines feedback loop reached MAX_QA_ROUNDS.")
 
