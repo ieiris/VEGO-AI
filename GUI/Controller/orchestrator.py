@@ -789,6 +789,7 @@ async def run_setting(
     registry = QARegistry()
     registry.lang_qa = list(state.lang_qa_history)
     registry.dom_qa  = list(state.dom_qa_history)
+    registry.seed_counters_from_history()
 
     client = LLMClient(
         api_key=cfg.get("api_key"),

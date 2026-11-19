@@ -9,6 +9,7 @@ processed concurrently.
 from __future__ import annotations
 
 import asyncio
+import re
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -53,3 +54,17 @@ class QARegistry:
                 self.lang_qa.extend(answers)
             else:
                 self.dom_qa.extend(answers)
+
+    def seed_counters_from_history(self) -> None:
+        """Advance ID counters past any existing Q_lang_NNN / Q_dom_NNN entries."""
+        for scope, items in (("lang", self.lang_qa), ("dom", self.dom_qa)):
+            pattern = re.compile(rf"^Q_{scope}_(\d+)$", re.IGNORECASE)
+            max_id = self._counters[scope]
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                qid = str(item.get("question_id") or item.get("id") or "").strip()
+                m = pattern.match(qid)
+                if m:
+                    max_id = max(max_id, int(m.group(1)))
+            self._counters[scope] = max_id

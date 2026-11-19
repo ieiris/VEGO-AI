@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -52,8 +53,10 @@ class PipelineState:
 
     def save(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-        with open(path, "w", encoding="utf-8") as fh:
+        tmp_path = path.with_name(f"{path.name}.tmp")
+        with open(tmp_path, "w", encoding="utf-8") as fh:
             json.dump(asdict(self), fh, indent=2, ensure_ascii=False)
+        os.replace(tmp_path, path)
         logger.info("State saved → %s", path)
 
     @classmethod

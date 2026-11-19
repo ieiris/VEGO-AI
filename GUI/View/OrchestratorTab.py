@@ -18,6 +18,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, QThread, Signal, Qt, QPropertyAnimation, QEasingCurve
 from PySide6.QtGui import QColor, QFont, QPalette
 from PySide6.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QFileDialog,
     QFormLayout,
@@ -947,6 +948,13 @@ class OrchestratorTab(QWidget):
         # ── Action buttons ─────────────────────────────────────────────────
         left_outer.addWidget(_divider())
 
+        self.force_rerun_check = QCheckBox("Force re-run from scratch (ignore saved progress)")
+        self.force_rerun_check.setChecked(False)
+        self.force_rerun_check.setToolTip(
+            "When unchecked (default), completed phases and already-evaluated cases are skipped so an interrupted run resumes where it stopped."
+        )
+        left_outer.addWidget(self.force_rerun_check)
+
         btn_row = QHBoxLayout()
         btn_row.setSpacing(10)
 
@@ -1162,7 +1170,7 @@ class OrchestratorTab(QWidget):
             "max_concurrent_cases":     self.max_concurrent.value(),
             "min_recurrence_threshold": self.min_recurrence.value(),
             "target_agent":             target_agent,
-            "force_rerun":              True,
+            "force_rerun":              self.force_rerun_check.isChecked(),
             "api_key":                  self.config_panel.get_api_key() or None,
             "model":                    self.config_panel.get_model(),
             "base_url":                 self.config_panel.get_base_url(),
