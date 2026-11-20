@@ -70,17 +70,34 @@ class PlantUMLDiagramWorker(QThread):
     official PlantUML servers until a valid diagram is produced.
     """
 
-    image_loaded = Signal(QByteArray)
-    error = Signal(str)
+    image_loaded = Signal(int, QByteArray)
+    error = Signal(int, str)
 
-    def __init__(self, puml_text: str, raw_puml_text: str | None = None, parent=None):
+    def __init__(
+        self,
+        puml_text: str,
+        raw_puml_text: str | None = None,
+        request_id: int = 0,
+        parent=None,
+    ):
         super().__init__(parent)
         self.puml_text = puml_text
         self.raw_puml_text = raw_puml_text or puml_text
+        self.request_id = request_id
+        self._cancelled = False
+
+    def cancel(self) -> None:
+        self._cancelled = True
+        self.requestInterruption()
+
+    def _is_cancelled(self) -> bool:
+        return self._cancelled or self.isInterruptionRequested()
 
     def run(self):
+        if self._is_cancelled():
+            return
         if not self.puml_text or not self.puml_text.strip():
-            self.error.emit("No model text provided.")
+            self.error.emit(self.request_id, "No model text provided.")
             return
 
         # Prepare progressive candidate texts:
@@ -112,18 +129,28 @@ class PlantUMLDiagramWorker(QThread):
 
         for attempt in range(1, max_attempts + 1):
             for puml in candidates:
+                if self._is_cancelled():
+                    return
                 raw_bytes = self._try_render_all_endpoints(puml)
+                if self._is_cancelled():
+                    return
                 if raw_bytes:
-                    self.image_loaded.emit(QByteArray(raw_bytes))
+                    self.image_loaded.emit(self.request_id, QByteArray(raw_bytes))
                     return
 
-            if attempt < max_attempts:
+            if attempt < max_attempts and not self._is_cancelled():
                 self.msleep(300 * attempt)
 
-        self.error.emit(f"Rendering failed after retries: {last_error or 'Unable to fetch diagram from rendering servers.'}")
+        if not self._is_cancelled():
+            self.error.emit(
+                self.request_id,
+                f"Rendering failed after retries: {last_error or 'Unable to fetch diagram from rendering servers.'}",
+            )
 
     def _try_render_all_endpoints(self, text: str) -> bytes | None:
         """Try rendering a given PUML text against Kroki.io and PlantUML.com endpoints."""
+        if self._is_cancelled():
+            return None
         utf8_data = text.encode("utf-8")
 
         # 1. Kroki.io SVG (POST)
@@ -144,6 +171,9 @@ class PlantUMLDiagramWorker(QThread):
         except Exception:
             pass
 
+        if self._is_cancelled():
+            return None
+
         # 2. Kroki.io PNG (POST)
         try:
             req = urllib.request.Request(
@@ -162,6 +192,9 @@ class PlantUMLDiagramWorker(QThread):
         except Exception:
             pass
 
+        if self._is_cancelled():
+            return None
+
         # 3. Official PlantUML.com SVG (GET)
         enc = self._encode_plantuml(text)
         try:
@@ -176,6 +209,9 @@ class PlantUMLDiagramWorker(QThread):
                 return data
         except Exception:
             pass
+
+        if self._is_cancelled():
+            return None
 
         # 4. Official PlantUML.com PNG (GET)
         try:
@@ -193,6 +229,8 @@ class PlantUMLDiagramWorker(QThread):
 
         # 5. Alternate mirrors (HTTP / PlantText)
         for host in ["http://www.plantuml.com/plantuml/svg", "https://planttext.com/api/plantuml/svg"]:
+            if self._is_cancelled():
+                return None
             try:
                 url = f"{host}/{enc}"
                 req = urllib.request.Request(
@@ -998,6 +1036,8 @@ class Agent3Tab(QWidget):
         self.not_weight: float = 0.0
 
         self.diagram_worker: PlantUMLDiagramWorker | None = None
+        self._retiring_workers: list[PlantUMLDiagramWorker] = []
+        self._render_request_id: int = 0
         self._current_rendered_text: str | None = None
         self._diagram_cache: dict[str, QPixmap] = {}
         self._pending_puml_text: str | None = None
@@ -2175,7 +2215,9 @@ class Agent3Tab(QWidget):
                 break
 
         if matched_idx >= 0:
+            self.model_combo.blockSignals(True)
             self.model_combo.setCurrentIndex(matched_idx)
+            self.model_combo.blockSignals(False)
             self._on_model_selected(self.model_combo.itemText(matched_idx))
         elif self.model_combo.count() > 0:
             self._on_model_selected(self.model_combo.currentText())
@@ -2756,18 +2798,50 @@ class Agent3Tab(QWidget):
             self._apply_zoom()
             return
 
+        # 3. Skip if an in-flight render is already fetching this exact diagram
+        if (
+            getattr(self, "_pending_puml_text", None) == puml_text
+            and self.diagram_worker
+            and self.diagram_worker.isRunning()
+        ):
+            return
+
         self._pending_puml_text = puml_text
+        self._render_request_id += 1
+        req_id = self._render_request_id
         self.diagram_label.setText("Rendering diagram…")
+
+        # Never call QThread.terminate() on a Python thread (causes native C++ crashes
+        # on Windows when killed mid-GIL or mid-socket/SSL call). Instead, cancel
+        # cooperatively and keep the retiring worker alive until it finishes cleanly.
         if self.diagram_worker and self.diagram_worker.isRunning():
-            self.diagram_worker.terminate()
+            old_worker = self.diagram_worker
+            old_worker.cancel()
+            try:
+                old_worker.image_loaded.disconnect(self._on_diagram_loaded)
+                old_worker.error.disconnect(self._on_diagram_error)
+            except (RuntimeError, TypeError):
+                pass
+            self._retiring_workers.append(old_worker)
+            old_worker.finished.connect(lambda w=old_worker: self._cleanup_retiring_worker(w))
 
         raw_puml = self.model_text_edit.toPlainText().strip()
-        self.diagram_worker = PlantUMLDiagramWorker(puml_text, raw_puml_text=raw_puml, parent=self)
-        self.diagram_worker.image_loaded.connect(self._on_diagram_loaded)
-        self.diagram_worker.error.connect(self._on_diagram_error)
-        self.diagram_worker.start()
+        worker = PlantUMLDiagramWorker(
+            puml_text, raw_puml_text=raw_puml, request_id=req_id, parent=self
+        )
+        worker.image_loaded.connect(self._on_diagram_loaded)
+        worker.error.connect(self._on_diagram_error)
+        self.diagram_worker = worker
+        worker.start()
 
-    def _on_diagram_loaded(self, raw_bytes: QByteArray) -> None:
+    def _cleanup_retiring_worker(self, worker: PlantUMLDiagramWorker) -> None:
+        if worker in self._retiring_workers:
+            self._retiring_workers.remove(worker)
+        worker.deleteLater()
+
+    def _on_diagram_loaded(self, request_id: int, raw_bytes: QByteArray) -> None:
+        if request_id != self._render_request_id:
+            return
         pix = QPixmap()
 
         # 1. Try rendering SVG if bytes contain XML/SVG data
@@ -2811,7 +2885,9 @@ class Agent3Tab(QWidget):
         else:
             self.diagram_label.setText("Failed to parse diagram image.")
 
-    def _on_diagram_error(self, err_text: str) -> None:
+    def _on_diagram_error(self, request_id: int, err_text: str) -> None:
+        if request_id != self._render_request_id:
+            return
         self.diagram_label.setText(f"Diagram rendering error:\n{err_text}")
 
     def _apply_zoom(self) -> None:
