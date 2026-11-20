@@ -878,14 +878,21 @@ class TableFloatWindow(QDialog):
         top_row.addWidget(self._filter_edit)
         layout.addLayout(top_row)
 
-        # Interactive cloned table
+        # Interactive cloned table (Excel-like wrap text + resizable columns/rows)
         self._table = QTableWidget()
         self._table.setEditTriggers(QTableWidget.NoEditTriggers)
         self._table.setSelectionBehavior(QTableWidget.SelectRows)
         self._table.setSelectionMode(QTableWidget.ExtendedSelection)
         self._table.setWordWrap(True)
+        self._table.setTextElideMode(Qt.ElideNone)
+        self._table.setShowGrid(True)
         self._table.setAlternatingRowColors(True)
         self._table.setStyleSheet(self._TABLE_STYLE)
+        self._table.verticalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        self._table.verticalHeader().setDefaultSectionSize(32)
+        self._table.horizontalHeader().sectionResized.connect(
+            lambda logicalIndex, oldSize, newSize: self._table.resizeRowsToContents()
+        )
         self._table.itemSelectionChanged.connect(self._on_table_selection_changed)
         self._table.cellDoubleClicked.connect(self.cell_double_clicked.emit)
 
@@ -911,10 +918,14 @@ class TableFloatWindow(QDialog):
                    if source_table.horizontalHeaderItem(c)]
         self._table.setHorizontalHeaderLabels(headers)
         hdr = self._table.horizontalHeader()
-        hdr.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        hdr.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        for c in range(2, self._table.columnCount()):
-            hdr.setSectionResizeMode(c, QHeaderView.Stretch)
+        for c in range(self._table.columnCount()):
+            hdr.setSectionResizeMode(c, QHeaderView.Interactive)
+            w = source_table.columnWidth(c)
+            if w > 0:
+                self._table.setColumnWidth(c, w)
+        hdr.setStretchLastSection(True)
+        hdr.setSectionsMovable(True)
+        hdr.setHighlightSections(True)
 
         for r in range(source_table.rowCount()):
             for c in range(source_table.columnCount()):
@@ -1323,16 +1334,37 @@ class Agent3Tab(QWidget):
         self.tree_table.setHorizontalHeaderLabels([
             "ID", "Status", "Matched Elements", "Reference Guideline", "Evidence", "Notes / Feedback"
         ])
-        self.tree_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
-        self.tree_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
-        self.tree_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
+
+        # Excel-like interactive column & row resizing with automatic wrap-text reflow
+        tree_h_header = self.tree_table.horizontalHeader()
+        for i in range(6):
+            tree_h_header.setSectionResizeMode(i, QHeaderView.Interactive)
+        tree_h_header.setStretchLastSection(True)
+        tree_h_header.setSectionsMovable(True)
+        tree_h_header.setHighlightSections(True)
+
+        tree_v_header = self.tree_table.verticalHeader()
+        tree_v_header.setVisible(True)
+        tree_v_header.setSectionResizeMode(QHeaderView.Interactive)
+        tree_v_header.setDefaultSectionSize(32)
+
+        self.tree_table.setColumnWidth(0, 75)   # ID
+        self.tree_table.setColumnWidth(1, 130)  # Status
+        self.tree_table.setColumnWidth(2, 160)  # Matched Elements
+        self.tree_table.setColumnWidth(3, 240)  # Reference Guideline
+        self.tree_table.setColumnWidth(4, 240)  # Evidence
+        self.tree_table.setColumnWidth(5, 220)  # Notes / Feedback
+
+        self.tree_table.setShowGrid(True)
+        self.tree_table.setAlternatingRowColors(True)
         self.tree_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.tree_table.setSelectionMode(QTableWidget.ExtendedSelection)
         self.tree_table.setWordWrap(True)  # Excel-like wrap text inside cells
+        self.tree_table.setTextElideMode(Qt.ElideNone)
         self.tree_table.setStyleSheet(table_style)
+        tree_h_header.sectionResized.connect(
+            lambda logicalIndex, oldSize, newSize: self.tree_table.resizeRowsToContents()
+        )
         self.tree_table.itemSelectionChanged.connect(self._on_table_selection_changed)
         self.tree_table.cellDoubleClicked.connect(self._on_table_cell_double_clicked)
         table_layout.addWidget(self.tree_table)
