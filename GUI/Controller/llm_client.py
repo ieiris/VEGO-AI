@@ -38,7 +38,6 @@ from openai import AsyncOpenAI
 logger = logging.getLogger(__name__)
 
 # MODEL = "gpt-4o"
-MAX_TOKENS = 16384
 MAX_PARSE_RETRIES = 2   # total attempts = 1 + MAX_PARSE_RETRIES
 
 
@@ -122,19 +121,17 @@ class LLMClient:
         prompt: dict[str, str],
         *,
         label: str = "",
-        max_tokens: int = MAX_TOKENS,
     ) -> dict[str, Any]:
         """
         Send a prompt dict and return the parsed JSON response.
 
         Parameters
         ----------
-        prompt     : {"system": str, "user": str} as returned by skill *_prompt() helpers.
-        label      : Dot-separated label: "<agent>/<skill>"
-                     e.g. "agent1/build_language_template"
-                          "agentA/map_and_assign"
-                          "agent3/case-01/map"
-        max_tokens : Override max_tokens for this call.
+        prompt : {"system": str, "user": str} as returned by skill *_prompt() helpers.
+        label  : Dot-separated label: "<agent>/<skill>"
+                 e.g. "agent1/build_language_template"
+                      "agentA/map_and_assign"
+                      "agent3/case-01/map"
 
         Returns
         -------
@@ -158,7 +155,6 @@ class LLMClient:
             try:
                 response = await self._client.chat.completions.create(
                     model=self.model,
-                    max_tokens=max_tokens,
                     messages=messages,
                 )
             except Exception as api_exc:
@@ -167,7 +163,6 @@ class LLMClient:
                     label=label,
                     attempt=attempt,
                     max_attempts=total_attempts,
-                    max_tokens=max_tokens,
                     messages=messages,
                     duration_ms=duration_ms,
                     status="api_error",
@@ -200,7 +195,6 @@ class LLMClient:
                     label=label,
                     attempt=attempt,
                     max_attempts=total_attempts,
-                    max_tokens=max_tokens,
                     messages=messages,
                     duration_ms=duration_ms,
                     status="parse_error",
@@ -230,7 +224,6 @@ class LLMClient:
                     label=label,
                     attempt=attempt,
                     max_attempts=total_attempts,
-                    max_tokens=max_tokens,
                     messages=messages,
                     duration_ms=duration_ms,
                     status="ok",
@@ -329,7 +322,6 @@ class LLMClient:
         label: str,
         attempt: int,
         max_attempts: int,
-        max_tokens: int,
         messages: list[dict[str, str]],
         duration_ms: float,
         status: str,
@@ -354,7 +346,6 @@ class LLMClient:
             "model": self.model,
             "attempt": attempt,
             "max_attempts": max_attempts,
-            "max_tokens": max_tokens,
             "duration_ms": duration_ms,
             "status": status,
             "request_messages": messages,
