@@ -762,6 +762,45 @@ def _build_setting_cfg(base_cfg: dict, setting: dict, config_dir: Path) -> dict:
     return cfg
 
 
+def _hydrate_state_from_output_dir(state: PipelineState, output_dir: Path) -> None:
+    """Populate missing PipelineState fields from standalone JSON files in output_dir.
+
+    This allows switching the Output folder to a directory that contains
+    reference_guidelines.json / language_template.json / etc. even when
+    pipeline_state.json does not exist yet (or is incomplete).
+    """
+    file_field_map: list[tuple[str, str, type]] = [
+        ("language_template.json",           "language_template",           dict),
+        ("reference_guidelines.json",        "reference_guidelines",        dict),
+        ("compliance_vectors.json",          "compliance_vectors",          dict),
+        ("uncovered_fragments.json",         "uncovered_fragments",         dict),
+        ("deviation_patterns.json",          "deviation_patterns",          dict),
+        ("variability_classifications.json", "variability_classifications", dict),
+        ("lang_qa_history.json",             "lang_qa_history",             list),
+        ("dom_qa_history.json",              "dom_qa_history",              list),
+    ]
+    for filename, field_name, expected_type in file_field_map:
+        if getattr(state, field_name, None):
+            continue
+        file_path = output_dir / filename
+        if not file_path.exists():
+            continue
+        try:
+            data = json.loads(file_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            logger.warning("Could not read %s: %s", file_path, exc)
+            continue
+        if field_name == "reference_guidelines" and isinstance(data, list):
+            data = {"reference_guidelines": data}
+        if isinstance(data, expected_type) and data:
+            setattr(state, field_name, data)
+            logger.info("Loaded %s from %s", field_name, file_path)
+            if field_name == "language_template":
+                state.mark_done("phase1")
+            elif field_name == "reference_guidelines":
+                state.mark_done("phase2")
+
+
 async def run_setting(
     cfg: dict,
     config_path: Path,
@@ -786,6 +825,7 @@ async def run_setting(
     logger.info("===== Setting: %s =====", setting_id)
 
     state = PipelineState.load_or_new(state_path)
+    _hydrate_state_from_output_dir(state, output_dir)
     registry = QARegistry()
     registry.lang_qa = list(state.lang_qa_history)
     registry.dom_qa  = list(state.dom_qa_history)
