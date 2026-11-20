@@ -923,7 +923,7 @@ class TableFloatWindow(QDialog):
             w = source_table.columnWidth(c)
             if w > 0:
                 self._table.setColumnWidth(c, w)
-        hdr.setStretchLastSection(True)
+        hdr.setStretchLastSection(False)
         hdr.setSectionsMovable(True)
         hdr.setHighlightSections(True)
 
@@ -1339,7 +1339,7 @@ class Agent3Tab(QWidget):
         tree_h_header = self.tree_table.horizontalHeader()
         for i in range(6):
             tree_h_header.setSectionResizeMode(i, QHeaderView.Interactive)
-        tree_h_header.setStretchLastSection(True)
+        tree_h_header.setStretchLastSection(False)
         tree_h_header.setSectionsMovable(True)
         tree_h_header.setHighlightSections(True)
 
@@ -2329,12 +2329,6 @@ class Agent3Tab(QWidget):
 
     def _populate_tree_table(self) -> None:
         self.tree_table.setRowCount(0)
-        self.tree_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        self.tree_table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
-        self.tree_table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
-        self.tree_table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
         row = 0
 
         # Guidelines
