@@ -14,6 +14,7 @@ import argparse
 import asyncio
 import json
 import logging
+import os
 import platform
 import sys
 from datetime import datetime
@@ -171,6 +172,7 @@ async def _answer_lang_questions(
     state.lang_qa_history = registry.lang_qa.copy()
     if state_path:
         state.save(state_path)
+        _write_json(state_path.parent / "lang_qa_history.json", state.lang_qa_history)
     return answers
 
 
@@ -210,6 +212,7 @@ async def _answer_dom_questions(
     state.dom_qa_history = registry.dom_qa.copy()
     if state_path:
         state.save(state_path)
+        _write_json(state_path.parent / "dom_qa_history.json", state.dom_qa_history)
     return answers
 
 
@@ -944,8 +947,11 @@ async def run(config_path: Path, only_setting: str | None = None) -> None:
 
 
 def _write_json(path: Path, data: object) -> None:
-    with open(path, "w", encoding="utf-8") as fh:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_name(f"{path.name}.tmp")
+    with open(tmp_path, "w", encoding="utf-8") as fh:
         json.dump(data, fh, indent=2, ensure_ascii=False)
+    os.replace(tmp_path, path)
     logger.info("  Wrote %s", path)
 
 
