@@ -529,7 +529,6 @@ For each guideline in the reference guidelines:
    - For Class Diagrams: list the exact Class name(s), e.g. ["Customer"], ["Order", "RegularOrder"]
    - For Use Case Diagrams: list the Actor and Use Case name(s), e.g. ["Actor: Customer", "UC: Place Order"]
    - For State Machine Diagrams: list the exact State name(s), e.g. ["Order Classification", "In Transit"]
-   - For Activity Diagrams: list the exact Action step(s), e.g. [":Verify order;"]
 4. Match the described fragment against the guideline's description field to confirm alignment.
 5. Assign a compliance status:
      Satisfied           -- clear and complete evidence found
@@ -699,7 +698,6 @@ For each fragment in the case model not accounted for in the compliance vector:
    - For Class Diagrams: list the exact Class name(s), e.g. ["Customer"], ["Order", "RegularOrder"]
    - For Use Case Diagrams: list the Actor and Use Case name(s), e.g. ["Actor: Customer", "UC: Place Order"]
    - For State Machine Diagrams: list the exact State name(s), e.g. ["Order Classification", "In Transit"]
-   - For Activity Diagrams: list the exact Action step(s), e.g. [":Verify order;"]
 
 CONSTRAINTS:
 - Uncovered fragments must be grounded in the Case Model only.

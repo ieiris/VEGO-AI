@@ -3499,7 +3499,7 @@ class Agent3Tab(QWidget):
             if final_note_text:
                 notes_list.append(f"[Final Note]: {final_note_text}")
 
-            cell_notes = "\n\n".join(notes_list)
+            cell_notes = "<br>\n<br>\n".join(notes_list)
             rows.append([case_col, score_str, cell_notes])
 
         default_file = str(Path(out_dir) / "cases_summary.csv")
