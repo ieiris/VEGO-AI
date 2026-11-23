@@ -11,6 +11,7 @@ Integrates visualize_compliance.py capabilities natively inside the master PySid
 
 from __future__ import annotations
 
+import copy
 import csv
 import json
 import os
@@ -31,7 +32,7 @@ from agent_controllers import Agent3Controller
 
 
 from PySide6.QtCore import QByteArray, QItemSelection, QItemSelectionModel, QTimer, Qt, QThread, Signal
-from PySide6.QtGui import QColor, QFont, QImage, QPainter, QPixmap
+from PySide6.QtGui import QColor, QFont, QImage, QKeySequence, QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QComboBox,
@@ -497,10 +498,18 @@ class FeedbackDialog(QDialog):
         self.text_edit.setFont(QFont("Segoe UI", 10))
         layout.addWidget(self.text_edit, stretch=1)
 
+        btn_row = QHBoxLayout()
+        btn_clear = _md_btn_outlined("🗑️ Clear Note", "#D32F2F")
+        btn_clear.setToolTip("Clear all feedback text")
+        btn_clear.clicked.connect(self.text_edit.clear)
+        btn_row.addWidget(btn_clear)
+        btn_row.addStretch(1)
+
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
-        layout.addWidget(buttons)
+        btn_row.addWidget(buttons)
+        layout.addLayout(btn_row)
 
     def get_text(self) -> str:
         return self.text_edit.toPlainText()
@@ -657,10 +666,22 @@ class GeneralNoteDialog(QDialog):
 
         layout.addWidget(adj_box)
 
+        btn_row = QHBoxLayout()
+        btn_clear = _md_btn_outlined("🗑️ Clear Note", "#D32F2F")
+        btn_clear.setToolTip("Clear the general note text and reset score adjustment to 0%")
+        btn_clear.clicked.connect(self._clear_all)
+        btn_row.addWidget(btn_clear)
+        btn_row.addStretch(1)
+
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
-        layout.addWidget(buttons)
+        btn_row.addWidget(buttons)
+        layout.addLayout(btn_row)
+
+    def _clear_all(self) -> None:
+        self.text_edit.clear()
+        self.adjustment_spin.setValue(0.0)
 
     def _update_preview(self, val: float) -> None:
         # Dynamic spinbox styling
@@ -1056,6 +1077,8 @@ class Agent3Tab(QWidget):
         self._table_float: TableFloatWindow | None = None    # floating table window
         self._syncing_selection: bool = False
         self._annotate_active: bool = True  # compliance annotation overlay toggle (enabled by default)
+        self._undo_stacks: dict[str, list[dict]] = {}
+        self._max_undo_history: int = 50
 
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(6, 4, 6, 6)
@@ -1397,6 +1420,11 @@ class Agent3Tab(QWidget):
         btn_status       = _md_btn("✏️ Status",       "#1976D2")
         btn_feedback     = _md_btn("💬 Feedback",     "#0288D1")
         btn_general_note = _md_btn("📝 General Note", "#7B1FA2")
+        btn_clear_note   = _md_btn_outlined("🗑️ Clear Note", "#E65100")
+        btn_clear_note.setToolTip("Clear/cancel the note on the selected guideline, fragment, or summary row")
+        self.btn_undo    = _md_btn_outlined("↩️ Undo",       "#546E7A")
+        self.btn_undo.setToolTip("Undo last change (Ctrl+Z)")
+        self.btn_undo.setEnabled(False)
         btn_map          = _md_btn_outlined("➕ Map",   "#388E3C")
         btn_unmap        = _md_btn_outlined("⛔ Unmap", "#D32F2F")
         btn_continue     = _md_btn("▶ Continue",      "#388E3C")
@@ -1405,12 +1433,17 @@ class Agent3Tab(QWidget):
         btn_status.clicked.connect(self._hitl_change_status)
         btn_feedback.clicked.connect(self._hitl_update_feedback)
         btn_general_note.clicked.connect(self._hitl_edit_general_note)
+        btn_clear_note.clicked.connect(self._hitl_clear_note)
+        self.btn_undo.clicked.connect(self._hitl_undo)
         btn_map.clicked.connect(self._hitl_map_fragment)
         btn_unmap.clicked.connect(self._hitl_unmap_fragment)
         btn_continue.clicked.connect(lambda: self.continue_pipeline_requested.emit())
         btn_save.clicked.connect(self._save_hitl_changes)
 
-        for btn in [btn_status, btn_feedback, btn_general_note, btn_map, btn_unmap, btn_continue, btn_save]:
+        for btn in [
+            btn_status, btn_feedback, btn_general_note, btn_clear_note,
+            self.btn_undo, btn_map, btn_unmap, btn_continue, btn_save,
+        ]:
             hitl_layout.addWidget(btn)
         hitl_layout.addStretch(1)
 
@@ -2322,6 +2355,8 @@ class Agent3Tab(QWidget):
                     render_text = self._build_annotated_puml(raw_m)
                     self._render_diagram(render_text)
 
+            self._update_undo_button_state()
+
         except Exception as exc:
             QMessageBox.critical(self, "Load Error", str(exc))
 
@@ -2939,12 +2974,189 @@ class Agent3Tab(QWidget):
 
     # ── Human Involvement Controls (3.3) ──
 
+    def keyPressEvent(self, event) -> None:
+        if event.matches(QKeySequence.Undo):
+            self._hitl_undo()
+            event.accept()
+            return
+        super().keyPressEvent(event)
+
+    def _current_case_key(self) -> str:
+        agg_name = self.aggregate_combo.currentText().strip()
+        if agg_name:
+            return agg_name
+        return str(self.current_raw_data.get("case_id", "__default__"))
+
+    def _push_undo_snapshot(self, label: str) -> None:
+        """Save a deep-copied snapshot of the current case state before a HITL edit."""
+        key = self._current_case_key()
+        stack = self._undo_stacks.setdefault(key, [])
+        stack.append({
+            "label": label,
+            "current_raw_data": copy.deepcopy(self.current_raw_data),
+            "compliance_data": copy.deepcopy(self.compliance_data),
+            "uncovered_data": copy.deepcopy(self.uncovered_data),
+            "sat_weight": self.sat_weight,
+            "part_weight": self.part_weight,
+            "not_weight": self.not_weight,
+        })
+        if len(stack) > self._max_undo_history:
+            stack.pop(0)
+        self._update_undo_button_state()
+
+    def _update_undo_button_state(self) -> None:
+        if not hasattr(self, "btn_undo"):
+            return
+        stack = self._undo_stacks.get(self._current_case_key(), [])
+        self.btn_undo.setEnabled(bool(stack))
+        if stack:
+            last_label = stack[-1].get("label", "last change")
+            self.btn_undo.setText(f"↩️ Undo ({len(stack)})")
+            self.btn_undo.setToolTip(f"Undo: {last_label} (Ctrl+Z)")
+        else:
+            self.btn_undo.setText("↩️ Undo")
+            self.btn_undo.setToolTip("Undo last change (Ctrl+Z)")
+
+    def _hitl_undo(self) -> None:
+        """Revert the last HITL change (note edit, note clear, status change, map/unmap, weights) for the current case."""
+        key = self._current_case_key()
+        stack = self._undo_stacks.get(key, [])
+        if not stack:
+            self._update_undo_button_state()
+            self.status_label.setText("Nothing to undo.")
+            return
+
+        snapshot = stack.pop()
+        self.current_raw_data = copy.deepcopy(snapshot["current_raw_data"])
+        self.compliance_data = copy.deepcopy(snapshot["compliance_data"])
+        self.uncovered_data = copy.deepcopy(snapshot["uncovered_data"])
+        self.sat_weight = snapshot["sat_weight"]
+        self.part_weight = snapshot["part_weight"]
+        self.not_weight = snapshot["not_weight"]
+
+        self._recalculate_score()
+        self._populate_tree_table()
+        if self._annotate_active:
+            raw_m = self.model_text_edit.toPlainText().strip()
+            if raw_m:
+                render_text = self._build_annotated_puml(raw_m)
+                self._render_diagram(render_text)
+
+        self._update_undo_button_state()
+        label = snapshot.get("label", "last change")
+        log_action("Agent3", "undo", f"case={key} | undone={label} | remaining={len(stack)}")
+        self._save_hitl_changes(silent=True)
+        self.status_label.setText(f"↩️ Undone: {label}")
+
+    def _hitl_clear_note(self) -> None:
+        """Cancel/clear the note on the currently selected guideline, uncovered fragment, or summary row."""
+        rows = self.tree_table.selectionModel().selectedRows()
+        if not rows:
+            QMessageBox.warning(
+                self,
+                "No Selection",
+                "Select a guideline row, uncovered fragment row, or the SUMMARY row to clear its note.",
+            )
+            return
+
+        row = rows[0].row()
+        item = self.tree_table.item(row, 0)
+        meta = item.data(Qt.UserRole) if item else None
+        if not meta:
+            QMessageBox.warning(
+                self,
+                "Invalid Selection",
+                "Select a guideline row, uncovered fragment row, or the SUMMARY row to clear its note.",
+            )
+            return
+
+        tag, idx = meta
+
+        if tag == "g" and idx < len(self.compliance_data):
+            g = self.compliance_data[idx]
+            gid = g.get("guideline_id", "")
+            curr_notes = (g.get("notes", "") or "").strip()
+            if not curr_notes:
+                QMessageBox.information(self, "No Note", f"Guideline {gid} has no note to clear.")
+                return
+            self._push_undo_snapshot(f"Clear Feedback ({gid})")
+            g["notes"] = ""
+            for entry in self.current_raw_data.get("existing_mapping", []):
+                if isinstance(entry, dict) and entry.get("guideline_id") == gid:
+                    entry["notes"] = ""
+            for entry in self.current_raw_data.get("potential_found", []):
+                if isinstance(entry, dict) and entry.get("guideline_id") == gid:
+                    entry["notes"] = ""
+            self._populate_tree_table()
+            log_action("Agent3", "clear_feedback", f"guideline={gid} | old_feedback={curr_notes!r}")
+            self._save_hitl_changes(silent=True)
+            self.status_label.setText(f"🗑️ Cleared note for {gid}")
+
+        elif tag == "u" and idx < len(self.uncovered_data):
+            uf = self.uncovered_data[idx]
+            curr_notes = (uf.get("notes", "") or "").strip()
+            if not curr_notes:
+                QMessageBox.information(self, "No Note", f"Fragment #{idx + 1} has no note to clear.")
+                return
+            self._push_undo_snapshot(f"Clear Fragment Note (#{idx + 1})")
+            uf["notes"] = ""
+            self.current_raw_data["uncovered_fragments"] = self.uncovered_data
+            self._populate_tree_table()
+            log_action("Agent3", "clear_fragment_note", f"fragment_idx={idx} | old_note={curr_notes!r}")
+            self._save_hitl_changes(silent=True)
+            self.status_label.setText(f"🗑️ Cleared note for Fragment #{idx + 1}")
+
+        elif tag == "summary":
+            cid = str(self.current_raw_data.get("case_id", self.aggregate_combo.currentText().replace(".json", "")))
+            curr_notes = (
+                self.current_raw_data.get(
+                    "general_notes",
+                    self.current_raw_data.get("reviewer_notes", self.current_raw_data.get("general_comment", "")),
+                )
+                or ""
+            ).strip()
+            deduction_val = float(
+                self.current_raw_data.get("score_deduction", self.current_raw_data.get("manual_deduction", 0.0)) or 0.0
+            )
+            curr_adjustment = float(
+                self.current_raw_data.get(
+                    "score_adjustment",
+                    self.current_raw_data.get("manual_adjustment", -deduction_val),
+                )
+                or 0.0
+            )
+            if not curr_notes and curr_adjustment == 0.0:
+                QMessageBox.information(self, "No Note", "This case has no general note or manual score adjustment to clear.")
+                return
+            self._push_undo_snapshot("Clear General Note")
+            self.current_raw_data["general_notes"] = ""
+            self.current_raw_data["reviewer_notes"] = ""
+            if "general_comment" in self.current_raw_data:
+                self.current_raw_data["general_comment"] = ""
+            self.current_raw_data["score_adjustment"] = 0.0
+            self.current_raw_data["manual_adjustment"] = 0.0
+            self.current_raw_data["score_deduction"] = 0.0
+            self.current_raw_data["manual_deduction"] = 0.0
+            self._recalculate_score()
+            self._populate_tree_table()
+            log_action(
+                "Agent3",
+                "clear_general_note",
+                f"case_id={cid} | old_adjustment={curr_adjustment:+g}% | old_note={curr_notes!r}",
+            )
+            self._save_hitl_changes(silent=True)
+            self.status_label.setText(f"🗑️ Cleared general note & adjustment for Case {cid}")
+
     def _open_scoring_schema_dialog(self) -> None:
         dlg = ScoringSchemaDialog(self.sat_weight, self.part_weight, self.not_weight, parent=self)
         if dlg.exec() == QDialog.Accepted:
-            self.sat_weight, self.part_weight, self.not_weight = dlg.get_weights()
-            self._recalculate_score()
-            log_action("Agent3", "scoring_schema_change", f"sat={self.sat_weight}, part={self.part_weight}, not={self.not_weight}")
+            new_sat, new_part, new_not = dlg.get_weights()
+            if (new_sat, new_part, new_not) != (self.sat_weight, self.part_weight, self.not_weight):
+                self._push_undo_snapshot("Scoring Weights")
+                self.sat_weight, self.part_weight, self.not_weight = new_sat, new_part, new_not
+                self._recalculate_score()
+                self._populate_tree_table()
+                log_action("Agent3", "scoring_schema_change", f"sat={self.sat_weight}, part={self.part_weight}, not={self.not_weight}")
 
     def _calc_base_score_pct(self) -> float:
         """Calculate the raw / base guideline score percentage without manual deductions."""
@@ -3033,7 +3245,8 @@ class Agent3Tab(QWidget):
         curr_idx = statuses.index(curr) if curr in statuses else 0
 
         new_st, ok = QInputDialog.getItem(self, "Update Status", f"Select status for {gid}:", statuses, curr_idx, False)
-        if ok and new_st:
+        if ok and new_st and new_st != curr:
+            self._push_undo_snapshot(f"Status {gid} ({curr} → {new_st})")
             g["compliance_status"] = new_st
             g["label"] = new_st
             for entry in self.current_raw_data.get("existing_mapping", []):
@@ -3074,9 +3287,15 @@ class Agent3Tab(QWidget):
         dlg = FeedbackDialog(gid, curr_notes, parent=self)
         if dlg.exec() == QDialog.Accepted:
             notes = dlg.get_text().strip()
+            if notes == (curr_notes or "").strip():
+                return
+            self._push_undo_snapshot(f"Feedback ({gid})")
             g["notes"] = notes
             for entry in self.current_raw_data.get("existing_mapping", []):
                 if entry.get("guideline_id") == gid:
+                    entry["notes"] = notes
+            for entry in self.current_raw_data.get("potential_found", []):
+                if isinstance(entry, dict) and entry.get("guideline_id") == gid:
                     entry["notes"] = notes
             self._populate_tree_table()
             log_action("Agent3", "update_feedback", f"guideline={gid} | old_feedback={curr_notes!r} | new_feedback={notes!r}")
@@ -3108,6 +3327,9 @@ class Agent3Tab(QWidget):
         if dlg.exec() == QDialog.Accepted:
             notes = dlg.get_text().strip()
             adjustment = dlg.get_adjustment()
+            if notes == (curr_notes or "").strip() and adjustment == curr_adjustment:
+                return
+            self._push_undo_snapshot("General Note")
             self.current_raw_data["general_notes"] = notes
             self.current_raw_data["reviewer_notes"] = notes
             self.current_raw_data["score_adjustment"] = adjustment
@@ -3165,6 +3387,7 @@ class Agent3Tab(QWidget):
         gid, ok = QInputDialog.getText(self, "Map Fragment", f"Enter Guideline ID (e.g. G1) for:\n'{desc[:60]}...':")
         if ok and gid.strip():
             target_gid = gid.strip()
+            self._push_undo_snapshot(f"Map Fragment → {target_gid}")
             mapping = self.current_raw_data.setdefault("existing_mapping", [])
             m_elems = uf.get("matched_elements") or uf.get("elements") or []
             matched = False
@@ -3273,6 +3496,7 @@ class Agent3Tab(QWidget):
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
         if reply == QMessageBox.StandardButton.Yes:
+            self._push_undo_snapshot(f"Unmap {gid}")
             # Remove from compliance_data so it disappears from the guidelines table
             self.compliance_data.pop(idx)
             
@@ -3307,11 +3531,12 @@ class Agent3Tab(QWidget):
             log_action("Agent3", "unmap_fragment", f"guideline={gid}")
             self._save_hitl_changes()
 
-    def _save_hitl_changes(self) -> None:
+    def _save_hitl_changes(self, silent: bool = False) -> None:
         out_dir = self.output_dir_edit.text().strip()
         agg_file = self.aggregate_combo.currentText()
         if not out_dir or not agg_file:
-            QMessageBox.warning(self, "Missing Destination", "Select an aggregate file to save changes.")
+            if not silent:
+                QMessageBox.warning(self, "Missing Destination", "Select an aggregate file to save changes.")
             return
 
         agg_path = Path(out_dir) / "aggregate" / agg_file
@@ -3339,7 +3564,8 @@ class Agent3Tab(QWidget):
                     state_file.write_text(json.dumps(st, indent=2, ensure_ascii=False), encoding="utf-8")
 
             self.evaluation_updated.emit(cid, self.current_raw_data, {"uncovered_fragments": self.uncovered_data})
-            QMessageBox.information(self, "Saved", f"Successfully saved human edits for case {cid}.")
+            if not silent:
+                QMessageBox.information(self, "Saved", f"Successfully saved human edits for case {cid}.")
             log_action("Agent3", "save_changes", f"case_id={cid}, file={agg_file}")
         except Exception as exc:
             QMessageBox.critical(self, "Save Error", str(exc))
