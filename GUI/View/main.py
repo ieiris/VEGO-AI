@@ -1015,6 +1015,7 @@ class MainWindow(QMainWindow):
             self.agent2_tab.receive_language_template(template)
         if guidelines:
             self.agent2_tab.load_guidelines(guidelines)
+            self.agent3_tab.update_reference_guidelines(guidelines)
         if isinstance(lang_qa_history, list) and lang_qa_history:
             self.agent1_tab.load_qa_history(lang_qa_history)
         if isinstance(dom_qa_history, list) and dom_qa_history:
@@ -1265,6 +1266,7 @@ class MainWindow(QMainWindow):
         )
         # Cheap, in-memory UI sync
         self.agent4_tab.probe_tab.reference_guidelines.set(formatted_json)
+        self.agent3_tab.update_reference_guidelines(guidelines_dict)
 
     def _on_classifications_updated(self, cl: dict) -> None:
         """Sync classification updates to Agent 2 and save updated guidelines to pipeline_state.json."""
@@ -1542,6 +1544,8 @@ class MainWindow(QMainWindow):
         # 4.5 Populate Agent 3 (Compliance Evaluator & Visualizer)
         case_models_dir = self.orchestrator_tab.case_models_dir.text().strip() or "Cases"
         self.agent3_tab.receive_run_output(output_dir, case_models_dir)
+        if guidelines:
+            self.agent3_tab.update_reference_guidelines(guidelines)
 
         # 5. Populate Agent 4 (Variability Explorer)
         if template:

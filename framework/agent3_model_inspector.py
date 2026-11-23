@@ -288,6 +288,10 @@ For each fragment in the case model not accounted for in the compliance vector:
 5. If uncertain, raise clarifying questions using global Q IDs:
    - Q_lang_NNN for language_advisor
    - Q_dom_NNN  for domain_advisor
+6. Identify any related reference guideline ID(s) in related_guideline_ids:
+   - If the fragment relates to, extends, or is an alternative/mistake concerning one or more
+     reference guidelines, list their IDs (e.g., ["G1"] or ["G2", "G5"]).
+   - If the fragment is a standalone addition unrelated to any specific reference guideline, return [].
 
 CONSTRAINTS:
 - Uncovered fragments must be grounded in the Case Model only.
@@ -306,7 +310,8 @@ Return only the JSON block below. No prose, explanation, or markdown wrapping be
       "fragment": "<description in your own words>",
       "label": "Alternative | Domain Mistake | Language Mistake",
       "severity": "High | Medium | Low | N/A",
-      "reason": "<brief justification>"
+      "reason": "<brief justification>",
+      "related_guideline_ids": ["G1"]
     }
   ],
   "questions_to_language_advisor": [

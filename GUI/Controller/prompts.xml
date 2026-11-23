@@ -522,19 +522,35 @@ Assign a compliance status to each guideline based on evidence found. Produce a
 coverage_summary for downstream aggregation.
 
 INSTRUCTIONS:
-For each guideline in the reference guidelines:
-1. Search the case model for matching fragments.
-2. If a match is found, describe the fragment in your OWN words (do NOT copy verbatim snippets).
-3. Identify the exact matching element name(s) in the model:
-   - For Class Diagrams: list the exact Class name(s), e.g. ["Customer"], ["Order", "RegularOrder"]
-   - For Use Case Diagrams: list the Actor and Use Case name(s), e.g. ["Actor: Customer", "UC: Place Order"]
-   - For State Machine Diagrams: list the exact State name(s), e.g. ["Order Classification", "In Transit"]
-4. Match the described fragment against the guideline's description field to confirm alignment.
-5. Assign a compliance status:
-     Satisfied           -- clear and complete evidence found
-     Partially-Satisfied -- incomplete or ambiguous evidence
-     Not-Satisfied       -- no evidence found
-6. Add notes explaining partial satisfaction where applicable.
+For each guideline in the Compliance Guidelines:
+1. Identify the language template entry referenced by the guideline's related_template_id.
+   It defines which constructs and structural relations the language uses to express
+   this kind of requirement.
+2. Search the case model for fragments that match the guideline. Search for fragments
+   of the kind that the template entry describes.
+3. If a match is found, describe the fragment in your OWN words (do NOT copy verbatim snippets).
+4. Identify the exact name(s) of the matching model element(s), using the constructs listed
+   in the template entry's involved_constructs, in the form "<Construct>: <Name>".
+5. Match the described fragment against the guideline's evidence field to
+   confirm alignment.
+   Apply LENIENT, ABSTRACTION-AWARE evaluation:
+   - Judge compliance at the level of abstraction that the language template can express.
+     Do NOT penalise the case model for omitting details that the language template does not
+     provide constructs for, even if the guideline's citation mentions them.
+   - If a model element reasonably and clearly represents the core intent of the guideline
+     (including via broader or summary naming, synonyms, or a higher-level grouping),
+     mark it Satisfied.
+   - Details that the language template can express, but that the model omits or contradicts,
+     are NOT covered by this leniency.
+6. Assign a compliance status:
+     Satisfied           -- the core intent of the guideline is represented at a level of
+                            abstraction appropriate to the language template; do NOT downgrade
+                            solely for missing details outside the language's expressiveness.
+     Partially-Satisfied -- only a minor or tangential aspect of the core intent is represented,
+                            or a major concept that the language can express is missing or
+                            contradicted.
+     Not-Satisfied       -- no meaningful evidence found.
+7. Add a justification explaining partial satisfaction where applicable.
 
 After processing all guidelines, compute coverage_summary counts.
 

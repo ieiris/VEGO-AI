@@ -148,6 +148,11 @@ class PlantUMLDiagramWorker(QThread):
                 f"Rendering failed after retries: {last_error or 'Unable to fetch diagram from rendering servers.'}",
             )
 
+    @staticmethod
+    def _is_plantuml_error_svg(data: bytes) -> bool:
+        """Detect PlantUML.com HTTP-200 error SVGs so the worker falls back to clean PUML."""
+        return b"Syntax Error" in data or b"[From string (line" in data
+
     def _try_render_all_endpoints(self, text: str) -> bytes | None:
         """Try rendering a given PUML text against Kroki.io and PlantUML.com endpoints."""
         if self._is_cancelled():
@@ -206,7 +211,7 @@ class PlantUMLDiagramWorker(QThread):
             )
             with urllib.request.urlopen(req, timeout=12) as resp:
                 data = resp.read()
-            if data and len(data) > 20:
+            if data and len(data) > 20 and not self._is_plantuml_error_svg(data):
                 return data
         except Exception:
             pass
@@ -223,7 +228,7 @@ class PlantUMLDiagramWorker(QThread):
             )
             with urllib.request.urlopen(req, timeout=12) as resp:
                 data = resp.read()
-            if data and len(data) > 20:
+            if data and len(data) > 20 and not self._is_plantuml_error_svg(data):
                 return data
         except Exception:
             pass
@@ -742,6 +747,128 @@ class GeneralNoteDialog(QDialog):
 
     def get_deduction(self) -> float:
         return -float(self.adjustment_spin.value())
+
+
+# ---------------------------------------------------------------------------
+# Full Row Editor Dialog (Guideline / Uncovered Fragment)
+# ---------------------------------------------------------------------------
+
+class RowEditDialog(QDialog):
+    """Edit all fields of a table row (Status, Matched Elements, Reference Guideline, Evidence, Notes) together."""
+
+    def __init__(
+        self,
+        row_id: str,
+        status: str,
+        matched_elements: str,
+        reference_guideline: str,
+        evidence: str,
+        notes: str,
+        is_fragment: bool = False,
+        grader_notes: str = "",
+        parent=None,
+    ):
+        super().__init__(parent)
+        kind_lbl = "Uncovered Fragment" if is_fragment else "Guideline"
+        self.setWindowTitle(f"📋 Edit {kind_lbl} Row — {row_id}")
+        self.resize(740, 560)
+        self.setMinimumSize(520, 420)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+
+        header = QLabel(f"Editing full row for <b>{row_id}</b> ({kind_lbl}):")
+        header.setStyleSheet("font-size: 12px; color: #263238;")
+        layout.addWidget(header)
+
+        form = QFormLayout()
+        form.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
+        form.setHorizontalSpacing(10)
+        form.setVerticalSpacing(8)
+
+        # Status / Label
+        self.status_combo = QComboBox()
+        if is_fragment:
+            statuses = ["Alternative", "Domain Mistake", "Language Mistake"]
+            self.status_combo.setEditable(True)
+        else:
+            statuses = ["Satisfied", "Partially-Satisfied", "Not-Satisfied"]
+        self.status_combo.addItems(statuses)
+        if status in statuses:
+            self.status_combo.setCurrentText(status)
+        elif status:
+            self.status_combo.addItem(status)
+            self.status_combo.setCurrentText(status)
+        form.addRow("Label:" if is_fragment else "Status:", self.status_combo)
+
+        # Matched Elements
+        self.matched_edit = QLineEdit(matched_elements)
+        self.matched_edit.setPlaceholderText("Comma-separated elements, e.g. UC: Register Customer, UC: Create Group Order")
+        form.addRow("Matched Elements:", self.matched_edit)
+
+        ui_font = QFont("Segoe UI", 10)
+
+        # Reference Guideline
+        self.ref_edit = QPlainTextEdit()
+        self.ref_edit.setPlainText(reference_guideline)
+        self.ref_edit.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+        self.ref_edit.setFont(ui_font)
+        self.ref_edit.setFixedHeight(68)
+        self.ref_edit.setPlaceholderText(
+            "Related guideline ID(s) or reference text (e.g. G1, G2)" if is_fragment else "Reference guideline text"
+        )
+        form.addRow("Reference Guideline:", self.ref_edit)
+
+        # Evidence / Fragment Description
+        self.evidence_edit = QPlainTextEdit()
+        self.evidence_edit.setPlainText(evidence)
+        self.evidence_edit.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+        self.evidence_edit.setFont(ui_font)
+        self.evidence_edit.setMinimumHeight(85)
+        form.addRow("Fragment:" if is_fragment else "Evidence:", self.evidence_edit)
+
+        # Notes / Feedback
+        self.notes_edit = QPlainTextEdit()
+        self.notes_edit.setPlainText(notes)
+        self.notes_edit.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+        self.notes_edit.setFont(ui_font)
+        self.notes_edit.setMinimumHeight(85)
+        self.notes_edit.setPlaceholderText("Reviewer notes / feedback…")
+        form.addRow("Notes / Feedback:", self.notes_edit)
+
+        if grader_notes:
+            gn_box = QPlainTextEdit()
+            gn_box.setPlainText(grader_notes)
+            gn_box.setReadOnly(True)
+            gn_box.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+            gn_box.setFont(ui_font)
+            gn_box.setFixedHeight(64)
+            gn_box.setStyleSheet("background: #FFF8E1; color: #4E342E; border: 1px solid #FFE082;")
+            form.addRow("Grader Notes (Agent 2):", gn_box)
+
+        layout.addLayout(form, stretch=1)
+
+        btn_row = QHBoxLayout()
+        btn_clear_note = _md_btn_outlined("🗑️ Clear Note", "#D32F2F")
+        btn_clear_note.setToolTip("Clear the Notes / Feedback field")
+        btn_clear_note.clicked.connect(self.notes_edit.clear)
+        btn_row.addWidget(btn_clear_note)
+        btn_row.addStretch(1)
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        btn_row.addWidget(buttons)
+        layout.addLayout(btn_row)
+
+    def get_values(self) -> dict[str, str]:
+        return {
+            "status": self.status_combo.currentText().strip(),
+            "matched_elements": self.matched_edit.text().strip(),
+            "reference_guideline": self.ref_edit.toPlainText().strip(),
+            "evidence": self.evidence_edit.toPlainText().strip(),
+            "notes": self.notes_edit.toPlainText().strip(),
+        }
 
 
 
@@ -1353,14 +1480,14 @@ class Agent3Tab(QWidget):
             }
         """
 
-        self.tree_table = QTableWidget(0, 6)
+        self.tree_table = QTableWidget(0, 7)
         self.tree_table.setHorizontalHeaderLabels([
-            "ID", "Status", "Matched Elements", "Reference Guideline", "Evidence", "Notes / Feedback"
+            "ID", "Status", "Matched Elements", "Reference Guideline", "Evidence", "Notes / Feedback", "Grader Notes"
         ])
 
         # Excel-like interactive column & row resizing with automatic wrap-text reflow
         tree_h_header = self.tree_table.horizontalHeader()
-        for i in range(6):
+        for i in range(7):
             tree_h_header.setSectionResizeMode(i, QHeaderView.Interactive)
         tree_h_header.setStretchLastSection(False)
         tree_h_header.setSectionsMovable(True)
@@ -1377,6 +1504,7 @@ class Agent3Tab(QWidget):
         self.tree_table.setColumnWidth(3, 240)  # Reference Guideline
         self.tree_table.setColumnWidth(4, 240)  # Evidence
         self.tree_table.setColumnWidth(5, 220)  # Notes / Feedback
+        self.tree_table.setColumnWidth(6, 220)  # Grader Notes (from Agent 2)
 
         self.tree_table.setShowGrid(True)
         self.tree_table.setAlternatingRowColors(True)
@@ -1417,6 +1545,8 @@ class Agent3Tab(QWidget):
         hitl_layout.setContentsMargins(8, 6, 8, 6)
         hitl_layout.setSpacing(6)
 
+        btn_edit_row     = _md_btn("📋 Edit Row",     "#00796B")
+        btn_edit_row.setToolTip("Edit all fields of the selected row together (Status, Matched Elements, Reference Guideline, Evidence, Notes)")
         btn_status       = _md_btn("✏️ Status",       "#1976D2")
         btn_feedback     = _md_btn("💬 Feedback",     "#0288D1")
         btn_general_note = _md_btn("📝 General Note", "#7B1FA2")
@@ -1430,6 +1560,7 @@ class Agent3Tab(QWidget):
         btn_continue     = _md_btn("▶ Continue",      "#388E3C")
         btn_save         = _md_btn("💾 Save",         "#F57C00")
 
+        btn_edit_row.clicked.connect(self._hitl_edit_row)
         btn_status.clicked.connect(self._hitl_change_status)
         btn_feedback.clicked.connect(self._hitl_update_feedback)
         btn_general_note.clicked.connect(self._hitl_edit_general_note)
@@ -1441,7 +1572,7 @@ class Agent3Tab(QWidget):
         btn_save.clicked.connect(self._save_hitl_changes)
 
         for btn in [
-            btn_status, btn_feedback, btn_general_note, btn_clear_note,
+            btn_edit_row, btn_status, btn_feedback, btn_general_note, btn_clear_note,
             self.btn_undo, btn_map, btn_unmap, btn_continue, btn_save,
         ]:
             hitl_layout.addWidget(btn)
@@ -1685,9 +1816,30 @@ class Agent3Tab(QWidget):
         try:
             data = json.loads(ref_file.read_text(encoding="utf-8"))
             guidelines = data.get("reference_guidelines", []) or []
-            self.reference_guidelines_map = {g["id"]: g for g in guidelines if "id" in g}
+            self.reference_guidelines_map = {g["id"]: g for g in guidelines if isinstance(g, dict) and "id" in g}
         except Exception:
             self.reference_guidelines_map = {}
+
+    def update_reference_guidelines(self, guidelines_dict: dict | None) -> None:
+        """Sync reference guidelines (including Grader Notes) live from Agent 2."""
+        if not isinstance(guidelines_dict, dict):
+            return
+        guidelines = guidelines_dict.get("reference_guidelines", []) or []
+        self.reference_guidelines_map = {g["id"]: g for g in guidelines if isinstance(g, dict) and "id" in g}
+        if self.compliance_data or self.uncovered_data:
+            self._populate_tree_table()
+
+    def _get_grader_notes_for_gid(self, gid: str) -> str:
+        """Look up Agent 2's grader_notes for a guideline ID."""
+        if not gid:
+            return ""
+        ref_obj = (
+            self.reference_guidelines_map.get(gid)
+            or self.reference_guidelines_map.get(gid.replace("G", "G_"))
+            or self.reference_guidelines_map.get(gid.replace("G_", "G"))
+            or {}
+        )
+        return str(ref_obj.get("grader_notes") or "").strip()
 
     # ── Model Code Editing & Rendering Handlers ──
 
@@ -1801,22 +1953,36 @@ class Agent3Tab(QWidget):
                         selected_ufs.add(meta[1])
         return selected_gids, selected_ufs
 
+    @staticmethod
+    def _strip_quoted(text: str) -> str:
+        """Replace double-quoted strings with empty quotes so inner '--' or '->' aren't treated as arrows."""
+        return re.sub(r'"[^"]*"', '""', text, flags=re.DOTALL)
+
     def _extract_element_name(self, line: str) -> tuple[str | None, str | None, str | None]:
-        """Extract (kind, name, alias) from a PlantUML element declaration line."""
+        """Extract (kind, name, alias) from a PlantUML element declaration (single or multi-line)."""
         line_s = line.strip()
+        unquoted = self._strip_quoted(line_s)
 
         # Actor (e.g. actor SalesStaff as "Sales Staff" or actor :Customer: as C or actor Customer)
-        m = re.match(r'^actor\s+(?:"([^"]+)"|:([^:]+):|([A-Za-z0-9_]+))(?:\s+as\s+(?:"([^"]+)"|([A-Za-z0-9_]+)))?', line_s, re.IGNORECASE)
+        m = re.match(
+            r'^actor\s+(?:"([^"]+)"|:([^:]+):|([A-Za-z0-9_]+))(?:\s+as\s+(?:"([^"]+)"|([A-Za-z0-9_]+)))?',
+            line_s,
+            re.IGNORECASE | re.DOTALL,
+        )
         if m:
             name = m.group(1) or m.group(2) or m.group(3)
             alias = m.group(4) or m.group(5)
             return "actor", name.strip(), alias.strip() if alias else None
 
-        # Standalone UseCase (e.g. usecase "Place Order" or (Place Order) or usecase (Place Order) as PO)
-        m = re.match(r'^(?:usecase\s+)?(?:\(([^)\n]+)\)|"([^"\n]+)"|([A-Za-z0-9_]+))(?:\s+as\s+(?:"([^"\n]+)"|([A-Za-z0-9_]+)))?$', line_s, re.IGNORECASE)
-        if m and not re.search(r"-->|<--|->|<-|\.\.>|\.\.|--|==", line_s):
+        # Standalone UseCase (single or multi-line, e.g. usecase "Place Order" as PO or usecase PO as "Place Order\n--...")
+        m = re.match(
+            r'^(?:usecase\s+)?(?:\(([^)]+)\)|"([^"]+)"|([A-Za-z0-9_]+))(?:\s+as\s+(?:\(([^)]+)\)|"([^"]+)"|([A-Za-z0-9_]+)))?(?:\s+#[0-9a-fA-F]{3,8}|\s+#[a-zA-Z]+)?$',
+            line_s,
+            re.IGNORECASE | re.DOTALL,
+        )
+        if m and not re.search(r"-->|<--|->|<-|\.\.>|\.\.|--|==", unquoted):
             name = m.group(1) or m.group(2) or m.group(3)
-            alias = m.group(4) or m.group(5)
+            alias = m.group(4) or m.group(5) or m.group(6)
             if line_s.lower().startswith("usecase") or line_s.startswith("("):
                 return "usecase", name.strip(), alias.strip() if alias else None
 
@@ -1842,37 +2008,73 @@ class Agent3Tab(QWidget):
 
         return None, None, None
 
-    def _match_name_to_guideline(self, name: str, alias: str | None, guideline_text: str, explicit_elements: list[str] | None = None) -> bool:
+    @staticmethod
+    def _normalize_label(raw: str) -> tuple[str, str]:
+        """Return (full_normalized, primary_title) for a PlantUML label (handling \\n, real newlines, '--', UC prefix)."""
+        text = raw.strip().strip('"').replace("\\n", "\n")
+        # Primary title is the part before an extension-points separator '--'
+        primary = re.split(r'\n\s*--\s*(?:\n|$)|\s+--\s+', text, maxsplit=1)[0]
+        full_norm = re.sub(r'\s+', ' ', text).strip().lower()
+        primary_norm = re.sub(r'\s+', ' ', primary).strip().lower()
+        # Strip leading UC numbering like "uc7: " if present
+        primary_norm = re.sub(r'^uc\d*\s*:\s*', '', primary_norm).strip()
+        return full_norm, primary_norm
+
+    def _match_name_to_guideline(
+        self,
+        name: str,
+        alias: str | None,
+        guideline_text: str,
+        explicit_elements: list[str] | None = None,
+        kind: str | None = None,
+    ) -> bool:
         """Check whether an element name or alias matches the guideline text or explicit matched_elements."""
         if not name:
             return False
 
-        clean_name = name.strip('"').lower()
-        clean_alias = alias.strip('"').lower() if alias else ""
+        clean_name, primary_name = self._normalize_label(name)
+        clean_alias, primary_alias = self._normalize_label(alias) if alias else ("", "")
 
         # 1. Direct match with explicit matched_elements if provided
         if explicit_elements:
+            _PREFIX_KIND = {
+                "actor": "actor",
+                "uc": "usecase",
+                "usecase": "usecase",
+                "class": "class",
+                "interface": "class",
+                "enum": "class",
+                "state": "state",
+                "component": "component",
+            }
             for elem in explicit_elements:
                 if not elem:
                     continue
-                elem_lower = elem.strip().lower()
-                clean_elem = re.sub(r'^(?:actor|uc|usecase|class|state|component|interface|enum)\s*:\s*', '', elem_lower).strip()
+                elem_lower = re.sub(r'\s+', ' ', elem.strip().replace("\\n", " ")).lower()
+                m_pref = re.match(r'^(actor|uc|usecase|class|state|component|interface|enum)\d*\s*:\s*', elem_lower)
+                expected_kind = _PREFIX_KIND.get(m_pref.group(1)) if m_pref else None
+                if kind and expected_kind and kind != expected_kind:
+                    continue
 
-                if clean_name == elem_lower or clean_name == clean_elem:
-                    return True
-                if clean_alias and (clean_alias == elem_lower or clean_alias == clean_elem):
-                    return True
-                if clean_name and clean_name in elem_lower:
-                    return True
-                if clean_alias and clean_alias in elem_lower:
-                    return True
+                clean_elem = re.sub(r'^(?:actor|uc\d*|usecase|class|state|component|interface|enum)\s*:\s*', '', elem_lower).strip()
+                if not clean_elem:
+                    continue
+
+                candidates = [c for c in (clean_name, primary_name, clean_alias, primary_alias) if c]
+                for cand in candidates:
+                    if cand == elem_lower or cand == clean_elem:
+                        return True
+                    if len(cand) >= 3 and (cand in elem_lower or cand in clean_elem):
+                        return True
+                    if len(clean_elem) >= 3 and re.search(r'\b' + re.escape(clean_elem) + r'\b', cand):
+                        return True
             return False
 
         # 2. Text matching against guideline evidence / description
         g_text_lower = guideline_text.lower()
-        candidates = [name]
+        candidates = [primary_name or name]
         if alias:
-            candidates.append(alias)
+            candidates.append(primary_alias or alias)
 
         for cand in candidates:
             clean = cand.strip('"').lower()
@@ -1904,7 +2106,7 @@ class Agent3Tab(QWidget):
         kind, name, alias = self._extract_element_name(line)
         if not kind or not name:
             return False
-        return self._match_name_to_guideline(name, alias, guideline_text, explicit_elements)
+        return self._match_name_to_guideline(name, alias, guideline_text, explicit_elements, kind=kind)
 
     def _build_annotated_puml(self, puml_text: str, selected_gids: set[str] | None = None, selected_ufs: set[int] | None = None) -> str:
         """
@@ -1993,45 +2195,80 @@ class Agent3Tab(QWidget):
         if not targets:
             return puml_text
 
-        # Track elements explicitly declared in standalone lines
-        declared_names: set[str] = set()
-        for line in lines:
+        # Group multi-line quoted element declarations (e.g. usecase Alias as "Title\n--\n...")
+        logical_blocks: list[list[str]] = []
+        i = 0
+        while i < len(lines):
+            line = lines[i]
             stripped = line.strip()
+            stripped_lower = stripped.lower()
+            if (
+                stripped
+                and not any(stripped_lower.startswith(p) for p in self._PUML_SKIP_PREFIXES)
+                and stripped.count('"') % 2 == 1
+                and any(stripped_lower.startswith(k) for k in ("usecase ", "actor ", "state ", "component ", "rectangle "))
+            ):
+                block = [line]
+                quote_count = stripped.count('"')
+                j = i + 1
+                while j < len(lines) and quote_count % 2 == 1:
+                    block.append(lines[j])
+                    quote_count += lines[j].count('"')
+                    j += 1
+                logical_blocks.append(block)
+                i = j
+            else:
+                logical_blocks.append([line])
+                i += 1
+
+        # Track elements explicitly declared in standalone lines / multi-line blocks
+        declared_names: set[str] = set()
+        for block in logical_blocks:
+            block_text = "\n".join(block)
+            stripped = block_text.strip()
             if not stripped or any(stripped.lower().startswith(p) for p in self._PUML_SKIP_PREFIXES):
                 continue
-            if re.search(r"-->|<--|->|<-|\.\.>|\.\.|==", stripped):
+            if re.search(r"-->|<--|->|<-|\.\.>|\.\.|--|==", self._strip_quoted(stripped)):
                 continue
-            kind, name, alias = self._extract_element_name(line)
+            kind, name, alias = self._extract_element_name(block_text)
             if name:
-                declared_names.add(name.strip('"').lower())
+                full_n, prim_n = self._normalize_label(name)
+                declared_names.add(full_n)
+                if prim_n:
+                    declared_names.add(prim_n)
             if alias:
-                declared_names.add(alias.strip('"').lower())
+                full_a, prim_a = self._normalize_label(alias)
+                declared_names.add(full_a)
+                if prim_a:
+                    declared_names.add(prim_a)
 
-        # Inject colors into standalone lines and detect inline use cases
+        # Inject colors into standalone lines / multi-line blocks and detect inline use cases
         annotated_lines = []
         container_stack: list[int] = []
         container_injections: dict[int | None, list[str]] = {}
         injected_names: set[str] = set()
 
-        for line in lines:
-            stripped = line.strip()
+        for block in logical_blocks:
+            block_text = "\n".join(block)
+            stripped = block_text.strip()
             stripped_lower = stripped.lower()
 
             is_container_start = False
-            if "{" in stripped and not any(stripped_lower.startswith(k) for k in ("note", "class ", "interface ", "enum ", "state ")):
+            if len(block) == 1 and "{" in stripped and not any(stripped_lower.startswith(k) for k in ("note", "class ", "interface ", "enum ", "state ")):
                 is_container_start = True
 
-            colored_line = self._inject_puml_color(line, targets)
+            colored_block = self._inject_puml_color(block_text, targets)
+            colored_lines = colored_block.split("\n")
             annotated_idx = len(annotated_lines)
-            annotated_lines.append(colored_line)
+            annotated_lines.extend(colored_lines)
 
             if is_container_start:
                 container_stack.append(annotated_idx)
-            elif "}" in stripped and container_stack:
+            elif len(block) == 1 and "}" in stripped and container_stack:
                 container_stack.pop()
 
             # Detect inline use cases inside relationship lines
-            if re.search(r"-->|<--|->|<-|\.\.>|\.\.|--|==", stripped):
+            if len(block) == 1 and re.search(r"-->|<--|->|<-|\.\.>|\.\.|--|==", self._strip_quoted(stripped)):
                 rel_part = stripped.split(":", 1)[0]
                 inline_ucs = re.findall(r'\(([^)\n]+)\)', rel_part)
                 for uc in inline_ucs:
@@ -2044,7 +2281,7 @@ class Agent3Tab(QWidget):
                         g_text = item[0]
                         fill   = item[1]
                         explicit_elems = item[3] if len(item) > 3 else None
-                        if self._match_name_to_guideline(uc_clean, None, g_text, explicit_elems):
+                        if self._match_name_to_guideline(uc_clean, None, g_text, explicit_elems, kind="usecase"):
                             current_container = container_stack[-1] if container_stack else None
                             if current_container not in container_injections:
                                 container_injections[current_container] = []
@@ -2106,8 +2343,8 @@ class Agent3Tab(QWidget):
         if any(stripped_lower.startswith(p) for p in self._PUML_SKIP_PREFIXES):
             return line
 
-        # Also skip lines containing arrow operators (mid-line arrows)
-        if re.search(r"-->|<--|->|<-|\.\.>|\.\.|==", stripped):
+        # Also skip lines containing arrow operators outside quoted strings
+        if re.search(r"-->|<--|->|<-|\.\.>|\.\.|--|==", self._strip_quoted(stripped)):
             return line
 
         line_lower = stripped_lower
@@ -2180,12 +2417,24 @@ class Agent3Tab(QWidget):
 
         # ── UseCase ──
         if line_lower.startswith("usecase ") or (stripped.startswith("(") and stripped.endswith(")")):
-            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', line.rstrip())
+            collapsed = line
+            if "\n" in collapsed:
+                # PlantUML rejects trailing #color after a multi-line quoted string;
+                # collapse real newlines inside the block to \n so #color is valid.
+                parts = [p.strip() for p in collapsed.splitlines()]
+                leading_ws = collapsed[: len(collapsed) - len(collapsed.lstrip(" \t"))]
+                collapsed = leading_ws + "\\n".join(parts)
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\s*$|\s*#[a-zA-Z]+\s*$', '', collapsed.rstrip())
             return f"{main_part} {color}"
 
         # ── Sequence participant / actor / boundary / control / collections / entity ──
         if any(line_lower.startswith(k) for k in ("participant ", "actor ", "boundary ", "control ", "collections ", "entity ")):
-            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\b|\s*#[a-zA-Z]+\b', '', line.rstrip())
+            collapsed = line
+            if "\n" in collapsed:
+                parts = [p.strip() for p in collapsed.splitlines()]
+                leading_ws = collapsed[: len(collapsed) - len(collapsed.lstrip(" \t"))]
+                collapsed = leading_ws + "\\n".join(parts)
+            main_part = re.sub(r'\s*#[0-9a-fA-F]{3,8}\s*$|\s*#[a-zA-Z]+\s*$', '', collapsed.rstrip())
             return f"{main_part} {color}"
 
         # ── No safe injection found — return original unchanged ──
@@ -2375,6 +2624,7 @@ class Agent3Tab(QWidget):
             ref_gl = str(g.get("reference_guideline") or "")
             ev = str(g.get("evidence") or "")
             notes = str(g.get("notes") or "")
+            grader_notes = self._get_grader_notes_for_gid(gid) or str(g.get("grader_notes") or "").strip()
 
             item_id = QTableWidgetItem(gid)
             item_status = QTableWidgetItem(status)
@@ -2382,6 +2632,10 @@ class Agent3Tab(QWidget):
             item_ref = QTableWidgetItem(ref_gl)
             item_ev = QTableWidgetItem(ev)
             item_notes = QTableWidgetItem(notes)
+            item_grader = QTableWidgetItem(grader_notes)
+            if grader_notes:
+                item_grader.setForeground(QColor("#4E342E"))
+                item_grader.setToolTip(grader_notes)
 
             # Color coding
             if status == "Satisfied":
@@ -2403,6 +2657,7 @@ class Agent3Tab(QWidget):
             self.tree_table.setItem(row, 3, item_ref)
             self.tree_table.setItem(row, 4, item_ev)
             self.tree_table.setItem(row, 5, item_notes)
+            self.tree_table.setItem(row, 6, item_grader)
 
             # Store metadata
             item_id.setData(Qt.UserRole, ("g", idx))
@@ -2417,6 +2672,7 @@ class Agent3Tab(QWidget):
             self.tree_table.setItem(row, 3, QTableWidgetItem(""))
             self.tree_table.setItem(row, 4, QTableWidgetItem(""))
             self.tree_table.setItem(row, 5, QTableWidgetItem(""))
+            self.tree_table.setItem(row, 6, QTableWidgetItem(""))
             self._set_row_background(row, QColor("#eeeeee"), font_bold=True)
             row += 1
 
@@ -2438,7 +2694,30 @@ class Agent3Tab(QWidget):
                 else:
                     matched_str = str(matched_raw) if matched_raw else ""
 
-                ref_gl = str(uf.get("reference_guideline") or "")
+                ref_gl = str(uf.get("reference_guideline") or "").strip()
+                if not ref_gl:
+                    rel_ids = (
+                        uf.get("related_guideline_ids")
+                        or uf.get("related_guideline_id")
+                        or uf.get("guideline_id")
+                        or []
+                    )
+                    if isinstance(rel_ids, str):
+                        rel_ids = [x.strip() for x in rel_ids.split(",") if x.strip()]
+                    if isinstance(rel_ids, list) and rel_ids:
+                        formatted_refs = []
+                        for rel_gid in rel_ids:
+                            rel_gid_str = str(rel_gid).strip()
+                            if not rel_gid_str:
+                                continue
+                            ref_obj = (
+                                self.reference_guidelines_map.get(rel_gid_str)
+                                or self.reference_guidelines_map.get(rel_gid_str.replace("G", "G_"))
+                                or {}
+                            )
+                            g_name = ref_obj.get("guideline_name") or ref_obj.get("name") or ""
+                            formatted_refs.append(f"{rel_gid_str}: {g_name}" if g_name else rel_gid_str)
+                        ref_gl = ", ".join(formatted_refs)
                 notes = str(uf.get("notes") or "")
 
                 item_id = QTableWidgetItem("Frag")
@@ -2460,12 +2739,29 @@ class Agent3Tab(QWidget):
                 item_ref = QTableWidgetItem(ref_gl)
                 item_notes = QTableWidgetItem(notes)
 
+                # Show related guideline's Grader Notes (from Agent 2) if available
+                uf_rel_ids = uf.get("related_guideline_ids") or uf.get("related_guideline_id") or uf.get("guideline_id") or []
+                if isinstance(uf_rel_ids, str):
+                    uf_rel_ids = [x.strip() for x in uf_rel_ids.split(",") if x.strip()]
+                uf_grader_parts = []
+                if isinstance(uf_rel_ids, list):
+                    for rel_gid in uf_rel_ids:
+                        gn = self._get_grader_notes_for_gid(str(rel_gid).strip())
+                        if gn:
+                            uf_grader_parts.append(f"[{rel_gid}] {gn}" if len(uf_rel_ids) > 1 else gn)
+                uf_grader_str = "\n".join(uf_grader_parts)
+                item_grader = QTableWidgetItem(uf_grader_str)
+                if uf_grader_str:
+                    item_grader.setForeground(QColor("#4E342E"))
+                    item_grader.setToolTip(uf_grader_str)
+
                 self.tree_table.setItem(row, 0, item_id)
                 self.tree_table.setItem(row, 1, item_lbl)
                 self.tree_table.setItem(row, 2, item_matched)
                 self.tree_table.setItem(row, 3, item_ref)
                 self.tree_table.setItem(row, 4, item_snip)
                 self.tree_table.setItem(row, 5, item_notes)
+                self.tree_table.setItem(row, 6, item_grader)
 
                 item_id.setData(Qt.UserRole, ("u", idx))
                 row += 1
@@ -2535,6 +2831,7 @@ class Agent3Tab(QWidget):
         else:
             item_gen_note.setForeground(QColor("#9E9E9E"))
         self.tree_table.setItem(row, 5, item_gen_note)
+        self.tree_table.setItem(row, 6, QTableWidgetItem(""))
 
         self._set_row_background(row, QColor("#e3f2fd"), font_bold=True)
         item_sum.setData(Qt.UserRole, ("summary", 0))
@@ -2644,7 +2941,7 @@ class Agent3Tab(QWidget):
         self.tree_table.resizeRowsToContents()
 
     def _set_row_background(self, row: int, color: QColor, font_bold: bool = False) -> None:
-        for col in range(6):
+        for col in range(self.tree_table.columnCount()):
             item = self.tree_table.item(row, col)
             if item:
                 item.setBackground(color)
@@ -3341,6 +3638,151 @@ class Agent3Tab(QWidget):
             log_action("Agent3", "update_general_note", f"case_id={cid} | adjustment={adjustment:+g}% | old_note={curr_notes!r} | new_note={notes!r}")
             self._save_hitl_changes()  # auto-save
 
+    def _hitl_edit_row(self) -> None:
+        """Edit all fields of the selected table row together in a single dialog."""
+        rows = self.tree_table.selectionModel().selectedRows()
+        if not rows:
+            QMessageBox.warning(self, "No Selection", "Select a row in the table to edit.")
+            return
+        row = rows[0].row()
+        item = self.tree_table.item(row, 0)
+        meta = item.data(Qt.UserRole) if item else None
+        if not meta:
+            QMessageBox.warning(self, "Invalid Selection", "Select a guideline, uncovered fragment, or summary row to edit.")
+            return
+
+        tag, idx = meta
+
+        if tag == "summary":
+            self._hitl_edit_general_note()
+            return
+
+        if tag == "g" and idx < len(self.compliance_data):
+            g = self.compliance_data[idx]
+            gid = str(g.get("guideline_id") or "")
+            curr_status = str(g.get("compliance_status") or g.get("label") or "Satisfied")
+            curr_matched = str(g.get("matched_elements") or "")
+            curr_ref = str(g.get("reference_guideline") or "")
+            curr_ev = str(g.get("evidence") or "")
+            curr_notes = str(g.get("notes") or "")
+
+            dlg = RowEditDialog(
+                row_id=gid,
+                status=curr_status,
+                matched_elements=curr_matched,
+                reference_guideline=curr_ref,
+                evidence=curr_ev,
+                notes=curr_notes,
+                is_fragment=False,
+                grader_notes=self._get_grader_notes_for_gid(gid),
+                parent=self,
+            )
+            if dlg.exec() == QDialog.Accepted:
+                vals = dlg.get_values()
+                if (
+                    vals["status"] == curr_status
+                    and vals["matched_elements"] == curr_matched.strip()
+                    and vals["reference_guideline"] == curr_ref.strip()
+                    and vals["evidence"] == curr_ev.strip()
+                    and vals["notes"] == curr_notes.strip()
+                ):
+                    return
+
+                self._push_undo_snapshot(f"Edit Row ({gid})")
+                matched_list = [e.strip() for e in vals["matched_elements"].split(",") if e.strip()]
+
+                g["compliance_status"] = vals["status"]
+                g["label"] = vals["status"]
+                g["matched_elements"] = ", ".join(matched_list)
+                g["reference_guideline"] = vals["reference_guideline"]
+                g["evidence"] = vals["evidence"]
+                g["notes"] = vals["notes"]
+
+                for lst_name in ("existing_mapping", "potential_found"):
+                    for entry in self.current_raw_data.get(lst_name, []):
+                        if isinstance(entry, dict) and entry.get("guideline_id") == gid:
+                            entry["compliance_status"] = vals["status"]
+                            entry["label"] = vals["status"]
+                            entry["matched_elements"] = matched_list
+                            entry["reference_guideline"] = vals["reference_guideline"]
+                            entry["evidence"] = vals["evidence"]
+                            entry["notes"] = vals["notes"]
+
+                self._recalculate_score()
+                self._populate_tree_table()
+                if self._annotate_active:
+                    raw_m = self.model_text_edit.toPlainText().strip()
+                    if raw_m:
+                        render_text = self._build_annotated_puml(raw_m)
+                        self._render_diagram(render_text)
+                log_action("Agent3", "edit_row", f"guideline={gid} | status={vals['status']}")
+                self._save_hitl_changes(silent=True)
+                self.status_label.setText(f"📋 Updated row {gid}")
+
+        elif tag == "u" and idx < len(self.uncovered_data):
+            uf = self.uncovered_data[idx]
+            curr_lbl = str(uf.get("label") or "Alternative")
+            matched_raw = (
+                uf.get("matched_elements")
+                or uf.get("matched_classes")
+                or uf.get("matched_states")
+                or uf.get("elements")
+                or uf.get("matched_element")
+                or uf.get("model_elements")
+                or []
+            )
+            curr_matched = ", ".join(str(x) for x in matched_raw if x) if isinstance(matched_raw, list) else str(matched_raw or "")
+            curr_ref = str(uf.get("reference_guideline") or "").strip()
+            if not curr_ref:
+                rel_ids = uf.get("related_guideline_ids") or uf.get("related_guideline_id") or uf.get("guideline_id") or []
+                curr_ref = ", ".join(str(x) for x in rel_ids if x) if isinstance(rel_ids, list) else str(rel_ids or "")
+            curr_ev = str(uf.get("fragment") or uf.get("fragment_description") or uf.get("description") or "")
+            curr_notes = str(uf.get("notes") or "")
+
+            dlg = RowEditDialog(
+                row_id=f"Frag #{idx + 1}",
+                status=curr_lbl,
+                matched_elements=curr_matched,
+                reference_guideline=curr_ref,
+                evidence=curr_ev,
+                notes=curr_notes,
+                is_fragment=True,
+                parent=self,
+            )
+            if dlg.exec() == QDialog.Accepted:
+                vals = dlg.get_values()
+                if (
+                    vals["status"] == curr_lbl
+                    and vals["matched_elements"] == curr_matched.strip()
+                    and vals["reference_guideline"] == curr_ref.strip()
+                    and vals["evidence"] == curr_ev.strip()
+                    and vals["notes"] == curr_notes.strip()
+                ):
+                    return
+
+                self._push_undo_snapshot(f"Edit Fragment (#{idx + 1})")
+                matched_list = [e.strip() for e in vals["matched_elements"].split(",") if e.strip()]
+
+                uf["label"] = vals["status"]
+                uf["matched_elements"] = matched_list
+                uf["reference_guideline"] = vals["reference_guideline"]
+                if "fragment" in uf or "fragment_description" not in uf:
+                    uf["fragment"] = vals["evidence"]
+                if "fragment_description" in uf:
+                    uf["fragment_description"] = vals["evidence"]
+                uf["notes"] = vals["notes"]
+                self.current_raw_data["uncovered_fragments"] = self.uncovered_data
+
+                self._populate_tree_table()
+                if self._annotate_active:
+                    raw_m = self.model_text_edit.toPlainText().strip()
+                    if raw_m:
+                        render_text = self._build_annotated_puml(raw_m)
+                        self._render_diagram(render_text)
+                log_action("Agent3", "edit_fragment_row", f"fragment_idx={idx} | label={vals['status']}")
+                self._save_hitl_changes(silent=True)
+                self.status_label.setText(f"📋 Updated Fragment #{idx + 1}")
+
     def _on_table_cell_double_clicked(self, row: int, col: int) -> None:
         """Context-aware double click handler for guidelines, uncovered fragments, and summary row."""
         item = self.tree_table.item(row, 0)
@@ -3350,13 +3792,8 @@ class Agent3Tab(QWidget):
         if not meta:
             return
         tag, idx = meta
-        if tag == "g":
-            if col == 1:
-                self._hitl_change_status()
-            else:
-                self._hitl_update_feedback()
-        elif tag == "u":
-            self._hitl_map_fragment()
+        if tag in ("g", "u"):
+            self._hitl_edit_row()
         elif tag == "summary":
             self._hitl_edit_general_note()
 
@@ -3384,7 +3821,18 @@ class Agent3Tab(QWidget):
         uf = self.uncovered_data[idx]
         desc = uf.get("fragment", uf.get("fragment_description", uf.get("description", "")))
 
-        gid, ok = QInputDialog.getText(self, "Map Fragment", f"Enter Guideline ID (e.g. G1) for:\n'{desc[:60]}...':")
+        rel_ids = uf.get("related_guideline_ids") or uf.get("related_guideline_id") or uf.get("guideline_id") or []
+        if isinstance(rel_ids, list):
+            default_gid = str(rel_ids[0]).strip() if rel_ids else ""
+        else:
+            default_gid = str(rel_ids).strip()
+
+        gid, ok = QInputDialog.getText(
+            self,
+            "Map Fragment",
+            f"Enter Guideline ID (e.g. G1) for:\n'{desc[:60]}...':",
+            text=default_gid,
+        )
         if ok and gid.strip():
             target_gid = gid.strip()
             self._push_undo_snapshot(f"Map Fragment → {target_gid}")
